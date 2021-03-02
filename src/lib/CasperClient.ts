@@ -260,10 +260,14 @@ export class CasperClient {
    * @param deployHash
    * @returns Tuple of Deploy and raw RPC response.
    */
-  public async getDeployByHashFromRPC(deployHash: string): Promise<[Deploy, GetDeployResult]> {
-    return await this.nodeClient.getDeployInfo(deployHash).then((result: GetDeployResult) => {
-      return [DeployUtil.deployFromJson(result)!, result];
-    });
+  public async getDeployByHashFromRPC(
+    deployHash: string
+  ): Promise<[Deploy, GetDeployResult]> {
+    return await this.nodeClient
+      .getDeployInfo(deployHash)
+      .then((result: GetDeployResult) => {
+        return [DeployUtil.deployFromJson(result)!, result];
+      });
   }
 
   /**

@@ -52,7 +52,7 @@ export class CasperHDKey {
   public derive(path: string): Secp256K1 {
     const secpKeyPair = this.hdKey.derive(path);
     return new Secp256K1(
-      new Uint8Array(secpKeyPair.publicKey!), 
+      new Uint8Array(secpKeyPair.publicKey!),
       new Uint8Array(secpKeyPair.privateKey!)
     );
   }

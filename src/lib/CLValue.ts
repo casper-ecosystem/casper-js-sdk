@@ -651,11 +651,11 @@ export class PublicKey extends CLTypedAndToBytes {
   }
 
   public isEd25519() {
-    return this.tag === ED25519_TAG
+    return this.tag === ED25519_TAG;
   }
 
   public isSecp256K1() {
-    return this.tag === SECP256K1_TAG
+    return this.tag === SECP256K1_TAG;
   }
 
   public toAccountHash(): Uint8Array {
