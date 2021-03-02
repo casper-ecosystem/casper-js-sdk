@@ -73,7 +73,8 @@ interface JsonDeployHeader {
   chain_name: string;
 }
 
-// todo(abner)
+// TODO: Empty interface
+// eslint-disable-next-line
 interface JsonExecutableDeployItem {}
 
 interface JsonApproval {

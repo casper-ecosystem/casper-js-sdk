@@ -1777,7 +1777,7 @@ export enum KeyVariant {
 }
 
 /// The length in bytes of a [`AccountHash`].
-const ACCOUNT_HASH_LENGTH: number = 32;
+const ACCOUNT_HASH_LENGTH = 32;
 
 /** A cryptographic public key. */
 @staticImplements<BytesDeserializableStatic<AccountHash>>()
@@ -1912,7 +1912,7 @@ export class KeyValue extends CLTypedAndToBytes {
   }
 }
 
-const FORMATTED_STRING_PREFIX: string = 'uref-';
+const FORMATTED_STRING_PREFIX = 'uref-';
 /**
  * Length of [[URef]] address field.
  * @internal

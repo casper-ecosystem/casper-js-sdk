@@ -236,8 +236,8 @@ export class CasperClient {
    */
   public async getAccountsDeploys(
     publicKey: PublicKey,
-    page: number = 0,
-    limit: number = 20
+    page = 0,
+    limit = 20
   ): Promise<AccountDeploy[]> {
     const data = await this.eventStoreClient.getAccountDeploys(
       publicKey.toAccountHex(),
