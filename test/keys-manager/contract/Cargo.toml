@@ -1,0 +1,24 @@
+[package]
+name = "keys-manager"
+version = "0.1.0"
+authors = ["Maciej Zielinski <maciek.s.zielinski@gmail.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+casper-contract = "0.2.1"
+casper-types = "0.2.1"
+
+[[bin]]
+name = "keys-manager"
+path = "src/main.rs"
+bench = false
+doctest = false
+test = false
+
+[features]
+default = ["casper-contract/std", "casper-types/std", "casper-contract/test-support"]
+
+[profile.release]
+lto = true

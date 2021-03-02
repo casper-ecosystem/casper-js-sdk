@@ -1,0 +1,71 @@
+{
+  "name": "casper-client-sdk",
+  "version": "1.0.23",
+  "license": "Apache 2.0",
+  "description": "SDK to interact with the Casper blockchain",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "prepublishOnly": "npm run build && npm run test",
+    "prebuild": "npm run clean && tslint -c tslint.json -p tsconfig.json --fix",
+    "build": "tsc",
+    "clean": "rm -rf ./dist",
+    "~build": "tsc --watch",
+    "test": "TS_NODE_FILES=true mocha -r ts-node/register test/**/*.test.ts",
+    "docs": "typedoc --out docs/code/ src",
+    "publish-doc": "yarn run docs && gh-pages -d docs -r https://github.com/casper-ecosystem/casper-client-sdk-docs"
+  },
+  "keywords": [
+    "Casper",
+    "BlockChain",
+    "sdk"
+  ],
+  "author": "AbnerZheng <abner@casper.io>",
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "devDependencies": {
+    "@types/chai": "^4.1.7",
+    "@types/express": "^4.17.0",
+    "@types/humanize-duration": "^3.18.1",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^14.14.31",
+    "chai": "^4.2.0",
+    "concurrently": "^4.1.1",
+    "gh-pages": "^3.1.0",
+    "husky": "^2.7.0",
+    "lint-staged": "^8.2.1",
+    "minimist": ">=1.2.3",
+    "mocha": "^6.2.3",
+    "nodemon": "^2.0.2",
+    "nyc": "^15.0.1",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^1.11.1",
+    "ts-node": "^8.4.1",
+    "ts-protoc-gen": "^0.10.0",
+    "tsconfig-paths": "^3.9.0",
+    "tslint": "^6.1.3",
+    "tslint-config-prettier": "^1.18.0",
+    "typedoc": "^0.17.8",
+    "typescript": "^3.9.7"
+  },
+  "dependencies": {
+    "@ethersproject/bignumber": "^5.0.8",
+    "@ethersproject/bytes": "^5.0.5",
+    "@ethersproject/constants": "^5.0.5",
+    "axios": "^0.21.1",
+    "blakejs": "^1.1.0",
+    "ethereum-cryptography": "^0.1.3",
+    "humanize-duration": "^3.24.0",
+    "jsbi": "^3.1.2",
+    "key-encoder": "^2.0.3",
+    "reflect-metadata": "^0.1.13",
+    "rpc-client-js": "^1.0.2",
+    "rxjs": "^6.5.3",
+    "tweetnacl-ts": "^1.0.3",
+    "tweetnacl-util": "^0.15.0",
+    "typedjson": "^1.6.0-rc2"
+  }
+}
