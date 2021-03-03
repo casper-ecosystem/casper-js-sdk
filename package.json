@@ -15,7 +15,7 @@
     "test": "TS_NODE_FILES=true mocha -r ts-node/register test/**/*.test.ts",
     "docs": "typedoc --out docs/code/ src",
     "publish-doc": "yarn run docs && gh-pages -d docs -r https://github.com/casper-ecosystem/casper-client-sdk-docs",
-    "prepare": "husky install"
+    "prepare": "husky-run install"
   },
   "keywords": [
     "Casper",
