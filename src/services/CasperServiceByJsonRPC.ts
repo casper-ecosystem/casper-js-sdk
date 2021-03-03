@@ -152,11 +152,16 @@ export interface ValidatorBid {
   bid: Bid;
 }
 
-export interface ValidatorsInfoResult extends RpcResult {
+export interface AuctionState {
   state_root_hash: string;
   block_height: number;
   era_validators: EraValidators[];
   bids: ValidatorBid[];
+}
+
+export interface ValidatorsInfoResult extends RpcResult {
+  api_version: string;
+  auction_state: AuctionState;
 }
 
 export class CasperServiceByJsonRPC {
