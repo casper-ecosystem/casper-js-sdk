@@ -102,6 +102,7 @@ export interface JsonHeader {
   era_id: number;
   height: number;
   proposer: string;
+  protocol_version: string;
 }
 
 export interface JsonBlock {
