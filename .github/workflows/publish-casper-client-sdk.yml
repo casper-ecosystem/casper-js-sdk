@@ -38,3 +38,4 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: dist/casper-client-sdk.umd.${{ steps.get_version.outputs.version }}.js
+        allow_override: true
