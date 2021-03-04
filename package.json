@@ -8,10 +8,10 @@
   "scripts": {
     "prepublishOnly": "npm run build && npm run test",
     "lint": "eslint src/ --fix",
-    "prebuild": "npm run clean",
-    "build": "tsc",
+    "prebuild": "npm run clean && npm run lint",
+    "build": "tsc && npm run build:umd",
     "build:es6": "tsc -m es6 --outDir dist/esm --moduleResolution node",
-    "build:webpack": "webpack --config webpack.config.js",
+    "build:umd": "webpack --config webpack.config.js",
     "clean": "rm -rf ./dist",
     "~build": "tsc --watch",
     "test": "TS_NODE_FILES=true mocha -r ts-node/register test/**/*.test.ts",
