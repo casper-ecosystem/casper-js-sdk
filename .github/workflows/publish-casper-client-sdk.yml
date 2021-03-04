@@ -7,6 +7,9 @@ on:
   release:
     types: [created]
 
+env: 
+  INPUT_TOKEN: ''
+
 jobs:
   publish:
 
@@ -33,6 +36,8 @@ jobs:
       id: get_version
       uses: battila7/get-version-action@v2
     - run: npm run build:umd
+      env: 
+        INPUT_TOKEN: ''
     - run: mv dist/bundle.umd.js dist/casper-client-sdk.umd.${{ steps.get_version.outputs.version }}.js
     - uses: meeDamian/github-release@2.0
       with:
