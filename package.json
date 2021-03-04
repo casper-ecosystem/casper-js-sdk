@@ -1,6 +1,6 @@
 {
   "name": "casper-client-sdk",
-  "version": "1.0.27",
+  "version": "1.0.28",
   "license": "Apache 2.0",
   "description": "SDK to interact with the Casper blockchain",
   "main": "dist/index.js",
@@ -9,7 +9,7 @@
     "prepublishOnly": "npm run build && npm run test",
     "lint": "eslint src/ --fix",
     "prebuild": "npm run clean && npm run lint",
-    "build": "tsc && npm run build:umd",
+    "build": "tsc",
     "build:es6": "tsc -m es6 --outDir dist/esm --moduleResolution node",
     "build:umd": "webpack --config webpack.config.js",
     "clean": "rm -rf ./dist",
