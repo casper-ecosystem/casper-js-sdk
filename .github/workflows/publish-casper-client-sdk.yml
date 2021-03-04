@@ -4,18 +4,11 @@
 name: ci-casper-client-sdk
 
 on:
-  push:
-    branches: [ master ]
-    paths-ignore:
-      - '**.md'
-
-  pull_request:
-    branches: [ master ]
-    paths-ignore:
-      - '**.md'
+  release:
+    types: [created]
 
 jobs:
-  build:
+  publish:
 
     runs-on: ubuntu-18.04
 
@@ -31,4 +24,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install
-    - run: npm test
+    - uses: JS-DevTools/npm-publish@v1
+      with:
+        token: ${{ secrets.NPM_TOKEN }}
+        access: "public"
+        check-version: true
