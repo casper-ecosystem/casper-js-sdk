@@ -29,3 +29,8 @@ jobs:
         token: ${{ secrets.NPM_TOKEN }}
         access: "public"
         check-version: true
+    - run: npm build:umd
+    - uses: meeDamian/github-release@2.0
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        files: dist/bundle.umd.js
