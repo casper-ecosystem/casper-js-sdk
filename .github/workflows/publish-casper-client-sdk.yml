@@ -29,10 +29,12 @@ jobs:
         token: ${{ secrets.NPM_TOKEN }}
         access: "public"
         check-version: true
-    - run: echo ${{ github.ref }}
+    - name: Get latest release version number
+      id: get_version
+      uses: battila7/get-version-action@v2
     - run: npm run build:umd
-    - run: mv dist/bundle.umd.js dist/casper-client-sdk.umd.${{ github.ref }}.js
+    - run: mv dist/bundle.umd.js dist/casper-client-sdk.umd.${{ steps.get_version.outputs.version }}.js
     - uses: meeDamian/github-release@2.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        files: dist/casper-client-sdk.umd.${{ github.ref }}.js
+        files: dist/casper-client-sdk.umd.${{ steps.get_version.outputs.version }}.js
