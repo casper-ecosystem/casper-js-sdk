@@ -23,7 +23,8 @@ const serverConfig = {
   target: 'node',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'lib.node.js'
+    filename: 'lib.node.js',
+    libraryTarget: 'umd'
   },
   externals: [nodeExternals()] // in order to ignore all modules in node_modules folder
 };
@@ -47,7 +48,8 @@ const clientConfig = {
   ],
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'lib.js'
+    filename: 'lib.js',
+    libraryTarget: 'umd'
   }
 };
 
