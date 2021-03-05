@@ -1,7 +1,8 @@
 const webpack = require('webpack');
 const path = require('path');
+const nodeExternals = require('webpack-node-externals');
 
-module.exports = {
+const common = {
   entry: './src/index.ts',
   module: {
     rules: [
@@ -13,7 +14,25 @@ module.exports = {
     ]
   },
   resolve: {
-    extensions: ['.ts', '.js'],
+    extensions: ['.ts', '.js']
+  }
+};
+
+const serverConfig = {
+  ...common,
+  target: 'node',
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'lib.node.js'
+  },
+  externals: [nodeExternals()] // in order to ignore all modules in node_modules folder
+};
+
+const clientConfig = {
+  ...common,
+  target: 'web',
+  resolve: {
+    ...common.resolve,
     fallback: {
       stream: require.resolve('stream-browserify'),
       asert: require.resolve('assert'),
@@ -27,9 +46,9 @@ module.exports = {
     })
   ],
   output: {
-    filename: 'bundle.umd.js',
     path: path.resolve(__dirname, 'dist'),
-    libraryTarget: 'umd',
-    globalObject: 'this'
+    filename: 'lib.js'
   }
 };
+
+module.exports = [serverConfig, clientConfig];

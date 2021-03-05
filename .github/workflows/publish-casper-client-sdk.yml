@@ -7,9 +7,6 @@ on:
   release:
     types: [created]
 
-env: 
-  INPUT_TOKEN: ''
-
 jobs:
   publish:
 
@@ -38,9 +35,9 @@ jobs:
     - run: npm run build:umd
       env: 
         INPUT_TOKEN: ''
-    - run: mv dist/bundle.umd.js dist/casper-client-sdk.umd.${{ steps.get_version.outputs.version }}.js
+    - run: mv dist/lib.umd.js dist/casper-client-sdk.v${{ steps.get_version.outputs.version }}.umd.js
     - uses: meeDamian/github-release@2.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        files: dist/casper-client-sdk.umd.${{ steps.get_version.outputs.version }}.js
+        files: dist/casper-client-sdk.v${{ steps.get_version.outputs.version }}.umd.js
         allow_override: true
