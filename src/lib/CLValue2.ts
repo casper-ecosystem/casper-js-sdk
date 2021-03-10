@@ -1,46 +1,79 @@
-type CLValueTypes = Num | List;
+export type CLValueTypes = Bool | List;
 
-enum CLValueTypesCode {
-  Num,
+export enum CLValueTypesCode {
+  Bool,
   List
 }
 
-class CLValue {
-  public static list(vec: CLValueTypes[]): List {
+export class CLValue {
+  public static list(vec: CLValueTypes[] | CLValueTypesCode): List {
     return new List(vec);
   }
 
-  public static number(val: number): Num {
-    return new Num(val);
+  public static bool(b: boolean): Bool {
+    return new Bool(b);
   }
 }
 
-class List extends CLValue {
+function isArrayOfCLValues(
+  data: CLValueTypes[] | CLValueTypesCode
+): data is CLValueTypes[] {
+  return (
+    Array.isArray(data) &&
+    data.every(
+      (i: CLValueTypes) => i instanceof CLValue && i.type === data[0].type
+    )
+  );
+}
+
+export class List extends CLValue {
   protected value: CLValueTypes[];
+  protected vectorType: CLValueTypesCode;
   public type = CLValueTypesCode.List;
 
-  constructor(vec: CLValueTypes[]) {
+  constructor(param: CLValueTypes[] | CLValueTypesCode) {
     super();
     // Check the length of an array, if all of the objects are instances of CLValue and if has the same type.
-    if (
-      vec.length > 0 &&
-      vec.every((i: CLValueTypes) => i instanceof CLValue && i.type === vec[0].type)
+    if (isArrayOfCLValues(param) && param.length > 0) {
+      this.vectorType = param[0].type;
+      this.value = param;
+    } else if (
+      !isArrayOfCLValues(param) &&
+      Object.values(CLValueTypesCode).includes(param)
     ) {
-      this.value = vec;
+      this.vectorType = param;
+      this.value = [];
     } else {
-      throw Error('No compatible values provided ');
+      throw new Error('No compatible values provided');
     }
   }
-}
 
-class Num extends CLValue {
-  protected value: number;
-  public type = CLValueTypesCode.Num;
+  get(index?: number): CLValue {
+    if (index === undefined) {
+      return this.value;
+    }
+    return this.value[index];
+  }
 
-  constructor(val: number) {
-    super();
-    this.value = val;
+  push(item: CLValueTypes): void {
+    if (item.type === this.vectorType) {
+      this.value.push(item);
+    } else {
+      throw new Error('No compatible values provided');
+    }
+  }
+
+  size(): number {
+    return this.value.length;
   }
 }
 
-const x = CLValue.list([CLValue.number(1), CLValue.number(2)]);
+class Bool extends CLValue {
+  public type = CLValueTypesCode.Bool;
+
+  constructor(protected value: boolean) {
+    super();
+  }
+}
+
+// const x = CLValue.list([CLValue.bool(true), CLValue.bool(false)]);
