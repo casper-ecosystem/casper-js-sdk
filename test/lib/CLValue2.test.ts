@@ -27,12 +27,16 @@ describe('New Implementation of CLValue.List', () => {
 
   it('Get should return proper value', () => {
     const myList = CLValue.list([CLValue.bool(true)]);
-    const item = CLValue.bool(false);
-    myList.push(item);
-    expect(myList.get(1)).to.deep.eq(item);
+    const newItem = CLValue.bool(false);
+    myList.push(newItem);
+    expect(myList.get(1)).to.deep.eq(newItem);
   });
 
-  it('Set should be consistent with types', () => {
+  it('Set should be able to push at current index + 1', () => {
+    const myList = CLValue.list([CLValue.bool(true)]);
+    const newItem = CLValue.bool(false);
+    myList.set(1, newItem);
+    expect(myList.get(1)).to.deep.eq(newItem);
 
   });
 

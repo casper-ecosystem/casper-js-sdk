@@ -15,9 +15,9 @@ export class CLValue {
   }
 }
 
-function isArrayOfCLValues(
+const isArrayOfCLValues = (
   data: CLValueTypes[] | CLValueTypesCode
-): data is CLValueTypes[] {
+): data is CLValueTypes[] => {
   return (
     Array.isArray(data) &&
     data.every(
@@ -53,6 +53,12 @@ export class List extends CLValue {
       return this.value;
     }
     return this.value[index];
+  }
+
+  set(index: number, value: CLValueTypes): void {
+    if (index <= this.value.length) {
+      this.value[index] = value;
+    }
   }
 
   push(item: CLValueTypes): void {
