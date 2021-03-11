@@ -1,88 +1,84 @@
-export type CLValueTypesInternal = Bool | List;
-
-export enum CLValueTypes {
-  Bool,
-  List
+abstract class CLType {
+    abstract toString(): string; 
 }
 
-export class CLValue {
-  public static list(vec: CLValueTypesInternal[] | CLValueTypes): List {
-    return new List(vec);
-  }
-
-  public static bool(b: boolean): Bool {
-    return new Bool(b);
-  }
+class BoolType extends CLType {
+    toString(): string {
+        return "Bool";
+    }
 }
 
-const isArrayOfCLValues = (
-  data: CLValueTypesInternal[] | CLValueTypes
-): data is CLValueTypesInternal[] => {
-  return (
-    Array.isArray(data) &&
-    data.every(
-      (i: CLValueTypesInternal) =>
-        i instanceof CLValue && i.type === data[0].type
-    )
-  );
-};
+class ListType<T extends CLType> extends CLType {
+    inner: T;
+    constructor(inner: T) {
+        super();
+        this.inner = inner;
+    }
 
-export class List extends CLValue {
-  protected value: CLValueTypesInternal[];
-  protected vectorType: CLValueTypes;
-  public type = CLValueTypes.List;
+    toString(): string {
+        return `List (${this.inner.toString()})`;
+    }
+}
 
-  constructor(param: CLValueTypesInternal[] | CLValueTypes) {
+abstract class CLValue {
+    abstract clType(): CLType
+    abstract value(): any
+}
+
+export class Bool extends CLValue {
+    v: boolean
+    
+    constructor(v: boolean) {
+        super();
+        this.v = v;
+    }
+
+    clType(): CLType {
+        return new BoolType;
+    }
+
+    value(): boolean {
+        return this.v;
+    }
+}
+
+export class List<T extends CLValue> extends CLValue {
+  v: Array<T>
+
+  constructor(v?: Array<T>) {
     super();
-    // Check the length of an array, if all of the objects are instances of CLValue and if has the same type.
-    if (isArrayOfCLValues(param) && param.length > 0) {
-      this.vectorType = param[0].type;
-      this.value = param;
-    } else if (
-      !isArrayOfCLValues(param) &&
-      Object.values(CLValueTypes).includes(param)
-    ) {
-      this.vectorType = param;
-      this.value = [];
-    } else {
-      throw new Error('No compatible values provided');
-    }
+    this.v = v || [];
   }
 
-  get(index?: number): CLValue {
-    if (index === undefined) {
-      return this.value;
-    }
-    return this.value[index];
+  value(): Array<T> {
+    return this.v;
   }
 
-  set(index: number, value: CLValueTypesInternal): void {
-    if (index <= this.value.length) {
-      this.value[index] = value;
-    }
+  clType(): CLType  {
+      return new ListType(this.v[0].clType());
   }
 
-  push(item: CLValueTypesInternal): void {
-    if (item.type === this.vectorType) {
-      this.value.push(item);
-    } else {
-      throw new Error('No compatible values provided');
-    }
+  get(index: number): T {
+    return this.v[index];
+  }
+
+  set(index: number, item: T): void {
+    this.v[index] = item;
+  }
+
+  push(item: T): void {
+    this.v.push(item);
+  }
+
+  remove(index: number): void {
+    this.v.splice(index, 1);
   }
 
   pop(): void {
-    this.value.pop();
+    this.v.pop();
   }
 
   size(): number {
-    return this.value.length;
-  }
-}
-
-class Bool extends CLValue {
-  public type = CLValueTypes.Bool;
-
-  constructor(protected value: boolean) {
-    super();
+    return this.v.length;
   }
 }
