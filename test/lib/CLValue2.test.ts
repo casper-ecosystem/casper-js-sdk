@@ -1,7 +1,7 @@
 import { expect } from 'chai';
-import { CLValue, CLValueTypesCode, List } from '../../src/lib/CLValue2';
+import { CLValue, CLValueTypes, List } from '../../src/lib/CLValue2';
 
-describe('New Implementation of CLValue.List', () => {
+describe('New Implementation of CLValue.list', () => {
   it('Should be able to create List with proper values - correct by construction', () => {
     const myList = CLValue.list([CLValue.bool(true), CLValue.bool(false)]);
 
@@ -15,12 +15,12 @@ describe('New Implementation of CLValue.List', () => {
   });
 
   it('Should able to create empty List by providing type', () => {
-    const myList = CLValue.list(CLValueTypesCode.Bool);
+    const myList = CLValue.list(CLValueTypes.Bool);
     expect(myList.size()).to.equal(0);
   });
 
   it('Should throw an error when pushed element is different than type declared when empty list was created', () => {
-    const myList = CLValue.list(CLValueTypesCode.Bool);
+    const myList = CLValue.list(CLValueTypes.Bool);
     const badFn = () => myList.push(CLValue.list([CLValue.bool(true)]));
     expect(badFn).to.throw();
   });
@@ -44,5 +44,11 @@ describe('New Implementation of CLValue.List', () => {
     const myList = CLValue.list([CLValue.bool(true)]);
     myList.push(CLValue.bool(false));
     expect(myList.size()).to.equal(2);
+  });
+
+  it('Pop should remove last item from array', () => {
+    const myList = CLValue.list([CLValue.bool(true), CLValue.bool(false)]);
+    myList.pop();
+    expect(myList.size()).to.equal(1);
   });
 });
