@@ -74,8 +74,8 @@ export class List<T extends CLValue> extends CLValue {
     this.v.splice(index, 1);
   }
 
-  pop(): void {
-    this.v.pop();
+  pop(): T | undefined {
+    return this.v.pop();
   }
 
   size(): number {

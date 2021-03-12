@@ -74,12 +74,13 @@ describe('New Implementation of CLValue.list', () => {
     expect(myList.size()).to.equal(2);
   });
 
-  it('Pop should remove last item from array', () => {
+  it('Pop should remove last item from array and return it', () => {
     const myList = new List([new Bool(true), new Bool(false)]);
 
-    myList.pop();
+    const popped = myList.pop();
 
     expect(myList.size()).to.equal(1);
+    expect(popped).to.deep.equal(new Bool(false));
   });
 
   it('Should set nested value by chaining methods', () => {
