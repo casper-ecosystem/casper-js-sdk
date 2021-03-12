@@ -16,7 +16,7 @@ describe('New Implementation of CLValue.list', () => {
   // });
 
   it('Should able to create empty List by providing type', () => {
-    const mList = new List<Bool>([]);
+    const mList = new List<Bool>();
     const len = mList.size();
     expect(len).to.equal(0);
   });
