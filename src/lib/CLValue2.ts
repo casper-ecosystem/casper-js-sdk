@@ -8,6 +8,12 @@ class BoolType extends CLType {
   }
 }
 
+class EmptyListType extends CLType {
+  toString(): string {
+    return 'List (Empty)';
+  }
+}
+
 class ListType<T extends CLType> extends CLType {
   inner: T;
   constructor(inner: T) {
@@ -55,7 +61,10 @@ export class List<T extends CLValue> extends CLValue {
   }
 
   clType(): CLType {
-    return new ListType(this.v[0].clType());
+    if (this.v.length > 0) {
+      return new ListType(this.v[0].clType());
+    }
+    return new EmptyListType();
   }
 
   get(index: number): T {
@@ -74,6 +83,7 @@ export class List<T extends CLValue> extends CLValue {
     this.v.splice(index, 1);
   }
 
+  // TBD: we can throw an error here, but returing undefined from empty list is typical JS behavior
   pop(): T | undefined {
     return this.v.pop();
   }
