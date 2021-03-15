@@ -81,6 +81,9 @@ export class List<T extends CLValue> extends CLValue {
   }
 
   set(index: number, item: T): void {
+    if (index >= this.v.length) {
+      throw new Error("Array index out of bounds.");
+    }
     this.v[index] = item;
   }
 

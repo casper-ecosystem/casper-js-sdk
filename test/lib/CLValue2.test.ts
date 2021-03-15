@@ -71,6 +71,14 @@ describe('New Implementation of CLValue.list', () => {
     expect(myList.get(0)).to.deep.eq(newItem);
   });
 
+  it('Set should throw error on wrong indexes', () => {
+    const myList = new List([new Bool(true)]);
+
+    const badFn = () => myList.set(1, new Bool(false));
+
+    expect(badFn).to.throw("Array index out of bounds.");
+  });
+
   it('Push should be consistent with types', () => {
     const myList = new List([new Bool(true)]);
 
