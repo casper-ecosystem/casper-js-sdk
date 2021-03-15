@@ -2,19 +2,13 @@ abstract class CLType {
   abstract toString(): string;
 }
 
-class BoolType extends CLType {
+export class BoolType extends CLType {
   toString(): string {
     return 'Bool';
   }
 }
 
-class EmptyListType extends CLType {
-  toString(): string {
-    return 'List (Empty)';
-  }
-}
-
-class ListType<T extends CLType> extends CLType {
+export class ListType<T extends CLType> extends CLType {
   inner: T;
   constructor(inner: T) {
     super();
@@ -50,10 +44,28 @@ export class Bool extends CLValue {
 
 export class List<T extends CLValue> extends CLValue {
   v: Array<T>;
+  vectorType: CLType;
 
-  constructor(v?: Array<T>) {
+  constructor(v: Array<T> | CLType) {
     super();
-    this.v = v || [];
+    if (Array.isArray(v) && v[0].clType) {
+      const refType = v[0].clType();
+      if (
+        v.every(i => {
+          return i.clType().toString() === refType.toString();
+        })
+      ) {
+        this.v = v;
+        this.vectorType = refType;
+      } else {
+        throw Error('Invalid data provided.');
+      }
+    } else if (v instanceof CLType) {
+      this.vectorType = v;
+      this.v = [];
+    } else {
+      throw Error('Invalid data type(s) provided.');
+    }
   }
 
   value(): Array<T> {
@@ -61,10 +73,7 @@ export class List<T extends CLValue> extends CLValue {
   }
 
   clType(): CLType {
-    if (this.v.length > 0) {
-      return new ListType(this.v[0].clType());
-    }
-    return new EmptyListType();
+    return new ListType(this.vectorType);
   }
 
   get(index: number): T {
@@ -76,7 +85,11 @@ export class List<T extends CLValue> extends CLValue {
   }
 
   push(item: T): void {
-    this.v.push(item);
+    if (item.clType().toString() === this.vectorType.toString()) {
+      this.v.push(item);
+    } else {
+      throw Error(`Incosnsistent data type, use ${this.vectorType.toString()}.`);
+    }
   }
 
   remove(index: number): void {

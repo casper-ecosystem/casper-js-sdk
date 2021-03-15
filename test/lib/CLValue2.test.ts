@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { List, Bool } from '../../src/lib/CLValue2';
+import { List, Bool, BoolType } from '../../src/lib/CLValue2';
 
 describe('New Implementation of CLValue.list', () => {
   it('Bool should return proper clType', () => {
@@ -21,6 +21,18 @@ describe('New Implementation of CLValue.list', () => {
     expect(myList).to.be.an.instanceof(List);
   });
 
+  it('Should throw an error when list is not correct by construction', () => {
+    const badFn = () => new List([new Bool(true), new List([new Bool(false)])]);
+
+    expect(badFn).to.throw("Invalid data provided.");
+  });
+
+  it('Should throw an error when list is not correct by construction', () => {
+    const badFn = () => new List([1, 2, 3]);
+
+    expect(badFn).to.throw("Invalid data type(s) provided.");
+  });
+
   it('Should be able to return proper values by calling .value() on List', () => {
     const myBool = new Bool(false);
     const myList = new List<Bool>([myBool]);
@@ -34,15 +46,8 @@ describe('New Implementation of CLValue.list', () => {
     expect(myBool.value()).to.be.eq(false);
   });
 
-  // NOTE: Irrelevant in TS
-  // it('Should throw an error when construction array contains different type objects', () => {
-  //   const badFn = () =>
-  //     new List([new List([new Bool(true)])]);
-  //   expect(badFn).to.throw();
-  // });
-
   it('Should able to create empty List by providing type', () => {
-    const mList = new List<Bool>();
+    const mList = new List(new BoolType());
     const len = mList.size();
 
     expect(len).to.equal(0);
@@ -57,7 +62,7 @@ describe('New Implementation of CLValue.list', () => {
     expect(myList.get(1)).to.deep.eq(newItem);
   });
 
-  it('Set should be able to push at current index + 1', () => {
+  it('Set should be able to set values at already declared indexes', () => {
     const myList = new List([new Bool(true)]);
     const newItem = new Bool(false);
 
@@ -70,8 +75,12 @@ describe('New Implementation of CLValue.list', () => {
     const myList = new List([new Bool(true)]);
 
     myList.push(new Bool(false));
+    
+    // @ts-ignore
+    const badFn = () => myList.push(new List([new Bool(false)]));
 
     expect(myList.size()).to.equal(2);
+    expect(badFn).to.throw("Incosnsistent data type, use Bool.");
   });
 
   it('Pop should remove last item from array and return it', () => {
