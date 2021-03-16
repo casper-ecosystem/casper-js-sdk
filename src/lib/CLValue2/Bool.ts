@@ -6,7 +6,6 @@ export class BoolType extends CLType {
   }
 }
 
-
 export class Bool extends CLValue {
   v: boolean;
 
