@@ -18,31 +18,12 @@ abstract class Numeric extends CLValue {
   }
 }
 
-// export class I32 extends Numeric {
-//   constructor(v: number) {
-//     super(32, true, v);
-//   }
-
-//   clType(): CLType {
-//     return new I32Type();
-//   }
-// }
-
-// export class I64 extends Numeric {
-//   constructor(v: number) {
-//     super(64, true, v);
-//   }
-
-//   clType(): CLType {
-//     return new I64Type();
-//   }
-// }
-
 const generateNumericClasses = (
   bitSize: number,
   isSigned: boolean,
   type: string
-): { NumericSpecific: any; NumericType: any } => {
+  // TODO: Get rid of any below
+): [any, CLType] => {
   class NumericType extends CLType {
     toString() {
       return type;
@@ -57,17 +38,17 @@ const generateNumericClasses = (
       return new NumericType();
     }
   }
-  return { NumericSpecific, NumericType };
+  return [NumericSpecific, NumericType];
 };
 
-export const { NumericSpecific: I32, NumericType: I32Type } = generateNumericClasses(32, true, 'I32');
-export const { NumericSpecific: I64, NumericType: I64Type } = generateNumericClasses(64, true, 'I64');
-export const { NumericSpecific: U8, NumericType: U8Type } = generateNumericClasses(8, false, 'U8');
-export const { NumericSpecific: U32, NumericType: U32Type } = generateNumericClasses(32, false, 'U32');
-export const { NumericSpecific: U64, NumericType: U64Type } = generateNumericClasses(64, false, 'U64');
-export const { NumericSpecific: U128, NumericType: U128Type } = generateNumericClasses(128, false, 'U128');
-export const { NumericSpecific: U256, NumericType: U256Type } = generateNumericClasses(256, false, 'U256');
-export const { NumericSpecific: U512, NumericType: U512Type } = generateNumericClasses(512, false, 'U512');
+export const [I32, I32Type] = generateNumericClasses(32, true, 'I32');
+export const [I64, I64Type] = generateNumericClasses(64, true, 'I64');
+export const [U8, U8Type] = generateNumericClasses(8, false, 'U8');
+export const [U32, U32Type] = generateNumericClasses(32, false, 'U32');
+export const [U64, U64Type] = generateNumericClasses(64, false, 'U64');
+export const [U128, U128Type] = generateNumericClasses(128, false, 'U128');
+export const [U256, U256Type] = generateNumericClasses(256, false, 'U256');
+export const [U512, U512Type] = generateNumericClasses(512, false, 'U512');
 
 // const x = new I128(12);
 // console.log(x.value().toNumber());
