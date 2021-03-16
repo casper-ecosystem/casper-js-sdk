@@ -1,7 +1,8 @@
 import { expect } from 'chai';
-import { List, Bool, BoolType } from '../../src/lib/CLValue2';
+import { List } from './List';
+import { Bool, BoolType } from './Bool';
 
-describe('New Implementation of CLValue.list', () => {
+describe('CLValue List implementation', () => {
   it('Bool should return proper clType', () => {
     const myBool = new Bool(false);
     const clType = myBool.clType();
@@ -38,12 +39,6 @@ describe('New Implementation of CLValue.list', () => {
     const myList = new List<Bool>([myBool]);
 
     expect(myList.value()).to.be.deep.eq([myBool]);
-  });
-
-  it('Should be able to return proper values by calling .value() on Bool', () => {
-    const myBool = new Bool(false);
-
-    expect(myBool.value()).to.be.eq(false);
   });
 
   it('Should able to create empty List by providing type', () => {
@@ -116,3 +111,4 @@ describe('New Implementation of CLValue.list', () => {
     expect(myList.get(0)).to.deep.eq(new Bool(false));
   });
 });
+
