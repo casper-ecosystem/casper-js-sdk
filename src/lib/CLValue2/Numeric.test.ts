@@ -3,8 +3,8 @@ import { I32, U128 } from './Numeric';
 
 describe('Numeric implementation tests', () => {
   it('Numeric value() should return proper value', () => {
-    const num = new I32(10);
-    expect(num.value().toNumber()).to.be.eq(10);
+    const num = new I32(-10);
+    expect(num.value().toNumber()).to.be.eq(-10);
   });
 
   it('Numeric clType() should return proper type', () => {

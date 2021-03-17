@@ -10,6 +10,7 @@ abstract class Numeric extends CLValue {
     super();
     this.bitSize = bitSize;
     this.signed = isSigned;
+    // TBD: Do we need to check here ? Unsigned and negative value etc
     this.v = BigNumber.from(value);
   }
 
