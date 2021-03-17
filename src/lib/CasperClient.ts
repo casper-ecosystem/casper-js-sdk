@@ -108,7 +108,7 @@ export class CasperClient {
    * Compute public key from secret Key.
    * @param secretKey
    */
-  public SecretToPublicKey(
+  public secretToPublicKey(
     secretKey: Uint8Array,
     algo: SignatureAlgorithm
   ): Uint8Array {
