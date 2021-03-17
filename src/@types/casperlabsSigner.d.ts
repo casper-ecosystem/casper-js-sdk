@@ -43,7 +43,7 @@ interface SignerTestingHelper {
   /**
    * Create an account (for testing)
    */
-  createTestAccount: (name: string, privateKey: string) => Promise<void>;
+  createTestAccount: (name: string, secretKey: string) => Promise<void>;
   /**
    * Return message ID so we can sign deploy programatically
    */

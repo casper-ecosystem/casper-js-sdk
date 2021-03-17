@@ -72,9 +72,9 @@ export const createNewVault: (password: string) => Promise<void> = (
 
 export const createTestAccount: (
   name: string,
-  privateKey: string
-) => Promise<void> = (name: string, privateKey: string) => {
-  return window.signerTestingHelper!.createTestAccount(name, privateKey);
+  secretKey: string
+) => Promise<void> = (name: string, secretKey: string) => {
+  return window.signerTestingHelper!.createTestAccount(name, secretKey);
 };
 
 export const getToSignMessageID: () => Promise<number | null> = () => {
