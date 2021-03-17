@@ -33,11 +33,11 @@ export class CasperHDKey {
     return this.hdKey.publicKey;
   }
 
-  public privateKey() {
+  public secretKey() {
     return this.hdKey.privateKey;
   }
 
-  public privateExtendedKey() {
+  public secretExtendedKey() {
     return this.hdKey.privateExtendedKey;
   }
 

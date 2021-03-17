@@ -38,7 +38,7 @@ export class CasperClient {
   }
 
   /**
-   * Load private key from file
+   * Load secret key from file
    *
    * @param path the path to the publicKey file
    * @param algo the signature algorithm of the file
@@ -58,38 +58,38 @@ export class CasperClient {
   }
 
   /**
-   * Load private key
-   * @param path the path to the private key file
+   * Load secret key
+   * @param path the path to the secret key file
    */
-  public loadPrivateKeyFromFile(
+  public loadSecretKeyFromFile(
     path: string,
     algo: SignatureAlgorithm
   ): Uint8Array {
     switch (algo) {
       case SignatureAlgorithm.Ed25519:
-        return Keys.Ed25519.parsePrivateKeyFile(path);
+        return Keys.Ed25519.parseSecretKeyFile(path);
       case SignatureAlgorithm.Secp256K1:
-        return Keys.Secp256K1.parsePrivateKeyFile(path);
+        return Keys.Secp256K1.parseSecretKeyFile(path);
       default:
         throw new Error('Invalid signature algorithm');
     }
   }
 
   /**
-   * Load private key file to restore keyPair
+   * Load secret key file to restore keyPair
    *
-   * @param path The path to the private key
+   * @param path The path to the secret key
    * @param algo
    */
-  public loadKeyPairFromPrivateFile(
+  public loadKeyPairFromSecretFile(
     path: string,
     algo: SignatureAlgorithm
   ): AsymmetricKey {
     switch (algo) {
       case SignatureAlgorithm.Ed25519:
-        return Keys.Ed25519.loadKeyPairFromPrivateFile(path);
+        return Keys.Ed25519.loadKeyPairFromSecretFile(path);
       case SignatureAlgorithm.Secp256K1:
-        return Keys.Secp256K1.loadKeyPairFromPrivateFile(path);
+        return Keys.Secp256K1.loadKeyPairFromSecretFile(path);
       default:
         throw new Error('Invalid signature algorithm');
     }
@@ -105,18 +105,18 @@ export class CasperClient {
   }
 
   /**
-   * Compute public key from private Key.
-   * @param privateKey
+   * Compute public key from secret Key.
+   * @param secretKey
    */
-  public privateToPublicKey(
-    privateKey: Uint8Array,
+  public SecretToPublicKey(
+    secretKey: Uint8Array,
     algo: SignatureAlgorithm
   ): Uint8Array {
     switch (algo) {
       case SignatureAlgorithm.Ed25519:
-        return Keys.Ed25519.privateToPublicKey(privateKey);
+        return Keys.Ed25519.secretToPublicKey(secretKey);
       case SignatureAlgorithm.Secp256K1:
-        return Keys.Secp256K1.privateToPublicKey(privateKey);
+        return Keys.Secp256K1.secretToPublicKey(secretKey);
       default:
         throw new Error('Invalid signature algorithm');
     }
