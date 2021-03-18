@@ -7,7 +7,7 @@ describe('Unit implementation tests', () => {
     expect(unit.value()).to.be.deep.eq([]);
   });
 
-  it('Numeric clType() should return proper type', () => {
+  it('Unit clType() should return proper type', () => {
     const unit = new Unit();
     expect(unit.clType().toString()).to.be.eq("Unit");
   });
