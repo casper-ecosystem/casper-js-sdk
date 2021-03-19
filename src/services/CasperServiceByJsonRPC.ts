@@ -196,11 +196,36 @@ export class CasperServiceByJsonRPC {
     return await this.client.request({
       method: 'chain_get_block',
       params: {
-        block_hash: blockHashBase16
+        block_identifier: {
+          Hash: blockHashBase16
+        }
       }
+    }).then((res: GetBlockResult) => {
+      if (res.block !== null && res.block.hash !== blockHashBase16) {
+        throw new Error("Returned block does not have a matching hash.");
+      }
+      return res;
     });
   }
 
+  public async getBlockInfoByHeight(
+    height: number
+  ): Promise<GetBlockResult> {
+    return await this.client.request({
+      method: 'chain_get_block',
+      params: {
+        block_identifier: {
+          Height: height
+        }
+      }
+    }).then((res: GetBlockResult) => {
+      if (res.block !== null && res.block.header.height !== height) {
+        throw new Error("Returned block does not have a matching height.");
+      }
+      return res;
+    });
+  }
+  
   public async getLatestBlockInfo(): Promise<GetBlockResult> {
     return await this.client.request({
       method: 'chain_get_block'
