@@ -43,7 +43,7 @@ export class MapValue<K extends CLValue, V extends CLValue> extends CLValue {
   /**
    * Constructs a new `MapValue`.
    *
-   * @param v object with { key: CLValue, value: CLValue }
+   * @param v array [ key, value ]
    */
   constructor(v: [K, V][] | [CLType, CLType]) {
     super();

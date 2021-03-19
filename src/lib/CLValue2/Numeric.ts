@@ -50,9 +50,3 @@ export const [U64, U64Type] = generateNumericClasses(64, false, 'U64');
 export const [U128, U128Type] = generateNumericClasses(128, false, 'U128');
 export const [U256, U256Type] = generateNumericClasses(256, false, 'U256');
 export const [U512, U512Type] = generateNumericClasses(512, false, 'U512');
-
-// const x = new I128(12);
-// console.log(x.value().toNumber());
-// const y = new I128(2);
-// console.log(y.value().toNumber());
-// console.log(x.value().toNumber());

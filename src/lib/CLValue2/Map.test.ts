@@ -45,7 +45,7 @@ describe('CLValue MapValue implementation', () => {
     expect(myMap.get(myKey).value()).to.be.deep.eq(myVal.value());
   });
 
-  it('Should able to create empty List by providing type', () => {
+  it('Should able to create empty Map by providing type', () => {
     const myMap = new MapValue([
       new CLStringType(),
       new CLStringType()
@@ -74,55 +74,8 @@ describe('CLValue MapValue implementation', () => {
     const myMap = new MapValue([[myKey, myVal ]]);
     const newVal = new I32(11);
 
-    // expect(myMap.get(myKey).value()).to.be.deep.eq(myVal.value());
-
     myMap.set(myKey, newVal);
 
     expect(myMap.get(myKey).value()).to.deep.eq(newVal.value());
   });
-
-  // it('Set should throw error on wrong indexes', () => {
-  //   const myList = new List([new Bool(true)]);
-
-  //   const badFn = () => myList.set(1, new Bool(false));
-
-  //   expect(badFn).to.throw("Array index out of bounds.");
-  // });
-
-  // it('Push should be consistent with types', () => {
-  //   const myList = new List([new Bool(true)]);
-
-  //   myList.push(new Bool(false));
-
-  //   // @ts-ignore
-  //   const badFn = () => myList.push(new List([new Bool(false)]));
-
-  //   expect(myList.size()).to.equal(2);
-  //   expect(badFn).to.throw("Incosnsistent data type, use Bool.");
-  // });
-
-  // it('Pop should remove last item from array and return it', () => {
-  //   const myList = new List([new Bool(true), new Bool(false)]);
-
-  //   const popped = myList.pop();
-
-  //   expect(myList.size()).to.equal(1);
-  //   expect(popped).to.deep.equal(new Bool(false));
-  // });
-
-  // it('Should set nested value by chaining methods', () => {
-  //   const myList = new List([new List([new Bool(true), new Bool(false)])]);
-
-  //   myList.get(0).set(1, new Bool(true));
-
-  //   expect(myList.get(0).get(1)).to.deep.eq(new Bool(true));
-  // });
-
-  // it('Remove should remove item at certein index', () => {
-  //   const myList = new List([new Bool(true), new Bool(false)]);
-
-  //   myList.remove(0);
-
-  //   expect(myList.get(0)).to.deep.eq(new Bool(false));
-  // });
 });

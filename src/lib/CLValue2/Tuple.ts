@@ -6,7 +6,7 @@ export class GenericTupleType extends CLType {
   }
 }
 
-// TBD: Do we want tuple to has all of the values on init? Maybe no, and then when it will be serialized it should throw an error that eg Tuple2 has only one element and is invalid
+// TBD: Do we want Tuple to have all of the values on init? If no, when it will be serialized it should throw an error that eg Tuple2 has only one element and is invalid
 abstract class GenericTuple extends CLValue {
   v: Array<CLValue>;
   tupleSize: number;
@@ -48,7 +48,7 @@ abstract class GenericTuple extends CLValue {
   }
 }
 
-// TBD: Maybe replace this with classic implementation, it will be easier to validate by compiler eg. new Tuple1<Bool>()
+// TBD: Maybe replace this with classic implementation, it will be easier to validate by compiler eg. new Tuple1<Bool>(), new Tuple2<Bool, I32>();
 const generateTupleClasses = (
   size: number
   // TODO: Get rid of any below

@@ -1,6 +1,7 @@
 import { CLType, CLValue } from './Abstract';
 import { decodeBase16, encodeBase16 } from '../Conversions';
 
+// TBD: Maybe this should be in one file like src/lib/constants.ts ?
 export enum AccessRights {
   // No permissions
   None = 0b0,
