@@ -1,4 +1,7 @@
-import { CLType, CLValue } from "./Abstract"; 
+import { ByteArray } from 'tweetnacl-ts';
+
+import { CLType, CLValue, ToBytes } from './Abstract';
+import { toBytesVecT } from '../byterepr';
 
 export class ListType<T extends CLType> extends CLType {
   inner: T;
@@ -12,7 +15,8 @@ export class ListType<T extends CLType> extends CLType {
   }
 }
 
-export class List<T extends CLValue> extends CLValue {
+export class List<T extends CLValue & ToBytes> extends CLValue
+  implements ToBytes {
   v: Array<T>;
   vectorType: CLType;
 
@@ -52,7 +56,7 @@ export class List<T extends CLValue> extends CLValue {
 
   set(index: number, item: T): void {
     if (index >= this.v.length) {
-      throw new Error("Array index out of bounds.");
+      throw new Error('Array index out of bounds.');
     }
     this.v[index] = item;
   }
@@ -61,7 +65,9 @@ export class List<T extends CLValue> extends CLValue {
     if (item.clType().toString() === this.vectorType.toString()) {
       this.v.push(item);
     } else {
-      throw Error(`Incosnsistent data type, use ${this.vectorType.toString()}.`);
+      throw Error(
+        `Incosnsistent data type, use ${this.vectorType.toString()}.`
+      );
     }
   }
 
@@ -76,5 +82,9 @@ export class List<T extends CLValue> extends CLValue {
 
   size(): number {
     return this.v.length;
+  }
+
+  toBytes(): ByteArray {
+    return toBytesVecT(this.v);
   }
 }
