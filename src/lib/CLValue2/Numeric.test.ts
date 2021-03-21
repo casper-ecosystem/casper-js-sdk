@@ -11,4 +11,10 @@ describe('Numeric implementation tests', () => {
     const num = new U128(20000);
     expect(num.clType().toString()).to.be.eq("U128");
   });
+
+  it('Unsigned Numeric cant accept negative numbers in constructor', () => {
+    const badFn = () => new U128("-100");
+
+    expect(badFn).to.throw("Can't provide negative numbers with isSigned=false");
+  });
 });

@@ -1,11 +1,5 @@
 import { CLType, CLValue } from './Abstract';
 
-export class GenericTupleType extends CLType {
-  toString(): string {
-    return 'Tuple';
-  }
-}
-
 // TBD: Do we want Tuple to have all of the values on init? If no, when it will be serialized it should throw an error that eg Tuple2 has only one element and is invalid
 abstract class GenericTuple extends CLValue {
   v: Array<CLValue>;

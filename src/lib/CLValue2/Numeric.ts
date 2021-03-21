@@ -32,6 +32,9 @@ const generateNumericClasses = (
   }
   class NumericSpecific extends Numeric {
     constructor(v: BigNumberish) {
+      if (isSigned === false && Math.sign(v as number) < 0) {
+        throw new Error("Can't provide negative numbers with isSigned=false");
+      }
       super(bitSize, isSigned, v);
     }
 

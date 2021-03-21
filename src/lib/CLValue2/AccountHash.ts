@@ -2,7 +2,7 @@ import { CLType, CLValue } from './Abstract';
 
 export class AccountHashType extends CLType {
   toString(): string {
-    return 'URef';
+    return 'AccountHash';
   }
 }
 

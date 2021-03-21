@@ -12,7 +12,12 @@ describe('CLString', () => {
     expect(str.clType().toString()).to.be.eq('String');
   });
 
-  it('CLString clType() should return proper type', () => {
+  it('CLString size() should return proper string length', () => {
+    const str = new CLString('ABC');
+    expect(str.size()).to.be.eq(3);
+  });
+
+  it('CLString should throw an error on invalid data provided to constructor', () => {
     // @ts-ignore
     const badFn = () => new CLString(123);
 
