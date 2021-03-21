@@ -88,6 +88,7 @@ export class MapValue<K extends CLValue, V extends CLValue> extends CLValue {
     const foundIdx = this.v.findIndex(v => k === v[0]);
     if (foundIdx > -1) {
       this.v[foundIdx] = [k, val];
+      return;
     }
     this.v.push([k, val]);
   }
