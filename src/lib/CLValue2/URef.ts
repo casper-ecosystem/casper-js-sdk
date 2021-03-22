@@ -77,7 +77,7 @@ export class CLURef extends CLValue {
     return new CLURefType();
   }
 
-  value(): Uint8Array {
-    return this.data;
+  value(): { data: Uint8Array, accessRights: AccessRights } {
+    return { data: this.data, accessRights: this.accessRights };
   }
 }

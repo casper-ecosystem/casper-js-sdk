@@ -11,7 +11,7 @@ export enum CLPublicKeyTag {
 
 export class CLPublicKeyType extends CLType {
   toString(): string {
-    return 'URef';
+    return 'PublicKey';
   }
 }
 
