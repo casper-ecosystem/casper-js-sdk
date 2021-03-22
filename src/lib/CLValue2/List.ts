@@ -49,12 +49,15 @@ export class CLList<T extends CLValue & ToBytes> extends CLValue
   }
 
   get(index: number): T {
+    if (index >= this.data.length) {
+      throw new Error("List index out of bounds.");
+    }
     return this.data[index];
   }
 
   set(index: number, item: T): void {
     if (index >= this.data.length) {
-      throw new Error("Array index out of bounds.");
+      throw new Error("List index out of bounds.");
     }
     this.data[index] = item;
   }

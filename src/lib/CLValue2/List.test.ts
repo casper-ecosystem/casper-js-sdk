@@ -35,6 +35,13 @@ describe('CLValue List implementation', () => {
     expect(myList.value()).to.be.deep.eq([myBool]);
   });
 
+  it('Get on non existing index should throw an error', () => {
+    const mList = new CLList(new CLBoolType());
+    const badFn = () => mList.get(100);
+
+    expect(badFn).to.throw("List index out of bounds.");
+  });
+
   it('Should able to create empty List by providing type', () => {
     const mList = new CLList(new CLBoolType());
     const len = mList.size();
@@ -65,7 +72,7 @@ describe('CLValue List implementation', () => {
 
     const badFn = () => myList.set(1, new CLBool(false));
 
-    expect(badFn).to.throw("Array index out of bounds.");
+    expect(badFn).to.throw("List index out of bounds.");
   });
 
   it('Push should be consistent with types', () => {
@@ -87,6 +94,12 @@ describe('CLValue List implementation', () => {
 
     expect(myList.size()).to.equal(1);
     expect(popped).to.deep.equal(new CLBool(false));
+  });
+
+  it('Pop on empty list returns undefined', () => {
+    const mList = new CLList(new CLBoolType());
+
+    expect(mList.pop()).to.equal(undefined);
   });
 
   it('Should set nested value by chaining methods', () => {
