@@ -1,5 +1,3 @@
-import { ByteArray } from 'tweetnacl-ts';
-
 import { CLType, CLValue, ToBytes } from './Abstract';
 import { toBytesVecT } from '../byterepr';
 
@@ -84,7 +82,7 @@ export class List<T extends CLValue & ToBytes> extends CLValue
     return this.data.length;
   }
 
-  toBytes(): ByteArray {
+  toBytes(): Uint8Array {
     return toBytesVecT(this.data);
   }
 }

@@ -1,5 +1,3 @@
-import { ByteArray } from 'tweetnacl-ts';
-
 export abstract class CLType {
   abstract toString(): string;
 }
@@ -11,5 +9,5 @@ export abstract class CLValue {
 }
 
 export abstract class ToBytes {
-  toBytes: () => ByteArray;
+  toBytes: () => Uint8Array;
 }
