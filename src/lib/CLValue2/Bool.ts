@@ -1,4 +1,4 @@
-import { CLType, CLValue } from "./Abstract"; 
+import { CLType, CLValue, ToBytes } from "./Abstract"; 
 
 export class BoolType extends CLType {
   toString(): string {
@@ -6,7 +6,7 @@ export class BoolType extends CLType {
   }
 }
 
-export class Bool extends CLValue {
+export class Bool extends CLValue implements ToBytes {
   data: boolean;
 
   constructor(v: boolean) {
@@ -20,5 +20,9 @@ export class Bool extends CLValue {
 
   value(): boolean {
     return this.data;
+  }
+
+  toBytes(): Uint8Array {
+    return new Uint8Array([this.data ? 1 : 0]);
   }
 }
