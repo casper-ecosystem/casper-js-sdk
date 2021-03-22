@@ -1,4 +1,5 @@
-import { CLType, CLValue } from "./Abstract"; 
+import { CLType, CLValue, ToBytes } from './Abstract';
+import { toBytesVecT } from '../byterepr';
 
 export class ListType<T extends CLType> extends CLType {
   inner: T;
@@ -12,7 +13,8 @@ export class ListType<T extends CLType> extends CLType {
   }
 }
 
-export class List<T extends CLValue> extends CLValue {
+export class List<T extends CLValue & ToBytes> extends CLValue
+  implements ToBytes {
   data: Array<T>;
   vectorType: CLType;
 
@@ -61,7 +63,9 @@ export class List<T extends CLValue> extends CLValue {
     if (item.clType().toString() === this.vectorType.toString()) {
       this.data.push(item);
     } else {
-      throw Error(`Incosnsistent data type, use ${this.vectorType.toString()}.`);
+      throw Error(
+        `Incosnsistent data type, use ${this.vectorType.toString()}.`
+      );
     }
   }
 
@@ -76,5 +80,9 @@ export class List<T extends CLValue> extends CLValue {
 
   size(): number {
     return this.data.length;
+  }
+
+  toBytes(): Uint8Array {
+    return toBytesVecT(this.data);
   }
 }

@@ -7,3 +7,7 @@ export abstract class CLValue {
   abstract value(): any;
   abstract data: any;
 }
+
+export abstract class ToBytes {
+  toBytes: () => Uint8Array;
+}

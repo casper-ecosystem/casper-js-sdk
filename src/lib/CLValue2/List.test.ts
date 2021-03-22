@@ -110,5 +110,11 @@ describe('CLValue List implementation', () => {
 
     expect(myList.get(0)).to.deep.eq(new Bool(false));
   });
+
+  it('Serializes to proper byte array', () => {
+    const myList = new List([new Bool(false)]);
+    const expected = Uint8Array.from([ 1, 0, 0, 0, 0 ]);
+    expect(myList.toBytes()).to.deep.eq(expected);
+  });
 });
 
