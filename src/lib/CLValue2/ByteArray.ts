@@ -7,7 +7,7 @@ export class ByteArrayValueType extends CLType {
 }
 
 export class ByteArrayValue extends CLValue {
-  v: Uint8Array;
+  data: Uint8Array;
   /**
    * Constructs a new `ByteArrayValue`.
    *
@@ -15,7 +15,7 @@ export class ByteArrayValue extends CLValue {
    */
   constructor(v: Uint8Array) {
     super();
-    this.v = v;
+    this.data = v;
   }
 
   clType(): CLType {
@@ -23,6 +23,6 @@ export class ByteArrayValue extends CLValue {
   }
 
   value(): Uint8Array {
-    return this.v;
+    return this.data;
   }
 }

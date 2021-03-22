@@ -30,7 +30,7 @@ export class URefType extends CLType {
 const FORMATTED_STRING_PREFIX = 'uref-';
 
 export class URef extends CLValue {
-  v: Uint8Array;
+  data: Uint8Array;
   accessRights: AccessRights;
 
   /**
@@ -43,7 +43,7 @@ export class URef extends CLValue {
     if (v.byteLength !== 32) {
       throw new Error('The length of URefAddr should be 32');
     }
-    this.v = v;
+    this.data = v;
     this.accessRights = accessRights;
   }
 
@@ -68,7 +68,7 @@ export class URef extends CLValue {
   toFormattedStr(): string {
     return [
       FORMATTED_STRING_PREFIX,
-      encodeBase16(this.v),
+      encodeBase16(this.data),
       this.accessRights.toString(8)
     ].join('-');
   }
@@ -78,6 +78,6 @@ export class URef extends CLValue {
   }
 
   value(): Uint8Array {
-    return this.v;
+    return this.data;
   }
 }

@@ -16,13 +16,13 @@ export class PublicKeyType extends CLType {
 }
 
 export class PublicKey extends CLValue {
-  v: Uint8Array;
+  data: Uint8Array;
   private tag: PublicKeyTag;
 
   constructor(rawPublicKey: Uint8Array, tag: PublicKeyTag) {
     super();
     if (Object.values(PublicKeyTag).includes(tag)) {
-      this.v = rawPublicKey;
+      this.data = rawPublicKey;
       this.tag = tag;
     } else {
       throw new Error('Unsupported type of public key');
@@ -34,7 +34,7 @@ export class PublicKey extends CLValue {
   }
 
   toAccountHex(): string {
-    return `0${this.tag}${encodeBase16(this.v)}`;
+    return `0${this.tag}${encodeBase16(this.data)}`;
   }
 
   isEd25519(): boolean {
@@ -53,15 +53,15 @@ export class PublicKey extends CLValue {
       separator
     ]);
 
-    if (this.v.length === 0) {
+    if (this.data.length === 0) {
       return Buffer.from([]);
     } else {
-      return byteHash(Buffer.concat([prefix, Buffer.from(this.v)]));
+      return byteHash(Buffer.concat([prefix, Buffer.from(this.data)]));
     }
   }
 
   value(): Uint8Array {
-    return this.v;
+    return this.data;
   }
 
   static fromEd25519(publicKey: Uint8Array): PublicKey {

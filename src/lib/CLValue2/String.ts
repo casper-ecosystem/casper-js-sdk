@@ -7,14 +7,14 @@ export class CLStringType extends CLType {
 }
 
 export class CLString extends CLValue {
-  v: string;
+  data: string;
 
   constructor(v: string) {
     super();
     if (typeof v  !== "string") {
       throw new Error(`Wrong data type, you should provide string, but you provided ${typeof v}`);
     }
-    this.v = v;
+    this.data = v;
   }
 
   clType(): CLType {
@@ -22,11 +22,11 @@ export class CLString extends CLValue {
   }
 
   value(): string {
-    return this.v;
+    return this.data;
   }
 
   size(): number {
-    return this.v.length;
+    return this.data.length;
   }
 
 }

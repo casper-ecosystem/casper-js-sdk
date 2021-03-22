@@ -2,7 +2,7 @@ import { CLType, CLValue } from './Abstract';
 
 // TBD: Do we want Tuple to have all of the values on init? If no, when it will be serialized it should throw an error that eg Tuple2 has only one element and is invalid
 abstract class GenericTuple extends CLValue {
-  v: Array<CLValue>;
+  data: Array<CLValue>;
   tupleSize: number;
 
   constructor(size: number, v: Array<CLValue>) {
@@ -12,33 +12,33 @@ abstract class GenericTuple extends CLValue {
     }
     if (v.every(e => e instanceof CLValue)) {
     this.tupleSize = size;
-    this.v = v;
+    this.data = v;
     } else {
       throw Error("Invalid data type(s) provided.");
     }
   }
 
   get(index: number): CLValue {
-    return this.v[index];
+    return this.data[index];
   }
 
   set(index: number, item: CLValue): void {
     if (index >= this.tupleSize) {
       throw new Error("Tuple index out of bounds.");
     }
-    this.v[index] = item;
+    this.data[index] = item;
   }
 
   push(item: CLValue): void {
-    if (this.v.length < this.tupleSize) {
-      this.v.push(item);
+    if (this.data.length < this.tupleSize) {
+      this.data.push(item);
     } else {
       throw new Error("No more space in this tuple!");
     }
   }
 
   value(): Array<CLValue> {
-    return this.v;
+    return this.data;
   }
 }
 
@@ -67,7 +67,7 @@ const generateTupleClasses = (
     }
 
     clType(): CLType {
-      return new TupleType(this.v.map(e => e.clType()));
+      return new TupleType(this.data.map(e => e.clType()));
     }
   }
   return [Tuple, TupleType];

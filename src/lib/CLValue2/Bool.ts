@@ -7,11 +7,11 @@ export class BoolType extends CLType {
 }
 
 export class Bool extends CLValue {
-  v: boolean;
+  data: boolean;
 
   constructor(v: boolean) {
     super();
-    this.v = v;
+    this.data = v;
   }
 
   clType(): CLType {
@@ -19,6 +19,6 @@ export class Bool extends CLValue {
   }
 
   value(): boolean {
-    return this.v;
+    return this.data;
   }
 }

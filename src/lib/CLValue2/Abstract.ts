@@ -5,4 +5,5 @@ export abstract class CLType {
 export abstract class CLValue {
   abstract clType(): CLType;
   abstract value(): any;
+  abstract data: any;
 }

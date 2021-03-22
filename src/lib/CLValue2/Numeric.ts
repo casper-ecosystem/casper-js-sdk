@@ -2,7 +2,7 @@ import { CLType, CLValue } from './Abstract';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 
 abstract class Numeric extends CLValue {
-  v: BigNumber;
+  data: BigNumber;
   bitSize: number;
   signed: boolean;
 
@@ -11,11 +11,11 @@ abstract class Numeric extends CLValue {
     this.bitSize = bitSize;
     this.signed = isSigned;
     // TBD: we need to check here. Unsigned and negative value etc
-    this.v = BigNumber.from(value);
+    this.data = BigNumber.from(value);
   }
 
   value(): BigNumber {
-    return this.v;
+    return this.data;
   }
 }
 

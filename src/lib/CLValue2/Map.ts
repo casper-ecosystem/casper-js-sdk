@@ -38,7 +38,7 @@ const isValueConstructor = (
 };
 
 export class MapValue<K extends CLValue, V extends CLValue> extends CLValue {
-  v: Array<[K, V]>;
+  data: Array<[K, V]>;
   refType: [CLType, CLType];
   /**
    * Constructs a new `MapValue`.
@@ -58,46 +58,46 @@ export class MapValue<K extends CLValue, V extends CLValue> extends CLValue {
           );
         })
       ) {
-        this.v = v;
+        this.data = v;
       } else {
         throw Error('Invalid data provided.');
       }
     } else if (v[0] instanceof CLType && v[1] instanceof CLType) {
       this.refType = v;
-      this.v = [];
+      this.data = [];
     } else {
       throw Error('Invalid data type(s) provided.');
     }
   }
 
   clType(): CLType {
-    return new MapValueType(this.v[0][0].clType(), this.v[0][1].clType());
+    return new MapValueType(this.data[0][0].clType(), this.data[0][1].clType());
   }
 
   value(): Array<[K, V]> {
-    return this.v;
+    return this.data;
   }
 
   get(k: K): V | undefined {
-    const found = this.v.find(v => k === v[0]);
+    const found = this.data.find(v => k === v[0]);
     if (found) return found[1];
     return undefined;
   }
 
   set(k: K, val: V): void {
-    const foundIdx = this.v.findIndex(v => k === v[0]);
+    const foundIdx = this.data.findIndex(v => k === v[0]);
     if (foundIdx > -1) {
-      this.v[foundIdx] = [k, val];
+      this.data[foundIdx] = [k, val];
       return;
     }
-    this.v.push([k, val]);
+    this.data.push([k, val]);
   }
 
   delete(k: K): void {
-    this.v = this.v.filter(([key]) => key !== k);
+    this.data = this.data.filter(([key]) => key !== k);
   }
 
   size(): number {
-    return this.v.length;
+    return this.data.length;
   }
 }
