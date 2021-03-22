@@ -112,8 +112,9 @@ describe('CLValue List implementation', () => {
   });
 
   it('Serializes to proper byte array', () => {
-    const myList = new List([new Bool(true), new Bool(false)]);
-    console.log(myList.toBytes());
+    const myList = new List([new Bool(false)]);
+    const expected = Uint8Array.from([ 1, 0, 0, 0, 0 ]);
+    expect(myList.toBytes()).to.deep.eq(expected);
   });
 });
 
