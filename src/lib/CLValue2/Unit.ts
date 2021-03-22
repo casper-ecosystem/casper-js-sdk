@@ -7,13 +7,13 @@ export class UnitType extends CLType {
 }
 
 export class Unit extends CLValue {
-  data: [] = [];
+  data = undefined;
 
   clType(): CLType {
     return new UnitType();
   }
 
-  value(): [] {
+  value(): undefined {
     return this.data;
   }
 }

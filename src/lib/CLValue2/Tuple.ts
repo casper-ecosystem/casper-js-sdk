@@ -57,7 +57,7 @@ const generateTupleClasses = (
 
     toString(): string {
       const innerTypes = this.inner.map(e => e.toString()).join(", ");
-      return `Tuple (${innerTypes})`
+      return `Tuple${this.inner.length} (${innerTypes})`
     }
   }
 

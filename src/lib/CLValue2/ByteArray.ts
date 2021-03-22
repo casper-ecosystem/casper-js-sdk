@@ -1,12 +1,12 @@
 import { CLType, CLValue } from './Abstract';
 
-export class ByteArrayValueType extends CLType {
+export class CLByteArrayType extends CLType {
   toString(): string {
     return 'ByteArray';
   }
 }
 
-export class ByteArrayValue extends CLValue {
+export class CLByteArray extends CLValue {
   data: Uint8Array;
   /**
    * Constructs a new `ByteArrayValue`.
@@ -19,7 +19,7 @@ export class ByteArrayValue extends CLValue {
   }
 
   clType(): CLType {
-    return new ByteArrayValueType();
+    return new CLByteArrayType();
   }
 
   value(): Uint8Array {

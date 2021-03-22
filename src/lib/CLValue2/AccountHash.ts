@@ -1,13 +1,13 @@
 import { CLType, CLValue } from './Abstract';
 
-export class AccountHashType extends CLType {
+export class CLAccountHashType extends CLType {
   toString(): string {
     return 'AccountHash';
   }
 }
 
 /** A cryptographic public key. */
-export class AccountHash extends CLValue {
+export class CLAccountHash extends CLValue {
   data: Uint8Array;
   /**
    * Constructs a new `AccountHash`.
@@ -20,12 +20,10 @@ export class AccountHash extends CLValue {
   }
 
   clType(): CLType {
-    return new AccountHashType();
+    return new CLAccountHashType();
   }
 
   value(): Uint8Array {
     return this.data;
   }
 }
-
-

@@ -1,6 +1,6 @@
 import { CLType, CLValue } from './Abstract';
 import { URef } from './URef';
-import { AccountHash } from "./AccountHash";
+import { CLAccountHash } from "./AccountHash";
 
 export enum KeyVariant {
   Account,
@@ -8,29 +8,29 @@ export enum KeyVariant {
   URef
 }
 
-export class KeyValueType extends CLType {
+export class CLKeyType extends CLType {
   toString(): string {
     return 'Key';
   }
 }
 
-type KeyValueParameters = Uint8Array | URef | AccountHash;
+type CLKeyParameters = Uint8Array | URef | CLAccountHash;
 
-export class KeyValue extends CLValue {
-  data: Uint8Array | URef | AccountHash;
+export class CLKey extends CLValue {
+  data: Uint8Array | URef | CLAccountHash;
   variant: KeyVariant;
 
-  constructor(v: KeyValueParameters, variant: KeyVariant) {
+  constructor(v: CLKeyParameters, variant: KeyVariant) {
     super();
     this.data = v;
     this.variant = variant;
   }
 
   clType(): CLType {
-    return new KeyValueType();
+    return new CLKeyType();
   }
 
-  value(): KeyValueParameters {
+  value(): CLKeyParameters {
     return this.data;
   }
 

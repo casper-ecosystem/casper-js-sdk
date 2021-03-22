@@ -21,7 +21,7 @@ export enum AccessRights {
   READ_ADD_WRITE = AccessRights.READ | AccessRights.ADD | AccessRights.WRITE
 }
 
-export class URefType extends CLType {
+export class CLURefType extends CLType {
   toString(): string {
     return 'URef';
   }
@@ -29,7 +29,7 @@ export class URefType extends CLType {
 
 const FORMATTED_STRING_PREFIX = 'uref-';
 
-export class URef extends CLValue {
+export class CLURef extends CLValue {
   data: Uint8Array;
   accessRights: AccessRights;
 
@@ -50,7 +50,7 @@ export class URef extends CLValue {
   /**
    * Parses a casper-client supported string formatted argument into a `URef`.
    */
-  static fromFormattedStr(input: string): URef {
+  static fromFormattedStr(input: string): CLURef {
     if (!input.startsWith(FORMATTED_STRING_PREFIX)) {
       throw new Error("prefix is not 'uref-'");
     }
@@ -62,7 +62,7 @@ export class URef extends CLValue {
     const addr = decodeBase16(parts[0]);
     const accessRight = parseInt(parts[1], 8) as AccessRights;
 
-    return new URef(addr, accessRight);
+    return new CLURef(addr, accessRight);
   }
 
   toFormattedStr(): string {
@@ -74,7 +74,7 @@ export class URef extends CLValue {
   }
 
   clType(): CLType {
-    return new URefType();
+    return new CLURefType();
   }
 
   value(): Uint8Array {

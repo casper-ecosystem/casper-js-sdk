@@ -1,12 +1,12 @@
 import { CLType, CLValue, ToBytes } from "./Abstract"; 
 
-export class BoolType extends CLType {
+export class CLBoolType extends CLType {
   toString(): string {
     return 'Bool';
   }
 }
 
-export class Bool extends CLValue implements ToBytes {
+export class CLBool extends CLValue implements ToBytes {
   data: boolean;
 
   constructor(v: boolean) {
@@ -15,7 +15,7 @@ export class Bool extends CLValue implements ToBytes {
   }
 
   clType(): CLType {
-    return new BoolType();
+    return new CLBoolType();
   }
 
   value(): boolean {

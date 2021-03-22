@@ -1,7 +1,7 @@
 import { CLType, CLValue, ToBytes } from './Abstract';
 import { toBytesVecT } from '../byterepr';
 
-export class ListType<T extends CLType> extends CLType {
+export class CLListType<T extends CLType> extends CLType {
   inner: T;
   constructor(inner: T) {
     super();
@@ -13,7 +13,7 @@ export class ListType<T extends CLType> extends CLType {
   }
 }
 
-export class List<T extends CLValue & ToBytes> extends CLValue
+export class CLList<T extends CLValue & ToBytes> extends CLValue
   implements ToBytes {
   data: Array<T>;
   vectorType: CLType;
@@ -45,7 +45,7 @@ export class List<T extends CLValue & ToBytes> extends CLValue
   }
 
   clType(): CLType {
-    return new ListType(this.vectorType);
+    return new CLListType(this.vectorType);
   }
 
   get(index: number): T {

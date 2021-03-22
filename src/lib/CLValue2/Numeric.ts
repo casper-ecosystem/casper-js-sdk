@@ -45,11 +45,11 @@ const generateNumericClasses = (
   return [NumericSpecific, NumericType];
 };
 
-export const [I32, I32Type] = generateNumericClasses(32, true, 'I32');
-export const [I64, I64Type] = generateNumericClasses(64, true, 'I64');
-export const [U8, U8Type] = generateNumericClasses(8, false, 'U8');
-export const [U32, U32Type] = generateNumericClasses(32, false, 'U32');
-export const [U64, U64Type] = generateNumericClasses(64, false, 'U64');
-export const [U128, U128Type] = generateNumericClasses(128, false, 'U128');
-export const [U256, U256Type] = generateNumericClasses(256, false, 'U256');
-export const [U512, U512Type] = generateNumericClasses(512, false, 'U512');
+export const [CLI32, CLI32Type] = generateNumericClasses(32, true, 'I32');
+export const [CLI64, CLI64Type] = generateNumericClasses(64, true, 'I64');
+export const [CLU8, CLU8Type] = generateNumericClasses(8, false, 'U8');
+export const [CLU32, CLU32Type] = generateNumericClasses(32, false, 'U32');
+export const [CLU64, CLU64Type] = generateNumericClasses(64, false, 'U64');
+export const [CLU128, CLU128Type] = generateNumericClasses(128, false, 'U128');
+export const [CLU256, CLU256Type] = generateNumericClasses(256, false, 'U256');
+export const [CLU512, CLU512Type] = generateNumericClasses(512, false, 'U512');
