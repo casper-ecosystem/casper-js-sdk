@@ -8,7 +8,7 @@ export class AccountHashType extends CLType {
 
 /** A cryptographic public key. */
 export class AccountHash extends CLValue {
-  v: Uint8Array;
+  data: Uint8Array;
   /**
    * Constructs a new `AccountHash`.
    *
@@ -16,7 +16,7 @@ export class AccountHash extends CLValue {
    */
   constructor(v: Uint8Array) {
     super();
-    this.v = v;
+    this.data = v;
   }
 
   clType(): CLType {
@@ -24,7 +24,7 @@ export class AccountHash extends CLValue {
   }
 
   value(): Uint8Array {
-    return this.v;
+    return this.data;
   }
 }
 

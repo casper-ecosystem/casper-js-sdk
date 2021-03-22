@@ -17,7 +17,7 @@ export class ListType<T extends CLType> extends CLType {
 
 export class List<T extends CLValue & ToBytes> extends CLValue
   implements ToBytes {
-  v: Array<T>;
+  data: Array<T>;
   vectorType: CLType;
 
   constructor(v: Array<T> | CLType) {
@@ -29,21 +29,21 @@ export class List<T extends CLValue & ToBytes> extends CLValue
           return i.clType().toString() === refType.toString();
         })
       ) {
-        this.v = v;
+        this.data = v;
         this.vectorType = refType;
       } else {
         throw Error('Invalid data provided.');
       }
     } else if (v instanceof CLType) {
       this.vectorType = v;
-      this.v = [];
+      this.data = [];
     } else {
       throw Error('Invalid data type(s) provided.');
     }
   }
 
   value(): Array<T> {
-    return this.v;
+    return this.data;
   }
 
   clType(): CLType {
@@ -51,19 +51,19 @@ export class List<T extends CLValue & ToBytes> extends CLValue
   }
 
   get(index: number): T {
-    return this.v[index];
+    return this.data[index];
   }
 
   set(index: number, item: T): void {
-    if (index >= this.v.length) {
-      throw new Error('Array index out of bounds.');
+    if (index >= this.data.length) {
+      throw new Error("Array index out of bounds.");
     }
-    this.v[index] = item;
+    this.data[index] = item;
   }
 
   push(item: T): void {
     if (item.clType().toString() === this.vectorType.toString()) {
-      this.v.push(item);
+      this.data.push(item);
     } else {
       throw Error(
         `Incosnsistent data type, use ${this.vectorType.toString()}.`
@@ -72,19 +72,19 @@ export class List<T extends CLValue & ToBytes> extends CLValue
   }
 
   remove(index: number): void {
-    this.v.splice(index, 1);
+    this.data.splice(index, 1);
   }
 
   // TBD: we can throw an error here, but returing undefined from empty list is typical JS behavior
   pop(): T | undefined {
-    return this.v.pop();
+    return this.data.pop();
   }
 
   size(): number {
-    return this.v.length;
+    return this.data.length;
   }
 
   toBytes(): ByteArray {
-    return toBytesVecT(this.v);
+    return toBytesVecT(this.data);
   }
 }

@@ -7,12 +7,14 @@ export class UnitType extends CLType {
 }
 
 export class Unit extends CLValue {
+  data: [] = [];
+
   clType(): CLType {
     return new UnitType();
   }
 
   value(): [] {
-    return [];
+    return this.data;
   }
 }
 

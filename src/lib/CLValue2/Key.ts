@@ -17,12 +17,12 @@ export class KeyValueType extends CLType {
 type KeyValueParameters = Uint8Array | URef | AccountHash;
 
 export class KeyValue extends CLValue {
-  v: Uint8Array | URef | AccountHash;
+  data: Uint8Array | URef | AccountHash;
   variant: KeyVariant;
 
   constructor(v: KeyValueParameters, variant: KeyVariant) {
     super();
-    this.v = v;
+    this.data = v;
     this.variant = variant;
   }
 
@@ -31,7 +31,7 @@ export class KeyValue extends CLValue {
   }
 
   value(): KeyValueParameters {
-    return this.v;
+    return this.data;
   }
 
   public isHash(): boolean {
