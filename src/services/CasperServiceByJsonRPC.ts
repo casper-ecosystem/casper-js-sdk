@@ -1,4 +1,4 @@
-import Client, { HTTPTransport, RequestManager } from 'rpc-client-js';
+import { RequestManager, HTTPTransport, Client } from "@open-rpc/client-js";
 import { DeployUtil, encodeBase16, PublicKey } from '..';
 import { deployToJson } from '../lib/DeployUtil';
 import { TypedJSON } from 'typedjson';
