@@ -126,7 +126,7 @@ export function toBytesArrayU8(arr: Uint8Array): Uint8Array {
 /**
  * Serializes an byteArray, equal to [u8;n] in rust.
  */
-export function toBytesBytesArray(arr: Uint8Array): Uint8Array {
+export const toBytesBytesArray = (arr: Uint8Array): Uint8Array => {
   return arr;
 }
 

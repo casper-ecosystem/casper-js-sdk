@@ -73,6 +73,6 @@ const generateTupleClasses = (
   return [Tuple, TupleType];
 };
 
-export const [Tuple1, Tuple1Type] = generateTupleClasses(1);
-export const [Tuple2, Tuple2Type] = generateTupleClasses(2);
-export const [Tuple3, Tuple3Type] = generateTupleClasses(3);
+export const [CLTuple1, CLTuple1Type] = generateTupleClasses(1);
+export const [CLTuple2, CLTuple2Type] = generateTupleClasses(2);
+export const [CLTuple3, CLTuple3Type] = generateTupleClasses(3);
