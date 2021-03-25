@@ -1,3 +1,5 @@
+import { concat } from '@ethersproject/bytes';
+
 import { CLType, CLValue } from './Abstract';
 import { decodeBase16, encodeBase16 } from '../Conversions';
 import { byteHash } from '../Contracts';
@@ -85,6 +87,13 @@ export class CLPublicKey extends CLValue {
 
     // TODO: Test it!
     return new CLPublicKey(publicKeyHexBytes.subarray(1), publicKeyHexBytes[0]);
+  }
+
+  public toBytes(): Uint8Array {
+    return concat([
+      Uint8Array.from([this.tag]),
+      this.data
+    ]);
   }
 
 }

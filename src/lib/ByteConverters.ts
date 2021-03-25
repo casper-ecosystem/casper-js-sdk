@@ -90,8 +90,9 @@ export const toBytesU256 = toBytesNumber(256, false);
  */
 export const toBytesU512 = toBytesNumber(512, false);
 
-export function toBytesDeployHash(deployHash: Uint8Array) {
-  return toBytesBytesArray(deployHash);
+// This probably might be removed
+export const toBytesDeployHash = (deployHash: Uint8Array) => {
+  return deployHash;
 }
 
 /**
@@ -108,13 +109,6 @@ export function toBytesString(str: string): Uint8Array {
 export function toBytesArrayU8(arr: Uint8Array): Uint8Array {
   return concat([toBytesU32(arr.length), arr]);
 }
-
-/**
- * Serializes an byteArray, equal to [u8;n] in rust.
- */
-export const toBytesBytesArray = (arr: Uint8Array): Uint8Array => {
-  return arr;
-};
 
 /**
  * Serializes a vector of values of type `T` into an array of bytes.
