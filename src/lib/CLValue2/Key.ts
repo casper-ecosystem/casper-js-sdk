@@ -3,7 +3,7 @@ import { concat } from '@ethersproject/bytes';
 import { CLType, CLValue } from './Abstract';
 import { CLURef, CLAccountHash } from './index';
 
-export enum KeyVariant {
+enum KeyVariant {
   Account,
   Hash,
   URef
@@ -35,15 +35,15 @@ export class CLKey extends CLValue {
   }
 
   isHash(): boolean {
-    return this.value instanceof Uint8Array;
+    return this.data instanceof Uint8Array;
   }
 
   isURef(): boolean {
-    return this.value instanceof CLURef;
+    return this.data instanceof CLURef;
   }
 
   isAccount(): boolean {
-    return this.value instanceof CLAccountHash;
+    return this.data instanceof CLAccountHash;
   }
 
   toBytes(): Uint8Array {

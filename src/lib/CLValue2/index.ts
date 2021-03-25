@@ -11,3 +11,4 @@ export * from "./URef"
 export * from "./Unit"
 export * from "./AccountHash"
 export * from "./Bool"
+export * from "./URef";
