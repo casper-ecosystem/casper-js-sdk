@@ -47,6 +47,9 @@ export class CLResult<T extends CLValue & ToBytes, E extends CLErrorCodes>
     return new CLResultType();
   }
 
+  /**
+   * Returns Result from ts-result based on stored value
+   */
   value(): Result<T, E> {
     if (this.data) {
       return Ok(this.data);
@@ -67,6 +70,9 @@ export class CLResult<T extends CLValue & ToBytes, E extends CLErrorCodes>
     return new CLResult<T, E>(null, err);
   }
 
+  /**
+   * Serializes the `Result` into an array of bytes.
+   */
   toBytes(): Uint8Array {
     if (this.data) {
       return concat([Uint8Array.from([RESULT_TAG_OK]), this.data.toBytes()]);
