@@ -17,6 +17,9 @@ export class CLErrorType extends CLType {
   }
 }
 
+const RESULT_TAG_ERROR = 1;
+const RESULT_TAG_OK = 1;
+
 /**
  * Class representing a result of an operation that might have failed. Can contain either a value
  * resulting from a successful completion of a calculation, or an error. Similar to `Result` in Rust
@@ -66,9 +69,9 @@ export class CLResult<T extends CLValue & ToBytes, E extends CLErrorCodes>
 
   toBytes(): Uint8Array {
     if (this.data) {
-      return concat([toBytesU8(1), this.data.toBytes()]);
+      return concat([Uint8Array.from([RESULT_TAG_OK]), this.data.toBytes()]);
     } else if (this.error) {
-      return concat([toBytesU8(0), toBytesU8(this.error)]);
+      return concat([Uint8Array.from([RESULT_TAG_ERROR]), toBytesU8(this.error)]);
     } else {
       throw new Error('Missing proper data');
     }
