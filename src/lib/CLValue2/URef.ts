@@ -1,4 +1,6 @@
-import { CLType, CLValue } from './Abstract';
+import { concat } from '@ethersproject/bytes';
+
+import { CLType, CLValue, ToBytes } from './Abstract';
 import { decodeBase16, encodeBase16 } from '../Conversions';
 
 // TBD: Maybe this should be in one file like src/lib/constants.ts ?
@@ -29,7 +31,7 @@ export class CLURefType extends CLType {
 
 const FORMATTED_STRING_PREFIX = 'uref-';
 
-export class CLURef extends CLValue {
+export class CLURef extends CLValue implements ToBytes {
   data: Uint8Array;
   accessRights: AccessRights;
 
@@ -80,4 +82,9 @@ export class CLURef extends CLValue {
   value(): { data: Uint8Array, accessRights: AccessRights } {
     return { data: this.data, accessRights: this.accessRights };
   }
+
+  toBytes(): Uint8Array {
+    return concat([this.data, Uint8Array.from([this.accessRights])]);
+  }
+
 }

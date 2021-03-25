@@ -1,5 +1,5 @@
 import { CLType, CLValue, ToBytes } from './Abstract';
-import { toBytesVecT } from '../byterepr';
+import { toBytesVector } from '../ByteConverters';
 
 export class CLListType<T extends CLType> extends CLType {
   inner: T;
@@ -86,6 +86,6 @@ export class CLList<T extends CLValue & ToBytes> extends CLValue
   }
 
   toBytes(): Uint8Array {
-    return toBytesVecT(this.data);
+    return toBytesVector(this.data);
   }
 }

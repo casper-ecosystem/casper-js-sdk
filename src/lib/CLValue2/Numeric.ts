@@ -1,7 +1,8 @@
-import { CLType, CLValue } from './Abstract';
+import { CLType, CLValue, ToBytes } from './Abstract';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
+import { toBytesNumber } from "../ByteConverters";
 
-abstract class Numeric extends CLValue {
+abstract class Numeric extends CLValue implements ToBytes {
   data: BigNumber;
   bitSize: number;
   signed: boolean;
@@ -16,6 +17,10 @@ abstract class Numeric extends CLValue {
 
   value(): BigNumber {
     return this.data;
+  }
+
+  toBytes(): Uint8Array {
+    return toBytesNumber(this.bitSize, this.signed)(this.data);
   }
 }
 

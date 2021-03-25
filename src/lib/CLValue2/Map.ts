@@ -1,4 +1,7 @@
-import { CLType, CLValue } from './Abstract';
+import { concat } from '@ethersproject/bytes';
+
+import { CLType, CLValue, ToBytes } from './Abstract';
+import { toBytesU32 } from '../ByteConverters';
 
 export class CLMapType<K extends CLType, V extends CLType> extends CLType {
   innerKey: K;
@@ -21,18 +24,20 @@ export interface MapEntryType {
 }
 
 const isValueConstructor = (
-   v: Array<[CLValue, CLValue]> | [CLType, CLType]
- ): v is Array<[CLValue, CLValue]> => {
-   return (
-     Array.isArray(v) &&
-     Array.isArray(v[0]) &&
-     v[0].length === 2 &&
-     !!v[0][0].clType &&
-     !!v[0][1].clType
-   );
- };
+  v: Array<[CLValue, CLValue]> | [CLType, CLType]
+): v is Array<[CLValue, CLValue]> => {
+  return (
+    Array.isArray(v) &&
+    Array.isArray(v[0]) &&
+    v[0].length === 2 &&
+    !!v[0][0].clType &&
+    !!v[0][1].clType
+  );
+};
 
-export class CLMap<K extends CLValue, V extends CLValue> extends CLValue {
+export class CLMap<K extends CLValue & ToBytes, V extends CLValue & ToBytes>
+  extends CLValue
+  implements ToBytes {
   data: Map<K, V>;
   refType: [CLType, CLType];
   /**
@@ -86,5 +91,12 @@ export class CLMap<K extends CLValue, V extends CLValue> extends CLValue {
 
   size(): number {
     return this.data.size;
+  }
+
+  toBytes(): Uint8Array {
+    const kvBytes: Uint8Array[] = Array.from(this.data).map(([key, value]) =>
+      concat([key.toBytes(), value.toBytes()])
+    );
+    return concat([toBytesU32(this.data.size), ...kvBytes]);
   }
 }
