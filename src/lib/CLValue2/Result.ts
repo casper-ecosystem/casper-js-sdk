@@ -52,13 +52,13 @@ export class CLResult<T extends CLValue & ToBytes, E extends CLErrorCodes>
     }
   }
 
-  public static OK<T extends CLValue, E extends CLErrorCodes>(
+  public static OK<T extends CLValue & ToBytes, E extends CLErrorCodes>(
     val: T
   ): CLResult<T, E> {
     return new CLResult<T, E>(val, null);
   }
 
-  public static Error<T extends CLValue, E extends CLErrorCodes>(
+  public static Error<T extends CLValue & ToBytes, E extends CLErrorCodes>(
     err: E
   ): CLResult<T, E> {
     return new CLResult<T, E>(null, err);
