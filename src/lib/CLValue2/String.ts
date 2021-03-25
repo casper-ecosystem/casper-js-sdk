@@ -33,6 +33,4 @@ export class CLString extends CLValue implements ToBytes {
   public toBytes = (): Uint8Array => {
     return toBytesString(this.data);
   };
-
 }
-

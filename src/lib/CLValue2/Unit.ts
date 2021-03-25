@@ -1,4 +1,4 @@
-import { CLType, CLValue } from "./Abstract"; 
+import { CLType, CLValue, ToBytes } from './Abstract';
 
 export class UnitType extends CLType {
   toString(): string {
@@ -6,7 +6,7 @@ export class UnitType extends CLType {
   }
 }
 
-export class Unit extends CLValue {
+export class Unit extends CLValue implements ToBytes {
   data = undefined;
 
   clType(): CLType {
@@ -16,5 +16,8 @@ export class Unit extends CLValue {
   value(): undefined {
     return this.data;
   }
-}
 
+  toBytes(): Uint8Array {
+    return Uint8Array.from([]);
+  }
+}
