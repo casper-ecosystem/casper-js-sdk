@@ -1,7 +1,7 @@
 import { concat } from '@ethersproject/bytes';
-import { Ok, Err, Result } from 'ts-results';
+import { Result, Ok, Err} from "ts-results";
 
-import { CLType, CLValue, ToBytes } from './Abstract';
+import { CLValue, CLType, ToBytes } from './index';
 import { toBytesU8 } from '../ByteConverters';
 
 export enum CLErrorCodes {
@@ -11,75 +11,43 @@ export enum CLErrorCodes {
   OutOfMemory
 }
 
-export class CLErrorType extends CLType {
-  toString(): string {
-    return 'Error';
-  }
-}
-
 const RESULT_TAG_ERROR = 1;
 const RESULT_TAG_OK = 1;
 
-/**
- * Class representing a result of an operation that might have failed. Can contain either a value
- * resulting from a successful completion of a calculation, or an error. Similar to `Result` in Rust
- * or `Either` in Haskell.
- */
 export class CLResultType extends CLType {
   toString(): string {
     return 'Result';
   }
 }
 
-export class CLResult<T extends CLValue & ToBytes, E extends CLErrorCodes>
-  extends CLValue
-  implements ToBytes {
-  public data: T | null;
-  public error: E | null;
-
-  constructor(data: T | null, error: E | null) {
-    super();
-    if (data) this.data = data;
-    if (error) this.error = error;
-  }
-
-  clType(): CLType {
-    return new CLResultType();
-  }
+export class GenericResult<T, E> {
+  constructor(public data: Result<T, E>) {}
 
   /**
    * Returns Result from ts-result based on stored value
    */
   value(): Result<T, E> {
-    if (this.data) {
-      return Ok(this.data);
-    } else if (this.error) {
-      return Err(this.error);
-    }
+    return this.data;
+  }
+}
+
+/**
+ * Class representing a result of an operation that might have failed. Can contain either a value
+ * resulting from a successful completion of a calculation, or an error. Similar to `Result` in Rust
+ * or `Either` in Haskell.
+ */
+export class CLResult extends GenericResult<CLValue & ToBytes, CLErrorCodes> implements CLValue, ToBytes {
+  clType(): CLType {
+    return new CLResultType();
   }
 
-  public static OK<T extends CLValue & ToBytes, E extends CLErrorCodes>(
-    val: T
-  ): CLResult<T, E> {
-    return new CLResult<T, E>(val, null);
-  }
-
-  public static Error<T extends CLValue & ToBytes, E extends CLErrorCodes>(
-    err: E
-  ): CLResult<T, E> {
-    return new CLResult<T, E>(null, err);
-  }
-
-  /**
-   * Serializes the `Result` into an array of bytes.
-   */
   toBytes(): Uint8Array {
-    if (this.data) {
-      return concat([Uint8Array.from([RESULT_TAG_OK]), this.data.toBytes()]);
-    } else if (this.error) {
-      return concat([Uint8Array.from([RESULT_TAG_ERROR]), toBytesU8(this.error)]);
-    } else {
-      throw new Error('Missing proper data');
-    }
-  }
+     if (this.data instanceof Ok && this.data.val instanceof CLValue) {
+       return concat([Uint8Array.from([RESULT_TAG_OK]), this.data.val.toBytes()]);
+     } else if (this.data instanceof Err && this.data.val instanceof Uint8Array) {
+       return concat([Uint8Array.from([RESULT_TAG_ERROR]), toBytesU8(this.data.val)]);
+     } else {
+       throw new Error('Unproper data stored in CLResult');
+     }
+   }
 }

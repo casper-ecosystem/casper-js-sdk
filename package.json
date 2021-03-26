@@ -88,7 +88,7 @@
     "key-encoder": "^2.0.3",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^6.5.3",
-    "ts-result": "^1.0.2",
+    "ts-results": "^3.1.1",
     "tweetnacl-ts": "^1.0.3",
     "tweetnacl-util": "^0.15.0",
     "typedjson": "^1.6.0-rc2",
