@@ -49,16 +49,16 @@ export class CLPublicKey extends CLValue {
 
   toAccountHash(): Uint8Array {
     const algorithmIdentifier = CLPublicKeyTag[this.tag];
-    const separator = Buffer.from([0]);
-    const prefix = Buffer.concat([
-      Buffer.from(algorithmIdentifier.toLowerCase()),
+    const separator = Uint8Array.from([0]);
+    const prefix = concat([
+      new TextEncoder().encode(algorithmIdentifier.toLowerCase()),
       separator
     ]);
 
     if (this.data.length === 0) {
-      return Buffer.from([]);
+      return Uint8Array.from([]);
     } else {
-      return byteHash(Buffer.concat([prefix, Buffer.from(this.data)]));
+      return byteHash(concat([prefix, this.data]));
     }
   }
 
