@@ -124,5 +124,4 @@ describe('CLPublicKey', () => {
 
     expect(bytes).to.be.deep.eq(validResult);
   });
-
 });
