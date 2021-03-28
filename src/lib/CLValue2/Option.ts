@@ -1,57 +1,31 @@
-// copy from https://github.com/CasperLabs/casper-node/blob/master/smart_contracts/contract_as/assembly/option.ts
-
 import { concat } from '@ethersproject/bytes';
+
+import { Option } from 'ts-results';
 
 import { CLValue, CLType, ToBytes } from './index';
 
 const OPTION_TAG_NONE = 0;
 const OPTION_TAG_SOME = 1;
 
-export class CLOptionType<T extends CLType> extends CLType {
-  inner: T;
-
-  constructor(inner: T) {
-    super();
-    this.inner = inner;
-  }
-
+export class CLOptionType extends CLType {
   toString(): string {
-    return `Option (${this.inner.toString()})`;
+    return "Option" 
   }
 }
 
-// TODO: Try to combine with https://github.com/vultix/ts-results/blob/master/test/option.test.ts
-/**
- * A class representing an optional value, i.e. it might contain either a value of some type or
- * no value at all. Similar to Rust's `Option` or Haskell's `Maybe`.
- */
-export class CLOption<T extends CLValue & ToBytes> extends CLValue
-  implements ToBytes {
-  private innerType: CLType;
-
+export class GenericOption <T> {
   /**
-   * Constructs a new option containing the value of `CLTypedAndToBytes`. `t` can be `null`, which
-   * indicates no value.
+   * Constructs a new option containing the value of Some or None from ts-result.
    */
-  constructor(public data: T | null, innerType?: CLType) {
-    super();
-    if (data === null) {
-      if (!innerType) {
-        throw new Error('You had to assign innerType for None');
-      }
-      this.innerType = innerType;
-    } else {
-      this.innerType = data.clType();
-    }
-  }
+  constructor(public data: Option<T>) {}
 
   /**
    * Checks whether the `Option` contains no value.
    *
    * @returns True if the `Option` has no value.
    */
-  public isNone(): boolean {
-    return this.data === null;
+  isNone(): boolean {
+    return this.data.none;
   }
 
   /**
@@ -59,40 +33,34 @@ export class CLOption<T extends CLValue & ToBytes> extends CLValue
    *
    * @returns True if the `Option` has some value.
    */
-  public isSome(): boolean {
-    return this.data !== null;
+  isSome(): boolean {
+    return this.data.some;
   }
 
   /**
-   * Extract value.
-   *
-   * @returns CLValue if the `Option` has some value.
+   * Returns Option from ts-result based on stored value
    */
-  getSome(): CLValue {
-    if (this.data !== null) {
-      return this.data;
-    }
-    throw new Error('Value is None');
+  value(): Option<T> {
+    return this.data;
   }
+}
 
-  value(): CLValue | null {
-    if (this.data !== null) {
-      return this.data;
-    }
-    return null;
+export class CLOption extends GenericOption<CLValue & ToBytes> implements CLValue, ToBytes {
+  clType(): CLType {
+    return new CLOptionType();
   }
 
   /**
    * Serializes the `Option` into an array of bytes.
    */
-  public toBytes(): Uint8Array {
-    if (this.data === null) {
+  toBytes(): Uint8Array {
+    if (this.data.none) {
       return Uint8Array.from([OPTION_TAG_NONE]);
     }
-    return concat([Uint8Array.from([OPTION_TAG_SOME]), this.data.toBytes()]);
-  }
+    if (this.data.some) {
+      return concat([Uint8Array.from([OPTION_TAG_SOME]), this.data.val.toBytes()]);
+    }
 
-  public clType(): CLType {
-    return new CLOptionType(this.innerType);
+    throw new Error('Unknown stored value');
   }
 }
