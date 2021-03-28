@@ -1,5 +1,5 @@
 import { concat } from '@ethersproject/bytes';
-import { Result, Ok, Err} from "ts-results";
+import { Result, Ok, Err } from 'ts-results';
 
 import { CLValue, CLType, ToBytes } from './index';
 import { toBytesU8 } from '../ByteConverters';
@@ -11,7 +11,7 @@ export enum CLErrorCodes {
   OutOfMemory
 }
 
-const RESULT_TAG_ERROR = 1;
+const RESULT_TAG_ERROR = 0;
 const RESULT_TAG_OK = 1;
 
 export class CLResultType extends CLType {
@@ -36,18 +36,28 @@ export class GenericResult<T, E> {
  * resulting from a successful completion of a calculation, or an error. Similar to `Result` in Rust
  * or `Either` in Haskell.
  */
-export class CLResult extends GenericResult<CLValue & ToBytes, CLErrorCodes> implements CLValue, ToBytes {
+export class CLResult extends GenericResult<CLValue & ToBytes, CLErrorCodes>
+  implements CLValue, ToBytes {
   clType(): CLType {
     return new CLResultType();
   }
 
   toBytes(): Uint8Array {
-     if (this.data instanceof Ok && this.data.val instanceof CLValue) {
-       return concat([Uint8Array.from([RESULT_TAG_OK]), this.data.val.toBytes()]);
-     } else if (this.data instanceof Err && this.data.val instanceof Uint8Array) {
-       return concat([Uint8Array.from([RESULT_TAG_ERROR]), toBytesU8(this.data.val)]);
-     } else {
-       throw new Error('Unproper data stored in CLResult');
-     }
-   }
+    if (this.data instanceof Ok && this.data.val instanceof CLValue) {
+      return concat([
+        Uint8Array.from([RESULT_TAG_OK]),
+        this.data.val.toBytes()
+      ]);
+    } else if (
+      this.data instanceof Err
+    ) {
+      console.log(this.data);
+      return concat([
+        Uint8Array.from([RESULT_TAG_ERROR]),
+        toBytesU8(this.data.val as number)
+      ]);
+    } else {
+      throw new Error('Unproper data stored in CLResult');
+    }
+  }
 }
