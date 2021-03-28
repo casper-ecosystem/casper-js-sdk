@@ -23,6 +23,7 @@ export class CLPublicKey extends CLValue {
 
   constructor(rawPublicKey: Uint8Array, tag: CLPublicKeyTag) {
     super();
+    // TODO: Add length check
     if (Object.values(CLPublicKeyTag).includes(tag)) {
       this.data = rawPublicKey;
       this.tag = tag;
@@ -47,6 +48,7 @@ export class CLPublicKey extends CLValue {
     return this.tag === CLPublicKeyTag.SECP256K1;
   }
 
+  // TBD - Maybe it should return hexstring?
   toAccountHash(): Uint8Array {
     const algorithmIdentifier = CLPublicKeyTag[this.tag];
     const separator = Uint8Array.from([0]);
@@ -55,6 +57,7 @@ export class CLPublicKey extends CLValue {
       separator
     ]);
 
+    // TBD: Does it make sense or should we throw an error?
     if (this.data.length === 0) {
       return Uint8Array.from([]);
     } else {
