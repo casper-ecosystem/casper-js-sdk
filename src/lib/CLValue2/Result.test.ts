@@ -15,6 +15,12 @@ describe('CLResult', () => {
     expect(myOkRes.clType().toString()).to.be.eq('Result');
   });
 
+  it('remainder() should return proper byte array', () => {
+    const uint8 = Uint8Array.from([1, 1, 1]);
+    const myOkResWithRemainder = new CLResult(Ok(new CLBool(true)), uint8);
+    expect(myOkResWithRemainder.remainder()).to.be.deep.eq(uint8);
+  });
+
   it('toBytes() should return proper byte array', () => {
     expect(myOkRes.toBytes()).to.be.deep.eq(Uint8Array.from([1, 1]));
     expect(myErrRes.toBytes()).to.be.deep.eq(Uint8Array.from([0, 0]));

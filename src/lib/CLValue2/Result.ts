@@ -21,7 +21,7 @@ export class CLResultType extends CLType {
 }
 
 export class GenericResult<T, E> {
-  constructor(public data: Result<T, E>) {}
+  constructor(public data: Result<T, E>, public rem?: Uint8Array) {}
 
   /**
    * Returns Result from ts-result based on stored value
@@ -29,6 +29,17 @@ export class GenericResult<T, E> {
   value(): Result<T, E> {
     return this.data;
   }
+
+  /**
+   * Returns remainder 
+   */
+  remainder(): Uint8Array {
+    if (!this.rem) {
+      throw new Error("Don't have remainder");
+    }
+    return this.rem;
+  }
+
 }
 
 /**
