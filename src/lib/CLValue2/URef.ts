@@ -1,5 +1,10 @@
-import { CLType, CLValue } from './Abstract';
+import { concat } from '@ethersproject/bytes';
+
+import { CLType, CLValue, ToBytes } from './Abstract';
 import { decodeBase16, encodeBase16 } from '../Conversions';
+
+// TODO Move this to some utils
+const padNum = (v: string, n = 1) => new Array(n).join('0').slice((n || 2) * -1) + v;
 
 // TBD: Maybe this should be in one file like src/lib/constants.ts ?
 export enum AccessRights {
@@ -27,9 +32,9 @@ export class CLURefType extends CLType {
   }
 }
 
-const FORMATTED_STRING_PREFIX = 'uref-';
+const FORMATTED_STRING_PREFIX = 'uref';
 
-export class CLURef extends CLValue {
+export class CLURef extends CLValue implements ToBytes {
   data: Uint8Array;
   accessRights: AccessRights;
 
@@ -43,6 +48,11 @@ export class CLURef extends CLValue {
     if (v.byteLength !== 32) {
       throw new Error('The length of URefAddr should be 32');
     }
+
+    if (!Object.values(AccessRights).includes(accessRights)) {
+      throw new Error('Unsuported AccessRights');
+    }
+
     this.data = v;
     this.accessRights = accessRights;
   }
@@ -51,12 +61,12 @@ export class CLURef extends CLValue {
    * Parses a casper-client supported string formatted argument into a `URef`.
    */
   static fromFormattedStr(input: string): CLURef {
-    if (!input.startsWith(FORMATTED_STRING_PREFIX)) {
-      throw new Error("prefix is not 'uref-'");
+    if (!input.startsWith(`${FORMATTED_STRING_PREFIX}-`)) {
+      throw new Error("Prefix is not 'uref-'");
     }
-    const parts = input.substring(FORMATTED_STRING_PREFIX.length).split('-', 2);
+    const parts = input.substring(`${FORMATTED_STRING_PREFIX}-`.length).split('-', 2);
     if (parts.length !== 2) {
-      throw new Error('no access rights as suffix');
+      throw new Error('No access rights as suffix');
     }
 
     const addr = decodeBase16(parts[0]);
@@ -69,7 +79,7 @@ export class CLURef extends CLValue {
     return [
       FORMATTED_STRING_PREFIX,
       encodeBase16(this.data),
-      this.accessRights.toString(8)
+      padNum(this.accessRights.toString(8), 3)
     ].join('-');
   }
 
@@ -80,4 +90,9 @@ export class CLURef extends CLValue {
   value(): { data: Uint8Array, accessRights: AccessRights } {
     return { data: this.data, accessRights: this.accessRights };
   }
+
+  toBytes(): Uint8Array {
+    return concat([this.data, Uint8Array.from([this.accessRights])]);
+  }
+
 }

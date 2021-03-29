@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import { CLValue } from './Abstract';
 import { CLMap } from './Map';
 import { CLBool } from './Bool';
 import { CLString, CLStringType } from './String';
@@ -13,11 +12,12 @@ describe('CLValue CLMap implementation', () => {
   });
 
   it('Should be able to create Map with proper values - correct by construction', () => {
-    const inside: [CLValue, CLValue] = [new CLString('ABC'), new CLI32(123)]
-    const myMap = new CLMap([inside]);
+    const myKey = new CLString('ABC');
+    const myVal = new CLI32(123);
+    const myMap = new CLMap([[myKey, myVal]]);
 
     expect(myMap).to.be.an.instanceof(CLMap);
-    expect(myMap.value()).to.be.deep.eq(new Map([inside]));
+    expect(myMap.value()).to.be.deep.eq(new Map([[myKey, myVal]]));
   });
 
   it('Should throw an error when CLMap is not correct by construction', () => {
@@ -33,9 +33,7 @@ describe('CLValue CLMap implementation', () => {
   it('Should throw an error when CLMap is not correct by construction', () => {
     const badFn = () =>
       // @ts-ignore
-      new CLMap([
-        [new CLString('ABC'), 2]
-      ]);
+      new CLMap([[new CLString('ABC'), 2]]);
 
     expect(badFn).to.throw('Invalid data type(s) provided.');
   });
@@ -43,7 +41,7 @@ describe('CLValue CLMap implementation', () => {
   it('Should be able to return proper values by calling .get() on Map', () => {
     const myKey = new CLString('ABC');
     const myVal = new CLI32(10);
-    const myMap = new CLMap([[myKey, myVal ]]);
+    const myMap = new CLMap([[myKey, myVal]]);
 
     expect(myMap.get(myKey).value()).to.be.deep.eq(myVal.value());
   });
@@ -51,16 +49,13 @@ describe('CLValue CLMap implementation', () => {
   it('Get() should return indefined on non-existing key', () => {
     const myKey = new CLString('ABC');
     const myVal = new CLI32(10);
-    const myMap = new CLMap([[myKey, myVal ]]);
+    const myMap = new CLMap([[myKey, myVal]]);
 
-    expect(myMap.get(new CLString("DEF"))).to.be.deep.eq(undefined);
+    expect(myMap.get(new CLString('DEF'))).to.be.deep.eq(undefined);
   });
 
   it('Should able to create empty Map by providing type', () => {
-    const myMap = new CLMap([
-      new CLStringType(),
-      new CLStringType()
-    ]);
+    const myMap = new CLMap([new CLStringType(), new CLStringType()]);
     const len = myMap.size();
 
     expect(len).to.equal(0);
@@ -69,7 +64,7 @@ describe('CLValue CLMap implementation', () => {
   it('Set should be able to set values at already declared keys', () => {
     const myKey = new CLString('ABC');
     const myVal = new CLI32(10);
-    const myMap = new CLMap([[myKey, myVal ]]);
+    const myMap = new CLMap([[myKey, myVal]]);
     const newVal = new CLI32(11);
 
     myMap.set(myKey, newVal);
@@ -80,7 +75,7 @@ describe('CLValue CLMap implementation', () => {
   it('Set should be able to set values at already declared keys', () => {
     const myKey = new CLString('ABC');
     const myVal = new CLI32(10);
-    const myMap = new CLMap([[myKey, myVal ]]);
+    const myMap = new CLMap([[myKey, myVal]]);
     const newVal = new CLI32(11);
 
     myMap.set(myKey, newVal);
@@ -92,8 +87,8 @@ describe('CLValue CLMap implementation', () => {
   it('Set should be able to set values at empty keys', () => {
     const myKey = new CLString('ABC');
     const myVal = new CLI32(10);
-    const myMap = new CLMap([[myKey, myVal ]]);
-    const newKey = new CLString("DEF");
+    const myMap = new CLMap([[myKey, myVal]]);
+    const newKey = new CLString('DEF');
     const newVal = new CLI32(11);
 
     myMap.set(newKey, newVal);
@@ -105,7 +100,7 @@ describe('CLValue CLMap implementation', () => {
   it('Remove should remove key/value pair at already declared keys', () => {
     const myKey = new CLString('ABC');
     const myVal = new CLI32(10);
-    const myMap = new CLMap([[myKey, myVal ]]);
+    const myMap = new CLMap([[myKey, myVal]]);
 
     myMap.delete(myKey);
 

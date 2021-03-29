@@ -1,4 +1,5 @@
-import { CLType, CLValue } from "./Abstract"; 
+import { CLType, CLValue, ToBytes } from "./Abstract"; 
+import { toBytesString } from "../ByteConverters";
 
 export class CLStringType extends CLType {
   toString(): string {
@@ -6,7 +7,7 @@ export class CLStringType extends CLType {
   }
 }
 
-export class CLString extends CLValue {
+export class CLString extends CLValue implements ToBytes {
   data: string;
 
   constructor(v: string) {
@@ -29,5 +30,7 @@ export class CLString extends CLValue {
     return this.data.length;
   }
 
+  public toBytes = (): Uint8Array => {
+    return toBytesString(this.data);
+  };
 }
-

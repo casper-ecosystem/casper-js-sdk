@@ -1,11 +1,13 @@
-import { CLType, CLValue } from './Abstract';
+import { concat } from '@ethersproject/bytes';
+
+import { CLType, CLValue, ToBytes } from './Abstract';
 
 // TBD: Do we want Tuple to have all of the values on init? If no, when it will be serialized it should throw an error that eg Tuple2 has only one element and is invalid
 abstract class GenericTuple extends CLValue {
-  data: Array<CLValue>;
+  data: Array<CLValue & ToBytes>;
   tupleSize: number;
 
-  constructor(size: number, v: Array<CLValue>) {
+  constructor(size: number, v: Array<CLValue & ToBytes>) {
     super();
     if (v.length > size) {
       throw new Error('Too many elements!');
@@ -22,14 +24,14 @@ abstract class GenericTuple extends CLValue {
     return this.data[index];
   }
 
-  set(index: number, item: CLValue): void {
+  set(index: number, item: CLValue & ToBytes): void {
     if (index >= this.tupleSize) {
       throw new Error("Tuple index out of bounds.");
     }
     this.data[index] = item;
   }
 
-  push(item: CLValue): void {
+  push(item: CLValue & ToBytes): void {
     if (this.data.length < this.tupleSize) {
       this.data.push(item);
     } else {
@@ -62,17 +64,21 @@ const generateTupleClasses = (
   }
 
   class Tuple extends GenericTuple {
-    constructor(value: Array<CLValue>) {
+    constructor(value: Array<CLValue & ToBytes>) {
       super(size, value);
     }
 
     clType(): CLType {
       return new TupleType(this.data.map(e => e.clType()));
     }
+
+    toBytes(): Uint8Array {
+      return concat(this.data.map(d => d.toBytes()));
+    }
   }
   return [Tuple, TupleType];
 };
 
-export const [Tuple1, Tuple1Type] = generateTupleClasses(1);
-export const [Tuple2, Tuple2Type] = generateTupleClasses(2);
-export const [Tuple3, Tuple3Type] = generateTupleClasses(3);
+export const [CLTuple1, CLTuple1Type] = generateTupleClasses(1);
+export const [CLTuple2, CLTuple2Type] = generateTupleClasses(2);
+export const [CLTuple3, CLTuple3Type] = generateTupleClasses(3);

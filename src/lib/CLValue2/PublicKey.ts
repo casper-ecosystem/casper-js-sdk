@@ -1,3 +1,5 @@
+import { concat } from '@ethersproject/bytes';
+
 import { CLType, CLValue } from './Abstract';
 import { decodeBase16, encodeBase16 } from '../Conversions';
 import { byteHash } from '../Contracts';
@@ -21,6 +23,7 @@ export class CLPublicKey extends CLValue {
 
   constructor(rawPublicKey: Uint8Array, tag: CLPublicKeyTag) {
     super();
+    // TODO: Add length check
     if (Object.values(CLPublicKeyTag).includes(tag)) {
       this.data = rawPublicKey;
       this.tag = tag;
@@ -45,18 +48,20 @@ export class CLPublicKey extends CLValue {
     return this.tag === CLPublicKeyTag.SECP256K1;
   }
 
+  // TBD - Maybe it should return hexstring?
   toAccountHash(): Uint8Array {
     const algorithmIdentifier = CLPublicKeyTag[this.tag];
-    const separator = Buffer.from([0]);
-    const prefix = Buffer.concat([
-      Buffer.from(algorithmIdentifier.toLowerCase()),
+    const separator = Uint8Array.from([0]);
+    const prefix = concat([
+      new TextEncoder().encode(algorithmIdentifier.toLowerCase()),
       separator
     ]);
 
+    // TBD: Does it make sense or should we throw an error?
     if (this.data.length === 0) {
-      return Buffer.from([]);
+      return Uint8Array.from([]);
     } else {
-      return byteHash(Buffer.concat([prefix, Buffer.from(this.data)]));
+      return byteHash(concat([prefix, this.data]));
     }
   }
 
@@ -85,6 +90,13 @@ export class CLPublicKey extends CLValue {
 
     // TODO: Test it!
     return new CLPublicKey(publicKeyHexBytes.subarray(1), publicKeyHexBytes[0]);
+  }
+
+  public toBytes(): Uint8Array {
+    return concat([
+      Uint8Array.from([this.tag]),
+      this.data
+    ]);
   }
 
 }

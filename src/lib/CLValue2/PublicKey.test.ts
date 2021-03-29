@@ -1,0 +1,127 @@
+import { expect } from 'chai';
+import { CLPublicKey, CLPublicKeyTag } from './index';
+import { Keys } from '../index';
+
+// prettier-ignore
+const rawEd25519Account = Uint8Array.from([
+  154, 211, 137, 116, 146, 249, 164, 57,
+  9,  35,  64, 255,  83, 105, 131, 86,
+  169, 250, 100, 248,  12,  68, 201,  17,
+  43,  62, 151,  55, 158,  87, 186, 148
+]);
+
+// prettier-ignore
+const rawSecp256K1Account = Uint8Array.from([
+  2, 159, 140, 124,  87,   6, 242, 206,
+  197, 115, 224, 181, 184, 223, 197, 239,
+  249, 252, 127, 235, 243, 153, 111, 242,
+  225, 125,  76, 204,  37,  56,  70,  41,
+  229
+]);
+
+const publicKeyEd25519 = new CLPublicKey(
+  rawEd25519Account,
+  CLPublicKeyTag.ED25519
+);
+
+const publicKeySecp256K1 = new CLPublicKey(
+  rawSecp256K1Account,
+  CLPublicKeyTag.SECP256K1
+);
+
+describe('CLPublicKey', () => {
+  it('Valid by construction', () => {
+    expect(publicKeyEd25519).to.be.an.instanceof(CLPublicKey);
+    expect(publicKeySecp256K1).to.be.an.instanceof(CLPublicKey);
+  });
+
+  it('Invalid by construction', () => {
+    const badFn = () => new CLPublicKey(rawEd25519Account, 4);
+    expect(badFn).to.throw('Unsupported type of public key');
+  });
+
+  it('Proper clType() value', () => {
+    expect(publicKeyEd25519.clType().toString()).to.be.eq('PublicKey');
+  });
+
+  it('CLPublicKey.fromhex() value', () => {
+    const ed25519Account = Keys.Ed25519.new();
+    const ed25519AccountHex = ed25519Account.accountHex();
+
+    expect(CLPublicKey.fromHex(ed25519AccountHex).value()).to.deep.equal(
+      ed25519Account.publicKey.rawPublicKey
+    );
+
+    const secp256K1Account = Keys.Secp256K1.new();
+    const secp256K1AccountHex = secp256K1Account.accountHex();
+
+    expect(CLPublicKey.fromHex(secp256K1AccountHex).value()).to.deep.equal(
+      secp256K1Account.publicKey.rawPublicKey
+    );
+
+    const badFn = () => CLPublicKey.fromHex('1');
+    expect(badFn).to.throw('Asymmetric key error: too short');
+  });
+
+  it('CLPublicKey.fromEd25519() return proper value', () => {
+    const pub = CLPublicKey.fromEd25519(rawEd25519Account);
+    expect(pub.value()).to.be.deep.eq(rawEd25519Account);
+  });
+
+  it('CLPublicKey.fromSecp256K1 return proper value', () => {
+    const pub = CLPublicKey.fromSecp256K1(rawSecp256K1Account);
+    expect(pub.value()).to.be.deep.eq(rawSecp256K1Account);
+  });
+
+  it('toAccountHex() valid reult', () => {
+    const accountKey =
+      '01f9235ff9c46c990e1e2eee0d531e488101fab48c05b75b8ea9983658e228f06b';
+    const rawPublicKey = new TextEncoder().encode(accountKey);
+
+    const tag = parseInt(accountKey.charAt(1));
+    const publicKey = new CLPublicKey(rawPublicKey, tag);
+    const accountHex = publicKey.toAccountHex();
+    const validResult =
+      '01303166393233356666396334366339393065316532656565306435333165343838313031666162343863303562373562386561393938333635386532323866303662';
+
+    expect(accountHex).to.be.eq(validResult);
+  });
+
+  it('toAccountHash() valid result', () => {
+    const accountKey =
+      '01f9235ff9c46c990e1e2eee0d531e488101fab48c05b75b8ea9983658e228f06b';
+    const rawPublicKey = new TextEncoder().encode(accountKey);
+
+    const tag = parseInt(accountKey.charAt(1));
+    const publicKey = new CLPublicKey(rawPublicKey, tag);
+    const accountHash = publicKey.toAccountHash();
+    // prettier-ignore
+    const validResult = Uint8Array.from([
+      185, 165, 197, 234, 124, 153, 163, 
+      67, 187,  34,  52, 219, 142,  78,
+      167,  87, 229, 253, 142,  41,  14,
+      19,  21, 207, 123, 167, 197, 194,
+      103, 237, 110, 248
+    ]);
+
+    expect(accountHash).to.be.deep.eq(validResult);
+  });
+
+  it('isEd25519() valid result', () => {
+    expect(publicKeyEd25519.isEd25519()).to.be.eq(true);
+    expect(publicKeyEd25519.isSecp256K1()).to.be.eq(false);
+  });
+
+  it('isSecp256K1() valid result', () => {
+    expect(publicKeySecp256K1.isEd25519()).to.be.eq(false);
+    expect(publicKeySecp256K1.isSecp256K1()).to.be.eq(true);
+  });
+
+  it('toBytes() serialize PublicKey correctly', () => {
+    const publicKey = Uint8Array.from(Array(32).fill(42));
+    const bytes = CLPublicKey.fromEd25519(publicKey).toBytes();
+    const validResult = Uint8Array.from([1, ...Array(32).fill(42)]);
+
+    expect(bytes).to.be.deep.eq(validResult);
+  });
+});

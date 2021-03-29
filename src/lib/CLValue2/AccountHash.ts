@@ -1,4 +1,4 @@
-import { CLType, CLValue } from './Abstract';
+import { CLType, CLValue, ToBytes } from './Abstract';
 
 export class CLAccountHashType extends CLType {
   toString(): string {
@@ -7,7 +7,7 @@ export class CLAccountHashType extends CLType {
 }
 
 /** A cryptographic public key. */
-export class CLAccountHash extends CLValue {
+export class CLAccountHash extends CLValue implements ToBytes {
   data: Uint8Array;
   /**
    * Constructs a new `AccountHash`.
@@ -24,6 +24,10 @@ export class CLAccountHash extends CLValue {
   }
 
   value(): Uint8Array {
+    return this.data;
+  }
+
+  public toBytes(): Uint8Array {
     return this.data;
   }
 }

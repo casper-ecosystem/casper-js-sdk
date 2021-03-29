@@ -1,8 +1,9 @@
-import { CLType, CLValue } from './Abstract';
-import { URef } from './URef';
-import { CLAccountHash } from "./AccountHash";
+import { concat } from '@ethersproject/bytes';
 
-export enum KeyVariant {
+import { CLType, CLValue } from './Abstract';
+import { CLURef, CLAccountHash } from './index';
+
+enum KeyVariant {
   Account,
   Hash,
   URef
@@ -14,16 +15,15 @@ export class CLKeyType extends CLType {
   }
 }
 
-type CLKeyParameters = Uint8Array | URef | CLAccountHash;
+// TBD: Maybe the first should be CLByteArray insted?
+type CLKeyParameters = Uint8Array | CLURef | CLAccountHash;
 
 export class CLKey extends CLValue {
-  data: Uint8Array | URef | CLAccountHash;
-  variant: KeyVariant;
+  data: CLKeyParameters;
 
-  constructor(v: CLKeyParameters, variant: KeyVariant) {
+  constructor(v: CLKeyParameters) {
     super();
     this.data = v;
-    this.variant = variant;
   }
 
   clType(): CLType {
@@ -34,15 +34,29 @@ export class CLKey extends CLValue {
     return this.data;
   }
 
-  public isHash(): boolean {
-    return this.variant === KeyVariant.Hash;
+  isHash(): boolean {
+    return this.data instanceof Uint8Array;
   }
 
-  public isURef(): boolean {
-    return this.variant === KeyVariant.URef;
+  isURef(): boolean {
+    return this.data instanceof CLURef;
   }
 
-  public isAccount(): boolean {
-    return this.variant === KeyVariant.Account;
+  isAccount(): boolean {
+    return this.data instanceof CLAccountHash;
+  }
+
+  toBytes(): Uint8Array {
+    if (this.isAccount()) {
+      return concat([Uint8Array.from([KeyVariant.Account]), (this.data as CLAccountHash).toBytes()]);
+    }
+    if (this.isHash()) {
+      return concat([Uint8Array.from([KeyVariant.Hash]), (this.data as Uint8Array)]);
+    }
+    if (this.isURef()) {
+      return concat([Uint8Array.from([KeyVariant.URef]), (this.data as CLURef).toBytes()]);
+    }
+
+    throw new Error("Unknown byte types");
   }
 }
