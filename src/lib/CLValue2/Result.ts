@@ -1,15 +1,8 @@
 import { concat } from '@ethersproject/bytes';
 import { Result, Ok, Err } from 'ts-results';
 
-import { CLValue, CLType, ToBytes } from './index';
+import { CLValue, CLType, ToBytes, CLErrorCodes } from './index';
 import { toBytesU8 } from '../ByteConverters';
-
-export enum CLErrorCodes {
-  EarlyEndOfStream = 0,
-  Formatting,
-  LeftOverBytes,
-  OutOfMemory
-}
 
 const RESULT_TAG_ERROR = 0;
 const RESULT_TAG_OK = 1;
