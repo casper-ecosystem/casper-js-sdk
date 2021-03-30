@@ -40,6 +40,21 @@ export class GenericResult<T, E> {
     return this.rem;
   }
 
+  /**
+   * Checks if stored value is error
+   */
+  isError(): boolean {
+    return this.data instanceof Err;
+  }
+
+  /**
+   * Checks if stored value is valid
+   */
+  isOk(): boolean {
+    return this.data instanceof Ok;
+  }
+
+
 }
 
 /**
@@ -62,7 +77,6 @@ export class CLResult extends GenericResult<CLValue & ToBytes, CLErrorCodes>
     } else if (
       this.data instanceof Err
     ) {
-      console.log(this.data);
       return concat([
         Uint8Array.from([RESULT_TAG_ERROR]),
         toBytesU8(this.data.val as number)
