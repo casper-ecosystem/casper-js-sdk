@@ -8,3 +8,8 @@ export enum CLErrorCodes {
   OutOfMemory
 }
 
+export enum KeyVariant {
+  Account,
+  Hash,
+  URef
+}

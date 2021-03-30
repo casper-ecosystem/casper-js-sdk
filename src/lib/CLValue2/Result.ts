@@ -44,7 +44,7 @@ export class GenericResult<T, E> {
    * Checks if stored value is valid
    */
   isOk(): boolean {
-    return this.data instanceof Ok;
+    return this.data.ok;
   }
 
 
