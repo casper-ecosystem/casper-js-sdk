@@ -978,3 +978,14 @@ export const addArgToDeploy = (
 
   return makeDeploy(deployParams, session, deploy.payment);
 };
+
+export const deploySizeInBytes = (deploy: Deploy): number => {
+  const hashSize = deploy.hash.length;
+  const bodySize = serializeBody(deploy.payment, deploy.session).length;
+  const headerSize = serializeHeader(deploy.header).length;
+  const approvalsSize = deploy.approvals.map(approval => {
+    return (approval.signature.length + approval.signer.length) / 2;
+  }).reduce((a, b) => a + b, 0);
+
+  return hashSize + headerSize + bodySize + approvalsSize;
+}
