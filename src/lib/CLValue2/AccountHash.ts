@@ -1,12 +1,11 @@
 import {
   CLType,
-  CLResult,
   CLValue,
   ToBytes,
   CLErrorCodes,
   ACCOUNT_HASH_LENGTH
 } from './index';
-import { Ok, Err } from 'ts-results';
+import { Ok, Err, Result } from 'ts-results';
 
 export class CLAccountHashType extends CLType {
   toString(): string {
@@ -39,13 +38,13 @@ export class CLAccountHash extends CLValue implements ToBytes {
     return this.data;
   }
 
-  static fromBytes(bytes: Uint8Array): CLResult {
+  static fromBytes(bytes: Uint8Array): Result<CLAccountHash, CLErrorCodes> {
     if (bytes.length < ACCOUNT_HASH_LENGTH) {
-      return new CLResult(Err(CLErrorCodes.EarlyEndOfStream));
+      return new Err(CLErrorCodes.EarlyEndOfStream);
     }
 
     const accountHashBytes = bytes.subarray(0, ACCOUNT_HASH_LENGTH);
     const accountHash = new CLAccountHash(accountHashBytes);
-    return new CLResult(Ok(accountHash), bytes.subarray(ACCOUNT_HASH_LENGTH));
+    return new Ok(accountHash);
   }
 }

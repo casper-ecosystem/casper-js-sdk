@@ -111,7 +111,8 @@ describe('CLKey', () => {
       42
     ]);
     const myKey = new CLKey(hash);
-    expect(myKey.toBytes()).to.be.deep.eq(expectedBytes);
+    const bytes = myKey.toBytes();
+    expect(bytes).to.be.deep.eq(expectedBytes);
   });
 
   it('toBytes() with CLURef', () => {
@@ -121,8 +122,10 @@ describe('CLKey', () => {
       '022a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a07'
     );
     const uref = new CLURef(decodeBase16(urefAddr), AccessRights.READ_ADD_WRITE);
-    const bytes = new CLKey(uref).toBytes();
+    const key = new CLKey(uref);
+    const bytes = key.toBytes();
     expect(bytes).to.deep.eq(truth);
+    expect(CLKey.fromBytes(bytes).value().val).deep.eq(key);
   });
 
   it('toBytes() with invalid data', () => {
