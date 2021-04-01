@@ -137,7 +137,9 @@ export interface Bid {
 }
 
 export interface Delegators {
-  delegator: DelegatorInfo;
+  bonding_purse: string;
+  delegatee: string;
+  staked_amount: string;
   public_key: string;
 }
 
