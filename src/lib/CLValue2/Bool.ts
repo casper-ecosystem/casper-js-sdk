@@ -1,4 +1,4 @@
-import { CLType, CLValue, ToBytes, CLResult, CLErrorCodes } from "./index"; 
+import { CLType, CLValue, ToBytes, ResultAndRemainder, CLErrorCodes, resultHelper } from "./index"; 
 import { Ok, Err } from "ts-results";
 
 export class CLBoolType extends CLType {
@@ -27,16 +27,16 @@ export class CLBool extends CLValue implements ToBytes {
     return new Uint8Array([this.data ? 1 : 0]);
   }
 
-  static fromBytes(bytes: Uint8Array): CLResult {
+  static fromBytes(bytes: Uint8Array): ResultAndRemainder<CLBool, CLErrorCodes> {
     if (bytes.length === 0) {
-      return new CLResult(Err(CLErrorCodes.EarlyEndOfStream));
+      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
     }
     if (bytes[0] === 1) {
-      return new CLResult(Ok(new CLBool(true)), bytes.subarray(1));
+      return resultHelper(Ok(new CLBool(true)), bytes.subarray(1));
     } else if (bytes[0] === 0) {
-      return new CLResult(Ok(new CLBool(false)), bytes.subarray(1));
+      return resultHelper(Ok(new CLBool(false)), bytes.subarray(1));
     } else {
-      return new CLResult(Err(CLErrorCodes.Formatting));
+      return resultHelper(Err(CLErrorCodes.Formatting));
     }
   }
 }

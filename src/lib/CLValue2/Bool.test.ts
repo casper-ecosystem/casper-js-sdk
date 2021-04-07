@@ -22,16 +22,19 @@ describe('CLBool', () => {
     const myBoolBytes = myBool.toBytes();
     const myBool2Bytes = myBool2.toBytes();
 
+    const {result: fromBytesRes1} = CLBool.fromBytes(myBoolBytes);
+    const {result: fromBytesRes2} = CLBool.fromBytes(myBool2Bytes);
+
     expect(myBoolBytes).to.be.deep.eq(Uint8Array.from([0]));
     expect(myBool2Bytes).to.be.deep.eq(Uint8Array.from([1]));
 
-    expect(CLBool.fromBytes(myBoolBytes).value().val).to.be.deep.eq(myBool);
-    expect(CLBool.fromBytes(myBoolBytes).isOk()).to.be.eq(true);
-    expect(CLBool.fromBytes(myBool2Bytes).value().val).to.be.deep.eq(myBool2);
-    expect(CLBool.fromBytes(myBool2Bytes).isOk()).to.be.eq(true);
-    expect(CLBool.fromBytes(Uint8Array.from([9, 1])).isError()).to.be.eq(true);
-    expect(CLBool.fromBytes(Uint8Array.from([9, 1])).value().val).to.be.eq(CLErrorCodes.Formatting);
-    expect(CLBool.fromBytes(Uint8Array.from([])).isError()).to.be.eq(true);
-    expect(CLBool.fromBytes(Uint8Array.from([])).value().val).to.be.eq(CLErrorCodes.EarlyEndOfStream);
+    expect(fromBytesRes1.val).to.be.deep.eq(myBool);
+    expect(fromBytesRes1.ok).to.be.eq(true);
+    expect(fromBytesRes2.val).to.be.deep.eq(myBool2);
+    expect(fromBytesRes2.ok).to.be.eq(true);
+    expect(CLBool.fromBytes(Uint8Array.from([9, 1])).result.ok).to.be.eq(false);
+    expect(CLBool.fromBytes(Uint8Array.from([9, 1])).result.val).to.be.eq(CLErrorCodes.Formatting);
+    expect(CLBool.fromBytes(Uint8Array.from([])).result.ok).to.be.eq(false);
+    expect(CLBool.fromBytes(Uint8Array.from([])).result.val).to.be.eq(CLErrorCodes.EarlyEndOfStream);
   });
 });

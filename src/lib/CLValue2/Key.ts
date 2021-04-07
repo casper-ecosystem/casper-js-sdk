@@ -7,10 +7,11 @@ import {
   ToBytes,
   CLURef,
   CLAccountHash,
-  CLResult,
   CLErrorCodes,
   KeyVariant,
-  ACCOUNT_HASH_LENGTH
+  ACCOUNT_HASH_LENGTH,
+  ResultAndRemainder,
+  resultHelper
 } from './index';
 
 export class CLKeyType extends CLType {
@@ -73,9 +74,9 @@ export class CLKey extends CLValue implements ToBytes {
     throw new Error('Unknown byte types');
   }
 
-  static fromBytes(bytes: Uint8Array): CLResult {
+  static fromBytes(bytes: Uint8Array): ResultAndRemainder<CLKey, CLErrorCodes> {
     if (bytes.length < 1) {
-      return new CLResult(Err(CLErrorCodes.EarlyEndOfStream));
+      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
     }
 
     const tag = bytes[0];
@@ -83,27 +84,30 @@ export class CLKey extends CLValue implements ToBytes {
     if (tag === KeyVariant.Hash) {
       const hashBytes = bytes.subarray(1, ACCOUNT_HASH_LENGTH + 1);
       const key = new CLKey(hashBytes);
-      return new CLResult(Ok(key), bytes.subarray(ACCOUNT_HASH_LENGTH + 1));
+      return resultHelper(Ok(key), bytes.subarray(ACCOUNT_HASH_LENGTH + 1));
     } else if (tag === KeyVariant.URef) {
-      const uref = CLURef.fromBytes(bytes.subarray(1));
-      const urefResult = uref.value();
+      const { result: urefResult, remainder: urefRemainder } = CLURef.fromBytes(
+        bytes.subarray(1)
+      );
+
       if (urefResult.ok) {
         const key = new CLKey(urefResult.val);
-        return new CLResult(Ok(key), uref.remainder());
+        return resultHelper(Ok(key), urefRemainder);
       } else {
-        return uref;
+        return resultHelper(Err(urefResult.val));
       }
     } else if (tag === KeyVariant.Account) {
-      const accountHash = CLAccountHash.fromBytes(bytes.subarray(1));
-      const accountHashResult = accountHash.value();
+      const {result: accountHashResult, remainder: accountHashRemainder} = CLAccountHash.fromBytes(
+        bytes.subarray(1)
+      );
       if (accountHashResult.ok) {
         const key = new CLKey(accountHashResult.val);
-        return new CLResult(Ok(key), accountHash.remainder());
+        return resultHelper(Ok(key), accountHashRemainder);
       } else {
-        return accountHash;
+        return resultHelper(Err(accountHashResult.val));
       }
     } else {
-      return new CLResult(Err(CLErrorCodes.Formatting));
+      return resultHelper(Err(CLErrorCodes.Formatting));
     }
   }
 }

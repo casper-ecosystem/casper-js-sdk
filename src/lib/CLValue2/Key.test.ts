@@ -125,7 +125,7 @@ describe('CLKey', () => {
     const key = new CLKey(uref);
     const bytes = key.toBytes();
     expect(bytes).to.deep.eq(truth);
-    expect(CLKey.fromBytes(bytes).value().val).deep.eq(key);
+    expect(CLKey.fromBytes(bytes).result.val).deep.eq(key);
   });
 
   it('toBytes() with invalid data', () => {
