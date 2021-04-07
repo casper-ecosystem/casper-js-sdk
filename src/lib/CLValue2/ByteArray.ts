@@ -1,4 +1,5 @@
-import { CLType, CLValue, ToBytes } from './Abstract';
+import { CLType, CLValue, ToBytes, CLErrorCodes, ResultAndRemainder, resultHelper } from './index';
+import { Ok } from "ts-results";
 
 export const CL_BYTE_ARRAY_MAX_LENGTH = 32;
 
@@ -33,5 +34,10 @@ export class CLByteArray extends CLValue implements ToBytes {
 
   toBytes(): Uint8Array {
     return this.data;
+  }
+
+  static fromBytes(bytes: Uint8Array): ResultAndRemainder<CLByteArray, CLErrorCodes> {
+    const byteArray = new CLByteArray(bytes.subarray(0, CL_BYTE_ARRAY_MAX_LENGTH));
+    return resultHelper(Ok(byteArray), bytes.subarray(CL_BYTE_ARRAY_MAX_LENGTH));
   }
 }
