@@ -43,7 +43,7 @@ describe('CLValue CLMap implementation', () => {
     const myVal = new CLI32(10);
     const myMap = new CLMap([[myKey, myVal]]);
 
-    expect(myMap.get(myKey).value()).to.be.deep.eq(myVal.value());
+    expect(myMap.get(myKey)).to.be.deep.eq(myVal);
   });
 
   it('Get() should return indefined on non-existing key', () => {
@@ -69,7 +69,7 @@ describe('CLValue CLMap implementation', () => {
 
     myMap.set(myKey, newVal);
 
-    expect(myMap.get(myKey).value()).to.deep.eq(newVal.value());
+    expect(myMap.get(myKey)).to.deep.eq(newVal);
   });
 
   it('Set should be able to set values at already declared keys', () => {
@@ -80,7 +80,7 @@ describe('CLValue CLMap implementation', () => {
 
     myMap.set(myKey, newVal);
 
-    expect(myMap.get(myKey).value()).to.deep.eq(newVal.value());
+    expect(myMap.get(myKey)).to.deep.eq(newVal);
     expect(myMap.size()).to.eq(1);
   });
 
@@ -93,7 +93,7 @@ describe('CLValue CLMap implementation', () => {
 
     myMap.set(newKey, newVal);
 
-    expect(myMap.get(newKey).value()).to.deep.eq(newVal.value());
+    expect(myMap.get(newKey)).to.deep.eq(newVal);
     expect(myMap.size()).to.eq(2);
   });
 

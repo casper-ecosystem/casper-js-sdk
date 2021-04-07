@@ -1,4 +1,5 @@
-import { CLType, CLValue, ToBytes } from './Abstract';
+// import { CLType, CLValue, ToBytes, CLErrorCodes, resultHelper, ResultAndRemainder } from './index';
+import { CLType, CLValue, ToBytes } from './index';
 import { toBytesVector } from '../ByteConverters';
 
 export class CLListType<T extends CLType> extends CLType {
@@ -76,7 +77,6 @@ export class CLList<T extends CLValue & ToBytes> extends CLValue
     this.data.splice(index, 1);
   }
 
-  // TBD: we can throw an error here, but returing undefined from empty list is typical JS behavior
   pop(): T | undefined {
     return this.data.pop();
   }
@@ -88,4 +88,8 @@ export class CLList<T extends CLValue & ToBytes> extends CLValue
   toBytes(): Uint8Array {
     return toBytesVector(this.data);
   }
+
+  // static fromBytes(bytes: Uint8Array): ResultAndRemainder<CLList<CLValue & ToBytes>, CLErrorCodes> {
+  // }
+
 }

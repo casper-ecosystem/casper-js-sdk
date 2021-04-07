@@ -1,6 +1,14 @@
-import { CLType, CLValue, ToBytes } from './Abstract';
+// import { Ok, Err } from 'ts-results';
+import {
+  CLType,
+  CLValue,
+  ToBytes,
+  // ResultAndRemainder,
+  // CLErrorCodes,
+  // resultHelper
+} from './index';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
-import { toBytesNumber } from "../ByteConverters";
+import { toBytesNumber } from '../ByteConverters';
 
 abstract class Numeric extends CLValue implements ToBytes {
   data: BigNumber;
@@ -9,6 +17,9 @@ abstract class Numeric extends CLValue implements ToBytes {
 
   constructor(bitSize: number, isSigned: boolean, value: BigNumberish) {
     super();
+    if (isSigned === false && Math.sign(value as number) < 0) {
+      throw new Error("Can't provide negative numbers with isSigned=false");
+    }
     this.bitSize = bitSize;
     this.signed = isSigned;
     // TBD: we need to check here. Unsigned and negative value etc
@@ -24,37 +35,130 @@ abstract class Numeric extends CLValue implements ToBytes {
   }
 }
 
-const generateNumericClasses = (
-  bitSize: number,
-  isSigned: boolean,
-  type: string
-  // TODO: Get rid of any below
-): [any, CLType] => {
-  class NumericType extends CLType {
-    toString() {
-      return type;
-    }
+export class CLI32Type extends CLType {
+  toString(): string {
+    return "I32";
   }
-  class NumericSpecific extends Numeric {
-    constructor(v: BigNumberish) {
-      if (isSigned === false && Math.sign(v as number) < 0) {
-        throw new Error("Can't provide negative numbers with isSigned=false");
-      }
-      super(bitSize, isSigned, v);
-    }
+}
 
-    clType(): CLType {
-      return new NumericType();
-    }
+export class CLI64Type extends CLType {
+  toString(): string {
+    return "I64";
   }
-  return [NumericSpecific, NumericType];
-};
+}
 
-export const [CLI32, CLI32Type] = generateNumericClasses(32, true, 'I32');
-export const [CLI64, CLI64Type] = generateNumericClasses(64, true, 'I64');
-export const [CLU8, CLU8Type] = generateNumericClasses(8, false, 'U8');
-export const [CLU32, CLU32Type] = generateNumericClasses(32, false, 'U32');
-export const [CLU64, CLU64Type] = generateNumericClasses(64, false, 'U64');
-export const [CLU128, CLU128Type] = generateNumericClasses(128, false, 'U128');
-export const [CLU256, CLU256Type] = generateNumericClasses(256, false, 'U256');
-export const [CLU512, CLU512Type] = generateNumericClasses(512, false, 'U512');
+export class CLU8Type extends CLType {
+  toString(): string {
+    return "U8";
+  }
+}
+
+export class CLU32Type extends CLType {
+  toString(): string {
+    return "U32";
+  }
+}
+
+export class CLU64Type extends CLType {
+  toString(): string {
+    return "U64";
+  }
+}
+
+export class CLU128Type extends CLType {
+  toString(): string {
+    return "U128";
+  }
+}
+
+export class CLU256Type extends CLType {
+  toString(): string {
+    return "U256";
+  }
+}
+
+export class CLU512Type extends CLType {
+  toString(): string {
+    return "U512";
+  }
+}
+
+export class CLI32 extends Numeric {
+  constructor(num: BigNumberish) {
+    super(32, true, num);
+  }
+
+  clType(): CLType {
+    return new CLI32Type();
+  }
+}
+
+export class CLI64 extends Numeric {
+  constructor(num: BigNumberish) {
+    super(64, true, num);
+  }
+
+  clType(): CLType {
+    return new CLI64Type();
+  }
+}
+
+export class CLU8 extends Numeric {
+  constructor(num: BigNumberish) {
+    super(8, false, num);
+  }
+
+  clType(): CLType {
+    return new CLU8Type();
+  }
+}
+
+export class CLU32 extends Numeric {
+  constructor(num: BigNumberish) {
+    super(32, false, num);
+  }
+
+  clType(): CLType {
+    return new CLU32Type();
+  }
+}
+
+export class CLU64 extends Numeric {
+  constructor(num: BigNumberish) {
+    super(64, false, num);
+  }
+
+  clType(): CLType {
+    return new CLU64Type();
+  }
+}
+
+export class CLU128 extends Numeric {
+  constructor(num: BigNumberish) {
+    super(128, false, num);
+  }
+
+  clType(): CLType {
+    return new CLU128Type();
+  }
+}
+
+export class CLU256 extends Numeric {
+  constructor(num: BigNumberish) {
+    super(256, false, num);
+  }
+
+  clType(): CLType {
+    return new CLU256Type();
+  }
+}
+
+export class CLU512 extends Numeric {
+  constructor(num: BigNumberish) {
+    super(512, false, num);
+  }
+
+  clType(): CLType {
+    return new CLU512Type();
+  }
+}
