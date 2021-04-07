@@ -1,6 +1,6 @@
 {
   "name": "casper-client-sdk",
-  "version": "1.0.36",
+  "version": "1.0.37",
   "license": "Apache 2.0",
   "description": "SDK to interact with the Casper blockchain",
   "main": "dist/lib.node.js",
