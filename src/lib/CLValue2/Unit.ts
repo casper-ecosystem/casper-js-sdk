@@ -1,6 +1,8 @@
 import { CLType, CLValue, ToBytes } from './Abstract';
 
 export class UnitType extends CLType {
+  linksTo = Unit;
+
   toString(): string {
     return 'Unit';
   }

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { CLList, CLListType, CLBool, CLBoolType, CLU8 } from './index';
+import { CLList, CLListType, CLBool, CLBoolType, CLU8, CLI32, CLI32Type } from './index';
 
 describe('CLValue List implementation', () => {
   it('List should return proper clType', () => {
@@ -22,6 +22,7 @@ describe('CLValue List implementation', () => {
   });
 
   it('Should throw an error when list is not correct by construction', () => {
+    // @ts-ignore
     const badFn = () => new CLList([1, 2, 3]);
 
     expect(badFn).to.throw("Invalid data type(s) provided.");
@@ -131,7 +132,19 @@ describe('CLValue List implementation', () => {
 
     const bytes = myList.toBytes();
 
-    const listType = new CLListType(CLBool);
+    const listType = new CLListType(new CLBoolType());
+
+    const reconstructedList = CLList.fromBytes(bytes, listType);
+
+    expect(reconstructedList.result.val).to.be.deep.eq(myList);
+  });
+
+  it('Runs fromBytes properly', () => {
+    const myList = new CLList([new CLI32(100000), new CLI32(-999)]);
+
+    const bytes = myList.toBytes();
+
+    const listType = new CLListType(new CLI32Type());
 
     const reconstructedList = CLList.fromBytes(bytes, listType);
 

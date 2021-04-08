@@ -35,48 +35,64 @@ abstract class Numeric extends CLValue implements ToBytes {
 }
 
 export class CLI32Type extends CLType {
+  linksTo = CLI32;
+
   toString(): string {
     return 'I32';
   }
 }
 
 export class CLI64Type extends CLType {
+  linksTo = CLI64;
+
   toString(): string {
     return 'I64';
   }
 }
 
 export class CLU8Type extends CLType {
+  linksTo = CLU8;
+
   toString(): string {
     return 'U8';
   }
 }
 
 export class CLU32Type extends CLType {
+  linksTo = CLU32;
+
   toString(): string {
     return 'U32';
   }
 }
 
 export class CLU64Type extends CLType {
+  linksTo = CLU64;
+
   toString(): string {
     return 'U64';
   }
 }
 
 export class CLU128Type extends CLType {
+  linksTo = CLU128;
+
   toString(): string {
     return 'U128';
   }
 }
 
 export class CLU256Type extends CLType {
+  linksTo = CLU256;
+
   toString(): string {
     return 'U256';
   }
 }
 
 export class CLU512Type extends CLType {
+  linksTo = CLU512;
+
   toString(): string {
     return 'U512';
   }

@@ -8,6 +8,8 @@ const OPTION_TAG_NONE = 0;
 const OPTION_TAG_SOME = 1;
 
 export class CLOptionType extends CLType {
+  linksTo = CLOption;
+
   toString(): string {
     return "Option" 
   }

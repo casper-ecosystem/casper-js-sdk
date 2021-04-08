@@ -24,6 +24,7 @@ describe('CLValue CLMap implementation', () => {
     const badFn = () =>
       new CLMap([
         [new CLString('ABC'), new CLI32(123)],
+        // @ts-ignore
         [new CLString('DEF'), new CLBool(false)]
       ]);
 

@@ -4,6 +4,8 @@ import { CLType, CLValue, ToBytes } from './Abstract';
 import { toBytesU32 } from '../ByteConverters';
 
 export class CLMapType<K extends CLType, V extends CLType> extends CLType {
+  linksTo = CLMap;
+
   innerKey: K;
   innerValue: V;
 

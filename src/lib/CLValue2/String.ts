@@ -2,6 +2,8 @@ import { CLType, CLValue, ToBytes } from "./Abstract";
 import { toBytesString } from "../ByteConverters";
 
 export class CLStringType extends CLType {
+  linksTo = CLString;
+
   toString(): string {
     return 'String';
   }

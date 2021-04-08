@@ -8,6 +8,8 @@ const RESULT_TAG_ERROR = 0;
 const RESULT_TAG_OK = 1;
 
 export class CLResultType extends CLType {
+  linksTo = CLResult;
+
   toString(): string {
     return 'Result';
   }

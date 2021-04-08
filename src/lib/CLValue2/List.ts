@@ -104,7 +104,7 @@ export class CLList<T extends CLValue & ToBytes & FromBytes> extends CLValue
   static fromBytes(
     bytes: Uint8Array,
     listType: CLListType<CLType>
-  ): ResultAndRemainder<CLList<CLValue & ToBytes>, CLErrorCodes> {
+  ): ResultAndRemainder<CLList<CLValue & ToBytes & FromBytes>, CLErrorCodes> {
     const { result: u32Res, remainder: u32Rem } = CLU32.fromBytes(bytes);
     if (!u32Res.ok) {
       return resultHelper(Err(u32Res.val));
@@ -124,7 +124,7 @@ export class CLList<T extends CLValue & ToBytes & FromBytes> extends CLValue
       if (!vRes.ok) {
         return resultHelper(Err(vRes.val));
       }
-      vec.push(vRes.val.value());
+      vec.push(vRes.val);
       remainder = vRem;
     }
 

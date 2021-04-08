@@ -15,6 +15,8 @@ import {
 } from './index';
 
 export class CLKeyType extends CLType {
+  linksTo = CLKey;
+
   toString(): string {
     return 'Key';
   }

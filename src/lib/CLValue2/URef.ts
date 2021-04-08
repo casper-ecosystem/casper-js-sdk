@@ -36,6 +36,8 @@ export enum AccessRights {
 }
 
 export class CLURefType extends CLType {
+  linksTo = CLURef;
+
   toString(): string {
     return 'URef';
   }

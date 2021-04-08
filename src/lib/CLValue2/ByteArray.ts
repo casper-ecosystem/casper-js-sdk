@@ -4,6 +4,8 @@ import { Ok } from "ts-results";
 export const CL_BYTE_ARRAY_MAX_LENGTH = 32;
 
 export class CLByteArrayType extends CLType {
+  linksTo = CLByteArray;
+
   toString(): string {
     return 'ByteArray';
   }

@@ -10,6 +10,8 @@ import {
 import { Ok, Err } from 'ts-results';
 
 export class CLAccountHashType extends CLType {
+  linksTo = CLAccountHash;
+
   toString(): string {
     return 'AccountHash';
   }
