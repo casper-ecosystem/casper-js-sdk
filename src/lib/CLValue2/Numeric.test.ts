@@ -17,4 +17,12 @@ describe('Numeric implementation tests', () => {
 
     expect(badFn).to.throw("Can't provide negative numbers with isSigned=false");
   });
+
+  it('Should do proper toBytes()/fromBytes()', () => {
+    const num1 = new CLI32(-10);
+    const num1bytes = num1.toBytes();
+
+    expect(CLI32.fromBytes(num1bytes).result.ok).to.be.eq(true);
+    expect(CLI32.fromBytes(num1bytes).result.val).to.be.deep.eq(num1);
+  });
 });
