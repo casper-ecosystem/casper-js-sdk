@@ -1,9 +1,21 @@
-// import { CLType, CLValue, ToBytes, CLErrorCodes, resultHelper, ResultAndRemainder } from './index';
-import { CLType, CLValue, ToBytes } from './index';
+import { Ok, Err } from 'ts-results';
+import {
+  CLType,
+  CLValue,
+  ToBytes,
+  CLErrorCodes,
+  resultHelper,
+  ResultAndRemainder,
+  CLU32,
+  FromBytes,
+} from './index';
+// import { CLType, CLValue, ToBytes } from './index';
 import { toBytesVector } from '../ByteConverters';
 
 export class CLListType<T extends CLType> extends CLType {
   inner: T;
+  linksTo = CLList;
+
   constructor(inner: T) {
     super();
     this.inner = inner;
@@ -14,8 +26,8 @@ export class CLListType<T extends CLType> extends CLType {
   }
 }
 
-export class CLList<T extends CLValue & ToBytes> extends CLValue
-  implements ToBytes {
+export class CLList<T extends CLValue & ToBytes & FromBytes> extends CLValue
+  implements ToBytes, FromBytes {
   data: Array<T>;
   vectorType: CLType;
 
@@ -51,14 +63,14 @@ export class CLList<T extends CLValue & ToBytes> extends CLValue
 
   get(index: number): T {
     if (index >= this.data.length) {
-      throw new Error("List index out of bounds.");
+      throw new Error('List index out of bounds.');
     }
     return this.data[index];
   }
 
   set(index: number, item: T): void {
     if (index >= this.data.length) {
-      throw new Error("List index out of bounds.");
+      throw new Error('List index out of bounds.');
     }
     this.data[index] = item;
   }
@@ -89,7 +101,33 @@ export class CLList<T extends CLValue & ToBytes> extends CLValue
     return toBytesVector(this.data);
   }
 
-  // static fromBytes(bytes: Uint8Array): ResultAndRemainder<CLList<CLValue & ToBytes>, CLErrorCodes> {
-  // }
+  static fromBytes(
+    bytes: Uint8Array,
+    listType: CLListType<CLType>
+  ): ResultAndRemainder<CLList<CLValue & ToBytes>, CLErrorCodes> {
+    const { result: u32Res, remainder: u32Rem } = CLU32.fromBytes(bytes);
+    if (!u32Res.ok) {
+      return resultHelper(Err(u32Res.val));
+    }
 
+    const size = u32Res.val.value().toNumber();
+
+    const vec = [];
+
+    let remainder = u32Rem;
+
+    for (let i = 0; i < size; i++) {
+      const referenceClass = listType.inner.linksTo;
+      const { result: vRes, remainder: vRem } = referenceClass.fromBytes(
+        remainder
+      );
+      if (!vRes.ok) {
+        return resultHelper(Err(vRes.val));
+      }
+      vec.push(vRes.val.value());
+      remainder = vRem;
+    }
+
+    return resultHelper(Ok(new CLList(vec)), remainder);
+  }
 }

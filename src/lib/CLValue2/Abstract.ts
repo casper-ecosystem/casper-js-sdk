@@ -1,7 +1,9 @@
 import { Result } from 'ts-results';
+import { CLErrorCodes } from "./index";
 
 export abstract class CLType {
   abstract toString(): string;
+  abstract linksTo: any;
 }
 
 export abstract class CLValue {
@@ -12,6 +14,10 @@ export abstract class CLValue {
 
 export abstract class ToBytes {
   toBytes: () => Uint8Array;
+}
+
+export abstract class FromBytes {
+  static fromBytes: (bytes: Uint8Array) => ResultAndRemainder<CLValue & ToBytes & FromBytes, CLErrorCodes>
 }
 
 export interface ResultAndRemainder<T, E> {

@@ -1,6 +1,5 @@
 import { expect } from 'chai';
-import { CLList } from './List';
-import { CLBool, CLBoolType } from './Bool';
+import { CLList, CLListType, CLBool, CLBoolType, CLU8 } from './index';
 
 describe('CLValue List implementation', () => {
   it('List should return proper clType', () => {
@@ -46,7 +45,10 @@ describe('CLValue List implementation', () => {
     const mList = new CLList(new CLBoolType());
     const len = mList.size();
 
+    const badFn = () => mList.push(new CLU8(10));
+
     expect(len).to.equal(0);
+    expect(badFn).to.throw("Incosnsistent data type, use Bool.");
   });
 
   it('Get should return proper value', () => {
@@ -122,6 +124,18 @@ describe('CLValue List implementation', () => {
     const myList = new CLList([new CLBool(false)]);
     const expected = Uint8Array.from([ 1, 0, 0, 0, 0 ]);
     expect(myList.toBytes()).to.deep.eq(expected);
+  });
+
+  it('Runs fromBytes properly', () => {
+    const myList = new CLList([new CLBool(false), new CLBool(true)]);
+
+    const bytes = myList.toBytes();
+
+    const listType = new CLListType(CLBool);
+
+    const reconstructedList = CLList.fromBytes(bytes, listType);
+
+    expect(reconstructedList.result.val).to.be.deep.eq(myList);
   });
 });
 

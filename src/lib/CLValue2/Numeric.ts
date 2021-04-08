@@ -22,7 +22,6 @@ abstract class Numeric extends CLValue implements ToBytes {
     }
     this.bitSize = bitSize;
     this.signed = isSigned;
-    // TBD: we need to check here. Unsigned and negative value etc
     this.data = BigNumber.from(value);
   }
 
