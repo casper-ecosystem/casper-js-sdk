@@ -21,6 +21,15 @@ describe('CLString', () => {
     // @ts-ignore
     const badFn = () => new CLString(123);
 
-    expect(badFn).to.throw("Wrong data type, you should provide string, but you provided number");
+    expect(badFn).to.throw(
+      'Wrong data type, you should provide string, but you provided number'
+    );
+  });
+
+  it('toBytes() / fromBytes()', () => {
+    const str = new CLString('ABC');
+    const bytes = str.toBytes();
+    const { result } = CLString.fromBytes(bytes);
+    expect(result.val).to.be.deep.eq(str);
   });
 });

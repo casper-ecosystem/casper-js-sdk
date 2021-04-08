@@ -1,4 +1,14 @@
-import { CLType, CLValue, ToBytes } from './Abstract';
+import { Ok } from 'ts-results';
+
+import {
+  CLType,
+  CLValue,
+  ToBytes,
+  FromBytes,
+  CLErrorCodes,
+  ResultAndRemainder,
+  resultHelper
+} from './index';
 
 export class UnitType extends CLType {
   linksTo = Unit;
@@ -8,7 +18,7 @@ export class UnitType extends CLType {
   }
 }
 
-export class Unit extends CLValue implements ToBytes {
+export class Unit extends CLValue implements ToBytes, FromBytes {
   data = undefined;
 
   clType(): CLType {
@@ -21,5 +31,11 @@ export class Unit extends CLValue implements ToBytes {
 
   toBytes(): Uint8Array {
     return Uint8Array.from([]);
+  }
+
+  static fromBytes(
+    rawBytes: Uint8Array
+  ): ResultAndRemainder<Unit, CLErrorCodes> {
+    return resultHelper(Ok(new Unit()), rawBytes);
   }
 }

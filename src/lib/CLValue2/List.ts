@@ -9,7 +9,6 @@ import {
   CLU32,
   FromBytes,
 } from './index';
-// import { CLType, CLValue, ToBytes } from './index';
 import { toBytesVector } from '../ByteConverters';
 
 export class CLListType<T extends CLType> extends CLType {

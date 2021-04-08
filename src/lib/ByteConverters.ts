@@ -93,15 +93,21 @@ export const toBytesU512 = toBytesNumber(512, false);
 // This probably might be removed
 export const toBytesDeployHash = (deployHash: Uint8Array) => {
   return deployHash;
-}
+};
 
 /**
  * Serializes a string into an array of bytes.
  */
-export function toBytesString(str: string): Uint8Array {
+// TODO: Get rid of Buffer
+export const toBytesString = (str: string): Uint8Array => {
   const arr = Uint8Array.from(Buffer.from(str));
   return concat([toBytesU32(arr.byteLength), arr]);
-}
+};
+
+export const fromBytesString = (byte: Uint8Array): string => {
+  // return new TextEncoder().encode(str);
+  return new TextDecoder().decode(byte);
+};
 
 /**
  * Serializes an array of u8, equal to Vec<u8> in rust.
