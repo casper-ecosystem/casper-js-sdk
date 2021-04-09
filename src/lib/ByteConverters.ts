@@ -98,9 +98,8 @@ export const toBytesDeployHash = (deployHash: Uint8Array) => {
 /**
  * Serializes a string into an array of bytes.
  */
-// TODO: Get rid of Buffer
 export const toBytesString = (str: string): Uint8Array => {
-  const arr = Uint8Array.from(Buffer.from(str));
+  const arr = new TextEncoder().encode(str);
   return concat([toBytesU32(arr.byteLength), arr]);
 };
 
