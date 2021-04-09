@@ -101,12 +101,10 @@ export class CLOption extends GenericOption<CLValue & ToBytes> implements CLValu
 
     if (optionTag === OPTION_TAG_SOME) {
       const referenceClass = type.inner.linksTo;
-      console.log(referenceClass);
       const { result: valRes, remainder: valRem }= referenceClass.fromBytes(U8Rem);
       if (!valRes.ok) {
         return resultHelper(Err(valRes.val));
       }
-      console.log(valRes.val);
       return resultHelper(Ok(new CLOption(Some(valRes.val as (CLValue & ToBytes)))), valRem);
     }
 

@@ -118,7 +118,8 @@ export class CLList<T extends CLValue & ToBytes & FromBytes> extends CLValue
     for (let i = 0; i < size; i++) {
       const referenceClass = listType.inner.linksTo;
       const { result: vRes, remainder: vRem } = referenceClass.fromBytes(
-        remainder
+        remainder,
+        listType.inner
       );
       if (!vRes.ok) {
         return resultHelper(Err(vRes.val));
