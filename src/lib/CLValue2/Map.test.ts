@@ -1,8 +1,5 @@
 import { expect } from 'chai';
-import { CLMap } from './Map';
-import { CLBool } from './Bool';
-import { CLString, CLStringType } from './String';
-import { CLI32 } from './Numeric';
+import { CLMap, CLMapType, CLBool, CLString, CLStringType, CLI32, CLI32Type } from './index';
 
 describe('CLValue CLMap implementation', () => {
   it('Maps should return proper clType', () => {
@@ -47,7 +44,7 @@ describe('CLValue CLMap implementation', () => {
     expect(myMap.get(myKey)).to.be.deep.eq(myVal);
   });
 
-  it('Get() should return indefined on non-existing key', () => {
+  it('Get() should return undefined on non-existing key', () => {
     const myKey = new CLString('ABC');
     const myVal = new CLI32(10);
     const myMap = new CLMap([[myKey, myVal]]);
@@ -106,5 +103,16 @@ describe('CLValue CLMap implementation', () => {
     myMap.delete(myKey);
 
     expect(myMap.size()).to.eq(0);
+  });
+
+  it('fromBytes() / toBytes()', () => {
+    const myKey = new CLString('ABC');
+    const myVal = new CLI32(10);
+    const myMap = new CLMap([[myKey, myVal]]);
+
+    const bytes = myMap.toBytes();
+    const mapType = new CLMapType(new CLStringType(), new CLI32Type());
+
+    expect(CLMap.fromBytes(bytes, mapType).result.val).to.be.deep.eq(myMap);
   });
 });
