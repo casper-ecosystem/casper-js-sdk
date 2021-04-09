@@ -2,7 +2,7 @@ interface CasperLabsHelper {
   /**
    * Returns connection status from Signer
    */
-  isConnected: () => Promise<boolean | undefined>;
+  isConnected: () => Promise<boolean>;
   /**
    * Attempt connection to Signer
    */
@@ -15,7 +15,7 @@ interface CasperLabsHelper {
    */
   sign: (messageBase16: string, publicKeyBase64?: string) => Promise<string>;
   // returns base64 encoded public key of user current selected account.
-  getSelectedPublicKeyBase64: () => Promise<string | undefined>;
+  getSelectedPublicKeyBase64: () => Promise<string>;
 }
 
 interface SignerTestingHelper {
@@ -30,7 +30,7 @@ interface SignerTestingHelper {
   /**
    * Check if there is an existing vault
    */
-  hasCreatedVault: () => Promise<boolean | undefined>;
+  hasCreatedVault: () => Promise<boolean>;
   /**
    * Reset existing vault (for testing) prevents complications
    * and unlocks in preparation for creating an account
