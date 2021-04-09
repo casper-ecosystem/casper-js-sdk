@@ -104,7 +104,6 @@ export const toBytesString = (str: string): Uint8Array => {
 };
 
 export const fromBytesString = (byte: Uint8Array): string => {
-  // return new TextEncoder().encode(str);
   return new TextDecoder().decode(byte);
 };
 

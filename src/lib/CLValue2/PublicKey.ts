@@ -1,11 +1,19 @@
 import { concat } from '@ethersproject/bytes';
+import { Ok, Err } from "ts-results";
 
-import { CLType, CLValue } from './Abstract';
+import { CLType, CLValue,
+  CLErrorCodes,
+  resultHelper,
+  ResultAndRemainder,
+  ToBytes,
+  FromBytes,
+} from './index';
 import { decodeBase16, encodeBase16 } from '../Conversions';
 import { byteHash } from '../Contracts';
 
 // TODO: Tidy up almost the same enum in 
 // { SignatureAlgorithm } '../Keys';
+
 export enum CLPublicKeyTag {
   ED25519 = 1,
   SECP256K1 = 2
@@ -19,7 +27,7 @@ export class CLPublicKeyType extends CLType {
   }
 }
 
-export class CLPublicKey extends CLValue {
+export class CLPublicKey extends CLValue implements ToBytes, FromBytes {
   data: Uint8Array;
   private tag: CLPublicKeyTag;
 
@@ -90,7 +98,6 @@ export class CLPublicKey extends CLValue {
     }
     const publicKeyHexBytes = decodeBase16(publicKeyHex);
 
-    // TODO: Test it!
     return new CLPublicKey(publicKeyHexBytes.subarray(1), publicKeyHexBytes[0]);
   }
 
@@ -99,6 +106,31 @@ export class CLPublicKey extends CLValue {
       Uint8Array.from([this.tag]),
       this.data
     ]);
+  }
+
+  static fromBytes(
+    rawBytes: Uint8Array,
+  ): ResultAndRemainder<CLPublicKey, CLErrorCodes> {
+    if (rawBytes.length < 1) {
+      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+    }
+
+    const variant = rawBytes[0];
+
+    let expectedPublicKeySize;
+    if (variant === CLPublicKeyTag.ED25519) { 
+      expectedPublicKeySize = 32;
+    } else if (variant === CLPublicKeyTag.SECP256K1) { 
+      expectedPublicKeySize = 33;
+    } else {
+      return resultHelper(Err(CLErrorCodes.Formatting));
+    }
+
+    const bytes = rawBytes.subarray(1, expectedPublicKeySize + 1);
+
+    const publicKey = new CLPublicKey(bytes, variant);
+
+    return resultHelper(Ok(publicKey), rawBytes.subarray(expectedPublicKeySize + 1));
   }
 
 }
