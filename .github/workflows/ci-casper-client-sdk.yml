@@ -41,5 +41,3 @@ jobs:
         BRANCH: gh-pages # The branch the action should deploy to.
         FOLDER: docs/ # The folder that the typedoc generates files.
         CLEAN: true # Automatically remove deleted files from the deploy branch
-        TARGET_FOLDER: docs/ # The folder that we serve our docs files from
-
