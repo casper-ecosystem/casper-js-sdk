@@ -16,3 +16,7 @@ You could preview it at [https://casper-ecosystem.github.io/casper-client-sdk-do
 ```
 npm run test
 ```
+
+## Examples
+
+Basic examples of library usage are stored inside `/test` directory.
