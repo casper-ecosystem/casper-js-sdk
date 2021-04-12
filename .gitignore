@@ -1,7 +1,5 @@
 node_modules
 /dist/
-/docs/*
-!/docs/README.md
 .eslintcache
 
 .DS_Store
