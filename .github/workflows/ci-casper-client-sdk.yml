@@ -25,10 +25,21 @@ jobs:
         node-version: [14.x]
 
     steps:
+    - name: Checkout 🛎️
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
+    - name: Install Build & Test 🔧
     - run: npm install
     - run: npm test
+    - run: npm run docs
+    - name: Deploy Docs 🚀
+      uses: JamesIves/github-pages-deploy-action@3.6.2
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: master # The branch the action should deploy to.
+        FOLDER: docs # The folder that the typedoc generates files.
+        CLEAN: true # Automatically remove deleted files from the deploy branch
+        TARGET_FOLDER: docs # The folder that we serve our docs files from
