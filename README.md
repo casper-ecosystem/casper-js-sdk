@@ -9,7 +9,7 @@ npm install casper-client-sdk --save
 
 ## Documentation
 
-Documentation generated from code is avaibale [here](https://casper-ecosystem.github.io/casper-client-sdk/code/).
+Documentation generated from code is available [here](https://casper-ecosystem.github.io/casper-client-sdk/code/).
 
 ## Tests
 
