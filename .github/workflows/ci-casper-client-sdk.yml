@@ -42,3 +42,4 @@ jobs:
         FOLDER: docs/code # The folder that the typedoc generates files.
         CLEAN: true # Automatically remove deleted files from the deploy branch
         TARGET_FOLDER: docs/code # The folder that we serve our docs files from
+
