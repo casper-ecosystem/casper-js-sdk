@@ -37,8 +37,9 @@ jobs:
     - name: Deploy Docs 🚀
       uses: JamesIves/github-pages-deploy-action@3.6.2
       with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        BRANCH: master # The branch the action should deploy to.
+        TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages # The branch the action should deploy to.
         FOLDER: docs/code # The folder that the typedoc generates files.
         CLEAN: true # Automatically remove deleted files from the deploy branch
         TARGET_FOLDER: docs/code # The folder that we serve our docs files from
+
