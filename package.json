@@ -7,6 +7,7 @@
   "browser": "dist/lib.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "prepare": "husky-run install",
     "prepublishOnly": "npm run build && npm run test",
     "lint": "eslint src/ --fix",
     "prebuild": "npm run clean && npm run lint",
@@ -14,8 +15,7 @@
     "clean": "rm -rf ./dist",
     "~build": "tsc --watch",
     "test": "TS_NODE_FILES=true mocha -r ts-node/register test/**/*.test.ts",
-    "docs": "typedoc --out docs/code/ src",
-    "prepare": "husky-run install"
+    "docs": "typedoc --out docs/code/ src"
   },
   "keywords": [
     "Casper",
