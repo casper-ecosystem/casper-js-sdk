@@ -249,7 +249,7 @@ export class U32 extends NumberCoder {
       return Result.Err(FromBytesError.EarlyEndOfStream);
     }
     const u32Bytes = Buffer.from(bytes.subarray(0, 4));
-    const u32 = u32Bytes.readUInt32LE();
+    const u32 = u32Bytes.readUInt32LE(0);
 
     return Result.Ok(new U32(u32), bytes.subarray(4));
   }
@@ -270,7 +270,7 @@ export class I32 extends NumberCoder {
       return Result.Err(FromBytesError.EarlyEndOfStream);
     }
     const i32Bytes = Buffer.from(bytes.subarray(0, 4));
-    const i32 = i32Bytes.readInt32LE();
+    const i32 = i32Bytes.readInt32LE(0);
     return Result.Ok(new I32(i32), bytes.subarray(4));
   }
 }
