@@ -20,10 +20,10 @@ export abstract class CLValue {
     innerType?: CLType
   ) => ResultAndRemainder<CLValue & ToBytes & FromBytes, CLErrorCodes>;
 
-  toJSON(): Result<CLJsonFormat, CLErrorCodes> {
+  toJSON(): ResultAndRemainder<CLJsonFormat, CLErrorCodes> {
     const bytes = encodeBase16(this.toBytes());
     const clType = this.clType().toJSON();
-    return Ok({ bytes: bytes, cl_type: clType });
+    return resultHelper(Ok({ bytes: bytes, cl_type: clType }));
   }
 
   static fromJSON(
@@ -31,8 +31,8 @@ export abstract class CLValue {
   ): ResultAndRemainder<CLValue, CLErrorCodes> {
     if (!json.bytes) return resultHelper(Err(CLErrorCodes.Formatting));
     const uint8bytes = decodeBase16(json.bytes);
-    const CLTypes = matchTypeToCLType(json.cl_type);
-    return this.fromBytes(uint8bytes, CLTypes);
+    const clTypes = matchTypeToCLType(json.cl_type);
+    return this.fromBytes(uint8bytes, clTypes as CLType);
   }
 }
 

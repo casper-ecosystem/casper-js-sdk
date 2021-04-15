@@ -115,6 +115,17 @@ describe('CLKey', () => {
     expect(bytes).to.be.deep.eq(expectedBytes);
   });
 
+
+  it('toJSON() / fromJSON() with CLAccountHash', () => {
+    const hash = new CLAccountHash(Uint8Array.from(Array(32).fill(42)));
+    const myKey = new CLKey(hash);
+    const json = myKey.toJSON();
+    // @ts-ignore
+    const fromJson = CLKey.fromJSON(json.result.val);
+    
+    expect(fromJson.result.val).to.be.deep.eq(myKey);
+  });
+
   it('toBytes() with CLURef', () => {
     const urefAddr =
       '2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a';
@@ -122,10 +133,22 @@ describe('CLKey', () => {
       '022a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a07'
     );
     const uref = new CLURef(decodeBase16(urefAddr), AccessRights.READ_ADD_WRITE);
-    const key = new CLKey(uref);
-    const bytes = key.toBytes();
+    const myKey = new CLKey(uref);
+    const bytes = myKey.toBytes();
     expect(bytes).to.deep.eq(truth);
-    expect(CLKey.fromBytes(bytes).result.val).deep.eq(key);
+    expect(CLKey.fromBytes(bytes).result.val).deep.eq(myKey);
+  });
+
+  it('toJSON() / fromJSON() with CLUref', () => {
+    const urefAddr =
+      '2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a';
+    const uref = new CLURef(decodeBase16(urefAddr), AccessRights.READ_ADD_WRITE);
+    const myKey= new CLKey(uref);
+    const json = myKey.toJSON();
+    // @ts-ignore
+    const fromJson = CLKey.fromJSON(json.result.val);
+    
+    expect(fromJson.result.val).to.be.deep.eq(myKey);
   });
 
   it('toBytes() with invalid data', () => {

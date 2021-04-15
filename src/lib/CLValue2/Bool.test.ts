@@ -43,6 +43,6 @@ describe('CLBool', () => {
     const myBool = new CLBool(false);
     const json = myBool.toJSON();
     // @ts-ignore
-    expect(CLBool.fromJSON(json.val).result.val).to.be.deep.eq(myBool);
+    expect(CLBool.fromJSON(json.result.val).result.val).to.be.deep.eq(myBool);
   });
 });

@@ -1,5 +1,5 @@
 import { concat } from '@ethersproject/bytes';
-import { Ok, Err } from "ts-results";
+import { Ok, Err } from 'ts-results';
 
 import {
   CLType,
@@ -11,6 +11,7 @@ import {
   CLU32,
   FromBytes
 } from './index';
+import { MAP_ID } from "./constants";
 import { toBytesU32 } from '../ByteConverters';
 
 export class CLMapType<K extends CLType, V extends CLType> extends CLType {
@@ -26,11 +27,16 @@ export class CLMapType<K extends CLType, V extends CLType> extends CLType {
   }
 
   toString(): string {
-    return `Map (${this.innerKey.toString()}: ${this.innerValue.toString()})`;
+    return `${MAP_ID} (${this.innerKey.toString()}: ${this.innerValue.toString()})`;
   }
 
-  toJSON(): string {
-    return `Map (${this.innerKey.toString()}: ${this.innerValue.toString()})`;
+  toJSON(): any {
+    return {
+      [MAP_ID]: {
+        key: this.innerKey.toJSON(),
+        value: this.innerValue.toJSON()
+      }
+    };
   }
 }
 

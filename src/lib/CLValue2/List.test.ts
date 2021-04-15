@@ -179,9 +179,9 @@ describe('CLValue List implementation', () => {
 
     const json = myList.toJSON();
     // @ts-ignore
-    const newList = CLList.fromJSON(json.val);
+    const newList = CLList.fromJSON(json.result.val);
 
-    const newList2 = buildCLValueFromJson(json.val);
+    const newList2 = buildCLValueFromJson(json.result.val);
 
     expect(newList.result.val).to.be.deep.eq(myList);
     // @ts-ignore

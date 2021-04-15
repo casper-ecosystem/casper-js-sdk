@@ -110,4 +110,34 @@ describe('CLTuple', () => {
       ).result.val.value()
     ).to.be.deep.eq(myTup3.value());
   });
+
+  it('fromJSON() / toJSON()', () => {
+    const myTup1 = new CLTuple1([new CLBool(true)]);
+    const myTup2 = new CLTuple2([new CLBool(false), new CLI32(-555)]);
+    const myTup3 = new CLTuple3([
+      new CLI32(-555),
+      new CLString('ABC'),
+      new CLString('XYZ')
+    ]);
+
+    const myTup1JSON = myTup1.toJSON();
+    const myTup2JSON = myTup2.toJSON();
+    const myTup3JSON = myTup3.toJSON();
+
+    expect(
+      CLTuple1.fromJSON(myTup1JSON.result.val)
+        .result.val
+    ).to.be.deep.eq(myTup1);
+
+    expect(
+      CLTuple2.fromJSON(myTup2JSON.result.val)
+        .result.val
+    ).to.be.deep.eq(myTup2);
+
+    expect(
+      CLTuple3.fromJSON(myTup3JSON.result.val)
+        .result.val
+    ).to.be.deep.eq(myTup3);
+
+  });
 });

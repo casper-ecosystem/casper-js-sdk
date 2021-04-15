@@ -9,13 +9,14 @@ import {
   resultHelper,
   CLErrorCodes
 } from './index';
+import { STRING_ID } from "./constants";
 import { toBytesString, fromBytesString } from '../ByteConverters';
 
 export class CLStringType extends CLType {
   linksTo = CLString;
 
   toString(): string {
-    return 'String';
+    return STRING_ID;
   }
 
   toJSON(): string {

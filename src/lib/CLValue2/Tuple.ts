@@ -10,6 +10,7 @@ import {
   resultHelper,
   CLErrorCodes,
 } from './index';
+import { TUPLE_MATCH_LEN_TO_ID } from "./utils";
 
 // TBD: Do we want Tuple to have all of the values on init? If no, when it will be serialized it should throw an error that eg Tuple2 has only one element and is invalid
 abstract class GenericTuple extends CLValue implements ToBytes, FromBytes{
@@ -113,8 +114,11 @@ const generateTupleClasses = (
       return `Tuple${this.inner.length} (${innerTypes})`;
     }
 
-    toJSON(): string {
-      return this.toString();
+    toJSON(): any {
+      const id = TUPLE_MATCH_LEN_TO_ID[this.inner.length - 1];
+      return {
+        [id]: this.inner.map(t => t.toJSON())
+      }
     }
   }
 
