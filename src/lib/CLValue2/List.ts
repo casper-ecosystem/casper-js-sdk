@@ -25,8 +25,8 @@ export class CLListType<T extends CLType> extends CLType {
   }
 }
 
-export class CLList<T extends CLValue & ToBytes & FromBytes> extends CLValue
-  implements ToBytes, FromBytes {
+export class CLList<T extends CLValue> extends CLValue
+  {
   data: Array<T>;
   vectorType: CLType;
 

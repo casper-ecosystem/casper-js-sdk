@@ -6,7 +6,7 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { MaxUint256, NegativeOne, One, Zero } from '@ethersproject/constants';
 import { arrayify, concat } from '@ethersproject/bytes';
-import { ToBytes } from './CLValue2';
+import { CLValue } from './CLValue2';
 
 /**
  * Convert number to bytes
@@ -117,7 +117,7 @@ export function toBytesArrayU8(arr: Uint8Array): Uint8Array {
 /**
  * Serializes a vector of values of type `T` into an array of bytes.
  */
-export const toBytesVector = <T extends ToBytes>(vec: T[]): Uint8Array => {
+export const toBytesVector = <T extends CLValue>(vec: T[]): Uint8Array => {
   const valueByteList = vec.map(e => e.toBytes());
   valueByteList.splice(0, 0, toBytesU32(vec.length));
   return concat(valueByteList);

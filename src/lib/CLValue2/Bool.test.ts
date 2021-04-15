@@ -37,4 +37,13 @@ describe('CLBool', () => {
     expect(CLBool.fromBytes(Uint8Array.from([])).result.ok).to.be.eq(false);
     expect(CLBool.fromBytes(Uint8Array.from([])).result.val).to.be.eq(CLErrorCodes.EarlyEndOfStream);
   });
+
+
+  it('toJSON() / fromJSON() do proper bytes serialization', () => {
+    const myBool = new CLBool(false);
+    const json = myBool.toJSON();
+    if (json.ok) {
+      expect(CLBool.fromJSON(json.val).result.val).to.be.deep.eq(myBool);
+    }
+  });
 });
