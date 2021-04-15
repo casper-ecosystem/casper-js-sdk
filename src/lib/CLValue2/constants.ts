@@ -13,3 +13,7 @@ export enum KeyVariant {
   Hash,
   URef
 }
+
+export const BOOL_CL_TYPE = "Bool";
+
+export type CLTypes = typeof BOOL_CL_TYPE;

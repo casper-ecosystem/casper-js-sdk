@@ -31,3 +31,5 @@ export const resultHelper = <T, E>(
 ): ResultAndRemainder<T, E> => {
   return { result: arg1, remainder: arg2 };
 };
+
+export interface CLJsonFormat { bytes: string; cl_type: string };
