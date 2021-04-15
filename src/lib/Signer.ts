@@ -8,7 +8,7 @@
 /**
  * Check whether CasperLabs Signer extension is connected
  */
-export const isConnected: () => Promise<boolean | undefined> = async () => {
+export const isConnected: () => Promise<boolean> = async () => {
   return await window.casperlabsHelper!.isConnected();
 };
 
@@ -24,10 +24,7 @@ export const sendConnectionRequest: () => void = () => {
  *
  * @throws Error if haven't connected to CasperLabs Signer browser extension.
  */
-export const getSelectedPublicKeyBase64: () => Promise<
-  string | undefined
-> = () => {
-  throwIfNotConnected();
+export const getSelectedPublicKeyBase64: () => Promise<string> = () => {
   return window.casperlabsHelper!.getSelectedPublicKeyBase64();
 };
 
@@ -44,7 +41,6 @@ export const sign: (
   messageBase16: string,
   publicKeyBase64?: string
 ) => Promise<string> = (messageBase16: string, publicKeyBase64?: string) => {
-  throwIfNotConnected();
   return window.casperlabsHelper!.sign(messageBase16, publicKeyBase64);
 };
 
@@ -56,7 +52,7 @@ export const forceDisconnect: () => void = () => {
   return window.signerTestingHelper!.forceDisconnect();
 };
 
-export const hasCreatedVault: () => Promise<boolean | undefined> = () => {
+export const hasCreatedVault: () => Promise<boolean> = () => {
   return window.signerTestingHelper!.hasCreatedVault();
 };
 
@@ -85,12 +81,4 @@ export const signTestDeploy: (msgId: number) => Promise<void> = (
   msgId: number
 ) => {
   return window.signerTestingHelper!.signTestDeploy(msgId);
-};
-
-const throwIfNotConnected = () => {
-  if (!isConnected()) {
-    throw new Error(
-      'No CasperLabs Signer browser plugin detected or it is not ready'
-    );
-  }
 };
