@@ -1,6 +1,7 @@
 import { Result, Ok, Err } from 'ts-results';
 import { CLErrorCodes } from './index';
 import { encodeBase16, decodeBase16 } from '../Conversions';
+import { matchTypeToCLType } from './utils';
 
 export abstract class CLType {
   abstract toString(): string;
@@ -21,7 +22,7 @@ export abstract class CLValue {
 
   toJSON(): Result<CLJsonFormat, CLErrorCodes> {
     const bytes = encodeBase16(this.toBytes());
-    const clType = this.clType().toString();
+    const clType = this.clType().toJSON();
     return Ok({ bytes: bytes, cl_type: clType });
   }
 
@@ -30,7 +31,8 @@ export abstract class CLValue {
   ): ResultAndRemainder<CLValue, CLErrorCodes> {
     if (!json.bytes) return resultHelper(Err(CLErrorCodes.Formatting));
     const uint8bytes = decodeBase16(json.bytes);
-    return this.fromBytes(uint8bytes);
+    const CLTypes = matchTypeToCLType(json.cl_type);
+    return this.fromBytes(uint8bytes, CLTypes);
   }
 }
 

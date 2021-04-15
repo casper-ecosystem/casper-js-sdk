@@ -66,6 +66,21 @@ describe(`RuntimeArgs`, () => {
     );
   });
 
+//   it('should deserialize Option of U512', () => {
+//     let a = CLTypedAndToBytesHelper.u512(123);
+//     // let b = CLValue.list([a]);
+//     let c = CLValue.list([a]);
+//     let serializer = new TypedJSON(CLValue);
+//     let str = serializer.stringify(c);
+//     // console.log("c", c);
+//     console.log("str", str);
+//     // let parsed = serializer.parse(str)!;
+//     // assert.deepEqual(
+//     //   value.asOption().getSome().asBigNumber(),
+//     //   parsed.asOption().getSome().asBigNumber()
+//     // );
+//   });
+
   it('should deserialize RuntimeArgs', () => {
     let a = CLTypedAndToBytesHelper.u512(123);
     const runtimeArgs = RuntimeArgs.fromMap({

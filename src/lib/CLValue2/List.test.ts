@@ -8,6 +8,7 @@ import {
   CLI32,
   CLI32Type
 } from './index';
+import { buildCLValueFromJson} from './utils';
 
 describe('CLValue List implementation', () => {
   it('List should return proper clType', () => {
@@ -162,7 +163,7 @@ describe('CLValue List implementation', () => {
     expect(reconstructedList.result.val).to.be.deep.eq(myList);
   });
 
-  it('Runs fromBytes properly', () => {
+  it('Runs toJSON() / fromJSON() properly', () => {
     const myList = new CLList([
       new CLList([new CLBool(true), new CLBool(false)]),
       new CLList([new CLBool(false)])
@@ -175,5 +176,15 @@ describe('CLValue List implementation', () => {
     const reconstructedList = CLList.fromBytes(bytes, listType);
 
     expect(reconstructedList.result.val).to.be.deep.eq(myList);
+
+    const json = myList.toJSON();
+    // @ts-ignore
+    const newList = CLList.fromJSON(json.val);
+
+    const newList2 = buildCLValueFromJson(json.val);
+
+    expect(newList.result.val).to.be.deep.eq(myList);
+    // @ts-ignore
+    expect(newList2.result.val).to.be.deep.eq(myList);
   });
 });

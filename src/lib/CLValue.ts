@@ -1431,6 +1431,7 @@ const clTypeToJSON = (type: CLType) => {
 };
 
 const jsonToCLType = (json: any): CLType => {
+  console.log('json', json);
   if (typeof json === typeof 'str') {
     return jsonToSimpleType(json);
   } else if (typeof json === typeof {}) {
@@ -1470,7 +1471,9 @@ const jsonToCLType = (json: any): CLType => {
 };
 
 function deserializeCLValue(_a: any, _b: any) {
+  // console.log('raw', _a);
   const v = fromBytesByCLType(_a.clType, decodeBase16(_a.bytes));
+  // console.log('v', v);
   const ret = CLValue.fromT(v.value());
   return ret;
 }
