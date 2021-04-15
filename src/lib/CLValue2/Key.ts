@@ -13,12 +13,17 @@ import {
   ResultAndRemainder,
   resultHelper
 } from './index';
+import { KEY_ID } from './constants';
 
 export class CLKeyType extends CLType {
   linksTo = CLKey;
 
   toString(): string {
-    return 'Key';
+    return KEY_ID;
+  }
+
+  toJSON(): string {
+    return this.toString();
   }
 }
 

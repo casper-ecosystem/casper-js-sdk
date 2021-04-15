@@ -7,6 +7,7 @@ import {
   CLErrorCodes,
   resultHelper,
 } from './index';
+import { BOOL_ID } from './constants';
 
 import { Ok, Err } from 'ts-results';
 
@@ -14,7 +15,11 @@ export class CLBoolType extends CLType {
   linksTo = CLBool;
 
   toString(): string {
-    return 'Bool';
+    return BOOL_ID;
+  }
+
+  toJSON(): string {
+    return this.toString();
   }
 }
 

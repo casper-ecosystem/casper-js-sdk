@@ -16,6 +16,10 @@ export class UnitType extends CLType {
   toString(): string {
     return 'Unit';
   }
+
+  toJSON(): string {
+    return this.toString();
+  }
 }
 
 export class Unit extends CLValue implements ToBytes, FromBytes {

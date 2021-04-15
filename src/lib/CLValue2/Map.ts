@@ -28,6 +28,10 @@ export class CLMapType<K extends CLType, V extends CLType> extends CLType {
   toString(): string {
     return `Map (${this.innerKey.toString()}: ${this.innerValue.toString()})`;
   }
+
+  toJSON(): string {
+    return `Map (${this.innerKey.toString()}: ${this.innerValue.toString()})`;
+  }
 }
 
 export interface MapEntryType {

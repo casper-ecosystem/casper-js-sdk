@@ -40,6 +40,10 @@ export class CLI32Type extends CLType {
   toString(): string {
     return 'I32';
   }
+
+  toJSON(): string {
+    return 'I32';
+  }
 }
 
 export class CLI64Type extends CLType {
@@ -47,6 +51,10 @@ export class CLI64Type extends CLType {
 
   toString(): string {
     return 'I64';
+  }
+
+  toJSON(): string {
+    return 'I32';
   }
 }
 
@@ -56,6 +64,10 @@ export class CLU8Type extends CLType {
   toString(): string {
     return 'U8';
   }
+
+  toJSON(): string {
+    return 'I32';
+  }
 }
 
 export class CLU32Type extends CLType {
@@ -63,6 +75,10 @@ export class CLU32Type extends CLType {
 
   toString(): string {
     return 'U32';
+  }
+
+  toJSON(): string {
+    return 'I32';
   }
 }
 
@@ -72,6 +88,10 @@ export class CLU64Type extends CLType {
   toString(): string {
     return 'U64';
   }
+
+  toJSON(): string {
+    return 'I32';
+  }
 }
 
 export class CLU128Type extends CLType {
@@ -79,6 +99,10 @@ export class CLU128Type extends CLType {
 
   toString(): string {
     return 'U128';
+  }
+
+  toJSON(): string {
+    return 'I32';
   }
 }
 
@@ -88,6 +112,10 @@ export class CLU256Type extends CLType {
   toString(): string {
     return 'U256';
   }
+
+  toJSON(): string {
+    return 'I32';
+  }
 }
 
 export class CLU512Type extends CLType {
@@ -95,6 +123,10 @@ export class CLU512Type extends CLType {
 
   toString(): string {
     return 'U512';
+  }
+
+  toJSON(): string {
+    return 'I32';
   }
 }
 

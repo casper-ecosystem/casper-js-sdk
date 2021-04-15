@@ -1,7 +1,7 @@
 import { concat } from '@ethersproject/bytes';
 import { Result, Ok, Err } from 'ts-results';
 
-import { CLValue, CLType, ToBytes, CLErrorCodes } from './index';
+import { CLValue, CLType } from './index';
 import { toBytesU8 } from '../ByteConverters';
 
 const RESULT_TAG_ERROR = 0;
@@ -13,11 +13,21 @@ export class CLResultType extends CLType {
   toString(): string {
     return 'Result';
   }
+
+  toJSON(): string {
+    return 'Result';
+  }
 }
 
-export class GenericResult<T, E> {
-  constructor(public data: Result<T, E>, public rem?: Uint8Array) {}
-
+/**
+ * Class representing a result of an operation that might have failed. Can contain either a value
+ * resulting from a successful completion of a calculation, or an error. Similar to `Result` in Rust
+ * or `Either` in Haskell.
+ */
+export class CLResult extends CLValue {
+  constructor(public data: Result<T, E>, public rem?: Uint8Array) {
+    super();
+  }
   /**
    * Returns Result from ts-result based on stored value
    */
@@ -48,17 +58,6 @@ export class GenericResult<T, E> {
   isOk(): boolean {
     return this.data.ok;
   }
-
-
-}
-
-/**
- * Class representing a result of an operation that might have failed. Can contain either a value
- * resulting from a successful completion of a calculation, or an error. Similar to `Result` in Rust
- * or `Either` in Haskell.
- */
-export class CLResult extends GenericResult<CLValue & ToBytes, CLErrorCodes>
-  implements CLValue, ToBytes {
   clType(): CLType {
     return new CLResultType();
   }

@@ -17,6 +17,10 @@ export class CLStringType extends CLType {
   toString(): string {
     return 'String';
   }
+
+  toJSON(): string {
+    return this.toString();
+  }
 }
 
 export class CLString extends CLValue implements ToBytes, FromBytes {

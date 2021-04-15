@@ -41,6 +41,10 @@ export class CLURefType extends CLType {
   toString(): string {
     return 'URef';
   }
+
+  toJSON(): string {
+    return this.toString();
+  }
 }
 
 const FORMATTED_STRING_PREFIX = 'uref';

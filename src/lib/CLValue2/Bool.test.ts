@@ -42,8 +42,7 @@ describe('CLBool', () => {
   it('toJSON() / fromJSON() do proper bytes serialization', () => {
     const myBool = new CLBool(false);
     const json = myBool.toJSON();
-    if (json.ok) {
-      expect(CLBool.fromJSON(json.val).result.val).to.be.deep.eq(myBool);
-    }
+    // @ts-ignore
+    expect(CLBool.fromJSON(json.val).result.val).to.be.deep.eq(myBool);
   });
 });

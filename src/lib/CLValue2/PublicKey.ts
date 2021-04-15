@@ -25,6 +25,10 @@ export class CLPublicKeyType extends CLType {
   toString(): string {
     return 'PublicKey';
   }
+
+  toJSON(): string {
+    return 'PublicKey';
+  }
 }
 
 export class CLPublicKey extends CLValue implements ToBytes, FromBytes {

@@ -11,6 +11,7 @@ import { CLValue, CLType,
   CLU8,
   resultHelper
 } from './index';
+import { OPTION_ID } from "./constants";
 
 const OPTION_TAG_NONE = 0;
 const OPTION_TAG_SOME = 1;
@@ -31,13 +32,21 @@ export class CLOptionType<T extends CLType | null> extends CLType {
 
     return `Option (${this.inner.toString()})`;
   }
+
+  toJSON(): any {
+    return {
+      [OPTION_ID]: this.inner ? this.inner.toJSON() : null 
+    };
+  }
 }
 
-export class GenericOption <T> {
+export class CLOption<T extends CLValue> extends CLValue implements ToBytes, FromBytes {
   /**
    * Constructs a new option containing the value of Some or None from ts-result.
    */
-  constructor(public data: Option<T>) {}
+  constructor(public data: Option<T>) {
+    super();
+  }
 
   /**
    * Checks whether the `Option` contains no value.
@@ -63,9 +72,6 @@ export class GenericOption <T> {
   value(): Option<T> {
     return this.data;
   }
-}
-
-export class CLOption extends GenericOption<CLValue & ToBytes> implements CLValue, ToBytes, FromBytes {
   clType(): CLType {
     if (this.data.some) {
       return new CLOptionType(this.data.val.clType());
@@ -87,7 +93,7 @@ export class CLOption extends GenericOption<CLValue & ToBytes> implements CLValu
     throw new Error('Unknown stored value');
   }
 
-  static fromBytes(bytes: Uint8Array, type: CLOptionType<CLType>): ResultAndRemainder<CLOption, CLErrorCodes> {
+  static fromBytes(bytes: Uint8Array, type: CLOptionType<CLType>): ResultAndRemainder<CLOption<CLValue>, CLErrorCodes> {
     const { result: U8Res, remainder: U8Rem } = CLU8.fromBytes(bytes);
     if (!U8Res.ok) {
       return resultHelper(Err(U8Res.val));

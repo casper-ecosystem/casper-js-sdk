@@ -15,6 +15,10 @@ export class CLAccountHashType extends CLType {
   toString(): string {
     return 'AccountHash';
   }
+
+  toJSON(): string {
+    return this.toString();
+  }
 }
 
 /** A cryptographic public key. */

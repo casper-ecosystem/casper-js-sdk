@@ -1,9 +1,10 @@
 import { Result, Ok, Err } from 'ts-results';
-import { CLErrorCodes } from "./index";
+import { CLErrorCodes } from './index';
 import { encodeBase16, decodeBase16 } from '../Conversions';
 
 export abstract class CLType {
   abstract toString(): string;
+  abstract toJSON(): any;
   abstract linksTo: any;
 }
 
@@ -11,9 +12,12 @@ export abstract class CLValue {
   abstract clType(): CLType;
   abstract value(): any;
   abstract data: any;
-  static fromBytes: (bytes: Uint8Array, innerType?: CLType) => ResultAndRemainder<CLValue & ToBytes & FromBytes, CLErrorCodes>;
-  abstract toBytes(): Uint8Array;
 
+  abstract toBytes(): Uint8Array;
+  static fromBytes: (
+    bytes: Uint8Array,
+    innerType?: CLType
+  ) => ResultAndRemainder<CLValue & ToBytes & FromBytes, CLErrorCodes>;
 
   toJSON(): Result<CLJsonFormat, CLErrorCodes> {
     const bytes = encodeBase16(this.toBytes());
@@ -21,18 +25,18 @@ export abstract class CLValue {
     return Ok({ bytes: bytes, cl_type: clType });
   }
 
-  static fromJSON(json: CLJsonFormat): ResultAndRemainder<CLValue, CLErrorCodes> {
+  static fromJSON(
+    json: CLJsonFormat
+  ): ResultAndRemainder<CLValue, CLErrorCodes> {
     if (!json.bytes) return resultHelper(Err(CLErrorCodes.Formatting));
     const uint8bytes = decodeBase16(json.bytes);
     return this.fromBytes(uint8bytes);
   }
 }
 
-export abstract class ToBytes {
-}
+export abstract class ToBytes {}
 
-export abstract class FromBytes {
-}
+export abstract class FromBytes {}
 
 export interface ResultAndRemainder<T, E> {
   result: Result<T, E>;
@@ -46,4 +50,7 @@ export const resultHelper = <T, E>(
   return { result: arg1, remainder: arg2 };
 };
 
-export interface CLJsonFormat { bytes: string; cl_type: string };
+export interface CLJsonFormat {
+  bytes: string;
+  cl_type: string;
+}

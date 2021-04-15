@@ -11,6 +11,8 @@ import {
 } from './index';
 import { toBytesVector } from '../ByteConverters';
 
+import { LIST_ID } from "./constants";
+
 export class CLListType<T extends CLType> extends CLType {
   inner: T;
   linksTo = CLList;
@@ -21,7 +23,14 @@ export class CLListType<T extends CLType> extends CLType {
   }
 
   toString(): string {
-    return `List (${this.inner.toString()})`;
+    return `${LIST_ID} (${this.inner.toString()})`;
+  }
+
+  toJSON(): any {
+    const inner = this.inner.toJSON();
+    return {
+      [LIST_ID]: inner
+    };
   }
 }
 
