@@ -1,6 +1,6 @@
 {
   "name": "casper-client-sdk",
-  "version": "1.0.39",
+  "version": "1.0.40",
   "license": "Apache 2.0",
   "description": "SDK to interact with the Casper blockchain",
   "main": "dist/lib.node.js",
@@ -15,7 +15,7 @@
     "clean": "rm -rf ./dist",
     "~build": "tsc --watch",
     "test": "TS_NODE_FILES=true mocha -r ts-node/register test/**/*.test.ts",
-    "docs": "typedoc --out docs/code/ src"
+    "docs": "typedoc --out docs/ src"
   },
   "keywords": [
     "Casper",
