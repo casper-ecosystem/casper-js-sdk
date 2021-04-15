@@ -112,7 +112,7 @@ export function toBytesU512(u512: BigNumberish): Uint8Array {
  * Serializes a string into an array of bytes.
  */
 export function toBytesString(str: string): Uint8Array {
-  const arr = Uint8Array.from(Buffer.from(str));
+  const arr = new TextEncoder().encode(str);
   return concat([toBytesU32(arr.byteLength), arr]);
 }
 

@@ -821,7 +821,7 @@ export class DeployParams {
    * @param accountPublicKey
    * @param chainName Name of the chain, to avoid the `Deploy` from being accidentally or maliciously included in a different chain.
    * @param gasPrice Conversion rate between the cost of Wasm opcodes and the motes sent by the payment code.
-   * @param ttl Time that the `Deploy` will remain valid for, in milliseconds. The default value is 3600000, which is 1 hour
+   * @param ttl Time that the `Deploy` will remain valid for, in milliseconds. The default value is 1800000, which is 30 minutes
    * @param dependencies Hex-encoded `Deploy` hashes of deploys which must be executed before this one.
    * @param timestamp  If `timestamp` is empty, the current time will be used. Note that timestamp is UTC, not local.
    */
@@ -829,7 +829,7 @@ export class DeployParams {
     public accountPublicKey: PublicKey,
     public chainName: string,
     public gasPrice: number = 1,
-    public ttl: number = 3600000,
+    public ttl: number = 1800000,
     public dependencies: Uint8Array[] = [],
     public timestamp?: number
   ) {
