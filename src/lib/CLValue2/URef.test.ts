@@ -46,8 +46,13 @@ describe('CLUref', () => {
   });
 
   it('toBytes() proper values', () => {
-    // prettier-ignore
     const expectedBytes = Uint8Array.from([...Array(32).fill(42), 7]);
     expect(RWExampleURef.toBytes()).to.be.deep.eq(expectedBytes);
+  });
+
+  it('fromJSON() / toJSON()', () => {
+    const json = RWExampleURef.toJSON();
+    // @ts-ignore
+    expect(CLURef.fromJSON(json.result.val).result.val).to.be.deep.eq(RWExampleURef);
   });
 });

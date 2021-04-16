@@ -6,6 +6,7 @@ import {
   PUBLIC_KEY_ID,
   MAP_ID,
   STRING_ID,
+  UREF_ID,
   OPTION_ID,
   I32_ID,
   I64_ID,
@@ -29,6 +30,8 @@ import {
   CLPublicKeyType,
   CLMapType,
   CLStringType,
+  CLURefType,
+  CLOptionType,
   CLI32Type,
   CLI64Type,
   CLU8Type,
@@ -40,7 +43,6 @@ import {
   CLTuple1Type,
   CLTuple2Type,
   CLTuple3Type,
-  CLOptionType
 } from './index';
 
 // const cl_type = { List: { List: 'Bool' } };
@@ -58,6 +60,8 @@ export const matchTypeToCLType = (type: any): CLType => {
         return new CLPublicKeyType();
       case STRING_ID:
         return new CLStringType();
+      case UREF_ID:
+        return new CLURefType();
       case I32_ID:
         return new CLI32Type();
       case I64_ID:

@@ -9,6 +9,7 @@ import {
   ResultAndRemainder,
   resultHelper
 } from './index';
+import { UREF_ID } from "./constants";
 import { decodeBase16, encodeBase16 } from '../Conversions';
 
 // TODO Move this to some utils
@@ -39,7 +40,7 @@ export class CLURefType extends CLType {
   linksTo = CLURef;
 
   toString(): string {
-    return 'URef';
+    return UREF_ID;
   }
 
   toJSON(): string {

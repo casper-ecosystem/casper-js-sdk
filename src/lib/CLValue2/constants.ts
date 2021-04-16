@@ -22,7 +22,7 @@ export const BOOL_ID = "Bool";
 export const KEY_ID = "Key";
 export const PUBLIC_KEY_ID = "PublicKey";
 export const STRING_ID = "String";
-export const I32_ID = "I32";
+export const UREF_ID = "URef"; export const I32_ID = "I32";
 export const I64_ID = "I64";
 export const U8_ID = "U8";
 export const U32_ID = "U32";
