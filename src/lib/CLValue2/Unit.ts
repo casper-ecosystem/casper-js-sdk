@@ -9,12 +9,13 @@ import {
   ResultAndRemainder,
   resultHelper
 } from './index';
+import { UNIT_ID } from "./constants";
 
-export class UnitType extends CLType {
-  linksTo = Unit;
+export class CLUnitType extends CLType {
+  linksTo = CLUnit;
 
   toString(): string {
-    return 'Unit';
+    return UNIT_ID;
   }
 
   toJSON(): string {
@@ -22,11 +23,11 @@ export class UnitType extends CLType {
   }
 }
 
-export class Unit extends CLValue implements ToBytes, FromBytes {
+export class CLUnit extends CLValue implements ToBytes, FromBytes {
   data = undefined;
 
   clType(): CLType {
-    return new UnitType();
+    return new CLUnitType();
   }
 
   value(): undefined {
@@ -39,7 +40,7 @@ export class Unit extends CLValue implements ToBytes, FromBytes {
 
   static fromBytes(
     rawBytes: Uint8Array
-  ): ResultAndRemainder<Unit, CLErrorCodes> {
-    return resultHelper(Ok(new Unit()), rawBytes);
+  ): ResultAndRemainder<CLUnit, CLErrorCodes> {
+    return resultHelper(Ok(new CLUnit()), rawBytes);
   }
 }

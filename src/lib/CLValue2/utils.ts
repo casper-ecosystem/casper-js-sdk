@@ -7,6 +7,7 @@ import {
   MAP_ID,
   STRING_ID,
   UREF_ID,
+  UNIT_ID,
   OPTION_ID,
   I32_ID,
   I64_ID,
@@ -31,6 +32,7 @@ import {
   CLMapType,
   CLStringType,
   CLURefType,
+  CLUnitType,
   CLOptionType,
   CLI32Type,
   CLI64Type,
@@ -62,6 +64,8 @@ export const matchTypeToCLType = (type: any): CLType => {
         return new CLStringType();
       case UREF_ID:
         return new CLURefType();
+      case UNIT_ID:
+        return new CLUnitType();
       case I32_ID:
         return new CLI32Type();
       case I64_ID:
