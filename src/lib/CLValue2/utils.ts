@@ -5,6 +5,7 @@ import {
   KEY_ID,
   MAP_ID,
   STRING_ID,
+  OPTION_ID,
   I32_ID,
   I64_ID,
   U8_ID,
@@ -36,14 +37,14 @@ import {
   CLU512Type,
   CLTuple1Type,
   CLTuple2Type,
-  CLTuple3Type
+  CLTuple3Type,
+  CLOptionType
 } from './index';
 
 // const cl_type = { List: { List: 'Bool' } };
 
 export const TUPLE_MATCH_LEN_TO_ID = [TUPLE1_ID, TUPLE2_ID, TUPLE3_ID];
 
-// return type is also number due to CLByteArrayType size constructor
 export const matchTypeToCLType = (type: any): CLType => {
   if (typeof type === typeof 'string') {
     switch (type) {
@@ -76,7 +77,7 @@ export const matchTypeToCLType = (type: any): CLType => {
 
   if (typeof type === typeof {}) {
     if (LIST_ID in type) {
-      const inner = matchTypeToCLType(type[LIST_ID]) as CLType;
+      const inner = matchTypeToCLType(type[LIST_ID]);
       return new CLListType(inner);
     }
     if (BYTE_ARRAY_ID in type) {
@@ -99,6 +100,10 @@ export const matchTypeToCLType = (type: any): CLType => {
     if (TUPLE3_ID in type) {
       const vals = type[TUPLE3_ID].map((t: any) => matchTypeToCLType(t));
       return new CLTuple3Type(vals);
+    }
+    if (OPTION_ID in type) {
+      const inner = matchTypeToCLType(type[OPTION_ID]);
+      return new CLOptionType(inner);
     }
     throw new Error(`The complex type ${type} is not supported`);
   }

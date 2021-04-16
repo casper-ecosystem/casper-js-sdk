@@ -32,7 +32,7 @@ export abstract class CLValue {
     if (!json.bytes) return resultHelper(Err(CLErrorCodes.Formatting));
     const uint8bytes = decodeBase16(json.bytes);
     const clTypes = matchTypeToCLType(json.cl_type);
-    return this.fromBytes(uint8bytes, clTypes as CLType);
+    return this.fromBytes(uint8bytes, clTypes);
   }
 }
 

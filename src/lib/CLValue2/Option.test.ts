@@ -3,9 +3,7 @@ import { CLBool, CLOption, CLBoolType, CLOptionType } from './index';
 import { Some, None } from "ts-results";
 
 const mySomeOpt = new CLOption(Some(new CLBool(true)));
-console.log(mySomeOpt);
-const myNoneOpt = new CLOption(None);
-console.log(myNoneOpt);
+const myNoneOpt = new CLOption(None, new CLBoolType());
 
 describe('CLOption', () => {
   it('Should be valid by construction', () => {
@@ -22,6 +20,16 @@ describe('CLOption', () => {
     expect(mySomeOpt.toBytes()).to.be.deep.eq(Uint8Array.from([1, 1]));
     expect(x.result.val).to.be.deep.eq(mySomeOpt);
     expect(myNoneOpt.toBytes()).to.be.deep.eq(Uint8Array.from([0]));
+  });
+
+  it('toBytes() should return proper byte array', () => {
+    const jsonSome = mySomeOpt.toJSON();
+    const jsonNone = myNoneOpt.toJSON();
+
+    // @ts-ignore
+    expect(CLOption.fromJSON(jsonSome.result.val).result.val).to.be.deep.eq(mySomeOpt);
+    // @ts-ignore
+    expect(CLOption.fromJSON(jsonNone.result.val).result.val).to.be.deep.eq(myNoneOpt);
   });
 });
 

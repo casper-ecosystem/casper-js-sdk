@@ -1,9 +1,11 @@
-import { Ok, Err, Some, None } from "ts-results";
+import { Ok, Err, Some, None } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
 
 import { Option } from 'ts-results';
 
-import { CLValue, CLType, 
+import {
+  CLValue,
+  CLType,
   ToBytes,
   FromBytes,
   CLErrorCodes,
@@ -11,7 +13,7 @@ import { CLValue, CLType,
   CLU8,
   resultHelper
 } from './index';
-import { OPTION_ID } from "./constants";
+import { OPTION_ID } from './constants';
 
 const OPTION_TAG_NONE = 0;
 const OPTION_TAG_SOME = 1;
@@ -23,28 +25,39 @@ export class CLOptionType<T extends CLType | null> extends CLType {
   constructor(inner: T) {
     super();
     this.inner = inner;
-  };
+  }
 
   toString(): string {
     if (this.inner === null) {
-      return `Option (None)` 
+      return `${OPTION_ID} (None)`;
     }
 
-    return `Option (${this.inner.toString()})`;
+    return `${OPTION_ID} (${this.inner.toString()})`;
   }
 
   toJSON(): any {
     return {
-      [OPTION_ID]: this.inner ? this.inner.toJSON() : null 
+      [OPTION_ID]: this.inner ? this.inner.toJSON() : null
     };
   }
 }
 
-export class CLOption<T extends CLValue> extends CLValue implements ToBytes, FromBytes {
+export class CLOption<T extends CLValue> extends CLValue
+  implements ToBytes, FromBytes {
+  private innerType: CLType;
   /**
    * Constructs a new option containing the value of Some or None from ts-result.
    */
-  constructor(public data: Option<T>) {
+  constructor(public data: Option<T>, innerType?: CLType) {
+    super();
+    if (data.none) {
+      if (!innerType) {
+        throw new Error('You had to assign innerType for None');
+      }
+      this.innerType = innerType;
+    } else {
+      this.innerType = data.val.clType();
+    }
     super();
   }
 
@@ -73,10 +86,7 @@ export class CLOption<T extends CLValue> extends CLValue implements ToBytes, Fro
     return this.data;
   }
   clType(): CLType {
-    if (this.data.some) {
-      return new CLOptionType(this.data.val.clType());
-    }
-    return new CLOptionType(null);
+    return new CLOptionType(this.innerType);
   }
 
   /**
@@ -87,13 +97,19 @@ export class CLOption<T extends CLValue> extends CLValue implements ToBytes, Fro
       return Uint8Array.from([OPTION_TAG_NONE]);
     }
     if (this.data.some) {
-      return concat([Uint8Array.from([OPTION_TAG_SOME]), this.data.val.toBytes()]);
+      return concat([
+        Uint8Array.from([OPTION_TAG_SOME]),
+        this.data.val.toBytes()
+      ]);
     }
 
     throw new Error('Unknown stored value');
   }
 
-  static fromBytes(bytes: Uint8Array, type: CLOptionType<CLType>): ResultAndRemainder<CLOption<CLValue>, CLErrorCodes> {
+  static fromBytes(
+    bytes: Uint8Array,
+    type: CLOptionType<CLType>
+  ): ResultAndRemainder<CLOption<CLValue>, CLErrorCodes> {
     const { result: U8Res, remainder: U8Rem } = CLU8.fromBytes(bytes);
     if (!U8Res.ok) {
       return resultHelper(Err(U8Res.val));
@@ -102,16 +118,21 @@ export class CLOption<T extends CLValue> extends CLValue implements ToBytes, Fro
     const optionTag = U8Res.val.value().toNumber();
 
     if (optionTag === OPTION_TAG_NONE) {
-      return resultHelper(Ok(new CLOption(None)), U8Rem);
+      return resultHelper(Ok(new CLOption(None, type.inner)), U8Rem);
     }
 
     if (optionTag === OPTION_TAG_SOME) {
       const referenceClass = type.inner.linksTo;
-      const { result: valRes, remainder: valRem }= referenceClass.fromBytes(U8Rem);
+      const { result: valRes, remainder: valRem } = referenceClass.fromBytes(
+        U8Rem
+      );
       if (!valRes.ok) {
         return resultHelper(Err(valRes.val));
       }
-      return resultHelper(Ok(new CLOption(Some(valRes.val as (CLValue & ToBytes)))), valRem);
+      return resultHelper(
+        Ok(new CLOption(Some(valRes.val as CLValue & ToBytes))),
+        valRem
+      );
     }
 
     return resultHelper(Err(CLErrorCodes.Formatting));
