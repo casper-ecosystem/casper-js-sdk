@@ -3,6 +3,7 @@ import {
   LIST_ID,
   BYTE_ARRAY_ID,
   KEY_ID,
+  PUBLIC_KEY_ID,
   MAP_ID,
   STRING_ID,
   OPTION_ID,
@@ -25,6 +26,7 @@ import {
   CLListType,
   CLByteArrayType,
   CLKeyType,
+  CLPublicKeyType,
   CLMapType,
   CLStringType,
   CLI32Type,
@@ -52,6 +54,8 @@ export const matchTypeToCLType = (type: any): CLType => {
         return new CLBoolType();
       case KEY_ID:
         return new CLKeyType();
+      case PUBLIC_KEY_ID:
+        return new CLPublicKeyType();
       case STRING_ID:
         return new CLStringType();
       case I32_ID:

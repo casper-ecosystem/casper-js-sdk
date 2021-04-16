@@ -8,6 +8,7 @@ import { CLType, CLValue,
   ToBytes,
   FromBytes,
 } from './index';
+import { PUBLIC_KEY_ID } from "./constants";
 import { decodeBase16, encodeBase16 } from '../Conversions';
 import { byteHash } from '../Contracts';
 
@@ -23,11 +24,11 @@ export class CLPublicKeyType extends CLType {
   linksTo = CLPublicKey;
 
   toString(): string {
-    return 'PublicKey';
+    return PUBLIC_KEY_ID;
   }
 
   toJSON(): string {
-    return 'PublicKey';
+    return this.toString();
   }
 }
 

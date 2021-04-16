@@ -20,6 +20,7 @@ export type CLTypes = typeof BOOL_CL_TYPE;
 
 export const BOOL_ID = "Bool";
 export const KEY_ID = "Key";
+export const PUBLIC_KEY_ID = "PublicKey";
 export const STRING_ID = "String";
 export const I32_ID = "I32";
 export const I64_ID = "I64";
