@@ -76,4 +76,12 @@ describe('Numeric implementation tests', () => {
     expect(CLU64.fromBytes(num1bytes).result.ok).to.be.eq(true);
     expect(CLU64.fromBytes(num1bytes).result.val).to.be.deep.eq(num1);
   });
+
+  it('CLU64 toJSON()/fromJSON()', () => {
+    const num1 = new CLU64(MAX_U64);
+    const num1json= num1.toJSON();
+
+    // @ts-ignore
+    expect(CLU64.fromJSON(num1json.result.val).result.val).to.be.deep.eq(num1)
+  });
 });
