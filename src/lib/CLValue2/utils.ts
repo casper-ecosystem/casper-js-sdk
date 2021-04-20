@@ -9,6 +9,7 @@ import {
   UREF_ID,
   UNIT_ID,
   OPTION_ID,
+  RESULT_ID,
   I32_ID,
   I64_ID,
   U8_ID,
@@ -34,6 +35,7 @@ import {
   CLURefType,
   CLUnitType,
   CLOptionType,
+  CLResultType,
   CLI32Type,
   CLI64Type,
   CLU8Type,
@@ -44,7 +46,7 @@ import {
   CLU512Type,
   CLTuple1Type,
   CLTuple2Type,
-  CLTuple3Type,
+  CLTuple3Type
 } from './index';
 
 // const cl_type = { List: { List: 'Bool' } };
@@ -116,6 +118,11 @@ export const matchTypeToCLType = (type: any): CLType => {
     if (OPTION_ID in type) {
       const inner = matchTypeToCLType(type[OPTION_ID]);
       return new CLOptionType(inner);
+    }
+    if (RESULT_ID in type) {
+      const innerOk = matchTypeToCLType(type[RESULT_ID].ok);
+      const innerErr = type[RESULT_ID].err;
+      return new CLResultType({ ok: innerOk, err: innerErr });
     }
     throw new Error(`The complex type ${type} is not supported`);
   }
