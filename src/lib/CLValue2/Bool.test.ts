@@ -37,10 +37,12 @@ describe('CLBool', () => {
   });
 
 
-  // it('toJSON() / fromJSON() do proper bytes serialization', () => {
-  //   const myBool = new CLBool(false);
-  //   const json = myBool.toJSON();
-  //   // @ts-ignore
-  //   expect(CLBool.fromJSON(json.result.val).result.val).to.be.deep.eq(myBool);
-  // });
+  it('toJSON() / fromJSON() do proper bytes serialization', () => {
+    const myBool = new CLBool(false);
+    const json = myBool.toJSON().unwrap();
+    const expectedJson = JSON.parse('{"bytes":"00","cl_type":"Bool"}');
+
+    expect(json).to.be.deep.eq(expectedJson);
+    expect(CLBool.fromJSON(expectedJson).unwrap()).to.be.deep.eq(myBool);
+  });
 });

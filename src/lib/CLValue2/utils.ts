@@ -1,3 +1,5 @@
+import { Result, Ok } from "ts-results";
+
 import {
   BOOL_ID,
   LIST_ID,
@@ -130,9 +132,9 @@ export const matchTypeToCLType = (type: any): CLType => {
   throw new Error(`Unknown data provided.`);
 };
 
-export const buildCLValueFromJson = (json: any): CLValue => {
+export const buildCLValueFromJson = (json: any): Result<CLValue,string> => {
   const clType = matchTypeToCLType(json.cl_type);
   const ref = clType.linksTo;
-  const clValue = ref.fromJSON(json);
-  return clValue;
+  const clValue = ref.fromJSON(json).unwrap();
+  return Ok(clValue as CLValue);
 };

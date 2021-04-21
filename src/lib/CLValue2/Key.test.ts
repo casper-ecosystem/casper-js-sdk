@@ -116,15 +116,17 @@ describe('CLKey', () => {
   });
 
 
-  // it('toJSON() / fromJSON() with CLAccountHash', () => {
-  //   const hash = new CLAccountHash(Uint8Array.from(Array(32).fill(42)));
-  //   const myKey = new CLKey(hash);
-  //   const json = myKey.toJSON();
-  //   // @ts-ignore
-  //   const fromJson = CLKey.fromJSON(json.result.val);
+  it('toJSON() / fromJSON() with CLAccountHash', () => {
+    const hash = new CLAccountHash(Uint8Array.from(Array(32).fill(42)));
+    const myKey = new CLKey(hash);
+    const json = myKey.toJSON().unwrap();
+    const expectedJson = JSON.parse('{"bytes":"002a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a","cl_type":"Key"}');
+
+    const fromJson = CLKey.fromJSON(expectedJson).unwrap();
     
-  //   expect(fromJson.result.val).to.be.deep.eq(myKey);
-  // });
+    expect(json).to.be.deep.eq(expectedJson);
+    expect(fromJson).to.be.deep.eq(myKey);
+  });
 
   it('toBytes() with CLURef', () => {
     const urefAddr =
@@ -139,17 +141,19 @@ describe('CLKey', () => {
     expect(CLKey.fromBytes(bytes).unwrap()).deep.eq(myKey);
   });
 
-  // it('toJSON() / fromJSON() with CLUref', () => {
-  //   const urefAddr =
-  //     '2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a';
-  //   const uref = new CLURef(decodeBase16(urefAddr), AccessRights.READ_ADD_WRITE);
-  //   const myKey= new CLKey(uref);
-  //   const json = myKey.toJSON();
-  //   // @ts-ignore
-  //   const fromJson = CLKey.fromJSON(json.result.val);
+  it('toJSON() / fromJSON() with CLUref', () => {
+    const urefAddr =
+      '2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a';
+    const uref = new CLURef(decodeBase16(urefAddr), AccessRights.READ_ADD_WRITE);
+    const myKey= new CLKey(uref);
+    const json = myKey.toJSON().unwrap();
+    const expectedJson = JSON.parse('{"bytes":"022a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a07","cl_type":"Key"}');
+
+    const fromJson = CLKey.fromJSON(expectedJson).unwrap();
     
-  //   expect(fromJson.result.val).to.be.deep.eq(myKey);
-  // });
+    expect(fromJson).to.be.deep.eq(myKey);
+    expect(json).to.be.deep.eq(expectedJson);
+  });
 
   it('toBytes() with invalid data', () => {
     // @ts-ignore

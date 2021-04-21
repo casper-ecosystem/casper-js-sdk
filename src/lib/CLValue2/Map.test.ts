@@ -116,14 +116,15 @@ describe('CLValue CLMap implementation', () => {
     expect(CLMap.fromBytes(bytes.unwrap(), mapType).unwrap()).to.be.deep.eq(myMap);
   });
 
-  // it('json', () => {
-  //   const myKey = new CLString('ABC');
-  //   const myVal = new CLI32(10);
-  //   const myMap = new CLMap([[myKey, myVal]]);
+  it('fromJSON() / toJSON()', () => {
+    const myKey = new CLString('ABC');
+    const myVal = new CLI32(10);
+    const myMap = new CLMap([[myKey, myVal]]);
 
-  //   const json = myMap.toJSON().result.val;
+    const json = myMap.toJSON().unwrap();
+    const expectedJson = JSON.parse('{"bytes":"01000000030000004142430a000000","cl_type":{"Map":{"key":"String","value":"I32"}}}');
 
-  //   // @ts-ignore
-  //   expect(CLMap.fromJSON(json).result.val).to.be.deep.eq(myMap);
-  // });
+    expect(CLMap.fromJSON(expectedJson).unwrap()).to.be.deep.eq(myMap);
+    expect(json).to.be.deep.eq(expectedJson);
+  });
 });

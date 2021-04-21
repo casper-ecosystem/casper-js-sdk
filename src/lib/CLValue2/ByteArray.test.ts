@@ -25,14 +25,15 @@ describe('CLByteArray', () => {
     expect(CLByteArray.fromBytes(bytes).unwrap()).to.deep.eq(hash);
   });
 
-  // it('toJson() / fromJson()', () => {
-  //   const expectedBytes = Uint8Array.from(Array(32).fill(42))
-  //   const hash = new CLByteArray(expectedBytes);
-  //   const json = hash.toJSON();
+  it('toJson() / fromJson()', () => {
+    const bytes = Uint8Array.from(Array(32).fill(42))
+    const hash = new CLByteArray(bytes);
+    const json = hash.toJSON().unwrap();
+    const expectedJson = JSON.parse('{"bytes":"2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a","cl_type":{"ByteArray":32}}');
 
-  //   // @ts-ignore
-  //   expect(CLByteArray.fromJSON(json.result.val).result.val).to.deep.eq(hash);
-  // });
+    expect(json).to.deep.eq(expectedJson);
+    expect(CLByteArray.fromJSON(expectedJson).unwrap()).to.deep.eq(hash);
+  });
 });
 
 

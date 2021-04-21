@@ -8,7 +8,7 @@ import {
   CLI32,
   CLI32Type
 } from './index';
-// import { buildCLValueFromJson} from './utils';
+import { buildCLValueFromJson} from './utils';
 
 describe('CLValue List implementation', () => {
   it('List should return proper clType', () => {
@@ -163,28 +163,29 @@ describe('CLValue List implementation', () => {
     expect(reconstructedList.unwrap()).to.be.deep.eq(myList);
   });
 
-  // it('Runs toJSON() / fromJSON() properly', () => {
-  //   const myList = new CLList([
-  //     new CLList([new CLBool(true), new CLBool(false)]),
-  //     new CLList([new CLBool(false)])
-  //   ]);
+  it('Runs toJSON() / fromJSON() properly', () => {
+    const myList = new CLList([
+      new CLList([new CLBool(true), new CLBool(false)]),
+      new CLList([new CLBool(false)])
+    ]);
 
-  //   const bytes = myList.toBytes();
+    const bytes = myList.toBytes().unwrap();
 
-  //   const listType = new CLListType(new CLListType(new CLBoolType()));
+    const listType = new CLListType(new CLListType(new CLBoolType()));
 
-  //   const reconstructedList = CLList.fromBytes(bytes, listType);
+    const reconstructedList = CLList.fromBytes(bytes, listType).unwrap();
 
-  //   expect(reconstructedList.result.val).to.be.deep.eq(myList);
+    expect(reconstructedList).to.be.deep.eq(myList);
 
-  //   const json = myList.toJSON();
-  //   // @ts-ignore
-  //   const newList = CLList.fromJSON(json.result.val);
+    // JSON
+    const json = myList.toJSON().unwrap();
+    const newList = CLList.fromJSON(json).unwrap();
+    const expectedJson = JSON.parse('{"bytes":"020000000200000001000100000000","cl_type":{"List":{"List":"Bool"}}}');
 
-  //   const newList2 = buildCLValueFromJson(json.result.val);
+    const newList2 = buildCLValueFromJson(expectedJson).unwrap();
 
-  //   expect(newList.result.val).to.be.deep.eq(myList);
-  //   // @ts-ignore
-  //   expect(newList2.result.val).to.be.deep.eq(myList);
-  // });
+    expect(json).to.be.deep.eq(expectedJson);
+    expect(newList).to.be.deep.eq(myList);
+    expect(newList2).to.be.deep.eq(myList);
+  });
 });

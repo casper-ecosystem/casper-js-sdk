@@ -122,12 +122,13 @@ describe('CLPublicKey', () => {
     expect(CLPublicKey.fromBytes(toBytes).unwrap()).to.be.deep.eq(publicKey);
   });
 
-  // it('toJSON() / fromJSON()', () => {
-  //   const bytes = Uint8Array.from(Array(32).fill(42));
-  //   const publicKey = CLPublicKey.fromEd25519(bytes);
-  //   const json = publicKey.toJSON();
+  it('toJSON() / fromJSON()', () => {
+    const bytes = Uint8Array.from(Array(32).fill(42));
+    const publicKey = CLPublicKey.fromEd25519(bytes);
+    const json = publicKey.toJSON().unwrap();
+    const expectedJson = JSON.parse('{"bytes":"012a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a","cl_type":"PublicKey"}');
 
-  //   // @ts-ignore
-  //   expect(CLPublicKey.fromJSON(json.result.val).result.val).to.be.deep.eq(publicKey);
-  // });
+    expect(json).to.be.deep.eq(expectedJson);
+    expect(CLPublicKey.fromJSON(expectedJson).unwrap()).to.be.deep.eq(publicKey);
+  });
 });
