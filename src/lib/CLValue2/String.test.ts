@@ -32,4 +32,14 @@ describe('CLString', () => {
     const result = CLString.fromBytes(bytes).unwrap();
     expect(result).to.be.deep.eq(str);
   });
+
+  it('toJSON() / fromJSON()', () => {
+    const str = new CLString("ABC-DEF");
+    const json = str.toJSON().unwrap();
+    const expectedJson = JSON.parse('{"bytes":"070000004142432d444546","cl_type":"String"}');
+
+    expect(json).to.be.deep.eq(expectedJson)
+    expect(CLString.fromJSON(expectedJson).unwrap()).to.be.deep.eq(str)
+  });
+
 });

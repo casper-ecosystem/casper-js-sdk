@@ -114,33 +114,41 @@ describe('CLTuple', () => {
     ).to.be.deep.eq(myTup3);
   });
 
-  // it('fromJSON() / toJSON()', () => {
-  //   const myTup1 = new CLTuple1([new CLBool(true)]);
-  //   const myTup2 = new CLTuple2([new CLBool(false), new CLI32(-555)]);
-  //   const myTup3 = new CLTuple3([
-  //     new CLI32(-555),
-  //     new CLString('ABC'),
-  //     new CLString('XYZ')
-  //   ]);
+  it('fromJSON() / toJSON()', () => {
+    const myTup1 = new CLTuple1([new CLBool(true)]);
+    const myTup2 = new CLTuple2([new CLBool(false), new CLI32(-555)]);
+    const myTup3 = new CLTuple3([
+      new CLI32(-555),
+      new CLString('ABC'),
+      new CLString('XYZ')
+    ]);
 
-  //   const myTup1JSON = myTup1.toJSON();
-  //   const myTup2JSON = myTup2.toJSON();
-  //   const myTup3JSON = myTup3.toJSON();
+    const myTup1JSON = myTup1.toJSON().unwrap();
+    const myTup2JSON = myTup2.toJSON().unwrap();
+    const myTup3JSON = myTup3.toJSON().unwrap();
 
-  //   expect(
-  //     CLTuple1.fromJSON(myTup1JSON.result.val)
-  //       .result.val
-  //   ).to.be.deep.eq(myTup1);
+    const expectedMyTup1JSON = JSON.parse('{"bytes":"01","cl_type":{"Tuple1":["Bool"]}}');
+    const expectedMyTup2JSON = JSON.parse('{"bytes":"00d5fdffff","cl_type":{"Tuple2":["Bool","I32"]}}');
+    const expectedMyTup3JSON = JSON.parse('{"bytes":"d5fdffff030000004142430300000058595a","cl_type":{"Tuple3":["I32","String","String"]}}');
 
-  //   expect(
-  //     CLTuple2.fromJSON(myTup2JSON.result.val)
-  //       .result.val
-  //   ).to.be.deep.eq(myTup2);
+    expect(
+      CLTuple1.fromJSON(expectedMyTup1JSON)
+      .unwrap()
+    ).to.be.deep.eq(myTup1);
 
-  //   expect(
-  //     CLTuple3.fromJSON(myTup3JSON.result.val)
-  //       .result.val
-  //   ).to.be.deep.eq(myTup3);
+    expect(
+      CLTuple2.fromJSON(expectedMyTup2JSON)
+      .unwrap()
+    ).to.be.deep.eq(myTup2);
 
-  // });
+    expect(
+      CLTuple3.fromJSON(expectedMyTup3JSON)
+      .unwrap()
+    ).to.be.deep.eq(myTup3);
+
+    expect(myTup1JSON).to.be.deep.eq(expectedMyTup1JSON);
+    expect(myTup2JSON).to.be.deep.eq(expectedMyTup2JSON);
+    expect(myTup3JSON).to.be.deep.eq(expectedMyTup3JSON);
+
+  });
 });
