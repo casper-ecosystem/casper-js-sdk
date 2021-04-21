@@ -1,15 +1,13 @@
+import { Ok, Err } from 'ts-results';
+
 import {
   CLType,
   CLValue,
-  ToBytes,
-  FromBytes,
   ResultAndRemainder,
   CLErrorCodes,
-  resultHelper,
+  resultHelper
 } from './index';
 import { BOOL_ID } from './constants';
-
-import { Ok, Err } from 'ts-results';
 
 export class CLBoolType extends CLType {
   linksTo = CLBool;
@@ -23,7 +21,7 @@ export class CLBoolType extends CLType {
   }
 }
 
-export class CLBool extends CLValue implements ToBytes, FromBytes {
+export class CLBool extends CLValue {
   data: boolean;
 
   constructor(v: boolean) {
@@ -43,7 +41,7 @@ export class CLBool extends CLValue implements ToBytes, FromBytes {
     return new Uint8Array([this.data ? 1 : 0]);
   }
 
-  static fromBytes(
+  static fromBytesWithRemainder(
     bytes: Uint8Array
   ): ResultAndRemainder<CLBool, CLErrorCodes> {
     if (bytes.length === 0) {

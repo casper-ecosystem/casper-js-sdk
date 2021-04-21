@@ -1,7 +1,8 @@
-import { Result, Ok } from 'ts-results';
+// import { Result, Ok } from 'ts-results';
+import { Result, Err } from 'ts-results';
 import { CLErrorCodes } from './index';
-import { encodeBase16, decodeBase16 } from '../Conversions';
-import { matchTypeToCLType } from './utils';
+// import { encodeBase16, decodeBase16 } from '../Conversions';
+// import { matchTypeToCLType } from './utils';
 
 export abstract class CLType {
   abstract toString(): string;
@@ -15,24 +16,33 @@ export abstract class CLValue {
   abstract data: any;
 
   abstract toBytes(): Uint8Array;
-  static fromBytes: (
+
+  static fromBytesWithRemainder: (
     bytes: Uint8Array,
     innerType?: CLType
   ) => ResultAndRemainder<CLValue & ToBytes & FromBytes, CLErrorCodes>;
 
-  toJSON(): ResultAndRemainder<CLJsonFormat, CLErrorCodes> {
-    const bytes = encodeBase16(this.toBytes());
-    const clType = this.clType().toJSON();
-    return resultHelper(Ok({ bytes: bytes, cl_type: clType }));
+  static fromBytes(bytes: Uint8Array): Result<CLValue, CLErrorCodes> {
+    const { result, remainder } = this.fromBytesWithRemainder(bytes);
+    if (remainder && remainder.length) {
+      return Err(CLErrorCodes.LeftOverBytes);
+    }
+    return result;
   }
 
-  static fromJSON(
-    json: CLJsonFormat
-  ): ResultAndRemainder<CLValue, CLErrorCodes> {
-    const uint8bytes = decodeBase16(json.bytes);
-    const clTypes = matchTypeToCLType(json.cl_type);
-    return this.fromBytes(uint8bytes, clTypes);
-  }
+  // toJSON(): ResultAndRemainder<CLJsonFormat, CLErrorCodes> {
+  //   const bytes = encodeBase16(this.toBytes());
+  //   const clType = this.clType().toJSON();
+  //   return resultHelper(Ok({ bytes: bytes, cl_type: clType }));
+  // }
+
+  // static fromJSON(
+  //   json: CLJsonFormat
+  // ): Result<CLValue, CLErrorCodes> {
+  //   const uint8bytes = decodeBase16(json.bytes);
+  //   const clTypes = matchTypeToCLType(json.cl_type);
+  //   return this.fromBytes(uint8bytes, clTypes);
+  // }
 }
 
 export abstract class ToBytes {}

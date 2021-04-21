@@ -4,8 +4,8 @@ export const ACCOUNT_HASH_LENGTH = 32;
 export enum CLErrorCodes {
   EarlyEndOfStream = 0,
   Formatting,
-  LeftOverBytes,
-  OutOfMemory
+  LeftOverBytes = "Left over bytes",
+  OutOfMemory = " Out of memory exception"
 }
 
 export enum KeyVariant {
