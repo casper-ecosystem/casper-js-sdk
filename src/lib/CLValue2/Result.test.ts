@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { CLBool, CLBoolType, CLResult, CLU8, CLU8Type } from './index';
+import { CLBool, CLBoolType, CLResult, CLResultType, CLU8, CLU8Type } from './index';
 import { Ok, Err } from "ts-results";
 
 const myTypes = { ok: new CLBoolType(), err: new CLU8Type() };
@@ -16,17 +16,22 @@ describe('CLResult', () => {
     expect(myOkRes.clType().toString()).to.be.eq('Result');
   });
 
-  it('toBytes() should return proper byte array', () => {
-    expect(myOkRes.toBytes().unwrap()).to.be.deep.eq(Uint8Array.from([1, 1]));
-    expect(myErrRes.toBytes().unwrap()).to.be.deep.eq(Uint8Array.from([0, 1]));
+  it('toBytes() / fromBytes()', () => {
+    const okBytes = myOkRes.toBytes().unwrap()
+    const errBytes = myErrRes.toBytes().unwrap();
+    expect(okBytes).to.be.deep.eq(Uint8Array.from([1, 1]));
+    expect(errBytes).to.be.deep.eq(Uint8Array.from([0, 1]));
+
+    const okFromBytes = CLResult.fromBytes(okBytes, new CLResultType(myTypes)).unwrap();
+    const errFromBytes = CLResult.fromBytes(errBytes, new CLResultType(myTypes)).unwrap();
+
+    expect(okFromBytes).to.be.deep.eq(myOkRes);
+    expect(errFromBytes).to.be.deep.eq(myErrRes);
   });
 
-  // TODO: Add from bytes
-
-  // it('toJSON() / fromJSON()', () => {
-  //   const myOkJson = myOkRes.toJSON().result.unwrap();
-  //   const myOkFromJson = CLResult.fromJSON(myOkJson).result.unwrap();
-  //   expect(myOkFromJson).to.be.deep.eq(myOkRes);
-  // });
-
+  it('toJSON() / fromJSON()', () => {
+    const myOkJson = myOkRes.toJSON().unwrap();
+    const myOkFromJson = CLResult.fromJSON(myOkJson).unwrap();
+    expect(myOkFromJson).to.be.deep.eq(myOkRes);
+  });
 });

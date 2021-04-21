@@ -1,8 +1,8 @@
-// import { Result, Ok } from 'ts-results';
-import { Result, Err } from 'ts-results';
+import { Result, Ok, Err } from 'ts-results';
+
 import { CLErrorCodes } from './index';
-// import { encodeBase16, decodeBase16 } from '../Conversions';
-// import { matchTypeToCLType } from './utils';
+import { encodeBase16, decodeBase16 } from '../Conversions';
+import { matchTypeToCLType } from './utils';
 
 export abstract class CLType {
   abstract toString(): string;
@@ -30,19 +30,20 @@ export abstract class CLValue {
     return result;
   }
 
-  // toJSON(): ResultAndRemainder<CLJsonFormat, CLErrorCodes> {
-  //   const bytes = encodeBase16(this.toBytes());
-  //   const clType = this.clType().toJSON();
-  //   return resultHelper(Ok({ bytes: bytes, cl_type: clType }));
-  // }
+  toJSON(): Result<CLJsonFormat, CLErrorCodes> {
+    const rawBytes = this.toBytes().unwrap();
+    const bytes = encodeBase16(rawBytes);
+    const clType = this.clType().toJSON();
+    return Ok({ bytes: bytes, cl_type: clType });
+  }
 
-  // static fromJSON(
-  //   json: CLJsonFormat
-  // ): Result<CLValue, CLErrorCodes> {
-  //   const uint8bytes = decodeBase16(json.bytes);
-  //   const clTypes = matchTypeToCLType(json.cl_type);
-  //   return this.fromBytes(uint8bytes, clTypes);
-  // }
+  static fromJSON(
+    json: CLJsonFormat
+  ): Result<CLValue, CLErrorCodes> {
+    const uint8bytes = decodeBase16(json.bytes);
+    const clTypes = matchTypeToCLType(json.cl_type);
+    return this.fromBytes(uint8bytes, clTypes);
+  }
 }
 
 export abstract class ToBytes {}

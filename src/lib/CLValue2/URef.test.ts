@@ -52,9 +52,8 @@ describe('CLUref', () => {
 
   //TODO: Add tests for fromBytes
 
-  // it('fromJSON() / toJSON()', () => {
-  //   const json = RWExampleURef.toJSON();
-  //   // @ts-ignore
-  //   expect(CLURef.fromJSON(json.result.val).result.val).to.be.deep.eq(RWExampleURef);
-  // });
+  it('fromJSON() / toJSON()', () => {
+    const json = RWExampleURef.toJSON().unwrap();
+    expect(CLURef.fromJSON(json).unwrap()).to.be.deep.eq(RWExampleURef);
+  });
 });
