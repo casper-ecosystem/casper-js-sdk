@@ -9,14 +9,13 @@ import {
   resultHelper,
   CLU8
 } from './index';
-import { toBytesU8 } from '../ByteConverters';
 
 const RESULT_TAG_ERROR = 0;
 const RESULT_TAG_OK = 1;
 
 export class CLResultType<
   T extends CLType,
-  E extends CLErrorCodes
+  E extends CLType
 > extends CLType {
   linksTo = CLResult;
   typeId = 'Result';
@@ -51,14 +50,14 @@ export class CLResultType<
  */
 export class CLResult<
   T extends CLType,
-  E extends CLErrorCodes
+  E extends CLType
 > extends CLValue {
-  data: Result<CLValue, CLErrorCodes>;
+  data: Result<CLValue, CLValue>;
   innerOk: T;
   innerErr: E;
 
   constructor(
-    data: Result<CLValue, CLErrorCodes>,
+    data: Result<CLValue, CLValue>,
     { ok, err }: { ok: T; err: E }
   ) {
     super();
@@ -69,7 +68,7 @@ export class CLResult<
   /**
    * Returns Result from ts-result based on stored value
    */
-  value(): Result<CLValue, CLErrorCodes> {
+  value(): Result<CLValue, CLValue> {
     return this.data;
   }
 
@@ -100,7 +99,7 @@ export class CLResult<
     } else if (this.data instanceof Err) {
       return concat([
         Uint8Array.from([RESULT_TAG_ERROR]),
-        toBytesU8(this.data.val as number)
+        this.data.val.toBytes()
       ]);
     } else {
       throw new Error('Unproper data stored in CLResult');
@@ -109,8 +108,8 @@ export class CLResult<
 
   static fromBytes(
     bytes: Uint8Array,
-    type: CLResultType<CLType, CLErrorCodes>
-  ): ResultAndRemainder<CLResult<CLType, CLErrorCodes>, CLErrorCodes> {
+    type: CLResultType<CLType, CLType>
+  ): ResultAndRemainder<CLResult<CLType, CLType>, CLErrorCodes> {
     const { result: U8Res, remainder: U8Rem } = CLU8.fromBytes(bytes);
     if (!U8Res.ok) {
       return resultHelper(Err(U8Res.val));
@@ -119,15 +118,11 @@ export class CLResult<
     const resultTag = U8Res.val.value().toNumber();
     const referenceErr = type.innerErr;
     const referenceOk = type.innerOk;
-    const { result: valRes, remainder: valRem } = referenceOk.linksTo.fromBytes(
-      U8Rem
-    );
-
-    if (!valRes.ok) {
-      return resultHelper(Err(valRes.val));
-    }
 
     if (resultTag === RESULT_TAG_ERROR) {
+      const { result: valRes, remainder: valRem } = referenceErr.linksTo.fromBytes(
+        U8Rem
+      );
       const val = new CLResult(Err(valRes.val), {
         ok: referenceOk,
         err: referenceErr
@@ -136,6 +131,9 @@ export class CLResult<
     }
 
     if (resultTag === RESULT_TAG_OK) {
+      const { result: valRes, remainder: valRem } = referenceOk.linksTo.fromBytes(
+        U8Rem
+      );
       const val = new CLResult(Ok(valRes.val as CLValue), {
         ok: referenceOk,
         err: referenceErr
@@ -147,4 +145,5 @@ export class CLResult<
   }
 }
 
-// const x = new CLResult(Ok(new CLU8(1)), new CLU8Type(), CLErrorCodes.Formatting);
+// const x = new CLResult(Ok(new CLU8(1)), { ok: new CLU8Type(), err: new CLU8Type() });
+// const y = new CLResult(Ok(new CLU8(1)), { ok: new CLU8Type(), err: new CLU8Type() });
