@@ -73,35 +73,30 @@ describe('CLPublicKey', () => {
     expect(pub.value()).to.be.deep.eq(rawSecp256K1Account);
   });
 
-  it('toAccountHex() valid reult', () => {
+  it('fromHex() should serializes to the same hex value by using toAccountHex()', () => {
     const accountKey =
       '01f9235ff9c46c990e1e2eee0d531e488101fab48c05b75b8ea9983658e228f06b';
-    const rawPublicKey = new TextEncoder().encode(accountKey);
 
-    const tag = parseInt(accountKey.charAt(1));
-    const publicKey = new CLPublicKey(rawPublicKey, tag);
+    const publicKey = CLPublicKey.fromHex(accountKey);
     const accountHex = publicKey.toAccountHex();
-    const validResult =
-      '01303166393233356666396334366339393065316532656565306435333165343838313031666162343863303562373562386561393938333635386532323866303662';
 
-    expect(accountHex).to.be.eq(validResult);
+    expect(accountHex).to.be.eq(accountKey);
+    expect(publicKey.isEd25519()).to.be.eq(true);
   });
 
   it('toAccountHash() valid result', () => {
     const accountKey =
       '01f9235ff9c46c990e1e2eee0d531e488101fab48c05b75b8ea9983658e228f06b';
-    const rawPublicKey = new TextEncoder().encode(accountKey);
 
-    const tag = parseInt(accountKey.charAt(1));
-    const publicKey = new CLPublicKey(rawPublicKey, tag);
+    const publicKey = CLPublicKey.fromHex(accountKey);
     const accountHash = publicKey.toAccountHash();
     // prettier-ignore
     const validResult = Uint8Array.from([
-      185, 165, 197, 234, 124, 153, 163, 
-      67, 187,  34,  52, 219, 142,  78,
-      167,  87, 229, 253, 142,  41,  14,
-      19,  21, 207, 123, 167, 197, 194,
-      103, 237, 110, 248
+      145, 171, 120,   7, 189,  47, 216, 
+      41, 215, 192, 156, 198,  81, 187,
+      81, 206,  63, 183, 251, 252, 224,
+      127,  79, 141, 250, 233, 141, 132,                    
+      130, 235, 172,  98
     ]);
 
     expect(accountHash).to.be.deep.eq(validResult);

@@ -1,19 +1,24 @@
 import { concat } from '@ethersproject/bytes';
-import { Ok, Err } from "ts-results";
+import { Ok, Err } from 'ts-results';
 
-import { CLType, CLValue,
+import {
+  CLType,
+  CLValue,
   CLErrorCodes,
   resultHelper,
   ResultAndRemainder,
   ToBytes,
-  FromBytes,
+  FromBytes
 } from './index';
-import { PUBLIC_KEY_ID } from "./constants";
+import { PUBLIC_KEY_ID } from './constants';
 import { decodeBase16, encodeBase16 } from '../Conversions';
 import { byteHash } from '../Contracts';
 
-// TODO: Tidy up almost the same enum in 
+// TODO: Tidy up almost the same enum in
 // { SignatureAlgorithm } '../Keys';
+
+const ED25519_LENGTH = 32;
+const SECP256K1_LENGTH = 33;
 
 export enum CLPublicKeyTag {
   ED25519 = 1,
@@ -38,13 +43,27 @@ export class CLPublicKey extends CLValue implements ToBytes, FromBytes {
 
   constructor(rawPublicKey: Uint8Array, tag: CLPublicKeyTag) {
     super();
-    // TODO: Add length check
-    if (Object.values(CLPublicKeyTag).includes(tag)) {
+    if (tag === CLPublicKeyTag.ED25519) {
+      if (rawPublicKey.length !== ED25519_LENGTH) {
+        throw new Error(
+          `Wrong length of ED25519 key. Expected ${ED25519_LENGTH}, but got ${rawPublicKey.length}.`
+        );
+      }
       this.data = rawPublicKey;
       this.tag = tag;
-    } else {
-      throw new Error('Unsupported type of public key');
+      return;
     }
+    if (tag === CLPublicKeyTag.SECP256K1) {
+      if (rawPublicKey.length !== SECP256K1_LENGTH) {
+        throw new Error(
+          `Wrong length of SECP256K1 key. Expected ${SECP256K1_LENGTH}, but got ${rawPublicKey.length}.`
+        );
+      }
+      this.data = rawPublicKey;
+      this.tag = tag;
+      return;
+    }
+    throw new Error('Unsupported type of public key');
   }
 
   clType(): CLType {
@@ -107,14 +126,11 @@ export class CLPublicKey extends CLValue implements ToBytes, FromBytes {
   }
 
   public toBytes(): Uint8Array {
-    return concat([
-      Uint8Array.from([this.tag]),
-      this.data
-    ]);
+    return concat([Uint8Array.from([this.tag]), this.data]);
   }
 
   static fromBytesWithRemainder(
-    rawBytes: Uint8Array,
+    rawBytes: Uint8Array
   ): ResultAndRemainder<CLPublicKey, CLErrorCodes> {
     if (rawBytes.length < 1) {
       return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
@@ -123,10 +139,10 @@ export class CLPublicKey extends CLValue implements ToBytes, FromBytes {
     const variant = rawBytes[0];
 
     let expectedPublicKeySize;
-    if (variant === CLPublicKeyTag.ED25519) { 
-      expectedPublicKeySize = 32;
-    } else if (variant === CLPublicKeyTag.SECP256K1) { 
-      expectedPublicKeySize = 33;
+    if (variant === CLPublicKeyTag.ED25519) {
+      expectedPublicKeySize = ED25519_LENGTH;
+    } else if (variant === CLPublicKeyTag.SECP256K1) {
+      expectedPublicKeySize = SECP256K1_LENGTH;
     } else {
       return resultHelper(Err(CLErrorCodes.Formatting));
     }
@@ -135,7 +151,9 @@ export class CLPublicKey extends CLValue implements ToBytes, FromBytes {
 
     const publicKey = new CLPublicKey(bytes, variant);
 
-    return resultHelper(Ok(publicKey), rawBytes.subarray(expectedPublicKeySize + 1));
+    return resultHelper(
+      Ok(publicKey),
+      rawBytes.subarray(expectedPublicKeySize + 1)
+    );
   }
-
 }

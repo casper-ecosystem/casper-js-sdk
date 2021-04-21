@@ -1,3 +1,4 @@
+// NOTE: Revisit in future based on https://docs.rs/casper-types/1.0.1/casper_types/enum.Key.html
 import { concat } from '@ethersproject/bytes';
 import { Ok, Err } from 'ts-results';
 
