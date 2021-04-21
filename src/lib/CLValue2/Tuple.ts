@@ -1,16 +1,17 @@
-import { Ok, Err } from "ts-results";
+import { Ok, Err } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
 
 import {
   CLType,
   CLValue,
   ToBytes,
-  FromBytes,
   ResultAndRemainder,
   resultHelper,
-  CLErrorCodes,
+  CLErrorCodes
 } from './index';
-import { TUPLE_MATCH_LEN_TO_ID } from "./utils";
+import { TUPLE_MATCH_LEN_TO_ID } from './utils';
+
+type TupleTypes = typeof CLTuple1 | typeof CLTuple2 | typeof CLTuple3;
 
 // TBD: Do we want Tuple to have all of the values on init? If no, when it will be serialized it should throw an error that eg Tuple2 has only one element and is invalid
 abstract class GenericTuple extends CLValue {
@@ -59,12 +60,15 @@ abstract class GenericTuple extends CLValue {
 
   static fromBytesWithRemainder(
     rawBytes: Uint8Array,
-    type: typeof CLTuple1Type | typeof CLTuple2Type | typeof CLTuple3Type
+    type: CLTuple1Type | CLTuple2Type | CLTuple3Type
   ): ResultAndRemainder<GenericTuple, CLErrorCodes> {
     let rem = rawBytes;
     const val = type.inner.map((t: CLType) => {
       const referenceClass = t.linksTo;
-      const { result: vRes, remainder: vRem } = referenceClass.fromBytesWithRemainder(rem);
+      const {
+        result: vRes,
+        remainder: vRem
+      } = referenceClass.fromBytesWithRemainder(rem);
       if (!vRes.ok) {
         return resultHelper(Err(vRes.val));
       }
@@ -85,46 +89,74 @@ abstract class GenericTuple extends CLValue {
   }
 }
 
-// TBD: Maybe replace this with classic implementation, it will be easier to validate by compiler eg. new Tuple1<Bool>(), new Tuple2<Bool, I32>();
-const generateTupleClasses = (
-  size: number
-  // TODO: Get rid of any below
-): [any, any] => {
-  class Tuple extends GenericTuple {
-    constructor(value: Array<CLValue & ToBytes & FromBytes>) {
-      super(size, value);
-    }
+abstract class GenericTupleType extends CLType {
+  linksTo: TupleTypes;
+  inner: Array<CLType>;
 
-    clType(): CLType {
-      return new TupleType(this.data.map(e => e.clType()));
-    }
+  constructor(inner: Array<CLType>, linksTo: TupleTypes) {
+    super();
+    this.inner = inner;
+    this.linksTo = linksTo;
   }
 
-  class TupleType extends CLType {
-    linksTo = Tuple;
-    inner: Array<CLType>;
-
-    constructor(inner: Array<CLType>) {
-      super();
-      this.inner = inner;
-    }
-
-    toString(): string {
-      const innerTypes = this.inner.map(e => e.toString()).join(', ');
-      return `Tuple${this.inner.length} (${innerTypes})`;
-    }
-
-    toJSON(): any {
-      const id = TUPLE_MATCH_LEN_TO_ID[this.inner.length - 1];
-      return {
-        [id]: this.inner.map(t => t.toJSON())
-      }
-    }
+  toString(): string {
+    const innerTypes = this.inner.map(e => e.toString()).join(', ');
+    return `Tuple${this.inner.length} (${innerTypes})`;
   }
 
-  return [Tuple, TupleType];
+  toJSON(): any {
+    const id = TUPLE_MATCH_LEN_TO_ID[this.inner.length - 1];
+    return {
+      [id]: this.inner.map(t => t.toJSON())
+    };
+  }
+}
+
+export class CLTuple1Type extends GenericTupleType {
+  constructor(inner: Array<CLType>) {
+    super(inner, CLTuple1);
+  }
 };
 
-export const [CLTuple1, CLTuple1Type] = generateTupleClasses(1);
-export const [CLTuple2, CLTuple2Type] = generateTupleClasses(2);
-export const [CLTuple3, CLTuple3Type] = generateTupleClasses(3);
+export class CLTuple1 extends GenericTuple {
+  constructor(value: Array<CLValue>) {
+    super(1, value);
+  }
+
+  clType(): CLType {
+    return new CLTuple1Type(this.data.map(e => e.clType()));
+  }
+}
+
+export class CLTuple2Type extends GenericTupleType {
+  constructor(inner: Array<CLType>) {
+    super(inner, CLTuple2);
+  }
+};
+
+export class CLTuple2 extends GenericTuple {
+  constructor(value: Array<CLValue>) {
+    super(2, value);
+  }
+
+  clType(): CLType {
+    return new CLTuple2Type(this.data.map(e => e.clType()));
+  }
+}
+
+export class CLTuple3Type extends GenericTupleType {
+  constructor(inner: Array<CLType>) {
+    super(inner, CLTuple3);
+  }
+};
+
+export class CLTuple3 extends GenericTuple {
+  constructor(value: Array<CLValue>) {
+    super(3, value);
+  }
+
+  clType(): CLType {
+    return new CLTuple3Type(this.data.map(e => e.clType()));
+  }
+}
+

@@ -36,6 +36,7 @@ describe('CLTuple', () => {
   });
 
   it('Should throw an error when list is not correct by construction', () => {
+    // @ts-ignore
     const badFn = () => new CLTuple2(['a', 2]);
 
     expect(badFn).to.throw('Invalid data type(s) provided.');

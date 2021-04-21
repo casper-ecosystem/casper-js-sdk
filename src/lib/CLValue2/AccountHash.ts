@@ -1,7 +1,8 @@
+// NOTE: Currently this isn't supported CLValue
+
 import {
   CLType,
   CLValue,
-  ToBytes,
   CLErrorCodes,
   ResultAndRemainder,
   ACCOUNT_HASH_LENGTH,
