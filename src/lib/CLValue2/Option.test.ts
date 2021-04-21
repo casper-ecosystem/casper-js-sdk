@@ -15,11 +15,11 @@ describe('CLOption', () => {
     expect(mySomeOpt.clType().toString()).to.be.eq('Option (Bool)');
   });
 
-  it('toBytes() should return proper byte array', () => {
-    const x = CLOption.fromBytes(Uint8Array.from([1, 1]), new CLOptionType(new CLBoolType()));
-    expect(mySomeOpt.toBytes()).to.be.deep.eq(Uint8Array.from([1, 1]));
-    expect(x.unwrap()).to.be.deep.eq(mySomeOpt);
-    expect(myNoneOpt.toBytes()).to.be.deep.eq(Uint8Array.from([0]));
+  it('toBytes() / fromBytes()', () => {
+    const optionFromBytes = CLOption.fromBytes(Uint8Array.from([1, 1]), new CLOptionType(new CLBoolType()));
+    expect(mySomeOpt.toBytes().unwrap()).to.be.deep.eq(Uint8Array.from([1, 1]));
+    expect(optionFromBytes.unwrap()).to.be.deep.eq(mySomeOpt);
+    expect(myNoneOpt.toBytes().unwrap()).to.be.deep.eq(Uint8Array.from([0]));
   });
 
   // it('toBytes() should return proper byte array', () => {

@@ -5,13 +5,13 @@ import { Ok, Err } from 'ts-results';
 import {
   CLType,
   CLValue,
-  ToBytes,
   CLURef,
   CLAccountHash,
   CLErrorCodes,
   KeyVariant,
   ACCOUNT_HASH_LENGTH,
   ResultAndRemainder,
+  ToBytesResult,
   resultHelper
 } from './index';
 import { KEY_ID } from './constants';
@@ -59,24 +59,27 @@ export class CLKey extends CLValue {
     return this.data instanceof CLAccountHash;
   }
 
-  toBytes(): Uint8Array {
+  toBytes(): ToBytesResult {
     if (this.isAccount()) {
-      return concat([
-        Uint8Array.from([KeyVariant.Account]),
-        (this.data as CLAccountHash).toBytes()
-      ]);
+      return Ok(
+        concat([
+          Uint8Array.from([KeyVariant.Account]),
+          (this.data as CLAccountHash).toBytes().unwrap()
+        ])
+      );
     }
     if (this.isHash()) {
-      return concat([
-        Uint8Array.from([KeyVariant.Hash]),
-        this.data as Uint8Array
-      ]);
+      return Ok(
+        concat([Uint8Array.from([KeyVariant.Hash]), this.data as Uint8Array])
+      );
     }
     if (this.isURef()) {
-      return concat([
-        Uint8Array.from([KeyVariant.URef]),
-        (this.data as CLURef).toBytes()
-      ]);
+      return Ok(
+        concat([
+          Uint8Array.from([KeyVariant.URef]),
+          (this.data as CLURef).toBytes().unwrap()
+        ])
+      );
     }
 
     throw new Error('Unknown byte types');
@@ -96,9 +99,10 @@ export class CLKey extends CLValue {
       const key = new CLKey(hashBytes);
       return resultHelper(Ok(key), bytes.subarray(ACCOUNT_HASH_LENGTH + 1));
     } else if (tag === KeyVariant.URef) {
-      const { result: urefResult, remainder: urefRemainder } = CLURef.fromBytesWithRemainder(
-        bytes.subarray(1)
-      );
+      const {
+        result: urefResult,
+        remainder: urefRemainder
+      } = CLURef.fromBytesWithRemainder(bytes.subarray(1));
 
       if (urefResult.ok) {
         const key = new CLKey(urefResult.val);

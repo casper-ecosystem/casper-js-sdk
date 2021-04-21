@@ -3,10 +3,9 @@ import { Ok } from 'ts-results';
 import {
   CLType,
   CLValue,
-  ToBytes,
-  FromBytes,
   CLErrorCodes,
   ResultAndRemainder,
+  ToBytesResult,
   resultHelper
 } from './index';
 import { UNIT_ID } from "./constants";
@@ -23,7 +22,7 @@ export class CLUnitType extends CLType {
   }
 }
 
-export class CLUnit extends CLValue implements ToBytes, FromBytes {
+export class CLUnit extends CLValue {
   data = undefined;
 
   clType(): CLType {
@@ -34,8 +33,8 @@ export class CLUnit extends CLValue implements ToBytes, FromBytes {
     return this.data;
   }
 
-  toBytes(): Uint8Array {
-    return Uint8Array.from([]);
+  toBytes(): ToBytesResult {
+    return Ok(Uint8Array.from([]));
   }
 
   static fromBytesWithRemainder(

@@ -19,8 +19,8 @@ describe('CLBool', () => {
   it('toBytes() / fromBytes() do proper bytes serialization', () => {
     const myBool = new CLBool(false);
     const myBool2 = new CLBool(true);
-    const myBoolBytes = myBool.toBytes();
-    const myBool2Bytes = myBool2.toBytes();
+    const myBoolBytes = myBool.toBytes().unwrap();
+    const myBool2Bytes = myBool2.toBytes().unwrap();
 
     const fromBytes1 = CLBool.fromBytes(myBoolBytes).unwrap();
     const fromBytes2 = CLBool.fromBytes(myBool2Bytes).unwrap();

@@ -4,9 +4,9 @@ import { Ok, Err } from 'ts-results';
 import {
   CLType,
   CLValue,
-  ToBytes,
   CLErrorCodes,
   ResultAndRemainder,
+  ToBytesResult,
   resultHelper
 } from './index';
 import { UREF_ID } from "./constants";
@@ -62,7 +62,7 @@ const ACCESS_RIGHT_LENGTH = 1;
 
 const UREF_BYTES_LENGTH = UREF_ADDR_LENGTH + ACCESS_RIGHT_LENGTH;
 
-export class CLURef extends CLValue implements ToBytes {
+export class CLURef extends CLValue {
   data: Uint8Array;
   accessRights: AccessRights;
 
@@ -121,8 +121,8 @@ export class CLURef extends CLValue implements ToBytes {
     return { data: this.data, accessRights: this.accessRights };
   }
 
-  toBytes(): Uint8Array {
-    return concat([this.data, Uint8Array.from([this.accessRights])]);
+  toBytes(): ToBytesResult {
+    return Ok(concat([this.data, Uint8Array.from([this.accessRights])]));
   }
 
   static fromBytesWithRemainder(

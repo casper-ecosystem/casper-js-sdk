@@ -6,6 +6,7 @@ import {
   CLErrorCodes,
   resultHelper,
   ResultAndRemainder,
+  ToBytesResult,
   CLU32,
   FromBytes,
 } from './index';
@@ -105,8 +106,8 @@ export class CLList<T extends CLValue> extends CLValue
     return this.data.length;
   }
 
-  toBytes(): Uint8Array {
-    return toBytesVector(this.data);
+  toBytes(): ToBytesResult {
+    return Ok(toBytesVector(this.data));
   }
 
   static fromBytesWithRemainder(

@@ -28,7 +28,7 @@ describe('CLString', () => {
 
   it('toBytes() / fromBytes()', () => {
     const str = new CLString('ABC');
-    const bytes = str.toBytes();
+    const bytes = str.toBytes().unwrap();
     const result = CLString.fromBytes(bytes).unwrap();
     expect(result).to.be.deep.eq(str);
   });

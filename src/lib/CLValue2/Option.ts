@@ -6,10 +6,9 @@ import { Option } from 'ts-results';
 import {
   CLValue,
   CLType,
-  ToBytes,
-  FromBytes,
   CLErrorCodes,
   ResultAndRemainder,
+  ToBytesResult,
   CLU8,
   resultHelper
 } from './index';
@@ -42,8 +41,7 @@ export class CLOptionType<T extends CLType | null> extends CLType {
   }
 }
 
-export class CLOption<T extends CLValue> extends CLValue
-  implements ToBytes, FromBytes {
+export class CLOption<T extends CLValue> extends CLValue {
   private innerType: CLType;
   /**
    * Constructs a new option containing the value of Some or None from ts-result.
@@ -92,18 +90,18 @@ export class CLOption<T extends CLValue> extends CLValue
   /**
    * Serializes the `Option` into an array of bytes.
    */
-  toBytes(): Uint8Array {
+  toBytes(): ToBytesResult {
     if (this.data.none) {
-      return Uint8Array.from([OPTION_TAG_NONE]);
+      return Ok(Uint8Array.from([OPTION_TAG_NONE]));
     }
     if (this.data.some) {
-      return concat([
+      return Ok(concat([
         Uint8Array.from([OPTION_TAG_SOME]),
-        this.data.val.toBytes()
-      ]);
+        this.data.val.toBytes().unwrap()
+      ]));
     }
 
-    throw new Error('Unknown stored value');
+    return Err(CLErrorCodes.UnknownValue);
   }
 
   static fromBytesWithRemainder(
@@ -130,7 +128,7 @@ export class CLOption<T extends CLValue> extends CLValue
         return resultHelper(Err(valRes.val));
       }
       return resultHelper(
-        Ok(new CLOption(Some(valRes.val as CLValue & ToBytes))),
+        Ok(new CLOption(Some(valRes.val as CLValue ))),
         valRem
       );
     }

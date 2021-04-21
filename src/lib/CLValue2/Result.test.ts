@@ -17,8 +17,8 @@ describe('CLResult', () => {
   });
 
   it('toBytes() should return proper byte array', () => {
-    expect(myOkRes.toBytes()).to.be.deep.eq(Uint8Array.from([1, 1]));
-    expect(myErrRes.toBytes()).to.be.deep.eq(Uint8Array.from([0, 1]));
+    expect(myOkRes.toBytes().unwrap()).to.be.deep.eq(Uint8Array.from([1, 1]));
+    expect(myErrRes.toBytes().unwrap()).to.be.deep.eq(Uint8Array.from([0, 1]));
   });
 
   // TODO: Add from bytes

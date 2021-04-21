@@ -70,7 +70,7 @@ describe('CLKey', () => {
       42
     ]);
     const myKey = new CLKey(arr8);
-    expect(myKey.toBytes()).to.be.deep.eq(expectedBytes);
+    expect(myKey.toBytes().unwrap()).to.be.deep.eq(expectedBytes);
   });
 
   it('toBytes() with CLAccountHash', () => {
@@ -111,7 +111,7 @@ describe('CLKey', () => {
       42
     ]);
     const myKey = new CLKey(hash);
-    const bytes = myKey.toBytes();
+    const bytes = myKey.toBytes().unwrap();
     expect(bytes).to.be.deep.eq(expectedBytes);
   });
 
@@ -134,7 +134,7 @@ describe('CLKey', () => {
     );
     const uref = new CLURef(decodeBase16(urefAddr), AccessRights.READ_ADD_WRITE);
     const myKey = new CLKey(uref);
-    const bytes = myKey.toBytes();
+    const bytes = myKey.toBytes().unwrap();
     expect(bytes).to.deep.eq(truth);
     expect(CLKey.fromBytes(bytes).unwrap()).deep.eq(myKey);
   });

@@ -5,7 +5,8 @@ export enum CLErrorCodes {
   EarlyEndOfStream = 0,
   Formatting,
   LeftOverBytes = "Left over bytes",
-  OutOfMemory = " Out of memory exception"
+  OutOfMemory = "Out of memory exception",
+  UnknownValue = "Unknown value"
 }
 
 export enum KeyVariant {

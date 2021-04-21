@@ -6,6 +6,7 @@ import {
   CLValue,
   ToBytes,
   ResultAndRemainder,
+  ToBytesResult,
   resultHelper,
   CLErrorCodes
 } from './index';
@@ -54,8 +55,8 @@ abstract class GenericTuple extends CLValue {
     return this.data;
   }
 
-  toBytes(): Uint8Array {
-    return concat(this.data.map(d => d.toBytes()));
+  toBytes(): ToBytesResult {
+    return Ok(concat(this.data.map(d => d.toBytes().unwrap())));
   }
 
   static fromBytesWithRemainder(

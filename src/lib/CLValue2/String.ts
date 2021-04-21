@@ -6,6 +6,7 @@ import {
   ToBytes,
   FromBytes,
   ResultAndRemainder,
+  ToBytesResult,
   resultHelper,
   CLErrorCodes
 } from './index';
@@ -49,8 +50,8 @@ export class CLString extends CLValue implements ToBytes, FromBytes {
     return this.data.length;
   }
 
-  toBytes(): Uint8Array {
-    return toBytesString(this.data);
+  toBytes(): ToBytesResult {
+    return Ok(toBytesString(this.data));
   }
 
   static fromBytesWithRemainder(

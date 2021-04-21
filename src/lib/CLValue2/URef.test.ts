@@ -47,7 +47,7 @@ describe('CLUref', () => {
 
   it('toBytes() proper values', () => {
     const expectedBytes = Uint8Array.from([...Array(32).fill(42), 7]);
-    expect(RWExampleURef.toBytes()).to.be.deep.eq(expectedBytes);
+    expect(RWExampleURef.toBytes().unwrap()).to.be.deep.eq(expectedBytes);
   });
 
   //TODO: Add tests for fromBytes

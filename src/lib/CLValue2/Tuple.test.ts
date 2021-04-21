@@ -84,9 +84,9 @@ describe('CLTuple', () => {
       new CLString('XYZ')
     ]);
 
-    const myTup1Bytes = myTup1.toBytes();
-    const myTup2Bytes = myTup2.toBytes();
-    const myTup3Bytes = myTup3.toBytes();
+    const myTup1Bytes = myTup1.toBytes().unwrap();
+    const myTup2Bytes = myTup2.toBytes().unwrap();
+    const myTup3Bytes = myTup3.toBytes().unwrap();
 
     expect(
       CLTuple1.fromBytes(

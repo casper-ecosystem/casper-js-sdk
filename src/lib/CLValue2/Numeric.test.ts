@@ -26,10 +26,10 @@ describe('Numeric implementation tests', () => {
 
   it('CLI32 do proper toBytes()/fromBytes()', () => {
     const num1 = new CLI32(-10);
-    const num1bytes = num1.toBytes();
+    const num1bytes = num1.toBytes().unwrap();
 
     const num2 = new CLI32(MAX_I32);
-    const num2bytes = num2.toBytes();
+    const num2bytes = num2.toBytes().unwrap();
 
     expect(CLI32.fromBytes(num1bytes).unwrap()).to.be.deep.eq(num1);
     expect(CLI32.fromBytes(num2bytes).unwrap()).to.be.deep.eq(num2);
@@ -38,10 +38,10 @@ describe('Numeric implementation tests', () => {
 
   it('CLI64 do proper toBytes()/fromBytes()', () => {
     const num1 = new CLI64(-10);
-    const num1bytes = num1.toBytes();
+    const num1bytes = num1.toBytes().unwrap();
 
     const num2 = new CLI64(MAX_I64);
-    const num2bytes = num2.toBytes();
+    const num2bytes = num2.toBytes().unwrap();
 
     expect(CLI64.fromBytes(num1bytes).unwrap()).to.be.deep.eq(num1);
 
@@ -50,21 +50,21 @@ describe('Numeric implementation tests', () => {
 
   it('CLU8 do proper toBytes()/fromBytes()', () => {
     const num1 = new CLU8(MAX_U8);
-    const num1bytes = num1.toBytes();
+    const num1bytes = num1.toBytes().unwrap();
 
     expect(CLU8.fromBytes(num1bytes).unwrap()).to.be.deep.eq(num1);
   });
 
   it('CLU32 do proper toBytes()/fromBytes()', () => {
     const num1 = new CLU32(MAX_U32);
-    const num1bytes = num1.toBytes();
+    const num1bytes = num1.toBytes().unwrap();
 
     expect(CLU32.fromBytes(num1bytes).unwrap()).to.be.deep.eq(num1);
   });
 
   it('CLU64 do proper toBytes()/fromBytes()', () => {
     const num1 = new CLU64(MAX_U64);
-    const num1bytes = num1.toBytes();
+    const num1bytes = num1.toBytes().unwrap();
 
     expect(CLU64.fromBytes(num1bytes).unwrap()).to.be.deep.eq(num1);
   });

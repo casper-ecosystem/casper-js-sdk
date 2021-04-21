@@ -19,9 +19,10 @@ describe('CLByteArray', () => {
   it('Should be able to return proper byte array by calling toBytes() / fromBytes()', () => {
     const expectedBytes = Uint8Array.from(Array(32).fill(42))
     const hash = new CLByteArray(expectedBytes);
+    const bytes = hash.toBytes().unwrap();
 
-    expect(hash.toBytes()).to.deep.eq(expectedBytes);
-    expect(CLByteArray.fromBytes(hash.toBytes()).unwrap()).to.deep.eq(hash);
+    expect(bytes).to.deep.eq(expectedBytes);
+    expect(CLByteArray.fromBytes(bytes).unwrap()).to.deep.eq(hash);
   });
 
   // it('toJson() / fromJson()', () => {

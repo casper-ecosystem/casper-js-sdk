@@ -15,7 +15,7 @@ export abstract class CLValue {
   abstract value(): any;
   abstract data: any;
 
-  abstract toBytes(): Uint8Array;
+  abstract toBytes(): Result<Uint8Array, CLErrorCodes>;
 
   static fromBytesWithRemainder: (
     bytes: Uint8Array,
@@ -65,3 +65,5 @@ export interface CLJsonFormat {
   bytes: string;
   cl_type: string;
 }
+
+export type ToBytesResult = Result<Uint8Array, CLErrorCodes>;

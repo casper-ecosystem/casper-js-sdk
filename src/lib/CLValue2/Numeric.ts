@@ -4,6 +4,7 @@ import {
   CLValue,
   ToBytes,
   ResultAndRemainder,
+  ToBytesResult,
   CLErrorCodes,
   resultHelper
 } from './index';
@@ -29,8 +30,8 @@ abstract class Numeric extends CLValue implements ToBytes {
     return this.data;
   }
 
-  toBytes(): Uint8Array {
-    return toBytesNumber(this.bitSize, this.signed)(this.data);
+  toBytes(): ToBytesResult {
+    return Ok(toBytesNumber(this.bitSize, this.signed)(this.data));
   }
 }
 

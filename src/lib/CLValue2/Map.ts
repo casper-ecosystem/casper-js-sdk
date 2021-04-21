@@ -8,6 +8,7 @@ import {
   CLErrorCodes,
   resultHelper,
   ResultAndRemainder,
+  ToBytesResult,
   CLU32,
   FromBytes
 } from './index';
@@ -117,11 +118,11 @@ export class CLMap<K extends CLValue & ToBytes, V extends CLValue & ToBytes>
     return this.data.size;
   }
 
-  toBytes(): Uint8Array {
+  toBytes(): ToBytesResult {
     const kvBytes: Uint8Array[] = Array.from(this.data).map(([key, value]) =>
-      concat([key.toBytes(), value.toBytes()])
+      concat([key.toBytes().unwrap(), value.toBytes().unwrap()])
     );
-    return concat([toBytesU32(this.data.size), ...kvBytes]);
+    return Ok(concat([toBytesU32(this.data.size), ...kvBytes]));
   }
 
   static fromBytesWithRemainder(

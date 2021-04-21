@@ -113,7 +113,7 @@ describe('CLValue CLMap implementation', () => {
     const bytes = myMap.toBytes();
     const mapType = new CLMapType(new CLStringType(), new CLI32Type());
 
-    expect(CLMap.fromBytes(bytes, mapType).unwrap()).to.be.deep.eq(myMap);
+    expect(CLMap.fromBytes(bytes.unwrap(), mapType).unwrap()).to.be.deep.eq(myMap);
   });
 
   // it('json', () => {

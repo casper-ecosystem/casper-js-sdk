@@ -21,7 +21,7 @@ describe('CLAccountHash', () => {
     const hash = new CLAccountHash(expectedBytes);
     const fromBytes= CLAccountHash.fromBytes(expectedBytes).unwrap();
 
-    expect(hash.toBytes()).to.deep.eq(expectedBytes);
+    expect(hash.toBytes().unwrap()).to.deep.eq(expectedBytes);
     expect(fromBytes).to.deep.eq(hash);
   });
 });

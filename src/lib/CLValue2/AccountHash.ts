@@ -1,14 +1,15 @@
 // NOTE: Currently this isn't supported CLValue
+import { Result, Ok, Err } from 'ts-results';
 
 import {
   CLType,
   CLValue,
   CLErrorCodes,
   ResultAndRemainder,
+  ToBytesResult,
   ACCOUNT_HASH_LENGTH,
-  resultHelper
+  resultHelper,
 } from './index';
-import { Ok, Err } from 'ts-results';
 
 export class CLAccountHashType extends CLType {
   linksTo = CLAccountHash;
@@ -43,8 +44,8 @@ export class CLAccountHash extends CLValue {
     return this.data;
   }
 
-  public toBytes(): Uint8Array {
-    return this.data;
+  public toBytes(): ToBytesResult {
+    return Ok(this.data);
   }
 
   static fromBytesWithRemainder(bytes: Uint8Array): ResultAndRemainder<CLAccountHash, CLErrorCodes> {

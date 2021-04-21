@@ -136,7 +136,7 @@ describe('CLValue List implementation', () => {
   it('Serializes to proper byte array', () => {
     const myList = new CLList([new CLBool(false)]);
     const expected = Uint8Array.from([1, 0, 0, 0, 0]);
-    expect(myList.toBytes()).to.deep.eq(expected);
+    expect(myList.toBytes().unwrap()).to.deep.eq(expected);
   });
 
   it('Runs fromBytes properly', () => {
@@ -146,7 +146,7 @@ describe('CLValue List implementation', () => {
 
     const listType = new CLListType(new CLBoolType());
 
-    const reconstructedList = CLList.fromBytes(bytes, listType);
+    const reconstructedList = CLList.fromBytes(bytes.unwrap(), listType);
 
     expect(reconstructedList.unwrap()).to.be.deep.eq(myList);
   });
@@ -158,7 +158,7 @@ describe('CLValue List implementation', () => {
 
     const listType = new CLListType(new CLI32Type());
 
-    const reconstructedList = CLList.fromBytes(bytes, listType);
+    const reconstructedList = CLList.fromBytes(bytes.unwrap(), listType);
 
     expect(reconstructedList.unwrap()).to.be.deep.eq(myList);
   });

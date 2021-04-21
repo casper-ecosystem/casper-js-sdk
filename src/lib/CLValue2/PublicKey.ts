@@ -7,8 +7,7 @@ import {
   CLErrorCodes,
   resultHelper,
   ResultAndRemainder,
-  ToBytes,
-  FromBytes
+  ToBytesResult
 } from './index';
 import { PUBLIC_KEY_ID } from './constants';
 import { decodeBase16, encodeBase16 } from '../Conversions';
@@ -37,7 +36,7 @@ export class CLPublicKeyType extends CLType {
   }
 }
 
-export class CLPublicKey extends CLValue implements ToBytes, FromBytes {
+export class CLPublicKey extends CLValue {
   data: Uint8Array;
   private tag: CLPublicKeyTag;
 
@@ -125,8 +124,8 @@ export class CLPublicKey extends CLValue implements ToBytes, FromBytes {
     return new CLPublicKey(publicKeyHexBytes.subarray(1), publicKeyHexBytes[0]);
   }
 
-  public toBytes(): Uint8Array {
-    return concat([Uint8Array.from([this.tag]), this.data]);
+  public toBytes(): ToBytesResult {
+    return Ok(concat([Uint8Array.from([this.tag]), this.data]));
   }
 
   static fromBytesWithRemainder(

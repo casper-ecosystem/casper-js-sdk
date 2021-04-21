@@ -1,7 +1,7 @@
 import {
   CLType,
   CLValue,
-  ToBytes,
+  ToBytesResult,
   CLErrorCodes,
   ResultAndRemainder,
   resultHelper
@@ -36,8 +36,8 @@ export class CLByteArray extends CLValue {
     return this.data;
   }
 
-  toBytes(): Uint8Array {
-    return this.data;
+  toBytes(): ToBytesResult {
+    return Ok(this.data);
   }
 
   static fromBytesWithRemainder(

@@ -115,7 +115,7 @@ describe('CLPublicKey', () => {
   it('toBytes() serialize PublicKey correctly', () => {
     const bytes = Uint8Array.from(Array(32).fill(42));
     const publicKey = CLPublicKey.fromEd25519(bytes);
-    const toBytes = publicKey.toBytes();
+    const toBytes = publicKey.toBytes().unwrap();
     const validResult = Uint8Array.from([1, ...Array(32).fill(42)]);
 
     expect(toBytes).to.be.deep.eq(validResult);

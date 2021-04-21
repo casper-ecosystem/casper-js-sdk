@@ -118,7 +118,7 @@ export function toBytesArrayU8(arr: Uint8Array): Uint8Array {
  * Serializes a vector of values of type `T` into an array of bytes.
  */
 export const toBytesVector = <T extends CLValue>(vec: T[]): Uint8Array => {
-  const valueByteList = vec.map(e => e.toBytes());
+  const valueByteList = vec.map(e => e.toBytes().unwrap());
   valueByteList.splice(0, 0, toBytesU32(vec.length));
   return concat(valueByteList);
 };

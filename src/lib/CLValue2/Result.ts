@@ -6,6 +6,7 @@ import {
   CLType,
   CLErrorCodes,
   ResultAndRemainder,
+  ToBytesResult,
   resultHelper,
   CLU8
 } from './index';
@@ -90,17 +91,17 @@ export class CLResult<
     return new CLResultType({ ok: this.innerOk, err: this.innerErr });
   }
 
-  toBytes(): Uint8Array {
+  toBytes(): ToBytesResult {
     if (this.data instanceof Ok && this.data.val instanceof CLValue) {
-      return concat([
+      return Ok(concat([
         Uint8Array.from([RESULT_TAG_OK]),
-        this.data.val.toBytes()
-      ]);
+        this.data.val.toBytes().unwrap()
+      ]));
     } else if (this.data instanceof Err) {
-      return concat([
+      return Ok(concat([
         Uint8Array.from([RESULT_TAG_ERROR]),
-        this.data.val.toBytes()
-      ]);
+        this.data.val.toBytes().unwrap()
+      ]));
     } else {
       throw new Error('Unproper data stored in CLResult');
     }
