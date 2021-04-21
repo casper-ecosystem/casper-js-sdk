@@ -54,6 +54,9 @@ describe('CLUref', () => {
 
   it('fromJSON() / toJSON()', () => {
     const json = RWExampleURef.toJSON().unwrap();
-    expect(CLURef.fromJSON(json).unwrap()).to.be.deep.eq(RWExampleURef);
+    const expectedJson = JSON.parse('{"bytes":"2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a07","cl_type":"URef"}');
+
+    expect(CLURef.fromJSON(expectedJson).unwrap()).to.be.deep.eq(RWExampleURef);
+    expect(json).to.be.deep.eq(expectedJson);
   });
 });

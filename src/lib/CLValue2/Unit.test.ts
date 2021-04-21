@@ -12,13 +12,14 @@ describe('Unit implementation tests', () => {
     expect(unit.clType().toString()).to.be.eq("Unit");
   });
 
-  // it('fromJSON() / toJSON()', () => {
-  //   const unit = new CLUnit()
-  //   const json = unit.toJSON();
+  it('fromJSON() / toJSON()', () => {
+    const unit = new CLUnit()
+    const json = unit.toJSON().unwrap();
+    const expectedJson = JSON.parse('{"bytes":"","cl_type":"Unit"}');
 
-  //   // @ts-ignore
-  //   expect(CLUnit.fromJSON(json.result.val).result.val).to.be.deep.eq(unit);
-  // });
+    expect(json).to.be.deep.eq(expectedJson);
+    expect(CLUnit.fromJSON(expectedJson).unwrap()).to.be.deep.eq(unit);
+  });
 
 });
 
