@@ -117,6 +117,7 @@
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_deployutil_.html#addargtodeploy" class="tsd-kind-icon">add<wbr>Arg<wbr>ToDeploy</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-not-exported"><a href="_lib_deployutil_.html#arrayequals" class="tsd-kind-icon">array<wbr>Equals</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-not-exported"><a href="_lib_deployutil_.html#bytearrayjsondeserializer" class="tsd-kind-icon">byte<wbr>Array<wbr>Json<wbr>Deserializer</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-not-exported"><a href="_lib_deployutil_.html#bytearrayjsonserializer" class="tsd-kind-icon">byte<wbr>Array<wbr>Json<wbr>Serializer</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_deployutil_.html#deployfromjson" class="tsd-kind-icon">deploy<wbr>From<wbr>Json</a></li>
@@ -131,6 +132,7 @@
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_deployutil_.html#setsignature" class="tsd-kind-icon">set<wbr>Signature</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_deployutil_.html#signdeploy" class="tsd-kind-icon">sign<wbr>Deploy</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_deployutil_.html#standardpayment" class="tsd-kind-icon">standard<wbr>Payment</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_deployutil_.html#validatedeploy" class="tsd-kind-icon">validate<wbr>Deploy</a></li>
 							</ul>
 						</section>
 					</div>
@@ -144,7 +146,7 @@
 					<div class="tsd-signature tsd-kind-icon">short<wbr>English<wbr>Humanizer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Humanizer</span><span class="tsd-signature-symbol"> = humanizeDuration.humanizer({spacer: &#x27;&#x27;,serialComma: false,language: &#x27;shortEn&#x27;,languages: {// https://docs.rs/humantime/2.0.1/humantime/fn.parse_duration.htmlshortEn: {y: () &#x3D;&gt; &#x27;y&#x27;,mo: () &#x3D;&gt; &#x27;M&#x27;,w: () &#x3D;&gt; &#x27;w&#x27;,d: () &#x3D;&gt; &#x27;d&#x27;,h: () &#x3D;&gt; &#x27;h&#x27;,m: () &#x3D;&gt; &#x27;m&#x27;,s: () &#x3D;&gt; &#x27;s&#x27;,ms: () &#x3D;&gt; &#x27;ms&#x27;}}})</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/3725c8b/src/lib/DeployUtil.ts#L35">src/lib/DeployUtil.ts:35</a></li>
+							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L36">src/lib/DeployUtil.ts:36</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -161,7 +163,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/3725c8b/src/lib/DeployUtil.ts#L958">src/lib/DeployUtil.ts:958</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L963">src/lib/DeployUtil.ts:963</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -181,6 +183,32 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+					<a name="arrayequals" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> array<wbr>Equals</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">array<wbr>Equals<span class="tsd-signature-symbol">(</span>a<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span>, b<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L1020">src/lib/DeployUtil.ts:1020</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>a: <span class="tsd-signature-type">Uint8Array</span></h5>
+								</li>
+								<li>
+									<h5>b: <span class="tsd-signature-type">Uint8Array</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
 					<a name="bytearrayjsondeserializer" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> byte<wbr>Array<wbr>Json<wbr>Deserializer</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
@@ -190,7 +218,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/3725c8b/src/lib/DeployUtil.ts#L60">src/lib/DeployUtil.ts:60</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L61">src/lib/DeployUtil.ts:61</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -213,7 +241,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/3725c8b/src/lib/DeployUtil.ts#L54">src/lib/DeployUtil.ts:54</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L55">src/lib/DeployUtil.ts:55</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -236,7 +264,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/3725c8b/src/lib/DeployUtil.ts#L953">src/lib/DeployUtil.ts:953</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L954">src/lib/DeployUtil.ts:954</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -268,7 +296,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/3725c8b/src/lib/DeployUtil.ts#L982">src/lib/DeployUtil.ts:982</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L987">src/lib/DeployUtil.ts:987</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -291,7 +319,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/3725c8b/src/lib/DeployUtil.ts#L941">src/lib/DeployUtil.ts:941</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L942">src/lib/DeployUtil.ts:942</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -328,7 +356,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/3725c8b/src/lib/DeployUtil.ts#L207">src/lib/DeployUtil.ts:207</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L208">src/lib/DeployUtil.ts:208</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -351,7 +379,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/3725c8b/src/lib/DeployUtil.ts#L70">src/lib/DeployUtil.ts:70</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L71">src/lib/DeployUtil.ts:71</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -384,7 +412,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/3725c8b/src/lib/DeployUtil.ts#L849">src/lib/DeployUtil.ts:849</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L850">src/lib/DeployUtil.ts:850</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -418,7 +446,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/3725c8b/src/lib/DeployUtil.ts#L215">src/lib/DeployUtil.ts:215</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L216">src/lib/DeployUtil.ts:216</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -441,7 +469,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/3725c8b/src/lib/DeployUtil.ts#L802">src/lib/DeployUtil.ts:802</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L803">src/lib/DeployUtil.ts:803</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -476,7 +504,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/3725c8b/src/lib/DeployUtil.ts#L793">src/lib/DeployUtil.ts:793</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L794">src/lib/DeployUtil.ts:794</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -508,7 +536,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/3725c8b/src/lib/DeployUtil.ts#L904">src/lib/DeployUtil.ts:904</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L905">src/lib/DeployUtil.ts:905</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -552,7 +580,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/3725c8b/src/lib/DeployUtil.ts#L877">src/lib/DeployUtil.ts:877</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L878">src/lib/DeployUtil.ts:878</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -588,7 +616,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/3725c8b/src/lib/DeployUtil.ts#L928">src/lib/DeployUtil.ts:928</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L929">src/lib/DeployUtil.ts:929</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -608,6 +636,29 @@
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="../classes/_lib_deployutil_.executabledeployitem.html" class="tsd-signature-type">ExecutableDeployItem</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="validatedeploy" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> validate<wbr>Deploy</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">validate<wbr>Deploy<span class="tsd-signature-symbol">(</span>deploy<span class="tsd-signature-symbol">: </span><a href="../classes/_lib_deployutil_.deploy.html" class="tsd-signature-type">Deploy</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_lib_index_.html#result" class="tsd-signature-type">Result</a><span class="tsd-signature-symbol">&lt;</span><a href="../classes/_lib_deployutil_.deploy.html" class="tsd-signature-type">Deploy</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/aa166b9/src/lib/DeployUtil.ts#L998">src/lib/DeployUtil.ts:998</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>deploy: <a href="../classes/_lib_deployutil_.deploy.html" class="tsd-signature-type">Deploy</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_lib_index_.html#result" class="tsd-signature-type">Result</a><span class="tsd-signature-symbol">&lt;</span><a href="../classes/_lib_deployutil_.deploy.html" class="tsd-signature-type">Deploy</a><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -735,6 +786,9 @@
 						<a href="_lib_deployutil_.html#addargtodeploy" class="tsd-kind-icon">add<wbr>Arg<wbr>ToDeploy</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_lib_deployutil_.html#arrayequals" class="tsd-kind-icon">array<wbr>Equals</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
 						<a href="_lib_deployutil_.html#bytearrayjsondeserializer" class="tsd-kind-icon">byte<wbr>Array<wbr>Json<wbr>Deserializer</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
@@ -775,6 +829,9 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="_lib_deployutil_.html#standardpayment" class="tsd-kind-icon">standard<wbr>Payment</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_lib_deployutil_.html#validatedeploy" class="tsd-kind-icon">validate<wbr>Deploy</a>
 					</li>
 				</ul>
 			</nav>
