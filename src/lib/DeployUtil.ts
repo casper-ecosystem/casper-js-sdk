@@ -31,6 +31,7 @@ import { AsymmetricKey, SignatureAlgorithm } from './Keys';
 import { BigNumberish } from '@ethersproject/bignumber';
 import { jsonArrayMember, jsonMember, jsonObject, TypedJSON } from 'typedjson';
 import { ByteArray } from 'tweetnacl-ts';
+import { Result, Ok, Err } from 'ts-results';
 
 const shortEnglishHumanizer = humanizeDuration.humanizer({
   spacer: '',
@@ -952,7 +953,11 @@ export const deployToJson = (deploy: Deploy) => {
  */
 export const deployFromJson = (json: any) => {
   const serializer = new TypedJSON(Deploy);
-  return serializer.parse(json.deploy);
+  const deploy = serializer.parse(json.deploy);
+  if (deploy !== undefined && validateDeploy(deploy).ok) {
+    return deploy;
+  }
+  return undefined;
 };
 
 export const addArgToDeploy = (
@@ -988,4 +993,30 @@ export const deploySizeInBytes = (deploy: Deploy): number => {
   }).reduce((a, b) => a + b, 0);
 
   return hashSize + headerSize + bodySize + approvalsSize;
+}
+
+export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
+  const serializedBody = serializeBody(deploy.payment, deploy.session);
+  const bodyHash = blake.blake2b(serializedBody, null, 32);
+
+  if(!arrayEquals(deploy.header.bodyHash, bodyHash)) {
+    return Err(`Invalid deploy: bodyHash missmatch. Expected: ${bodyHash}, 
+                  got: ${deploy.header.bodyHash}.`);
+  }
+
+  const serializedHeader = serializeHeader(deploy.header);
+  const deployHash = blake.blake2b(serializedHeader, null, 32);
+ 
+  if(!arrayEquals(deploy.hash, deployHash)) {
+    return Err(`Invalid deploy: hash missmatch. Expected: ${deployHash}, 
+                  got: ${deploy.hash}.`);
+  }
+
+  // TODO: Verify included signatures.
+
+  return Ok(deploy);
+}
+
+const arrayEquals = (a: Uint8Array, b: Uint8Array): boolean => {
+  return a.length === b.length && a.every((val, index) => val === b[index]);
 }
