@@ -113,7 +113,7 @@ export class CLPublicKey extends CLValue implements ToBytes, FromBytes {
     ]);
   }
 
-  static fromBytes(
+  static fromBytesWithRemainder(
     rawBytes: Uint8Array,
   ): ResultAndRemainder<CLPublicKey, CLErrorCodes> {
     if (rawBytes.length < 1) {

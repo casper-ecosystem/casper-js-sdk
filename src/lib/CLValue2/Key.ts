@@ -30,7 +30,7 @@ export class CLKeyType extends CLType {
 // TBD: Maybe the first should be CLByteArray insted?
 type CLKeyParameters = Uint8Array | CLURef | CLAccountHash;
 
-export class CLKey extends CLValue implements ToBytes {
+export class CLKey extends CLValue {
   data: CLKeyParameters;
 
   constructor(v: CLKeyParameters) {
@@ -81,7 +81,9 @@ export class CLKey extends CLValue implements ToBytes {
     throw new Error('Unknown byte types');
   }
 
-  static fromBytes(bytes: Uint8Array): ResultAndRemainder<CLKey, CLErrorCodes> {
+  static fromBytesWithRemainder(
+    bytes: Uint8Array
+  ): ResultAndRemainder<CLKey, CLErrorCodes> {
     if (bytes.length < 1) {
       return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
     }
@@ -93,7 +95,7 @@ export class CLKey extends CLValue implements ToBytes {
       const key = new CLKey(hashBytes);
       return resultHelper(Ok(key), bytes.subarray(ACCOUNT_HASH_LENGTH + 1));
     } else if (tag === KeyVariant.URef) {
-      const { result: urefResult, remainder: urefRemainder } = CLURef.fromBytes(
+      const { result: urefResult, remainder: urefRemainder } = CLURef.fromBytesWithRemainder(
         bytes.subarray(1)
       );
 
@@ -104,9 +106,10 @@ export class CLKey extends CLValue implements ToBytes {
         return resultHelper(Err(urefResult.val));
       }
     } else if (tag === KeyVariant.Account) {
-      const {result: accountHashResult, remainder: accountHashRemainder} = CLAccountHash.fromBytes(
-        bytes.subarray(1)
-      );
+      const {
+        result: accountHashResult,
+        remainder: accountHashRemainder
+      } = CLAccountHash.fromBytesWithRemainder(bytes.subarray(1));
       if (accountHashResult.ok) {
         const key = new CLKey(accountHashResult.val);
         return resultHelper(Ok(key), accountHashRemainder);

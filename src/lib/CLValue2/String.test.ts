@@ -29,7 +29,7 @@ describe('CLString', () => {
   it('toBytes() / fromBytes()', () => {
     const str = new CLString('ABC');
     const bytes = str.toBytes();
-    const { result } = CLString.fromBytes(bytes);
-    expect(result.val).to.be.deep.eq(str);
+    const result = CLString.fromBytes(bytes).unwrap();
+    expect(result).to.be.deep.eq(str);
   });
 });

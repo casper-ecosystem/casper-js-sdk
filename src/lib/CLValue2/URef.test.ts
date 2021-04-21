@@ -50,9 +50,11 @@ describe('CLUref', () => {
     expect(RWExampleURef.toBytes()).to.be.deep.eq(expectedBytes);
   });
 
-  it('fromJSON() / toJSON()', () => {
-    const json = RWExampleURef.toJSON();
-    // @ts-ignore
-    expect(CLURef.fromJSON(json.result.val).result.val).to.be.deep.eq(RWExampleURef);
-  });
+  //TODO: Add tests for fromBytes
+
+  // it('fromJSON() / toJSON()', () => {
+  //   const json = RWExampleURef.toJSON();
+  //   // @ts-ignore
+  //   expect(CLURef.fromJSON(json.result.val).result.val).to.be.deep.eq(RWExampleURef);
+  // });
 });

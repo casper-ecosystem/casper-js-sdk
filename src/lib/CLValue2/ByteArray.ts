@@ -11,7 +11,7 @@ import { Ok } from 'ts-results';
 
 export const CL_BYTE_ARRAY_MAX_LENGTH = 32;
 
-export class CLByteArray extends CLValue implements ToBytes {
+export class CLByteArray extends CLValue {
   data: Uint8Array;
   /**
    * Constructs a new `CLByteArray`.
@@ -40,7 +40,7 @@ export class CLByteArray extends CLValue implements ToBytes {
     return this.data;
   }
 
-  static fromBytes(
+  static fromBytesWithRemainder(
     bytes: Uint8Array
   ): ResultAndRemainder<CLByteArray, CLErrorCodes> {
     const byteArray = new CLByteArray(

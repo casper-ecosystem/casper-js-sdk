@@ -21,10 +21,12 @@ describe('CLResult', () => {
     expect(myErrRes.toBytes()).to.be.deep.eq(Uint8Array.from([0, 1]));
   });
 
-  it('toJSON() / fromJSON()', () => {
-    const myOkJson = myOkRes.toJSON().result.unwrap();
-    const myOkFromJson = CLResult.fromJSON(myOkJson).result.unwrap();
-    expect(myOkFromJson).to.be.deep.eq(myOkRes);
-  });
+  // TODO: Add from bytes
+
+  // it('toJSON() / fromJSON()', () => {
+  //   const myOkJson = myOkRes.toJSON().result.unwrap();
+  //   const myOkFromJson = CLResult.fromJSON(myOkJson).result.unwrap();
+  //   expect(myOkFromJson).to.be.deep.eq(myOkRes);
+  // });
 
 });

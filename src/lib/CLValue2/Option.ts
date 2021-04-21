@@ -106,11 +106,11 @@ export class CLOption<T extends CLValue> extends CLValue
     throw new Error('Unknown stored value');
   }
 
-  static fromBytes(
+  static fromBytesWithRemainder(
     bytes: Uint8Array,
     type: CLOptionType<CLType>
   ): ResultAndRemainder<CLOption<CLValue>, CLErrorCodes> {
-    const { result: U8Res, remainder: U8Rem } = CLU8.fromBytes(bytes);
+    const { result: U8Res, remainder: U8Rem } = CLU8.fromBytesWithRemainder(bytes);
     if (!U8Res.ok) {
       return resultHelper(Err(U8Res.val));
     }
@@ -123,7 +123,7 @@ export class CLOption<T extends CLValue> extends CLValue
 
     if (optionTag === OPTION_TAG_SOME) {
       const referenceClass = type.inner.linksTo;
-      const { result: valRes, remainder: valRem } = referenceClass.fromBytes(
+      const { result: valRes, remainder: valRem } = referenceClass.fromBytesWithRemainder(
         U8Rem
       );
       if (!valRes.ok) {

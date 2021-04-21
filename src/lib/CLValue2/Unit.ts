@@ -38,7 +38,7 @@ export class CLUnit extends CLValue implements ToBytes, FromBytes {
     return Uint8Array.from([]);
   }
 
-  static fromBytes(
+  static fromBytesWithRemainder(
     rawBytes: Uint8Array
   ): ResultAndRemainder<CLUnit, CLErrorCodes> {
     return resultHelper(Ok(new CLUnit()), rawBytes);

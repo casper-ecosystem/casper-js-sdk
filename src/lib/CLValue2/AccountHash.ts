@@ -22,7 +22,7 @@ export class CLAccountHashType extends CLType {
 }
 
 /** A cryptographic public key. */
-export class CLAccountHash extends CLValue implements ToBytes {
+export class CLAccountHash extends CLValue {
   data: Uint8Array;
   /**
    * Constructs a new `AccountHash`.
@@ -46,7 +46,7 @@ export class CLAccountHash extends CLValue implements ToBytes {
     return this.data;
   }
 
-  static fromBytes(bytes: Uint8Array): ResultAndRemainder<CLAccountHash, CLErrorCodes> {
+  static fromBytesWithRemainder(bytes: Uint8Array): ResultAndRemainder<CLAccountHash, CLErrorCodes> {
     if (bytes.length < ACCOUNT_HASH_LENGTH) {
       return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
     }

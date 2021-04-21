@@ -22,8 +22,8 @@ export abstract class CLValue {
     innerType?: CLType
   ) => ResultAndRemainder<CLValue & ToBytes & FromBytes, CLErrorCodes>;
 
-  static fromBytes(bytes: Uint8Array): Result<CLValue, CLErrorCodes> {
-    const { result, remainder } = this.fromBytesWithRemainder(bytes);
+  static fromBytes(bytes: Uint8Array, innerType?: CLType): Result<CLValue, CLErrorCodes> {
+    const { result, remainder } = this.fromBytesWithRemainder(bytes, innerType);
     if (remainder && remainder.length) {
       return Err(CLErrorCodes.LeftOverBytes);
     }

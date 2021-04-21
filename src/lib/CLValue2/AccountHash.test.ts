@@ -19,9 +19,9 @@ describe('CLAccountHash', () => {
   it('toBytes() / fromBytes() do proper bytes serialization', () => {
     const expectedBytes = Uint8Array.from(Array(32).fill(42));
     const hash = new CLAccountHash(expectedBytes);
-    const { result: fromBytesRes } = CLAccountHash.fromBytes(expectedBytes);
+    const fromBytes= CLAccountHash.fromBytes(expectedBytes).unwrap();
 
     expect(hash.toBytes()).to.deep.eq(expectedBytes);
-    expect(fromBytesRes.val).to.deep.eq(hash);
+    expect(fromBytes).to.deep.eq(hash);
   });
 });

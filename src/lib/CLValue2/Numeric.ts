@@ -139,7 +139,7 @@ export class CLU8 extends Numeric {
     return new CLU8Type();
   }
 
-  static fromBytes(bytes: Uint8Array): ResultAndRemainder<CLU8, CLErrorCodes> {
+  static fromBytesWithRemainder(bytes: Uint8Array): ResultAndRemainder<CLU8, CLErrorCodes> {
     if (bytes.length === 0) {
       return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
     }
@@ -156,7 +156,7 @@ export class CLU32 extends Numeric {
     return new CLU32Type();
   }
 
-  public static fromBytes(
+  public static fromBytesWithRemainder(
     bytes: Uint8Array
   ): ResultAndRemainder<CLU32, CLErrorCodes> {
     if (bytes.length < 4) {
@@ -178,7 +178,7 @@ export class CLU64 extends Numeric {
     return new CLU64Type();
   }
 
-  public static fromBytes(
+  public static fromBytesWithRemainder(
     bytes: Uint8Array
   ): ResultAndRemainder<CLU64, CLErrorCodes> {
     if (bytes.length < 8) {
@@ -239,7 +239,7 @@ export class CLU128 extends Numeric {
     return new CLU128Type();
   }
 
-  static fromBytes(
+  static fromBytesWithRemainder(
     rawBytes: Uint8Array
   ): ResultAndRemainder<CLU128, CLErrorCodes> {
     return fromBytesBigInt(rawBytes, 128);
@@ -255,7 +255,7 @@ export class CLU256 extends Numeric {
     return new CLU256Type();
   }
 
-  static fromBytes(
+  static fromBytesWithRemainder(
     rawBytes: Uint8Array
   ): ResultAndRemainder<CLU256, CLErrorCodes> {
     return fromBytesBigInt(rawBytes, 256);
@@ -271,7 +271,7 @@ export class CLU512 extends Numeric {
     return new CLU512Type();
   }
 
-  static fromBytes(
+  static fromBytesWithRemainder(
     rawBytes: Uint8Array
   ): ResultAndRemainder<CLU512, CLErrorCodes> {
     return fromBytesBigInt(rawBytes, 512);
@@ -287,7 +287,7 @@ export class CLI32 extends Numeric {
     return new CLI32Type();
   }
 
-  static fromBytes(bytes: Uint8Array): ResultAndRemainder<CLI32, CLErrorCodes> {
+  static fromBytesWithRemainder(bytes: Uint8Array): ResultAndRemainder<CLI32, CLErrorCodes> {
     if (bytes.length < 4) {
       return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
     }
@@ -308,7 +308,7 @@ export class CLI64 extends Numeric {
     return new CLI64Type();
   }
 
-  static fromBytes(
+  static fromBytesWithRemainder(
     rawBytes: Uint8Array
   ): ResultAndRemainder<CLI64, CLErrorCodes> {
     if (rawBytes.length < 8) {

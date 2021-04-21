@@ -106,11 +106,11 @@ export class CLResult<
     }
   }
 
-  static fromBytes(
+  static fromBytesWithRemainder(
     bytes: Uint8Array,
     type: CLResultType<CLType, CLType>
   ): ResultAndRemainder<CLResult<CLType, CLType>, CLErrorCodes> {
-    const { result: U8Res, remainder: U8Rem } = CLU8.fromBytes(bytes);
+    const { result: U8Res, remainder: U8Rem } = CLU8.fromBytesWithRemainder(bytes);
     if (!U8Res.ok) {
       return resultHelper(Err(U8Res.val));
     }

@@ -9,7 +9,7 @@ import {
   resultHelper,
   CLErrorCodes
 } from './index';
-import { STRING_ID } from "./constants";
+import { STRING_ID } from './constants';
 import { toBytesString, fromBytesString } from '../ByteConverters';
 
 export class CLStringType extends CLType {
@@ -51,21 +51,25 @@ export class CLString extends CLValue implements ToBytes, FromBytes {
 
   toBytes(): Uint8Array {
     return toBytesString(this.data);
-  };
+  }
 
-  static fromBytes(
+  static fromBytesWithRemainder(
     rawBytes: Uint8Array
   ): ResultAndRemainder<CLString, CLErrorCodes> {
-    const { result: CLU32res, remainder: CLU32rem } = CLU32.fromBytes(rawBytes);
+    const {
+      result: CLU32res,
+      remainder: CLU32rem
+    } = CLU32.fromBytesWithRemainder(rawBytes);
     if (!CLU32res.ok) {
       return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
     }
     const len = CLU32res.val.value().toNumber();
-    const val = fromBytesString(CLU32rem!.subarray(0, len));
-    // console.log(len);
-    // console.log(val);
-    // console.log(CLU32rem!.subarray(len));
 
-    return resultHelper(Ok(new CLString(val)), CLU32rem!.subarray(len));
+    if (CLU32rem) {
+      const val = fromBytesString(CLU32rem.subarray(0, len));
+      return resultHelper(Ok(new CLString(val)), CLU32rem.subarray(len));
+    }
+
+    return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
   }
 }

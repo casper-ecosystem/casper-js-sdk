@@ -125,7 +125,7 @@ export class CLURef extends CLValue implements ToBytes {
     return concat([this.data, Uint8Array.from([this.accessRights])]);
   }
 
-  static fromBytes(
+  static fromBytesWithRemainder(
     bytes: Uint8Array
   ): ResultAndRemainder<CLURef, CLErrorCodes> {
     if (bytes.length < UREF_BYTES_LENGTH) {

@@ -13,7 +13,7 @@ import {
 import { TUPLE_MATCH_LEN_TO_ID } from "./utils";
 
 // TBD: Do we want Tuple to have all of the values on init? If no, when it will be serialized it should throw an error that eg Tuple2 has only one element and is invalid
-abstract class GenericTuple extends CLValue implements ToBytes, FromBytes{
+abstract class GenericTuple extends CLValue {
   data: Array<CLValue & ToBytes>;
   tupleSize: number;
 
@@ -57,14 +57,14 @@ abstract class GenericTuple extends CLValue implements ToBytes, FromBytes{
     return concat(this.data.map(d => d.toBytes()));
   }
 
-  static fromBytes(
+  static fromBytesWithRemainder(
     rawBytes: Uint8Array,
-    type: typeof CLTuple1Type | typeof CLTuple1Type | typeof CLTuple3Type
+    type: typeof CLTuple1Type | typeof CLTuple2Type | typeof CLTuple3Type
   ): ResultAndRemainder<GenericTuple, CLErrorCodes> {
     let rem = rawBytes;
     const val = type.inner.map((t: CLType) => {
       const referenceClass = t.linksTo;
-      const { result: vRes, remainder: vRem } = referenceClass.fromBytes(rem);
+      const { result: vRes, remainder: vRem } = referenceClass.fromBytesWithRemainder(rem);
       if (!vRes.ok) {
         return resultHelper(Err(vRes.val));
       }

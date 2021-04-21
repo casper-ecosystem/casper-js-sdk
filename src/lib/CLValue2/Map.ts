@@ -124,11 +124,11 @@ export class CLMap<K extends CLValue & ToBytes, V extends CLValue & ToBytes>
     return concat([toBytesU32(this.data.size), ...kvBytes]);
   }
 
-  static fromBytes(
+  static fromBytesWithRemainder(
     bytes: Uint8Array,
     mapType: CLMapType<CLType, CLType>
   ): ResultAndRemainder<CLMap<KeyVal, KeyVal>, CLErrorCodes> {
-    const { result: u32Res, remainder: u32Rem } = CLU32.fromBytes(bytes);
+    const { result: u32Res, remainder: u32Rem } = CLU32.fromBytesWithRemainder(bytes);
     if (!u32Res.ok) {
       return resultHelper(Err(u32Res.val));
     }
@@ -141,7 +141,7 @@ export class CLMap<K extends CLValue & ToBytes, V extends CLValue & ToBytes>
 
     for (let i = 0; i < size; i++) {
       const refKey = mapType.innerKey.linksTo;
-      const { result: kRes, remainder: kRem } = refKey.fromBytes(
+      const { result: kRes, remainder: kRem } = refKey.fromBytesWithRemainder(
         remainder,
         mapType.innerKey
       );
@@ -153,7 +153,7 @@ export class CLMap<K extends CLValue & ToBytes, V extends CLValue & ToBytes>
       remainder = kRem;
 
       const refVal = mapType.innerValue.linksTo;
-      const { result: vRes, remainder: vRem } = refVal.fromBytes(
+      const { result: vRes, remainder: vRem } = refVal.fromBytesWithRemainder(
         remainder,
         mapType.innerValue
       );
