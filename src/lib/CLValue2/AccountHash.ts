@@ -1,5 +1,5 @@
 // NOTE: Currently this isn't supported CLValue
-import { Result, Ok, Err } from 'ts-results';
+import { Ok, Err } from 'ts-results';
 
 import {
   CLType,

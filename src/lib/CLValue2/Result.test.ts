@@ -31,7 +31,11 @@ describe('CLResult', () => {
 
   it('toJSON() / fromJSON()', () => {
     const myOkJson = myOkRes.toJSON().unwrap();
-    const myOkFromJson = CLResult.fromJSON(myOkJson).unwrap();
+    const expectedOkJson = JSON.parse('{"bytes":"0101","cl_type":{"Result":{"ok":"Bool","err":"U8"}}}');
+
+    const myOkFromJson = CLResult.fromJSON(expectedOkJson).unwrap();
+
+    expect(myOkJson).to.be.deep.eq(expectedOkJson);
     expect(myOkFromJson).to.be.deep.eq(myOkRes);
   });
 });

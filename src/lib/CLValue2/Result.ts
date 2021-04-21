@@ -35,7 +35,7 @@ export class CLResultType<T extends CLType, E extends CLType> extends CLType {
     return {
       [this.typeId]: {
         ok: this.innerOk.toJSON(),
-        err: this.innerErr
+        err: this.innerErr.toJSON()
       }
     };
   }

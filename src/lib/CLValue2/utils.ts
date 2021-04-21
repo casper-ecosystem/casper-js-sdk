@@ -121,7 +121,7 @@ export const matchTypeToCLType = (type: any): CLType => {
     }
     if (RESULT_ID in type) {
       const innerOk = matchTypeToCLType(type[RESULT_ID].ok);
-      const innerErr = type[RESULT_ID].err;
+      const innerErr = matchTypeToCLType(type[RESULT_ID].err);
       return new CLResultType({ ok: innerOk, err: innerErr });
     }
     throw new Error(`The complex type ${type} is not supported`);

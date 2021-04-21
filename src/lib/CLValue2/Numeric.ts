@@ -37,13 +37,14 @@ abstract class Numeric extends CLValue implements ToBytes {
 
 export class CLI32Type extends CLType {
   linksTo = CLI32;
+  typeId = 'I32';
 
   toString(): string {
-    return 'I32';
+    return this.typeId;
   }
 
   toJSON(): string {
-    return 'I32';
+    return this.toString();
   }
 }
 
@@ -55,7 +56,7 @@ export class CLI64Type extends CLType {
   }
 
   toJSON(): string {
-    return 'I32';
+    return this.toString();
   }
 }
 
@@ -67,7 +68,7 @@ export class CLU8Type extends CLType {
   }
 
   toJSON(): string {
-    return 'I32';
+    return this.toString();
   }
 }
 
@@ -79,7 +80,7 @@ export class CLU32Type extends CLType {
   }
 
   toJSON(): string {
-    return 'I32';
+    return this.toString();
   }
 }
 
@@ -91,7 +92,7 @@ export class CLU64Type extends CLType {
   }
 
   toJSON(): string {
-    return 'I32';
+    return this.toString();
   }
 }
 
@@ -103,7 +104,7 @@ export class CLU128Type extends CLType {
   }
 
   toJSON(): string {
-    return 'I32';
+    return this.toString();
   }
 }
 
@@ -115,7 +116,7 @@ export class CLU256Type extends CLType {
   }
 
   toJSON(): string {
-    return 'I32';
+    return this.toString();
   }
 }
 
@@ -127,7 +128,7 @@ export class CLU512Type extends CLType {
   }
 
   toJSON(): string {
-    return 'I32';
+    return this.toString();
   }
 }
 
