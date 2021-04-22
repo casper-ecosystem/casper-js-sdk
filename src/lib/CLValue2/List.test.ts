@@ -159,6 +159,7 @@ describe('CLValue List implementation', () => {
       new CLList([new CLBool(true), new CLBool(false)]),
       new CLList([new CLBool(false)])
     ]);
+
     const bytes = myList.toBytes().unwrap();
     const listType = new CLListType(new CLListType(new CLBoolType()));
     const reconstructedList = CLList.fromBytes(bytes, listType).unwrap();

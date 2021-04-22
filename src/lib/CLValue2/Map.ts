@@ -32,6 +32,14 @@ export class CLMapType<K extends CLType, V extends CLType> extends CLType {
     return `${MAP_ID} (${this.innerKey.toString()}: ${this.innerValue.toString()})`;
   }
 
+  toBytes(): Uint8Array {
+    return concat([
+      Uint8Array.from([this.tag]),
+      this.innerKey.toBytes(),
+      this.innerValue.toBytes(),
+    ]);
+  }
+
   toJSON(): any {
     return {
       [MAP_ID]: {

@@ -33,6 +33,14 @@ export class CLResultType<T extends CLType, E extends CLType> extends CLType {
     return 'Result';
   }
 
+  toBytes(): Uint8Array {
+    return concat([
+      Uint8Array.from([this.tag]),
+      this.innerOk.toBytes(),
+      this.innerErr.toBytes()
+    ]);
+  }
+
   toJSON(): any {
     return {
       [this.typeId]: {

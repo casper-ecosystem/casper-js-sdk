@@ -13,6 +13,10 @@ export abstract class CLType {
   abstract toJSON(): any;
   abstract linksTo: any;
   abstract tag: CLTypeTag;
+
+  toBytes(): Uint8Array {
+    return Uint8Array.from([this.tag])
+  }
 }
 
 export abstract class CLValue {

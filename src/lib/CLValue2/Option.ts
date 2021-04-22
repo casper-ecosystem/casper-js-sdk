@@ -36,9 +36,16 @@ export class CLOptionType<T extends CLType> extends CLType {
     return `${CLOptionType.TypeId} (${this.inner.toString()})`;
   }
 
+  toBytes(): Uint8Array {
+    return concat([
+      Uint8Array.from([this.tag]),
+      this.inner.toBytes()
+    ]);
+  }
+
   toJSON(): any {
     return {
-      [CLOptionType.TypeId]: this.inner ? this.inner.toJSON() : null
+      [CLOptionType.TypeId]: this.inner.toJSON() 
     };
   }
 }

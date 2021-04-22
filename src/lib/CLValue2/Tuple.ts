@@ -10,8 +10,8 @@ import {
   resultHelper,
   CLErrorCodes
 } from './index';
-import { TUPLE_MATCH_LEN_TO_ID, } from './utils';
-import { CLTypeTag } from "./constants";
+import { TUPLE_MATCH_LEN_TO_ID } from './utils';
+import { CLTypeTag } from './constants';
 
 type TupleTypes = typeof CLTuple1 | typeof CLTuple2 | typeof CLTuple3;
 
@@ -114,13 +114,18 @@ abstract class GenericTupleType extends CLType {
       [id]: this.inner.map(t => t.toJSON())
     };
   }
+
+  toBytes(): any {
+    const inner = this.inner.map(t => t.toBytes());
+    return concat([Uint8Array.from([this.tag]), ...inner]);
+  }
 }
 
 export class CLTuple1Type extends GenericTupleType {
   constructor(inner: Array<CLType>) {
     super(inner, CLTuple1, CLTypeTag.Tuple1);
   }
-};
+}
 
 export class CLTuple1 extends GenericTuple {
   constructor(value: Array<CLValue>) {
@@ -136,7 +141,7 @@ export class CLTuple2Type extends GenericTupleType {
   constructor(inner: Array<CLType>) {
     super(inner, CLTuple2, CLTypeTag.Tuple2);
   }
-};
+}
 
 export class CLTuple2 extends GenericTuple {
   constructor(value: Array<CLValue>) {
@@ -152,7 +157,7 @@ export class CLTuple3Type extends GenericTupleType {
   constructor(inner: Array<CLType>) {
     super(inner, CLTuple3, CLTypeTag.Tuple3);
   }
-};
+}
 
 export class CLTuple3 extends GenericTuple {
   constructor(value: Array<CLValue>) {
@@ -163,4 +168,3 @@ export class CLTuple3 extends GenericTuple {
     return new CLTuple3Type(this.data.map(e => e.clType()));
   }
 }
-

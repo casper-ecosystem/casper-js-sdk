@@ -1,4 +1,6 @@
 import { Ok, Err } from 'ts-results';
+import { concat } from '@ethersproject/bytes';
+
 import {
   CLType,
   CLValue,
@@ -27,6 +29,13 @@ export class CLListType<T extends CLType> extends CLType {
 
   toString(): string {
     return `${LIST_ID} (${this.inner.toString()})`;
+  }
+
+  toBytes(): Uint8Array {
+    return concat([
+      Uint8Array.from([this.tag]),
+      this.inner.toBytes()
+    ]);
   }
 
   toJSON(): any {

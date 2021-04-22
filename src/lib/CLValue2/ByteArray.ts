@@ -1,4 +1,5 @@
 import { Ok } from 'ts-results';
+import { concat } from '@ethersproject/bytes';
 
 import {
   CLType,
@@ -9,6 +10,7 @@ import {
   resultHelper
 } from './index';
 import { BYTE_ARRAY_ID, CLTypeTag } from './constants';
+import { toBytesU32 } from '../ByteConverters';
 
 export const CL_BYTE_ARRAY_MAX_LENGTH = 32;
 
@@ -67,6 +69,10 @@ export class CLByteArrayType extends CLType {
 
   toString(): string {
     return BYTE_ARRAY_ID;
+  }
+
+  toBytes(): Uint8Array {
+    return concat([Uint8Array.from([this.tag]), toBytesU32(this.size)]);
   }
 
   toJSON(): { [BYTE_ARRAY_ID]: number } {
