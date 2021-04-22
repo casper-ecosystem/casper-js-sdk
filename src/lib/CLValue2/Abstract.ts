@@ -1,7 +1,7 @@
 import { Result, Ok, Err } from 'ts-results';
-// import { concat } from '@ethersproject/bytes';
+import { concat } from '@ethersproject/bytes';
 
-// import { toBytesArrayU8 } from "../ByteConverters";
+import { toBytesArrayU8 } from "../ByteConverters";
 import { CLTypeTag } from "./constants";
 
 import { CLErrorCodes } from './index';
@@ -30,7 +30,7 @@ export abstract class CLValue {
   static fromBytesWithRemainder: (
     bytes: Uint8Array,
     innerType?: CLType
-  ) => ResultAndRemainder<CLValue & ToBytes & FromBytes, CLErrorCodes>;
+  ) => ResultAndRemainder<CLValue, CLErrorCodes>;
 
   static fromBytes(bytes: Uint8Array, innerType?: CLType): Result<CLValue, CLErrorCodes> {
     const { result, remainder } = this.fromBytesWithRemainder(bytes, innerType);
@@ -55,18 +55,14 @@ export abstract class CLValue {
     return this.fromBytes(uint8bytes, clTypes);
   }
 
-  // TBD: Maybe this should be just toBytes()
-  // toBytesWithCLType(): Result<Uint8Array, CLErrorCodes> {
-  //   const clType = this.clType();
-  //   const bytes = this.toBytes().unwrap();
-  //   const value = concat([toBytesArrayU8(bytes), 
-
-  // }
+  //TBD: Maybe this should be just toBytes()
+  toBytesWithCLType(): Result<Uint8Array, CLErrorCodes> {
+    const clTypeBytes = this.clType().toBytes();
+    const bytes = this.toBytes().unwrap();
+    const value = concat([toBytesArrayU8(bytes), clTypeBytes]);
+    return Ok(value);
+  }
 }
-
-export abstract class ToBytes {}
-
-export abstract class FromBytes {}
 
 export interface ResultAndRemainder<T, E> {
   result: Result<T, E>;

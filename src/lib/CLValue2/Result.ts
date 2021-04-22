@@ -10,7 +10,7 @@ import {
   resultHelper,
   CLU8
 } from './index';
-import { CLTypeTag } from "./constants";
+import { CLTypeTag } from './constants';
 
 const RESULT_TAG_ERROR = 0;
 const RESULT_TAG_OK = 1;

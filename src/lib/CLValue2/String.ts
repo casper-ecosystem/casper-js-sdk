@@ -3,8 +3,6 @@ import {
   CLType,
   CLValue,
   CLU32,
-  ToBytes,
-  FromBytes,
   ResultAndRemainder,
   ToBytesResult,
   resultHelper,
@@ -26,7 +24,7 @@ export class CLStringType extends CLType {
   }
 }
 
-export class CLString extends CLValue implements ToBytes, FromBytes {
+export class CLString extends CLValue {
   data: string;
 
   constructor(v: string) {

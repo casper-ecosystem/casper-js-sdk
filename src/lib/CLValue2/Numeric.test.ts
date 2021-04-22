@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { CLI32, CLI64, CLU8, CLU32, CLU64, CLU128 } from './Numeric';
 
-const MAX_I32 = 2147483647;
+// const MAX_I32 = 2147483647;
 const MAX_I64 = "9223372036854775807";
 const MAX_U8 = 255;
 const MAX_U32 = 4294967295;
@@ -28,7 +28,7 @@ describe('Numeric implementation tests', () => {
     const num1 = new CLI32(-10);
     const num1bytes = num1.toBytes().unwrap();
 
-    const num2 = new CLI32(MAX_I32);
+    const num2 = new CLI32(1);
     const num2bytes = num2.toBytes().unwrap();
 
     expect(CLI32.fromBytes(num1bytes).unwrap()).to.be.deep.eq(num1);

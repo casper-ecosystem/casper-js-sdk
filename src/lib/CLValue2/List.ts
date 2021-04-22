@@ -4,13 +4,11 @@ import { concat } from '@ethersproject/bytes';
 import {
   CLType,
   CLValue,
-  ToBytes,
   CLErrorCodes,
   resultHelper,
   ResultAndRemainder,
   ToBytesResult,
   CLU32,
-  FromBytes,
 } from './index';
 import { toBytesVector } from '../ByteConverters';
 
@@ -124,7 +122,7 @@ export class CLList<T extends CLValue> extends CLValue
   static fromBytesWithRemainder(
     bytes: Uint8Array,
     listType: CLListType<CLType>
-  ): ResultAndRemainder<CLList<CLValue & ToBytes & FromBytes>, CLErrorCodes> {
+  ): ResultAndRemainder<CLList<CLValue>, CLErrorCodes> {
     const { result: u32Res, remainder: u32Rem } = CLU32.fromBytesWithRemainder(bytes);
     if (!u32Res.ok) {
       return resultHelper(Err(u32Res.val));

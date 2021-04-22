@@ -4,13 +4,11 @@ import { Ok, Err } from 'ts-results';
 import {
   CLType,
   CLValue,
-  ToBytes,
   CLErrorCodes,
   resultHelper,
   ResultAndRemainder,
   ToBytesResult,
   CLU32,
-  FromBytes
 } from './index';
 import { MAP_ID, CLTypeTag } from "./constants";
 import { toBytesU32 } from '../ByteConverters';
@@ -67,11 +65,11 @@ const isValueConstructor = (
   );
 };
 
-type KeyVal = CLValue & ToBytes & FromBytes;
+type KeyVal = CLValue; 
 
-export class CLMap<K extends CLValue & ToBytes, V extends CLValue & ToBytes>
+export class CLMap<K extends CLValue , V extends CLValue >
   extends CLValue
-  implements ToBytes {
+{
   data: Map<K, V>;
   refType: [CLType, CLType];
   /**
