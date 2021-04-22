@@ -1,7 +1,5 @@
-import { Ok, Err, Some, None } from 'ts-results';
+import { Ok, Err, Option, Some, None } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
-
-import { Option } from 'ts-results';
 
 import {
   CLValue,
@@ -12,12 +10,13 @@ import {
   CLU8,
   resultHelper
 } from './index';
+
 import { OPTION_ID } from './constants';
 
 const OPTION_TAG_NONE = 0;
 const OPTION_TAG_SOME = 1;
 
-export class CLOptionType<T extends CLType | null> extends CLType {
+export class CLOptionType<T extends CLType> extends CLType {
   inner: T;
   linksTo = CLOption;
 
@@ -83,6 +82,7 @@ export class CLOption<T extends CLValue> extends CLValue {
   value(): Option<T> {
     return this.data;
   }
+
   clType(): CLType {
     return new CLOptionType(this.innerType);
   }
@@ -109,11 +109,8 @@ export class CLOption<T extends CLValue> extends CLValue {
     type: CLOptionType<CLType>
   ): ResultAndRemainder<CLOption<CLValue>, CLErrorCodes> {
     const { result: U8Res, remainder: U8Rem } = CLU8.fromBytesWithRemainder(bytes);
-    if (!U8Res.ok) {
-      return resultHelper(Err(U8Res.val));
-    }
 
-    const optionTag = U8Res.val.value().toNumber();
+    const optionTag = U8Res.unwrap().value().toNumber();
 
     if (optionTag === OPTION_TAG_NONE) {
       return resultHelper(Ok(new CLOption(None, type.inner)), U8Rem);

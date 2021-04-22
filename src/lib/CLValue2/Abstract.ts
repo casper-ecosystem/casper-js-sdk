@@ -30,7 +30,7 @@ export abstract class CLValue {
     return result;
   }
 
-  toJSON(): Result<CLJsonFormat, CLErrorCodes> {
+  toJSON(): Result<CLJSONFormat, CLErrorCodes> {
     const rawBytes = this.toBytes().unwrap();
     const bytes = encodeBase16(rawBytes);
     const clType = this.clType().toJSON();
@@ -38,7 +38,7 @@ export abstract class CLValue {
   }
 
   static fromJSON(
-    json: CLJsonFormat
+    json: CLJSONFormat
   ): Result<CLValue, CLErrorCodes> {
     const uint8bytes = decodeBase16(json.bytes);
     const clTypes = matchTypeToCLType(json.cl_type);
@@ -62,9 +62,9 @@ export const resultHelper = <T, E>(
   return { result: arg1, remainder: arg2 };
 };
 
-export interface CLJsonFormat {
+export interface CLJSONFormat {
   bytes: string;
-  cl_type: string;
+  cl_type: any;
 }
 
 export type ToBytesResult = Result<Uint8Array, CLErrorCodes>;
