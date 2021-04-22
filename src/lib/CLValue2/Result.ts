@@ -10,6 +10,7 @@ import {
   resultHelper,
   CLU8
 } from './index';
+import { CLTypeTag } from "./constants";
 
 const RESULT_TAG_ERROR = 0;
 const RESULT_TAG_OK = 1;
@@ -17,6 +18,7 @@ const RESULT_TAG_OK = 1;
 export class CLResultType<T extends CLType, E extends CLType> extends CLType {
   linksTo = CLResult;
   typeId = 'Result';
+  tag = CLTypeTag.Result;
 
   innerOk: T;
   innerErr: E;

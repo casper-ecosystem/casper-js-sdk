@@ -9,7 +9,7 @@ import {
   ToBytesResult,
   resultHelper
 } from './index';
-import { UREF_ID } from "./constants";
+import { UREF_ID, CLTypeTag } from "./constants";
 import { decodeBase16, encodeBase16 } from '../Conversions';
 
 // TODO Move this to some utils
@@ -38,6 +38,7 @@ export enum AccessRights {
 
 export class CLURefType extends CLType {
   linksTo = CLURef;
+  tag = CLTypeTag.URef;
 
   toString(): string {
     return UREF_ID;

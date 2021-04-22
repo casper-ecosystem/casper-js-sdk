@@ -1,3 +1,5 @@
+import { Ok } from 'ts-results';
+
 import {
   CLType,
   CLValue,
@@ -6,8 +8,7 @@ import {
   ResultAndRemainder,
   resultHelper
 } from './index';
-import { BYTE_ARRAY_ID } from './constants';
-import { Ok } from 'ts-results';
+import { BYTE_ARRAY_ID, CLTypeTag } from './constants';
 
 export const CL_BYTE_ARRAY_MAX_LENGTH = 32;
 
@@ -55,6 +56,8 @@ export class CLByteArray extends CLValue {
 
 export class CLByteArrayType extends CLType {
   linksTo = CLByteArray;
+  tag = CLTypeTag.ByteArray;
+
   size: number;
 
   constructor(size: number) {

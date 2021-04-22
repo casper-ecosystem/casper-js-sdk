@@ -8,10 +8,11 @@ import {
   CLErrorCodes,
   resultHelper
 } from './index';
-import { BOOL_ID } from './constants';
+import { BOOL_ID, CLTypeTag } from './constants';
 
 export class CLBoolType extends CLType {
   linksTo = CLBool;
+  tag = CLTypeTag.Bool;
 
   toString(): string {
     return BOOL_ID;

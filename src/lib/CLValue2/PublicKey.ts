@@ -9,7 +9,7 @@ import {
   ResultAndRemainder,
   ToBytesResult
 } from './index';
-import { PUBLIC_KEY_ID } from './constants';
+import { PUBLIC_KEY_ID, CLTypeTag } from './constants';
 import { decodeBase16, encodeBase16 } from '../Conversions';
 import { byteHash } from '../Contracts';
 
@@ -26,6 +26,7 @@ export enum CLPublicKeyTag {
 
 export class CLPublicKeyType extends CLType {
   linksTo = CLPublicKey;
+  tag = CLTypeTag.PublicKey;
 
   toString(): string {
     return PUBLIC_KEY_ID;

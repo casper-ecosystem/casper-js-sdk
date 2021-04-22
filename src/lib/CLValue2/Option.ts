@@ -11,14 +11,17 @@ import {
   resultHelper
 } from './index';
 
-import { OPTION_ID } from './constants';
+import { CLTypeTag } from './constants';
 
 const OPTION_TAG_NONE = 0;
 const OPTION_TAG_SOME = 1;
 
 export class CLOptionType<T extends CLType> extends CLType {
-  inner: T;
+  static TypeId = "Option";
+
+  tag = CLTypeTag.Option;
   linksTo = CLOption;
+  inner: T;
 
   constructor(inner: T) {
     super();
@@ -27,15 +30,15 @@ export class CLOptionType<T extends CLType> extends CLType {
 
   toString(): string {
     if (this.inner === null) {
-      return `${OPTION_ID} (None)`;
+      return `${CLOptionType.TypeId} (None)`;
     }
 
-    return `${OPTION_ID} (${this.inner.toString()})`;
+    return `${CLOptionType.TypeId} (${this.inner.toString()})`;
   }
 
   toJSON(): any {
     return {
-      [OPTION_ID]: this.inner ? this.inner.toJSON() : null
+      [CLOptionType.TypeId]: this.inner ? this.inner.toJSON() : null
     };
   }
 }

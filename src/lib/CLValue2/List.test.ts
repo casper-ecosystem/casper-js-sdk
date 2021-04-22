@@ -55,7 +55,6 @@ describe('CLValue List implementation', () => {
   it('Should able to create empty List by providing type', () => {
     const mList = new CLList(new CLBoolType());
     const len = mList.size();
-
     const badFn = () => mList.push(new CLU8(10));
 
     expect(len).to.equal(0);
@@ -82,7 +81,6 @@ describe('CLValue List implementation', () => {
 
   it('Set should throw error on wrong indexes', () => {
     const myList = new CLList([new CLBool(true)]);
-
     const badFn = () => myList.set(1, new CLBool(false));
 
     expect(badFn).to.throw('List index out of bounds.');
@@ -102,7 +100,6 @@ describe('CLValue List implementation', () => {
 
   it('Pop should remove last item from array and return it', () => {
     const myList = new CLList([new CLBool(true), new CLBool(false)]);
-
     const popped = myList.pop();
 
     expect(myList.size()).to.equal(1);
@@ -141,11 +138,8 @@ describe('CLValue List implementation', () => {
 
   it('Runs fromBytes properly', () => {
     const myList = new CLList([new CLBool(false), new CLBool(true)]);
-
     const bytes = myList.toBytes();
-
     const listType = new CLListType(new CLBoolType());
-
     const reconstructedList = CLList.fromBytes(bytes.unwrap(), listType);
 
     expect(reconstructedList.unwrap()).to.be.deep.eq(myList);
@@ -153,11 +147,8 @@ describe('CLValue List implementation', () => {
 
   it('Runs fromBytes properly', () => {
     const myList = new CLList([new CLI32(100000), new CLI32(-999)]);
-
     const bytes = myList.toBytes();
-
     const listType = new CLListType(new CLI32Type());
-
     const reconstructedList = CLList.fromBytes(bytes.unwrap(), listType);
 
     expect(reconstructedList.unwrap()).to.be.deep.eq(myList);
@@ -168,11 +159,8 @@ describe('CLValue List implementation', () => {
       new CLList([new CLBool(true), new CLBool(false)]),
       new CLList([new CLBool(false)])
     ]);
-
     const bytes = myList.toBytes().unwrap();
-
     const listType = new CLListType(new CLListType(new CLBoolType()));
-
     const reconstructedList = CLList.fromBytes(bytes, listType).unwrap();
 
     expect(reconstructedList).to.be.deep.eq(myList);
@@ -181,7 +169,6 @@ describe('CLValue List implementation', () => {
     const json = myList.toJSON().unwrap();
     const newList = CLList.fromJSON(json).unwrap();
     const expectedJson = JSON.parse('{"bytes":"020000000200000001000100000000","cl_type":{"List":{"List":"Bool"}}}');
-
     const newList2 = buildCLValueFromJson(expectedJson).unwrap();
 
     expect(json).to.be.deep.eq(expectedJson);

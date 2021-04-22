@@ -1,4 +1,8 @@
 import { Result, Ok, Err } from 'ts-results';
+// import { concat } from '@ethersproject/bytes';
+
+// import { toBytesArrayU8 } from "../ByteConverters";
+import { CLTypeTag } from "./constants";
 
 import { CLErrorCodes } from './index';
 import { encodeBase16, decodeBase16 } from '../Conversions';
@@ -8,6 +12,7 @@ export abstract class CLType {
   abstract toString(): string;
   abstract toJSON(): any;
   abstract linksTo: any;
+  abstract tag: CLTypeTag;
 }
 
 export abstract class CLValue {
@@ -15,6 +20,7 @@ export abstract class CLValue {
   abstract value(): any;
   abstract data: any;
 
+  // TBD: Maybe rename it to toRawBytes()
   abstract toBytes(): Result<Uint8Array, CLErrorCodes>;
 
   static fromBytesWithRemainder: (
@@ -44,6 +50,14 @@ export abstract class CLValue {
     const clTypes = matchTypeToCLType(json.cl_type);
     return this.fromBytes(uint8bytes, clTypes);
   }
+
+  // TBD: Maybe this should be just toBytes()
+  // toBytesWithCLType(): Result<Uint8Array, CLErrorCodes> {
+  //   const clType = this.clType();
+  //   const bytes = this.toBytes().unwrap();
+  //   const value = concat([toBytesArrayU8(bytes), 
+
+  // }
 }
 
 export abstract class ToBytes {}

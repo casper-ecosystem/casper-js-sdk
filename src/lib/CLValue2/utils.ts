@@ -10,7 +10,6 @@ import {
   STRING_ID,
   UREF_ID,
   UNIT_ID,
-  OPTION_ID,
   RESULT_ID,
   I32_ID,
   I64_ID,
@@ -50,8 +49,6 @@ import {
   CLTuple2Type,
   CLTuple3Type
 } from './index';
-
-// const cl_type = { List: { List: 'Bool' } };
 
 export const TUPLE_MATCH_LEN_TO_ID = [TUPLE1_ID, TUPLE2_ID, TUPLE3_ID];
 
@@ -117,8 +114,8 @@ export const matchTypeToCLType = (type: any): CLType => {
       const vals = type[TUPLE3_ID].map((t: any) => matchTypeToCLType(t));
       return new CLTuple3Type(vals);
     }
-    if (OPTION_ID in type) {
-      const inner = matchTypeToCLType(type[OPTION_ID]);
+    if (CLOptionType.TypeId in type) {
+      const inner = matchTypeToCLType(type[CLOptionType.TypeId]);
       return new CLOptionType(inner);
     }
     if (RESULT_ID in type) {

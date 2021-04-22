@@ -10,6 +10,7 @@ import {
 } from './index';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { toBytesNumber } from '../ByteConverters';
+import { CLTypeTag } from "./constants";
 
 abstract class Numeric extends CLValue implements ToBytes {
   data: BigNumber;
@@ -38,6 +39,7 @@ abstract class Numeric extends CLValue implements ToBytes {
 export class CLI32Type extends CLType {
   linksTo = CLI32;
   typeId = 'I32';
+  tag = CLTypeTag.I32;
 
   toString(): string {
     return this.typeId;
@@ -50,6 +52,7 @@ export class CLI32Type extends CLType {
 
 export class CLI64Type extends CLType {
   linksTo = CLI64;
+  tag = CLTypeTag.I64;
 
   toString(): string {
     return 'I64';
@@ -62,6 +65,7 @@ export class CLI64Type extends CLType {
 
 export class CLU8Type extends CLType {
   linksTo = CLU8;
+  tag = CLTypeTag.U8;
 
   toString(): string {
     return 'U8';
@@ -74,6 +78,7 @@ export class CLU8Type extends CLType {
 
 export class CLU32Type extends CLType {
   linksTo = CLU32;
+  tag = CLTypeTag.U32;
 
   toString(): string {
     return 'U32';
@@ -86,6 +91,7 @@ export class CLU32Type extends CLType {
 
 export class CLU64Type extends CLType {
   linksTo = CLU64;
+  tag = CLTypeTag.U64;
 
   toString(): string {
     return 'U64';
@@ -98,6 +104,7 @@ export class CLU64Type extends CLType {
 
 export class CLU128Type extends CLType {
   linksTo = CLU128;
+  tag = CLTypeTag.U128;
 
   toString(): string {
     return 'U128';
@@ -110,6 +117,7 @@ export class CLU128Type extends CLType {
 
 export class CLU256Type extends CLType {
   linksTo = CLU256;
+  tag = CLTypeTag.U256;
 
   toString(): string {
     return 'U256';
@@ -122,6 +130,7 @@ export class CLU256Type extends CLType {
 
 export class CLU512Type extends CLType {
   linksTo = CLU512;
+  tag = CLTypeTag.U512;
 
   toString(): string {
     return 'U512';

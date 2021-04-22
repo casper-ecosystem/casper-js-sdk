@@ -12,10 +12,11 @@ import {
   CLU32,
   FromBytes
 } from './index';
-import { MAP_ID } from "./constants";
+import { MAP_ID, CLTypeTag } from "./constants";
 import { toBytesU32 } from '../ByteConverters';
 
 export class CLMapType<K extends CLType, V extends CLType> extends CLType {
+  tag = CLTypeTag.Map;
   linksTo = CLMap;
 
   innerKey: K;

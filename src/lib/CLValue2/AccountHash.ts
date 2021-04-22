@@ -2,8 +2,6 @@
 import { Ok, Err } from 'ts-results';
 
 import {
-  CLType,
-  CLValue,
   CLErrorCodes,
   ResultAndRemainder,
   ToBytesResult,
@@ -11,20 +9,20 @@ import {
   resultHelper,
 } from './index';
 
-export class CLAccountHashType extends CLType {
-  linksTo = CLAccountHash;
+// export class CLAccountHashType extends CLType {
+//   linksTo = CLAccountHash;
 
-  toString(): string {
-    return 'AccountHash';
-  }
+//   toString(): string {
+//     return 'AccountHash';
+//   }
 
-  toJSON(): string {
-    return this.toString();
-  }
-}
+//   toJSON(): string {
+//     return this.toString();
+//   }
+// }
 
 /** A cryptographic public key. */
-export class CLAccountHash extends CLValue {
+export class CLAccountHash {
   data: Uint8Array;
   /**
    * Constructs a new `AccountHash`.
@@ -32,13 +30,12 @@ export class CLAccountHash extends CLValue {
    * @param v The bytes constituting the public key.
    */
   constructor(v: Uint8Array) {
-    super();
     this.data = v;
   }
 
-  clType(): CLType {
-    return new CLAccountHashType();
-  }
+  // clType(): CLType {
+  //   return new CLAccountHashType();
+  // }
 
   value(): Uint8Array {
     return this.data;

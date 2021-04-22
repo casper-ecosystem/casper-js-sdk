@@ -10,7 +10,8 @@ import {
   resultHelper,
   CLErrorCodes
 } from './index';
-import { TUPLE_MATCH_LEN_TO_ID } from './utils';
+import { TUPLE_MATCH_LEN_TO_ID, } from './utils';
+import { CLTypeTag } from "./constants";
 
 type TupleTypes = typeof CLTuple1 | typeof CLTuple2 | typeof CLTuple3;
 
@@ -91,13 +92,15 @@ abstract class GenericTuple extends CLValue {
 }
 
 abstract class GenericTupleType extends CLType {
+  tag: CLTypeTag;
   linksTo: TupleTypes;
   inner: Array<CLType>;
 
-  constructor(inner: Array<CLType>, linksTo: TupleTypes) {
+  constructor(inner: Array<CLType>, linksTo: TupleTypes, tag: CLTypeTag) {
     super();
     this.inner = inner;
     this.linksTo = linksTo;
+    this.tag = tag;
   }
 
   toString(): string {
@@ -115,7 +118,7 @@ abstract class GenericTupleType extends CLType {
 
 export class CLTuple1Type extends GenericTupleType {
   constructor(inner: Array<CLType>) {
-    super(inner, CLTuple1);
+    super(inner, CLTuple1, CLTypeTag.Tuple1);
   }
 };
 
@@ -131,7 +134,7 @@ export class CLTuple1 extends GenericTuple {
 
 export class CLTuple2Type extends GenericTupleType {
   constructor(inner: Array<CLType>) {
-    super(inner, CLTuple2);
+    super(inner, CLTuple2, CLTypeTag.Tuple2);
   }
 };
 
@@ -147,7 +150,7 @@ export class CLTuple2 extends GenericTuple {
 
 export class CLTuple3Type extends GenericTupleType {
   constructor(inner: Array<CLType>) {
-    super(inner, CLTuple3);
+    super(inner, CLTuple3, CLTypeTag.Tuple3);
   }
 };
 

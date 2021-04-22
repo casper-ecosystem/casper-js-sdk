@@ -14,10 +14,11 @@ import {
   ToBytesResult,
   resultHelper
 } from './index';
-import { KEY_ID } from './constants';
+import { KEY_ID, CLTypeTag } from './constants';
 
 export class CLKeyType extends CLType {
   linksTo = CLKey;
+  tag = CLTypeTag.Key;
 
   toString(): string {
     return KEY_ID;

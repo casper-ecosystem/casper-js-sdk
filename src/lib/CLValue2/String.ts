@@ -10,11 +10,12 @@ import {
   resultHelper,
   CLErrorCodes
 } from './index';
-import { STRING_ID } from './constants';
+import { STRING_ID, CLTypeTag } from './constants';
 import { toBytesString, fromBytesString } from '../ByteConverters';
 
 export class CLStringType extends CLType {
   linksTo = CLString;
+  tag = CLTypeTag.String;
 
   toString(): string {
     return STRING_ID;
