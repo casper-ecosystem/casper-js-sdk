@@ -3,10 +3,12 @@ interface CasperLabsHelper {
    * Returns connection status from Signer
    */
   isConnected: () => Promise<boolean>;
+  
   /**
    * Attempt connection to Signer
    */
   requestConnection: () => void;
+  
   /**
    * send base16 encoded message to plugin to sign
    *
@@ -14,8 +16,17 @@ interface CasperLabsHelper {
    * @param publicKeyBase64 the base64 encoded public key used to sign the deploy, if set, we will check whether it is the same as the active key for signing the message, otherwise, we won't check.
    */
   sign: (messageBase16: string, publicKeyBase64?: string) => Promise<string>;
-  // returns base64 encoded public key of user current selected account.
+  
+  /*
+   * Returns base64 encoded public key of user current selected account.
+   */
   getSelectedPublicKeyBase64: () => Promise<string>;
+
+  /**
+   * Retrieve the active public key .
+   * @returns {string} Hex-encoded public key with algorithm prefix.
+   */
+   getActivePublicKey: () => Promise<string>;
 }
 
 interface SignerTestingHelper {
