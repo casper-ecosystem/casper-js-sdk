@@ -85,6 +85,7 @@
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signer_.html#createtestaccount" class="tsd-kind-icon">create<wbr>Test<wbr>Account</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signer_.html#forceconnection" class="tsd-kind-icon">force<wbr>Connection</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signer_.html#forcedisconnect" class="tsd-kind-icon">force<wbr>Disconnect</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signer_.html#getactivepublickey" class="tsd-kind-icon">get<wbr>Active<wbr>Public<wbr>Key</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signer_.html#getselectedpublickeybase64" class="tsd-kind-icon">get<wbr>Selected<wbr>Public<wbr>Key<wbr>Base64</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signer_.html#gettosignmessageid" class="tsd-kind-icon">get<wbr>ToSign<wbr>MessageID</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signer_.html#hascreatedvault" class="tsd-kind-icon">has<wbr>Created<wbr>Vault</a></li>
@@ -110,7 +111,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/a47b2a0/src/lib/Signer.ts#L63">src/lib/Signer.ts:63</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/2509ebf/src/lib/Signer.ts#L72">src/lib/Signer.ts:72</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -133,7 +134,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/a47b2a0/src/lib/Signer.ts#L72">src/lib/Signer.ts:72</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/2509ebf/src/lib/Signer.ts#L81">src/lib/Signer.ts:81</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -159,7 +160,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/a47b2a0/src/lib/Signer.ts#L47">src/lib/Signer.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/2509ebf/src/lib/Signer.ts#L56">src/lib/Signer.ts:56</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -176,10 +177,33 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/a47b2a0/src/lib/Signer.ts#L51">src/lib/Signer.ts:51</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/2509ebf/src/lib/Signer.ts#L60">src/lib/Signer.ts:60</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="getactivepublickey" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> get<wbr>Active<wbr>Public<wbr>Key</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Active<wbr>Public<wbr>Key<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/2509ebf/src/lib/Signer.ts#L36">src/lib/Signer.ts:36</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Retrieve the active public key.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<p>Hex-encoded public key with algorithm prefix.</p>
 						</li>
 					</ul>
 				</section>
@@ -193,7 +217,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/a47b2a0/src/lib/Signer.ts#L27">src/lib/Signer.ts:27</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/2509ebf/src/lib/Signer.ts#L27">src/lib/Signer.ts:27</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -220,7 +244,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/a47b2a0/src/lib/Signer.ts#L76">src/lib/Signer.ts:76</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/2509ebf/src/lib/Signer.ts#L85">src/lib/Signer.ts:85</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -237,7 +261,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/a47b2a0/src/lib/Signer.ts#L55">src/lib/Signer.ts:55</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/2509ebf/src/lib/Signer.ts#L64">src/lib/Signer.ts:64</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -254,7 +278,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/a47b2a0/src/lib/Signer.ts#L11">src/lib/Signer.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/2509ebf/src/lib/Signer.ts#L11">src/lib/Signer.ts:11</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -276,7 +300,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/a47b2a0/src/lib/Signer.ts#L59">src/lib/Signer.ts:59</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/2509ebf/src/lib/Signer.ts#L68">src/lib/Signer.ts:68</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -293,7 +317,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/a47b2a0/src/lib/Signer.ts#L18">src/lib/Signer.ts:18</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/2509ebf/src/lib/Signer.ts#L18">src/lib/Signer.ts:18</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -315,7 +339,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/a47b2a0/src/lib/Signer.ts#L43">src/lib/Signer.ts:43</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/2509ebf/src/lib/Signer.ts#L52">src/lib/Signer.ts:52</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -364,7 +388,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/a47b2a0/src/lib/Signer.ts#L80">src/lib/Signer.ts:80</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/2509ebf/src/lib/Signer.ts#L89">src/lib/Signer.ts:89</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -460,6 +484,9 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="_lib_signer_.html#forcedisconnect" class="tsd-kind-icon">force<wbr>Disconnect</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_lib_signer_.html#getactivepublickey" class="tsd-kind-icon">get<wbr>Active<wbr>Public<wbr>Key</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="_lib_signer_.html#getselectedpublickeybase64" class="tsd-kind-icon">get<wbr>Selected<wbr>Public<wbr>Key<wbr>Base64</a>
