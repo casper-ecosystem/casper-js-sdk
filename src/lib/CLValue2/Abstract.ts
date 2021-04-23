@@ -4,9 +4,9 @@ import { concat } from '@ethersproject/bytes';
 import { toBytesArrayU8 } from "../ByteConverters";
 import { CLTypeTag } from "./constants";
 
-import { CLErrorCodes } from './index';
+import { CLU32, CLErrorCodes } from './index';
 import { encodeBase16, decodeBase16 } from '../Conversions';
-import { matchTypeToCLType } from './utils';
+import { matchTypeToCLType, matchBytesToCLType } from './utils';
 
 export abstract class CLType {
   abstract toString(): string;
@@ -58,9 +58,29 @@ export abstract class CLValue {
   //TBD: Maybe this should be just toBytes()
   toBytesWithCLType(): Result<Uint8Array, CLErrorCodes> {
     const clTypeBytes = this.clType().toBytes();
+    // console.log('clTypeBytes', clTypeBytes);
     const bytes = this.toBytes().unwrap();
+    // console.log('bytes', bytes);
     const value = concat([toBytesArrayU8(bytes), clTypeBytes]);
     return Ok(value);
+  }
+
+  static fromBytesWithCLType(rawBytes: Uint8Array): Result<CLValue, CLErrorCodes> {
+    const {
+      result: CLU32res,
+      remainder: CLU32rem
+    } = CLU32.fromBytesWithRemainder(rawBytes);
+    const length = CLU32res.unwrap().value().toNumber();
+    if (!CLU32rem) {
+      return Err(CLErrorCodes.EarlyEndOfStream);
+    }
+    const valueBytes = CLU32rem.subarray(0, length);
+    const typeBytes = CLU32rem.subarray(length)
+    const clType = matchBytesToCLType(typeBytes);
+
+    const finalValue = clType.linksTo.fromBytes(valueBytes, clType).unwrap();
+
+    return Ok(finalValue as CLValue);
   }
 }
 
@@ -82,3 +102,18 @@ export interface CLJSONFormat {
 }
 
 export type ToBytesResult = Result<Uint8Array, CLErrorCodes>;
+
+  // public static fromBytes(bytes: Uint8Array): Result<CLValue> {
+  //   const bytesRes = ByteArrayValue.fromBytes(bytes);
+  //   if (bytesRes.hasError()) {
+  //     return Result.Err(bytesRes.error);
+  //   }
+  //   const clTypeRes = CLTypeHelper.fromBytes(bytesRes.remainder());
+  //   console.log('clTypeRes', clTypeRes);
+  //   if (clTypeRes.hasError()) {
+  //     return Result.Err(clTypeRes.error);
+  //   }
+  //   const v = fromBytesByCLType(clTypeRes.value(), bytesRes.value().rawBytes);
+  //   const clValue = new CLValue(v.value(), clTypeRes.value());
+  //   return Result.Ok(clValue, clTypeRes.remainder());
+  // }

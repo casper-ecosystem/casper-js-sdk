@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import {
+  CLValue,
   CLList,
   CLListType,
   CLBool,
@@ -164,6 +165,7 @@ describe('CLValue List implementation', () => {
     const listType = new CLListType(new CLListType(new CLBoolType()));
     const reconstructedList = CLList.fromBytes(bytes, listType).unwrap();
 
+
     expect(reconstructedList).to.be.deep.eq(myList);
 
     // JSON
@@ -176,4 +178,19 @@ describe('CLValue List implementation', () => {
     expect(newList).to.be.deep.eq(myList);
     expect(newList2).to.be.deep.eq(myList);
   });
+
+  // TODO: Move it to some more generic tests
+  it('toBytesWithCLType() / fromBytesWithCLType()', () => {
+    const myList = new CLList([
+      new CLList([new CLBool(true), new CLBool(false)]),
+      new CLList([new CLBool(false)])
+    ]);
+
+    const bytesWithCLType = myList.toBytesWithCLType().unwrap();
+
+    const fromBytes = CLValue.fromBytesWithCLType(bytesWithCLType).unwrap();
+
+    expect(fromBytes).to.be.deep.eq(myList);
+
+  })
 });
