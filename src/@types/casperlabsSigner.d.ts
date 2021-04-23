@@ -23,7 +23,7 @@ interface CasperLabsHelper {
   getSelectedPublicKeyBase64: () => Promise<string>;
 
   /**
-   * Retrieve the active public key .
+   * Retrieve the active public key.
    * @returns {string} Hex-encoded public key with algorithm prefix.
    */
    getActivePublicKey: () => Promise<string>;
