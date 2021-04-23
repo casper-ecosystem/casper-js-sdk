@@ -29,6 +29,15 @@ export const getSelectedPublicKeyBase64: () => Promise<string> = () => {
 };
 
 /**
+ * Retrieve the active public key.
+ *
+ * @returns {string} Hex-encoded public key with algorithm prefix.
+ */
+export const getActivePublicKey: () => Promise<string> = () => {
+  return window.casperlabsHelper!.getActivePublicKey();
+};
+
+/**
  * send base16 encoded message to plugin to sign
  *
  * @param messageBase16 the base16 encoded message that plugin received to sign
