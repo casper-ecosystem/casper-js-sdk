@@ -131,7 +131,7 @@ export class CLResult<T extends CLType, E extends CLType> extends CLValue {
       const {
         result: valRes,
         remainder: valRem
-      } = referenceErr.linksTo.fromBytesWithRemainder(U8Rem);
+      } = referenceErr.linksTo.fromBytesWithRemainder(U8Rem, type.innerErr);
       const val = new CLResult(Err(valRes.unwrap()), {
         ok: referenceOk,
         err: referenceErr
@@ -143,7 +143,7 @@ export class CLResult<T extends CLType, E extends CLType> extends CLValue {
       const {
         result: valRes,
         remainder: valRem
-      } = referenceOk.linksTo.fromBytesWithRemainder(U8Rem);
+      } = referenceOk.linksTo.fromBytesWithRemainder(U8Rem, type.innerOk);
       const val = new CLResult(Ok(valRes.unwrap() as CLValue), {
         ok: referenceOk,
         err: referenceErr

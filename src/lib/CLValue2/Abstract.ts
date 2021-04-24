@@ -74,9 +74,9 @@ export abstract class CLValue {
     }
     const valueBytes = CLU32rem.subarray(0, length);
     const typeBytes = CLU32rem.subarray(length)
-    const clType = matchBytesToCLType(typeBytes);
+    const { result: clType } = matchBytesToCLType(typeBytes);
 
-    const finalValue = clType.linksTo.fromBytes(valueBytes, clType).unwrap();
+    const finalValue = clType.unwrap().linksTo.fromBytes(valueBytes, clType.unwrap()).unwrap();
 
     return Ok(finalValue as CLValue);
   }
