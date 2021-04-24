@@ -58,9 +58,7 @@ export abstract class CLValue {
   //TBD: Maybe this should be just toBytes()
   toBytesWithCLType(): Result<Uint8Array, CLErrorCodes> {
     const clTypeBytes = this.clType().toBytes();
-    // console.log('clTypeBytes', clTypeBytes);
     const bytes = this.toBytes().unwrap();
-    // console.log('bytes', bytes);
     const value = concat([toBytesArrayU8(bytes), clTypeBytes]);
     return Ok(value);
   }
@@ -102,18 +100,3 @@ export interface CLJSONFormat {
 }
 
 export type ToBytesResult = Result<Uint8Array, CLErrorCodes>;
-
-  // public static fromBytes(bytes: Uint8Array): Result<CLValue> {
-  //   const bytesRes = ByteArrayValue.fromBytes(bytes);
-  //   if (bytesRes.hasError()) {
-  //     return Result.Err(bytesRes.error);
-  //   }
-  //   const clTypeRes = CLTypeHelper.fromBytes(bytesRes.remainder());
-  //   console.log('clTypeRes', clTypeRes);
-  //   if (clTypeRes.hasError()) {
-  //     return Result.Err(clTypeRes.error);
-  //   }
-  //   const v = fromBytesByCLType(clTypeRes.value(), bytesRes.value().rawBytes);
-  //   const clValue = new CLValue(v.value(), clTypeRes.value());
-  //   return Result.Ok(clValue, clTypeRes.remainder());
-  // }
