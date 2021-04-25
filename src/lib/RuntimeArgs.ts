@@ -1,20 +1,23 @@
 /**
  * Implements a collection of runtime arguments.
  */
-import { Ok, Err } from "ts-results";
+import { Ok, Err } from 'ts-results';
 import { toBytesString, toBytesVector } from './ByteConverters';
-import { CLValue, 
-  // Result, 
-  // StringValue, 
+import {
+  CLValue,
+  // Result,
+  // StringValue,
   CLString,
-  ToBytes, ToBytesResult, 
+  ToBytes,
+  ToBytesResult,
   ResultAndRemainder,
   resultHelper,
-  // U32 
+  buildCLValueFromJson
+  // U32
   // CLU32
 } from './CLValue';
 import { concat } from '@ethersproject/bytes';
-import { jsonMember, jsonObject, TypedJSON } from 'typedjson';
+import { jsonMember, jsonObject } from 'typedjson';
 
 export class NamedArg implements ToBytes {
   constructor(public name: string, public value: CLValue) {}
@@ -25,8 +28,13 @@ export class NamedArg implements ToBytes {
     return Ok(concat([name, value.unwrap()]));
   }
 
-  public static fromBytes(bytes: Uint8Array): ResultAndRemainder<NamedArg, string> {
-    const { result: nameRes, remainder: nameRem } = CLString.fromBytesWithRemainder(bytes);
+  public static fromBytes(
+    bytes: Uint8Array
+  ): ResultAndRemainder<NamedArg, string> {
+    const {
+      result: nameRes,
+      remainder: nameRem
+    } = CLString.fromBytesWithRemainder(bytes);
     const name = nameRes.unwrap();
     if (!nameRem) {
       return resultHelper(Err('Missing data for value of named arg'));
@@ -38,20 +46,18 @@ export class NamedArg implements ToBytes {
 }
 
 const desRA = (_arr: any) => {
-  const clValueSerializer = new TypedJSON(CLValue);
   return new Map(
     Array.from(_arr, ([key, value]) => {
-      return [key, clValueSerializer.parse(value)];
+      const val = buildCLValueFromJson(value);
+      return [key, val.unwrap()];
     })
   );
 };
 
 const serRA = (map: Map<string, CLValue>) => {
-  const clValueSerializer = new TypedJSON(CLValue);
-  return Array.from(map, ([key, value]) => [
-    key,
-    clValueSerializer.toPlainJson(value)
-  ]);
+  return Array.from(map, ([key, value]) => {
+    return [key, value.toJSON().unwrap()];
+  });
 };
 
 @jsonObject()
