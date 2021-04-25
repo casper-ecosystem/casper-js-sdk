@@ -30,7 +30,7 @@ export class CLKeyType extends CLType {
 }
 
 // TBD: Maybe the first should be CLByteArray insted?
-type CLKeyParameters = Uint8Array | CLURef | CLAccountHash;
+export type CLKeyParameters = Uint8Array | CLURef | CLAccountHash;
 
 export class CLKey extends CLValue {
   data: CLKeyParameters;

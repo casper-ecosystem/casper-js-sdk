@@ -287,5 +287,7 @@ export const matchBytesToCLType = (
         Ok(new CLPublicKeyType())
       );
   }
-  throw Error('Unsupported');
+
+  return resultHelper(Err('Unsuported type'));
+
 };

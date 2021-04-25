@@ -67,7 +67,7 @@ const isValueConstructor = (
 
 type KeyVal = CLValue; 
 
-export class CLMap<K extends CLValue , V extends CLValue >
+export class CLMap<K extends CLValue , V extends CLValue>
   extends CLValue
 {
   data: Map<K, V>;
