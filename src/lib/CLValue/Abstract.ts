@@ -54,7 +54,11 @@ export abstract class CLType {
   }
 }
 
-export abstract class CLValue {
+export abstract class ToBytes {
+  abstract toBytes(): ToBytesResult
+}
+
+export abstract class CLValue implements ToBytes {
   abstract clType(): CLType;
   abstract value(): any;
   abstract data: any;
@@ -222,3 +226,5 @@ export interface CLJSONFormat {
 }
 
 export type ToBytesResult = Result<Uint8Array, CLErrorCodes>;
+
+

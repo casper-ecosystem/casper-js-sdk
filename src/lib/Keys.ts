@@ -3,7 +3,8 @@ import * as nacl from 'tweetnacl-ts';
 import { SignKeyPair, SignLength } from 'tweetnacl-ts';
 import { decodeBase64 } from 'tweetnacl-util';
 import { encodeBase16, encodeBase64 } from '../index';
-import { PublicKey } from '../lib/index';
+// import { PublicKey } from '../lib/index';
+import { CLPublicKey } from '../lib/index';
 import { byteHash } from './Contracts';
 import { ec as EC } from 'elliptic';
 import * as secp256k1 from 'ethereum-cryptography/secp256k1';
@@ -66,7 +67,7 @@ export function readBase64WithPEM(content: string): Uint8Array {
 }
 
 export abstract class AsymmetricKey {
-  public readonly publicKey: PublicKey;
+  public readonly publicKey: CLPublicKey;
   public readonly privateKey: Uint8Array;
   public readonly signatureAlgorithm: SignatureAlgorithm;
 
@@ -75,7 +76,7 @@ export abstract class AsymmetricKey {
     privateKey: Uint8Array,
     signatureAlgorithm: SignatureAlgorithm
   ) {
-    this.publicKey = PublicKey.from(publicKey, signatureAlgorithm);
+    this.publicKey = new CLPublicKey(publicKey, signatureAlgorithm);
     this.privateKey = privateKey;
     this.signatureAlgorithm = signatureAlgorithm;
   }
@@ -259,7 +260,7 @@ export class Ed25519 extends AsymmetricKey {
     // prettier-ignore
     const derPrefix = Buffer.from([48, 42, 48, 5, 6, 3, 43, 101, 112, 3, 33, 0]);
     const encoded = encodeBase64(
-      Buffer.concat([derPrefix, Buffer.from(this.publicKey.rawPublicKey)])
+      Buffer.concat([derPrefix, Buffer.from(this.publicKey.value())])
     );
     return this.toPem(ED25519_PEM_PUBLIC_KEY_TAG, encoded);
   }
@@ -281,7 +282,7 @@ export class Ed25519 extends AsymmetricKey {
     return nacl.sign_detached_verify(
       msg,
       signature,
-      this.publicKey.rawPublicKey
+      this.publicKey.value()
     );
   }
 
@@ -442,7 +443,7 @@ export class Secp256K1 extends AsymmetricKey {
    */
   public exportPublicKeyInPem(): string {
     return keyEncoder.encodePublic(
-      encodeBase16(this.publicKey.rawPublicKey),
+      encodeBase16(this.publicKey.value()),
       'raw',
       'pem'
     );
@@ -466,7 +467,7 @@ export class Secp256K1 extends AsymmetricKey {
     return secp256k1.ecdsaVerify(
       signature,
       sha256(Buffer.from(msg)),
-      this.publicKey.rawPublicKey
+      this.publicKey.value()
     );
   }
 

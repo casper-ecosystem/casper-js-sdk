@@ -1,5 +1,5 @@
 import { RequestManager, HTTPTransport, Client } from "@open-rpc/client-js";
-import { DeployUtil, encodeBase16, PublicKey } from '..';
+import { DeployUtil, encodeBase16, CLPublicKey } from '..';
 import { deployToJson } from '../lib/DeployUtil';
 import { TypedJSON } from 'typedjson';
 import { StoredValue } from '../lib/StoredValue';
@@ -270,7 +270,7 @@ export class CasperServiceByJsonRPC {
    */
   public async getAccountBalanceUrefByPublicKey(
     stateRootHash: string,
-    publicKey: PublicKey
+    publicKey: CLPublicKey
   ) {
     return this.getAccountBalanceUrefByPublicKeyHash(
       stateRootHash,

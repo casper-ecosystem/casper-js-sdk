@@ -1,10 +1,10 @@
 import blake from 'blakejs';
 import * as fs from 'fs';
-import { PublicKey } from '../index';
+import { CLPublicKey } from '../index';
 import * as DeployUtil from './DeployUtil';
 import { DeployParams, ExecutableDeployItem } from './DeployUtil';
 import { RuntimeArgs } from './RuntimeArgs';
-import { AccountHash, CLValue, KeyValue } from './CLValue';
+import { CLAccountHash, CLValue, CLKey } from './CLValue';
 import { AsymmetricKey } from './Keys';
 
 // https://www.npmjs.com/package/tweetnacl-ts
@@ -49,7 +49,7 @@ export class Contract {
   public deploy(
     args: RuntimeArgs,
     paymentAmount: bigint,
-    accountPublicKey: PublicKey,
+    accountPublicKey: CLPublicKey,
     signingKeyPair: AsymmetricKey,
     chainName: string
   ): DeployUtil.Deploy {
@@ -103,11 +103,9 @@ export class Faucet {
    * @param accountPublicKeyHash the public key hash that want to be funded
    */
   public static args(accountPublicKeyHash: Uint8Array): RuntimeArgs {
-    const accountKey = KeyValue.fromAccount(
-      new AccountHash(accountPublicKeyHash)
-    );
+    const accountKey = new CLKey(new CLAccountHash(accountPublicKeyHash));
     return RuntimeArgs.fromMap({
-      account: CLValue.key(accountKey)
+      account: accountKey
     });
   }
 }
@@ -123,9 +121,7 @@ export class Transfer {
     accountPublicKeyHash: Uint8Array,
     amount: bigint
   ): RuntimeArgs {
-    const account = CLValue.key(
-      KeyValue.fromAccount(new AccountHash(accountPublicKeyHash))
-    );
+    const account = CLValue.key(new CLAccountHash(accountPublicKeyHash));
     return RuntimeArgs.fromMap({
       account,
       amount: CLValue.u512(amount.toString())

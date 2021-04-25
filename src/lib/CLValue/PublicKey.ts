@@ -14,7 +14,7 @@ import { decodeBase16, encodeBase16 } from '../Conversions';
 import { byteHash } from '../Contracts';
 
 // TODO: Tidy up almost the same enum in
-// { SignatureAlgorithm } '../Keys';
+import { SignatureAlgorithm } from '../Keys';
 
 const ED25519_LENGTH = 32;
 const SECP256K1_LENGTH = 33;
@@ -41,26 +41,27 @@ export class CLPublicKey extends CLValue {
   data: Uint8Array;
   private tag: CLPublicKeyTag;
 
-  constructor(rawPublicKey: Uint8Array, tag: CLPublicKeyTag) {
+  constructor(rawPublicKey: Uint8Array, tag: CLPublicKeyTag | SignatureAlgorithm ) {
     super();
-    if (tag === CLPublicKeyTag.ED25519) {
+    // TODO: Two ifs because of the legacy indentifiers in ./Keys
+    if (tag === CLPublicKeyTag.ED25519 || tag === SignatureAlgorithm.Ed25519) {
       if (rawPublicKey.length !== ED25519_LENGTH) {
         throw new Error(
           `Wrong length of ED25519 key. Expected ${ED25519_LENGTH}, but got ${rawPublicKey.length}.`
         );
       }
       this.data = rawPublicKey;
-      this.tag = tag;
+      this.tag = CLPublicKeyTag.ED25519;
       return;
     }
-    if (tag === CLPublicKeyTag.SECP256K1) {
+    if (tag === CLPublicKeyTag.SECP256K1 || tag === SignatureAlgorithm.Secp256K1) {
       if (rawPublicKey.length !== SECP256K1_LENGTH) {
         throw new Error(
           `Wrong length of SECP256K1 key. Expected ${SECP256K1_LENGTH}, but got ${rawPublicKey.length}.`
         );
       }
       this.data = rawPublicKey;
-      this.tag = tag;
+      this.tag = CLPublicKeyTag.SECP256K1;
       return;
     }
     throw new Error('Unsupported type of public key');

@@ -1,33 +1,39 @@
 /**
  * Implements a collection of runtime arguments.
  */
-import { toBytesString, toBytesVecT } from './byterepr';
-import { CLValue, Result, StringValue, ToBytes, U32 } from './CLValue';
+import { Ok, Err } from "ts-results";
+import { toBytesString, toBytesVector } from './ByteConverters';
+import { CLValue, 
+  // Result, 
+  // StringValue, 
+  CLString,
+  ToBytes, ToBytesResult, 
+  ResultAndRemainder,
+  resultHelper,
+  // U32 
+  // CLU32
+} from './CLValue';
 import { concat } from '@ethersproject/bytes';
 import { jsonMember, jsonObject, TypedJSON } from 'typedjson';
 
 export class NamedArg implements ToBytes {
   constructor(public name: string, public value: CLValue) {}
 
-  public toBytes(): Uint8Array {
+  public toBytes(): ToBytesResult {
     const name = toBytesString(this.name);
-    const value = this.value.toBytes();
-    return concat([name, value]);
+    const value = this.value.toBytesWithCLType();
+    return Ok(concat([name, value.unwrap()]));
   }
 
-  public static fromBytes(bytes: Uint8Array): Result<NamedArg> {
-    const nameRes = StringValue.fromBytes(bytes);
-    if (nameRes.hasError()) {
-      return Result.Err(nameRes.error);
+  public static fromBytes(bytes: Uint8Array): ResultAndRemainder<NamedArg, string> {
+    const { result: nameRes, remainder: nameRem } = CLString.fromBytesWithRemainder(bytes);
+    const name = nameRes.unwrap();
+    if (!nameRem) {
+      return resultHelper(Err('Missing data for value of named arg'));
     }
-    const clValueRes = CLValue.fromBytes(nameRes.remainder());
-    if (clValueRes.hasError()) {
-      return Result.Err(clValueRes.error);
-    }
-    return Result.Ok(
-      new NamedArg(nameRes.value().val, clValueRes.value()),
-      clValueRes.remainder()
-    );
+    // Maybe there should also be fromBytesWithCLTypeWithRemainder ? (ofc better named)
+    const value = CLValue.fromBytesWithCLType(nameRem).unwrap();
+    return resultHelper(Ok(new NamedArg(name.value(), value)));
   }
 }
 
@@ -79,29 +85,30 @@ export class RuntimeArgs implements ToBytes {
     this.args.set(key, value);
   }
 
-  public toBytes() {
+  public toBytes(): ToBytesResult {
     const vec = Array.from(this.args.entries()).map((a: [string, CLValue]) => {
       return new NamedArg(a[0], a[1]);
     });
-    return toBytesVecT(vec);
+    return Ok(toBytesVector(vec));
   }
 
-  public static fromBytes(bytes: Uint8Array): Result<RuntimeArgs> {
-    const sizeRes = U32.fromBytes(bytes);
-    if (sizeRes.hasError()) {
-      return Result.Err(sizeRes.error);
-    }
-    const size = sizeRes.value().val.toNumber();
-    let remainBytes = sizeRes.remainder();
-    const res: NamedArg[] = [];
-    for (let i = 0; i < size; i++) {
-      const namedArgRes = NamedArg.fromBytes(remainBytes);
-      if (namedArgRes.hasError()) {
-        return Result.Err(namedArgRes.error);
-      }
-      res.push(namedArgRes.value());
-      remainBytes = namedArgRes.remainder();
-    }
-    return Result.Ok(RuntimeArgs.fromNamedArgs(res), remainBytes);
-  }
+  // TODO: Add tests to check if it is working properly
+  // public static fromBytes(bytes: Uint8Array): Result<RuntimeArgs> {
+  //   const sizeRes = U32.fromBytes(bytes);
+  //   if (sizeRes.hasError()) {
+  //     return Result.Err(sizeRes.error);
+  //   }
+  //   const size = sizeRes.value().val.toNumber();
+  //   let remainBytes = sizeRes.remainder();
+  //   const res: NamedArg[] = [];
+  //   for (let i = 0; i < size; i++) {
+  //     const namedArgRes = NamedArg.fromBytes(remainBytes);
+  //     if (namedArgRes.hasError()) {
+  //       return Result.Err(namedArgRes.error);
+  //     }
+  //     res.push(namedArgRes.value());
+  //     remainBytes = namedArgRes.remainder();
+  //   }
+  //   return Result.Ok(RuntimeArgs.fromNamedArgs(res), remainBytes);
+  // }
 }
