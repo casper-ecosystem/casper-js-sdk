@@ -3,14 +3,14 @@ import * as nacl from 'tweetnacl-ts';
 import { SignKeyPair, SignLength } from 'tweetnacl-ts';
 import { decodeBase64 } from 'tweetnacl-util';
 import { encodeBase16, encodeBase64 } from '../index';
-// import { PublicKey } from '../lib/index';
-import { CLPublicKey } from '../lib/index';
+import { CLPublicKey } from './CLValue';
 import { byteHash } from './Contracts';
 import { ec as EC } from 'elliptic';
 import * as secp256k1 from 'ethereum-cryptography/secp256k1';
 import KeyEncoder from 'key-encoder';
 import { sha256 } from 'ethereum-cryptography/sha256';
 import { CasperHDKey } from './CasperHDKey';
+
 
 const keyEncoder = new KeyEncoder('secp256k1');
 const ec = new EC('secp256k1');

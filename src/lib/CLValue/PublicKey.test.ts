@@ -49,14 +49,14 @@ describe('CLPublicKey', () => {
     const ed25519AccountHex = ed25519Account.accountHex();
 
     expect(CLPublicKey.fromHex(ed25519AccountHex).value()).to.deep.equal(
-      ed25519Account.publicKey.rawPublicKey
+      ed25519Account.publicKey.value()
     );
 
     const secp256K1Account = Keys.Secp256K1.new();
     const secp256K1AccountHex = secp256K1Account.accountHex();
 
     expect(CLPublicKey.fromHex(secp256K1AccountHex).value()).to.deep.equal(
-      secp256K1Account.publicKey.rawPublicKey
+      secp256K1Account.publicKey.value()
     );
 
     const badFn = () => CLPublicKey.fromHex('1');
