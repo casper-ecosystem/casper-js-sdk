@@ -33,18 +33,6 @@ import {
   CLMap,
   CLByteArray
 } from './index';
-// import { CLBool } from './Bool';
-// import { CLU8, CLU32, CLU64, CLU128, CLU256, CLU512, CLI32, CLI64 } from './Numeric';
-// import { CLKey, CLKeyParameters } from './Key';
-// import { CLUnit } from './Unit';
-// import { CLString } from './String';
-// import { CLURef, AccessRights } from './URef';
-// import { CLPublicKey, CLPublicKeyTag } from './PublicKey';
-// import { CLList } from './List';
-// import { CLTuple1, CLTuple2, CLTuple3 } from './Tuple';
-// import { CLOption } from './Option';
-// import { CLMap } from './Map';
-// import { CLByteArray } from './ByteArray';
 
 import { encodeBase16, decodeBase16 } from '../Conversions';
 
