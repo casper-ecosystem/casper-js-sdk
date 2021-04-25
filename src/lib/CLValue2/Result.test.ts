@@ -121,7 +121,5 @@ describe('CLResult', () => {
 
     expect(okFromBytes).to.be.deep.eq(myOkComplexRes);
     expect(errFromBytes).to.be.deep.eq(myErrComplexRes);
-
-    // const okResBytesWithCLType = myOkComplexRes.toBytesWithCLType().unwrap();
   });
 });
