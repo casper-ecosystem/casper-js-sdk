@@ -268,6 +268,26 @@ export class CLValue<T extends CLData> implements ToBytes {
   }
 }
 
+export class CLValueBuilder {
+  fromJSON(json: any): Result<CLData, string> {
+    const clType = matchTypeToCLType(json.cl_type);
+    const ref = clType.linksTo;
+    const clEntity = matchBytesParserToCLValue(ref.linksTo); //ref.fromJSON(json).unwrap();
+    return Ok(clEntity as CLData);
+    // const uint8bytes = decodeBase16(json.bytes);
+    // const clTypes = matchTypeToCLType(json.cl_type);
+    // return this.fromBytes(uint8bytes, clTypes);
+  }
+
+  toJSON(value: CLData): Result<CLJSONFormat, CLErrorCodes> {
+    const rawBytes = value.toBytes().unwrap();
+    const bytes = encodeBase16(rawBytes);
+    const clType = value.clType().toJSON();
+    return Ok({ bytes: bytes, cl_type: clType });
+  }
+
+};
+
 export abstract class CLValueBytesParser {
   static fromBytes(
     bytes: Uint8Array,

@@ -291,3 +291,9 @@ export const matchBytesToCLType = (
   return resultHelper(Err('Unsuported type'));
 
 };
+
+// const CLVALUE_TO_BYTESPARSER = {
+// };
+
+// const matchBytesParserToCLValue = (val: CLValue) => {
+// };
