@@ -227,8 +227,8 @@ export class CLValue<T extends CLData> implements ToBytes {
     return new CLValue(new CLURef(val, accessRights));
   };
 
-  static list<T extends CLData>(val: T[]): CLValue<CLList<T>> {
-    return new CLValue(new CLList(val));
+  static list<T extends CLData>(val: T[]): CLList<T> {
+    return new new CLList(val);
   }
 
   static tuple1<T extends CLData>(t0: T): CLValue<CLTuple1> {
@@ -266,4 +266,22 @@ export class CLValue<T extends CLData> implements ToBytes {
   static byteArray(bytes: Uint8Array): CLValue<CLByteArray> {
     return new CLValue(new CLByteArray(bytes));
   }
+}
+
+export abstract class CLValueBytesParser {
+  static fromBytes(
+    bytes: Uint8Array,
+    innerType?: CLType
+  ): Result<CLData, CLErrorCodes> {
+    const { result, remainder } = this.fromBytesWithRemainder(bytes, innerType);
+    if (remainder && remainder.length) {
+      return Err(CLErrorCodes.LeftOverBytes);
+    }
+    return result;
+  }
+
+  static fromBytesWithRemainder: (
+    bytes: Uint8Array,
+    innerType?: CLType
+  ) => ResultAndRemainder<CLData, CLErrorCodes>;
 }
