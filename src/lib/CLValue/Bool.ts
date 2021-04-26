@@ -2,7 +2,7 @@ import { Ok, Err } from 'ts-results';
 
 import {
   CLType,
-  CLValue,
+  CLEntity,
   ResultAndRemainder,
   ToBytesResult,
   CLErrorCodes,
@@ -23,7 +23,7 @@ export class CLBoolType extends CLType {
   }
 }
 
-export class CLBool extends CLValue {
+export class CLBool extends CLEntity {
   data: boolean;
 
   constructor(v: boolean) {

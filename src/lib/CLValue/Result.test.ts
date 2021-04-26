@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import {
   CLValue,
+  CLEntity,
   CLBool,
   CLBoolType,
   CLResult,
@@ -93,33 +94,33 @@ describe('CLResult', () => {
   });
 
   it('toBytesWithCLType() / fromBytesWithCLType()', () => {
-    const okResBytesWithCLType = myOkRes.toBytesWithCLType().unwrap();
-    const okFromBytes = CLValue.fromBytesWithCLType(
+    const okResBytesWithCLType = new CLValue(myOkRes).toBytes().unwrap();
+    const okFromBytes = CLValue.fromBytes(
       okResBytesWithCLType
     ).unwrap();
 
-    const errResBytesWithCLType = myErrRes.toBytesWithCLType().unwrap();
-    const errFromBytes = CLValue.fromBytesWithCLType(
+    const errResBytesWithCLType = new CLValue(myErrRes).toBytes().unwrap();
+    const errFromBytes = CLValue.fromBytes(
       errResBytesWithCLType
     ).unwrap();
 
-    expect(okFromBytes).to.be.deep.eq(myOkRes);
-    expect(errFromBytes).to.be.deep.eq(myErrRes);
+    expect(okFromBytes.innerEntity).to.be.deep.eq(myOkRes);
+    expect(errFromBytes.innerEntity).to.be.deep.eq(myErrRes);
   });
 
   // TODO: Maybe have another file with more "integration" tests of CLValue
   it('Complex examples toBytesWithCLType() / fromBytesWithCLType()', () => {
-    const okResBytesWithCLType = myOkComplexRes.toBytesWithCLType().unwrap();
-    const okFromBytes = CLValue.fromBytesWithCLType(
+    const okResBytesWithCLType = new CLValue(myOkComplexRes).toBytes().unwrap();
+    const okFromBytes = CLValue.fromBytes(
       okResBytesWithCLType
     ).unwrap();
 
-    const errResBytesWithCLType = myOkComplexRes.toBytesWithCLType().unwrap();
-    const errFromBytes = CLValue.fromBytesWithCLType(
+    const errResBytesWithCLType = new CLValue(myOkComplexRes).toBytes().unwrap();
+    const errFromBytes = CLValue.fromBytes(
       errResBytesWithCLType
     ).unwrap();
 
-    expect(okFromBytes).to.be.deep.eq(myOkComplexRes);
-    expect(errFromBytes).to.be.deep.eq(myErrComplexRes);
+    expect(okFromBytes.innerEntity).to.be.deep.eq(myOkComplexRes);
+    expect(errFromBytes.innerEntity).to.be.deep.eq(myErrComplexRes);
   });
 });

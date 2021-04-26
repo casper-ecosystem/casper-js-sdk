@@ -3,7 +3,7 @@ import { concat } from '@ethersproject/bytes';
 
 import {
   CLType,
-  CLValue,
+  CLEntity,
   ResultAndRemainder,
   ToBytesResult,
   resultHelper,
@@ -15,16 +15,16 @@ import { CLTypeTag } from './constants';
 type TupleTypes = typeof CLTuple1 | typeof CLTuple2 | typeof CLTuple3;
 
 // TBD: Do we want Tuple to have all of the values on init? If no, when it will be serialized it should throw an error that eg Tuple2 has only one element and is invalid
-abstract class GenericTuple extends CLValue {
-  data: Array<CLValue>;
+abstract class GenericTuple extends CLEntity {
+  data: Array<CLEntity>;
   tupleSize: number;
 
-  constructor(size: number, v: Array<CLValue>) {
+  constructor(size: number, v: Array<CLEntity>) {
     super();
     if (v.length > size) {
       throw new Error('Too many elements!');
     }
-    if (v.every(e => e instanceof CLValue)) {
+    if (v.every(e => e instanceof CLEntity)) {
       this.tupleSize = size;
       this.data = v;
     } else {
@@ -32,18 +32,18 @@ abstract class GenericTuple extends CLValue {
     }
   }
 
-  get(index: number): CLValue {
+  get(index: number): CLEntity {
     return this.data[index];
   }
 
-  set(index: number, item: CLValue): void {
+  set(index: number, item: CLEntity): void {
     if (index >= this.tupleSize) {
       throw new Error('Tuple index out of bounds.');
     }
     this.data[index] = item;
   }
 
-  push(item: CLValue): void {
+  push(item: CLEntity): void {
     if (this.data.length < this.tupleSize) {
       this.data.push(item);
     } else {
@@ -51,7 +51,7 @@ abstract class GenericTuple extends CLValue {
     }
   }
 
-  value(): Array<CLValue> {
+  value(): Array<CLEntity> {
     return this.data;
   }
 
@@ -127,7 +127,7 @@ export class CLTuple1Type extends GenericTupleType {
 }
 
 export class CLTuple1 extends GenericTuple {
-  constructor(value: Array<CLValue>) {
+  constructor(value: Array<CLEntity>) {
     super(1, value);
   }
 
@@ -143,7 +143,7 @@ export class CLTuple2Type extends GenericTupleType {
 }
 
 export class CLTuple2 extends GenericTuple {
-  constructor(value: Array<CLValue>) {
+  constructor(value: Array<CLEntity>) {
     super(2, value);
   }
 
@@ -159,7 +159,7 @@ export class CLTuple3Type extends GenericTupleType {
 }
 
 export class CLTuple3 extends GenericTuple {
-  constructor(value: Array<CLValue>) {
+  constructor(value: Array<CLEntity>) {
     super(3, value);
   }
 

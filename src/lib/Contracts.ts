@@ -105,7 +105,7 @@ export class Faucet {
   public static args(accountPublicKeyHash: Uint8Array): RuntimeArgs {
     const accountKey = new CLKey(new CLAccountHash(accountPublicKeyHash));
     return RuntimeArgs.fromMap({
-      account: accountKey
+      account: new CLValue(accountKey)
     });
   }
 }

@@ -1,7 +1,7 @@
 import { Ok, Err } from 'ts-results';
 import {
   CLType,
-  CLValue,
+  CLEntity,
   ResultAndRemainder,
   ToBytesResult,
   CLErrorCodes,
@@ -11,7 +11,7 @@ import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { toBytesNumber } from '../ByteConverters';
 import { CLTypeTag } from "./constants";
 
-abstract class Numeric extends CLValue {
+abstract class Numeric extends CLEntity {
   data: BigNumber;
   bitSize: number;
   signed: boolean;

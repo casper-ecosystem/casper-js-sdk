@@ -2,7 +2,7 @@ import { Ok } from 'ts-results';
 
 import {
   CLType,
-  CLValue,
+  CLEntity,
   CLErrorCodes,
   ResultAndRemainder,
   ToBytesResult,
@@ -23,7 +23,7 @@ export class CLUnitType extends CLType {
   }
 }
 
-export class CLUnit extends CLValue {
+export class CLUnit extends CLEntity {
   data = undefined;
 
   clType(): CLType {

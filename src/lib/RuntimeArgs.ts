@@ -5,6 +5,7 @@ import { Ok, Err } from 'ts-results';
 import { toBytesString, toBytesVector } from './ByteConverters';
 import {
   CLValue,
+  CLEntity,
   // Result,
   // StringValue,
   CLString,
@@ -12,7 +13,6 @@ import {
   ToBytesResult,
   ResultAndRemainder,
   resultHelper,
-  buildCLValueFromJson
   // U32
   // CLU32
 } from './CLValue';
@@ -20,11 +20,11 @@ import { concat } from '@ethersproject/bytes';
 import { jsonMember, jsonObject } from 'typedjson';
 
 export class NamedArg implements ToBytes {
-  constructor(public name: string, public value: CLValue) {}
+  constructor(public name: string, public value: CLValue<CLEntity>) {}
 
   public toBytes(): ToBytesResult {
     const name = toBytesString(this.name);
-    const value = this.value.toBytesWithCLType();
+    const value = this.value.toBytes();
     return Ok(concat([name, value.unwrap()]));
   }
 
@@ -40,7 +40,7 @@ export class NamedArg implements ToBytes {
       return resultHelper(Err('Missing data for value of named arg'));
     }
     // Maybe there should also be fromBytesWithCLTypeWithRemainder ? (ofc better named)
-    const value = CLValue.fromBytesWithCLType(nameRem).unwrap();
+    const value = CLValue.fromBytes(nameRem).unwrap();
     return resultHelper(Ok(new NamedArg(name.value(), value)));
   }
 }
@@ -48,13 +48,13 @@ export class NamedArg implements ToBytes {
 const desRA = (_arr: any) => {
   return new Map(
     Array.from(_arr, ([key, value]) => {
-      const val = buildCLValueFromJson(value);
+      const val = CLValue.fromJSON(value);
       return [key, val.unwrap()];
     })
   );
 };
 
-const serRA = (map: Map<string, CLValue>) => {
+const serRA = (map: Map<string, CLValue<CLEntity>>) => {
   return Array.from(map, ([key, value]) => {
     return [key, value.toJSON().unwrap()];
   });
@@ -66,33 +66,33 @@ export class RuntimeArgs implements ToBytes {
     serializer: serRA,
     deserializer: desRA
   })
-  public args: Map<string, CLValue>;
+  public args: Map<string, CLValue<CLEntity>>;
 
-  constructor(args: Map<string, CLValue>) {
+  constructor(args: Map<string, CLValue<CLEntity>>) {
     this.args = args;
   }
 
-  public static fromMap(args: Record<string, CLValue>) {
-    const map: Map<string, CLValue> = new Map(
+  public static fromMap(args: Record<string, CLValue<CLEntity>>) {
+    const map: Map<string, CLValue<CLEntity>> = new Map(
       Object.keys(args).map(k => [k, args[k]])
     );
     return new RuntimeArgs(map);
   }
 
   public static fromNamedArgs(namedArgs: NamedArg[]) {
-    const args = namedArgs.reduce<Record<string, CLValue>>((pre, cur) => {
+    const args = namedArgs.reduce<Record<string, CLValue<CLEntity>>>((pre, cur) => {
       pre[cur.name] = cur.value;
       return pre;
     }, {});
     return RuntimeArgs.fromMap(args);
   }
 
-  public insert(key: string, value: CLValue) {
+  public insert(key: string, value: CLValue<CLEntity>) {
     this.args.set(key, value);
   }
 
   public toBytes(): ToBytesResult {
-    const vec = Array.from(this.args.entries()).map((a: [string, CLValue]) => {
+    const vec = Array.from(this.args.entries()).map((a: [string, CLValue<CLEntity>]) => {
       return new NamedArg(a[0], a[1]);
     });
     return Ok(toBytesVector(vec));

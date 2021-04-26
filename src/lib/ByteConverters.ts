@@ -98,10 +98,10 @@ export const toBytesDeployHash = (deployHash: Uint8Array) => {
 /**
  * Serializes a string into an array of bytes.
  */
-export const toBytesString = (str: string): Uint8Array => {
-  const arr = new TextEncoder().encode(str);
+export function toBytesString(str: string): Uint8Array {
+  const arr = Uint8Array.from(Buffer.from(str));
   return concat([toBytesU32(arr.byteLength), arr]);
-};
+}
 
 export const fromBytesString = (byte: Uint8Array): string => {
   return new TextDecoder().decode(byte);
@@ -118,7 +118,7 @@ export function toBytesArrayU8(arr: Uint8Array): Uint8Array {
  * Serializes a vector of values of type `T` into an array of bytes.
  */
 export const toBytesVector = <T extends ToBytes>(vec: T[]): Uint8Array => {
-  const valueByteList = vec.map(e => e.toBytes().unwrap());
+  const valueByteList = vec.map(e => e.toBytes()).map(e => e.unwrap());
   valueByteList.splice(0, 0, toBytesU32(vec.length));
   return concat(valueByteList);
 };

@@ -1,4 +1,4 @@
-// NOTE: Currently this isn't supported CLValue
+// NOTE: Currently this isn't supported CLEntity
 import { Ok, Err } from 'ts-results';
 
 import {

@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import {
   CLValue,
+  CLEntity,
   CLList,
   CLListType,
   CLBool,
@@ -9,9 +10,9 @@ import {
   CLI32,
   CLI32Type
 } from './index';
-import { buildCLValueFromJson} from './utils';
+import { buildCLEntityFromJson} from './utils';
 
-describe('CLValue List implementation', () => {
+describe('CLEntity List implementation', () => {
   it('List should return proper clType', () => {
     const myBool = new CLBool(false);
     const myList = new CLList([myBool]);
@@ -172,7 +173,7 @@ describe('CLValue List implementation', () => {
     const json = myList.toJSON().unwrap();
     const newList = CLList.fromJSON(json).unwrap();
     const expectedJson = JSON.parse('{"bytes":"020000000200000001000100000000","cl_type":{"List":{"List":"Bool"}}}');
-    const newList2 = buildCLValueFromJson(expectedJson).unwrap();
+    const newList2 = CLList.fromJSON(expectedJson).unwrap();
 
     expect(json).to.be.deep.eq(expectedJson);
     expect(newList).to.be.deep.eq(myList);
@@ -180,14 +181,15 @@ describe('CLValue List implementation', () => {
   });
 
   it('toBytesWithCLType() / fromBytesWithCLType()', () => {
-    const myList = new CLList([
+    const myList = new CLValue(new CLList([
       new CLList([new CLBool(true), new CLBool(false)]),
       new CLList([new CLBool(false)])
-    ]);
+    ]));
 
-    const bytesWithCLType = myList.toBytesWithCLType().unwrap();
+    const bytesWithCLType = myList.toBytes().unwrap();
 
-    const fromBytes = CLValue.fromBytesWithCLType(bytesWithCLType).unwrap();
+    const fromBytes = CLValue.fromBytes(bytesWithCLType).unwrap();
+    console.log(fromBytes);
 
     expect(fromBytes).to.be.deep.eq(myList);
   })

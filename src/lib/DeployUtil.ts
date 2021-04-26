@@ -13,6 +13,7 @@ import {
   // CLTypedAndToBytesHelper,
   // CLTypeHelper,
   CLValue,
+  CLEntity,
   // PublicKey,
   CLPublicKey,
   ToBytes,
@@ -207,11 +208,11 @@ abstract class ExecutableDeployItemInternal implements ToBytes {
 
   public abstract toBytes(): ToBytesResult;
 
-  public getArgByName(name: string): CLValue | undefined {
+  public getArgByName(name: string): CLValue<CLEntity> | undefined {
     return this.args.args.get(name);
   }
 
-  public setArg(name: string, value: CLValue) {
+  public setArg(name: string, value: CLValue<CLEntity>) {
     this.args.args.set(name, value);
   }
 }
@@ -545,7 +546,7 @@ export class ExecutableDeployItem implements ToBytes {
     throw new Error('failed to serialize ExecutableDeployItemJsonWrapper');
   }
 
-  public getArgByName(name: string): CLValue | undefined {
+  public getArgByName(name: string): CLValue<CLEntity> | undefined {
     if (this.isModuleBytes()) {
       return this.moduleBytes!.getArgByName(name);
     } else if (this.isStoredContractByHash()) {
@@ -562,7 +563,7 @@ export class ExecutableDeployItem implements ToBytes {
     throw new Error('failed to serialize ExecutableDeployItemJsonWrapper');
   }
 
-  public setArg(name: string, value: CLValue) {
+  public setArg(name: string, value: CLValue<CLEntity>) {
     if (this.isModuleBytes()) {
       return this.moduleBytes!.setArg(name, value);
     } else if (this.isStoredContractByHash()) {
@@ -674,10 +675,10 @@ export class ExecutableDeployItem implements ToBytes {
     const runtimeArgs = RuntimeArgs.fromMap({});
     runtimeArgs.insert('amount', CLValue.u512(amount));
     if (sourcePurse) {
-      runtimeArgs.insert('source', sourcePurse);
+      runtimeArgs.insert('source', new CLValue(sourcePurse));
     }
     if (target instanceof CLURef) {
-      runtimeArgs.insert('target', target);
+      runtimeArgs.insert('target', new CLValue(target));
     } else if (target instanceof CLPublicKey) {
       runtimeArgs.insert('target', CLValue.byteArray(target.toAccountHash()));
     } else {
@@ -981,7 +982,7 @@ export const deployFromJson = (json: any) => {
 export const addArgToDeploy = (
   deploy: Deploy,
   name: string,
-  value: CLValue
+  value: CLValue<CLEntity>
 ): Deploy => {
   if (deploy.approvals.length !== 0) {
     throw Error('Can not add argument to already signed deploy.');
