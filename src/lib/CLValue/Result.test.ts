@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import {
   CLValue,
-  CLEntity,
+  CLData,
   CLBool,
   CLBoolType,
   CLResult,

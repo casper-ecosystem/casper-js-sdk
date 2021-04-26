@@ -27,7 +27,7 @@ import {
   CLTypeTag
 } from './constants';
 import {
-  CLEntity,
+  CLData,
   CLType,
   CLBoolType,
   CLListType,
@@ -132,11 +132,11 @@ export const matchTypeToCLType = (type: any): CLType => {
   throw new Error(`Unknown data provided.`);
 };
 
-export const buildCLEntityFromJson = (json: any): Result<CLEntity, string> => {
+export const buildCLDataFromJson = (json: any): Result<CLData, string> => {
   const clType = matchTypeToCLType(json.cl_type);
   const ref = clType.linksTo;
   const clValue = ref.fromJSON(json).unwrap();
-  return Ok(clValue as CLEntity);
+  return Ok(clValue as CLData);
 };
 
 export const matchBytesToCLType = (

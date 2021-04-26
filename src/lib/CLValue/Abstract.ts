@@ -70,7 +70,7 @@ export abstract class ToBytes {
   abstract toBytes(): ToBytesResult;
 }
 
-export abstract class CLEntity {
+export abstract class CLData {
   abstract clType(): CLType;
   abstract value(): any;
   abstract data: any;
@@ -80,12 +80,12 @@ export abstract class CLEntity {
   static fromBytesWithRemainder: (
     bytes: Uint8Array,
     innerType?: CLType
-  ) => ResultAndRemainder<CLEntity, CLErrorCodes>;
+  ) => ResultAndRemainder<CLData, CLErrorCodes>;
 
   static fromBytes(
     bytes: Uint8Array,
     innerType?: CLType
-  ): Result<CLEntity, CLErrorCodes> {
+  ): Result<CLData, CLErrorCodes> {
     const { result, remainder } = this.fromBytesWithRemainder(bytes, innerType);
     if (remainder && remainder.length) {
       return Err(CLErrorCodes.LeftOverBytes);
@@ -100,21 +100,21 @@ export abstract class CLEntity {
     return Ok({ bytes: bytes, cl_type: clType });
   }
 
-  static fromJSON(json: CLJSONFormat): Result<CLEntity, CLErrorCodes> {
+  static fromJSON(json: CLJSONFormat): Result<CLData, CLErrorCodes> {
     const uint8bytes = decodeBase16(json.bytes);
     const clTypes = matchTypeToCLType(json.cl_type);
     return this.fromBytes(uint8bytes, clTypes);
   }
 }
 
-export class CLValue<T extends CLEntity> implements ToBytes {
+export class CLValue<T extends CLData> implements ToBytes {
   innerEntity: T;
 
   constructor(innerEntity: T) {
     this.innerEntity = innerEntity;
   }
 
-  innerData(): CLEntity {
+  innerData(): CLData {
     return this.innerEntity;
   }
 
@@ -135,7 +135,7 @@ export class CLValue<T extends CLEntity> implements ToBytes {
 
   static fromBytes(
     rawBytes: Uint8Array
-  ): Result<CLValue<CLEntity>, CLErrorCodes> {
+  ): Result<CLValue<CLData>, CLErrorCodes> {
     const {
       result: CLU32res,
       remainder: CLU32rem
@@ -157,14 +157,14 @@ export class CLValue<T extends CLEntity> implements ToBytes {
 
     const clValue = new CLValue(clEntity);
 
-    return Ok(clValue as CLValue<CLEntity>);
+    return Ok(clValue as CLValue<CLData>);
   }
 
   toJSON(): Result<CLJSONFormat, CLErrorCodes> {
     return this.innerEntity.toJSON();
   }
 
-  static fromJSON(json: CLJSONFormat): Result<CLValue<CLEntity>, CLErrorCodes> {
+  static fromJSON(json: CLJSONFormat): Result<CLValue<CLData>, CLErrorCodes> {
     const clType = matchTypeToCLType(json.cl_type);
     const ref = clType.linksTo;
     const clEntity = ref.fromJSON(json).unwrap();
@@ -227,30 +227,30 @@ export class CLValue<T extends CLEntity> implements ToBytes {
     return new CLValue(new CLURef(val, accessRights));
   };
 
-  static list<T extends CLEntity>(val: T[]): CLValue<CLList<T>> {
+  static list<T extends CLData>(val: T[]): CLValue<CLList<T>> {
     return new CLValue(new CLList(val));
   }
 
-  static tuple1<T extends CLEntity>(t0: T): CLValue<CLTuple1> {
+  static tuple1<T extends CLData>(t0: T): CLValue<CLTuple1> {
     return new CLValue(new CLTuple1([t0]));
   }
 
-  static tuple2<T extends CLEntity>(t0: T, t1: T): CLValue<CLTuple2> {
+  static tuple2<T extends CLData>(t0: T, t1: T): CLValue<CLTuple2> {
     return new CLValue(new CLTuple2([t0, t1]));
   }
 
-  static tuple3<T extends CLEntity>(t0: T, t1: T, t2: T): CLValue<CLTuple3> {
+  static tuple3<T extends CLData>(t0: T, t1: T, t2: T): CLValue<CLTuple3> {
     return new CLValue(new CLTuple3([t0, t1, t2]));
   }
 
   static option(
-    data: Option<CLEntity>,
+    data: Option<CLData>,
     innerType?: CLType
-  ): CLValue<CLOption<CLEntity>> {
+  ): CLValue<CLOption<CLData>> {
     return new CLValue(new CLOption(data, innerType));
   }
 
-  static map<K extends CLEntity, V extends CLEntity>(
+  static map<K extends CLData, V extends CLData>(
     val: [K, V][] | [CLType, CLType]
   ): CLValue<CLMap<K, V>> {
     return new CLValue(new CLMap(val));

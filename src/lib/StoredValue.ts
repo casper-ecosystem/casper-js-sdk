@@ -1,5 +1,5 @@
 import { jsonArrayMember, jsonMember, jsonObject } from 'typedjson';
-import { CLValue, CLEntity } from './CLValue';
+import { CLValue, CLData } from './CLValue';
 
 @jsonObject
 class NamedKey {
@@ -172,7 +172,7 @@ export class ContractMetadataJson {
 export class StoredValue {
   // StoredVale
   @jsonMember({ constructor: CLValue })
-  public CLValue?: CLValue<CLEntity>;
+  public CLValue?: CLValue<CLData>;
   // An account
   @jsonMember({ constructor: AccountJson })
   public Account?: AccountJson;

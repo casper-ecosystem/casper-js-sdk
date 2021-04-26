@@ -13,7 +13,7 @@ import {
   // CLTypedAndToBytesHelper,
   // CLTypeHelper,
   CLValue,
-  CLEntity,
+  CLData,
   // PublicKey,
   CLPublicKey,
   ToBytes,
@@ -208,11 +208,11 @@ abstract class ExecutableDeployItemInternal implements ToBytes {
 
   public abstract toBytes(): ToBytesResult;
 
-  public getArgByName(name: string): CLValue<CLEntity> | undefined {
+  public getArgByName(name: string): CLValue<CLData> | undefined {
     return this.args.args.get(name);
   }
 
-  public setArg(name: string, value: CLValue<CLEntity>) {
+  public setArg(name: string, value: CLValue<CLData>) {
     this.args.args.set(name, value);
   }
 }
@@ -546,7 +546,7 @@ export class ExecutableDeployItem implements ToBytes {
     throw new Error('failed to serialize ExecutableDeployItemJsonWrapper');
   }
 
-  public getArgByName(name: string): CLValue<CLEntity> | undefined {
+  public getArgByName(name: string): CLValue<CLData> | undefined {
     if (this.isModuleBytes()) {
       return this.moduleBytes!.getArgByName(name);
     } else if (this.isStoredContractByHash()) {
@@ -563,7 +563,7 @@ export class ExecutableDeployItem implements ToBytes {
     throw new Error('failed to serialize ExecutableDeployItemJsonWrapper');
   }
 
-  public setArg(name: string, value: CLValue<CLEntity>) {
+  public setArg(name: string, value: CLValue<CLData>) {
     if (this.isModuleBytes()) {
       return this.moduleBytes!.setArg(name, value);
     } else if (this.isStoredContractByHash()) {
@@ -982,7 +982,7 @@ export const deployFromJson = (json: any) => {
 export const addArgToDeploy = (
   deploy: Deploy,
   name: string,
-  value: CLValue<CLEntity>
+  value: CLValue<CLData>
 ): Deploy => {
   if (deploy.approvals.length !== 0) {
     throw Error('Can not add argument to already signed deploy.');

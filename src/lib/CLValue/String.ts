@@ -1,7 +1,7 @@
 import { Ok, Err } from 'ts-results';
 import {
   CLType,
-  CLEntity,
+  CLData,
   CLU32,
   ResultAndRemainder,
   ToBytesResult,
@@ -24,7 +24,7 @@ export class CLStringType extends CLType {
   }
 }
 
-export class CLString extends CLEntity {
+export class CLString extends CLData {
   data: string;
 
   constructor(v: string) {

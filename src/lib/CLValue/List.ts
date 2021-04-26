@@ -3,7 +3,7 @@ import { concat } from '@ethersproject/bytes';
 
 import {
   CLType,
-  CLEntity,
+  CLData,
   CLErrorCodes,
   resultHelper,
   ResultAndRemainder,
@@ -44,7 +44,7 @@ export class CLListType<T extends CLType> extends CLType {
   }
 }
 
-export class CLList<T extends CLEntity> extends CLEntity
+export class CLList<T extends CLData> extends CLData
   {
   data: Array<T>;
   vectorType: CLType;
@@ -122,7 +122,7 @@ export class CLList<T extends CLEntity> extends CLEntity
   static fromBytesWithRemainder(
     bytes: Uint8Array,
     listType: CLListType<CLType>
-  ): ResultAndRemainder<CLList<CLEntity>, CLErrorCodes> {
+  ): ResultAndRemainder<CLList<CLData>, CLErrorCodes> {
     const { result: u32Res, remainder: u32Rem } = CLU32.fromBytesWithRemainder(bytes);
     if (!u32Res.ok) {
       return resultHelper(Err(u32Res.val));
