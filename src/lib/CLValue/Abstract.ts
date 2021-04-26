@@ -118,6 +118,14 @@ export class CLValue<T extends CLEntity> implements ToBytes {
     return this.innerEntity;
   }
 
+  innerDataValue(): any {
+    return this.innerEntity.value();
+  }
+
+  clType(): CLType {
+    return this.innerEntity.clType();
+  }
+
   toBytes(): Result<Uint8Array, CLErrorCodes> {
     const clTypeBytes = this.innerEntity.clType().toBytes();
     const bytes = this.innerEntity.toBytes().unwrap();

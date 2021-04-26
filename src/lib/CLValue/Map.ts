@@ -20,7 +20,7 @@ export class CLMapType<K extends CLType, V extends CLType> extends CLType {
   innerKey: K;
   innerValue: V;
 
-  constructor(keyType: K, valueType: V) {
+  constructor([keyType, valueType]: [K, V]) {
     super();
     this.innerKey = keyType;
     this.innerValue = valueType;
@@ -102,7 +102,7 @@ export class CLMap<K extends CLEntity , V extends CLEntity>
   }
 
   clType(): CLType {
-    return new CLMapType(...this.refType);
+    return new CLMapType(this.refType);
   }
 
   value(): Map<K, V> {

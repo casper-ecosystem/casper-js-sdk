@@ -111,7 +111,7 @@ describe('CLEntity CLMap implementation', () => {
     const myMap = new CLMap([[myKey, myVal]]);
 
     const bytes = myMap.toBytes();
-    const mapType = new CLMapType(new CLStringType(), new CLI32Type());
+    const mapType = new CLMapType([new CLStringType(), new CLI32Type()]);
 
     expect(CLMap.fromBytes(bytes.unwrap(), mapType).unwrap()).to.be.deep.eq(myMap);
   });

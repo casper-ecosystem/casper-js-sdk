@@ -103,7 +103,7 @@ export const matchTypeToCLType = (type: any): CLType => {
     if (MAP_ID in type) {
       const keyType = matchTypeToCLType(type[MAP_ID].key);
       const valType = matchTypeToCLType(type[MAP_ID].value);
-      return new CLMapType(keyType, valType);
+      return new CLMapType([keyType, valType]);
     }
     if (TUPLE1_ID in type) {
       const vals = type[TUPLE1_ID].map((t: any) => matchTypeToCLType(t));
@@ -226,7 +226,7 @@ export const matchBytesToCLType = (
       );
       const valType = valTypeRes.unwrap();
 
-      return resultHelper(Ok(new CLMapType(keyType, valType)), rem);
+      return resultHelper(Ok(new CLMapType([keyType, valType])), rem);
     }
     case CLTypeTag.Tuple1: {
       const { result: innerTypeRes, remainder: rem } = matchBytesToCLType(
