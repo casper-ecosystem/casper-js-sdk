@@ -114,6 +114,10 @@ export class CLValue<T extends CLEntity> implements ToBytes {
     this.innerEntity = innerEntity;
   }
 
+  innerData(): CLEntity {
+    return this.innerEntity;
+  }
+
   toBytes(): Result<Uint8Array, CLErrorCodes> {
     const clTypeBytes = this.innerEntity.clType().toBytes();
     const bytes = this.innerEntity.toBytes().unwrap();
@@ -181,7 +185,7 @@ export class CLValue<T extends CLEntity> implements ToBytes {
   };
 
   static i64 = (val: BigNumberish): CLValue<CLI64> => {
-    return new CLValue( new CLI64(val));
+    return new CLValue(new CLI64(val));
   };
 
   static u128 = (val: BigNumberish): CLValue<CLU128> => {
@@ -189,7 +193,7 @@ export class CLValue<T extends CLEntity> implements ToBytes {
   };
 
   static u256 = (val: BigNumberish): CLValue<CLU256> => {
-    return new CLValue( new CLU256(val));
+    return new CLValue(new CLU256(val));
   };
 
   static u512 = (val: BigNumberish): CLValue<CLU512> => {
@@ -208,12 +212,15 @@ export class CLValue<T extends CLEntity> implements ToBytes {
     return new CLValue(new CLKey(val));
   };
 
-  static uref = (val: Uint8Array, accessRights: AccessRights): CLValue<CLURef> => {
+  static uref = (
+    val: Uint8Array,
+    accessRights: AccessRights
+  ): CLValue<CLURef> => {
     return new CLValue(new CLURef(val, accessRights));
   };
 
   static list<T extends CLEntity>(val: T[]): CLValue<CLList<T>> {
-    return new CLValue( new CLList(val));
+    return new CLValue(new CLList(val));
   }
 
   static tuple1<T extends CLEntity>(t0: T): CLValue<CLTuple1> {
@@ -228,7 +235,10 @@ export class CLValue<T extends CLEntity> implements ToBytes {
     return new CLValue(new CLTuple3([t0, t1, t2]));
   }
 
-  static option(data: Option<CLEntity>, innerType?: CLType): CLValue<CLOption<CLEntity>> {
+  static option(
+    data: Option<CLEntity>,
+    innerType?: CLType
+  ): CLValue<CLOption<CLEntity>> {
     return new CLValue(new CLOption(data, innerType));
   }
 
@@ -238,7 +248,10 @@ export class CLValue<T extends CLEntity> implements ToBytes {
     return new CLValue(new CLMap(val));
   }
 
-  static publicKey(rawPublicKey: Uint8Array, tag: CLPublicKeyTag): CLValue<CLPublicKey> {
+  static publicKey(
+    rawPublicKey: Uint8Array,
+    tag: CLPublicKeyTag
+  ): CLValue<CLPublicKey> {
     return new CLValue(new CLPublicKey(rawPublicKey, tag));
   }
 
