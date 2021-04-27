@@ -66,7 +66,9 @@ import {
   CLKeyType,
   CLKeyBytesParser,
   CLListType,
-  CLListBytesParser
+  CLListBytesParser,
+  CLMapType,
+  CLMapBytesParser
   // CLAccountHash,
 } from './index';
 
@@ -110,18 +112,18 @@ export const matchTypeToCLType = (type: any): CLType => {
 
   if (typeof type === typeof {}) {
     if (LIST_ID in type) {
-    const inner = matchTypeToCLType(type[LIST_ID]);
-    return new CLListType(inner);
+      const inner = matchTypeToCLType(type[LIST_ID]);
+      return new CLListType(inner);
     }
     if (BYTE_ARRAY_ID in type) {
       const size = type[BYTE_ARRAY_ID];
       return new CLByteArrayType(size);
     }
-    // if (MAP_ID in type) {
-    // const keyType = matchTypeToCLType(type[MAP_ID].key);
-    // const valType = matchTypeToCLType(type[MAP_ID].value);
-    // return new CLMapType([keyType, valType]);
-    // }
+    if (MAP_ID in type) {
+      const keyType = matchTypeToCLType(type[MAP_ID].key);
+      const valType = matchTypeToCLType(type[MAP_ID].value);
+      return new CLMapType([keyType, valType]);
+    }
     // if (TUPLE1_ID in type) {
     // const vals = type[TUPLE1_ID].map((t: any) => matchTypeToCLType(t));
     // return new CLTuple1Type(vals);
@@ -194,9 +196,12 @@ export const matchByteParserByCLType = (
   if (val instanceof CLListType) {
     return Ok(new CLListBytesParser());
   }
+  if (val instanceof CLMapType) {
+    return Ok(new CLMapBytesParser());
+  }
   if (val instanceof CLStringType) {
     return Ok(new CLStringBytesParser());
-  };
+  }
   return Err('Unknown type');
 };
 

@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { CLMap, CLMapType, CLBool, CLString, CLStringType, CLI32, CLI32Type } from './index';
+import { CLValueParsers, CLMap, CLMapType, CLBool, CLString, CLStringType, CLI32, CLI32Type } from './index';
 
 describe('CLValue CLMap implementation', () => {
   it('Maps should return proper clType', () => {
@@ -110,10 +110,11 @@ describe('CLValue CLMap implementation', () => {
     const myVal = new CLI32(10);
     const myMap = new CLMap([[myKey, myVal]]);
 
-    const bytes = myMap.toBytes();
+    const bytes = CLValueParsers.toBytes(myMap).unwrap();
     const mapType = new CLMapType([new CLStringType(), new CLI32Type()]);
+    const fromBytes = CLValueParsers.fromBytes(bytes, mapType).unwrap();
 
-    expect(CLMap.fromBytes(bytes.unwrap(), mapType).unwrap()).to.be.deep.eq(myMap);
+    expect(fromBytes).to.be.deep.eq(myMap);
   });
 
   it('fromJSON() / toJSON()', () => {
@@ -121,10 +122,12 @@ describe('CLValue CLMap implementation', () => {
     const myVal = new CLI32(10);
     const myMap = new CLMap([[myKey, myVal]]);
 
-    const json = myMap.toJSON().unwrap();
+    const json= CLValueParsers.toJSON(myMap).unwrap();
     const expectedJson = JSON.parse('{"bytes":"01000000030000004142430a000000","cl_type":{"Map":{"key":"String","value":"I32"}}}');
 
-    expect(CLMap.fromJSON(expectedJson).unwrap()).to.be.deep.eq(myMap);
+    const fromJson = CLValueParsers.fromJSON(expectedJson).unwrap();
+
+    expect(fromJson).to.be.deep.eq(myMap);
     expect(json).to.be.deep.eq(expectedJson);
   });
 });
