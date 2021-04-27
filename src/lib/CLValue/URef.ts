@@ -4,6 +4,7 @@ import { Ok, Err } from 'ts-results';
 import {
   CLType,
   CLValue,
+  CLValueBytesParsers,
   CLErrorCodes,
   ResultAndRemainder,
   ToBytesResult,
@@ -62,6 +63,25 @@ const UREF_ADDR_LENGTH = 32;
 const ACCESS_RIGHT_LENGTH = 1;
 
 const UREF_BYTES_LENGTH = UREF_ADDR_LENGTH + ACCESS_RIGHT_LENGTH;
+
+export class CLURefBytesParser extends CLValueBytesParsers {
+  toBytes(val: CLURef): ToBytesResult {
+    return Ok(concat([val.data, Uint8Array.from([val.accessRights])]));
+  }
+
+  fromBytesWithRemainder(
+    bytes: Uint8Array
+  ): ResultAndRemainder<CLURef, CLErrorCodes> {
+    if (bytes.length < UREF_BYTES_LENGTH) {
+      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+    }
+
+    const urefBytes = bytes.subarray(0, UREF_ADDR_LENGTH);
+    const accessRights = bytes[UREF_BYTES_LENGTH - 1];
+    const uref = new CLURef(urefBytes, accessRights);
+    return resultHelper(Ok(uref), bytes.subarray(UREF_BYTES_LENGTH));
+  }
+}
 
 export class CLURef extends CLValue {
   data: Uint8Array;
@@ -122,20 +142,4 @@ export class CLURef extends CLValue {
     return { data: this.data, accessRights: this.accessRights };
   }
 
-  toBytes(): ToBytesResult {
-    return Ok(concat([this.data, Uint8Array.from([this.accessRights])]));
-  }
-
-  static fromBytesWithRemainder(
-    bytes: Uint8Array
-  ): ResultAndRemainder<CLURef, CLErrorCodes> {
-    if (bytes.length < UREF_BYTES_LENGTH) {
-      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
-    }
-
-    const urefBytes = bytes.subarray(0, UREF_ADDR_LENGTH);
-    const accessRights = bytes[UREF_BYTES_LENGTH - 1];
-    const uref = new CLURef(urefBytes, accessRights);
-    return resultHelper(Ok(uref), bytes.subarray(UREF_BYTES_LENGTH));
-  }
 }

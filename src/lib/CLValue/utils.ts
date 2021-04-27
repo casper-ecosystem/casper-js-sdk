@@ -34,7 +34,6 @@ import {
   // CLPublicKeyType,
   // CLMapType,
   // CLStringType,
-  // CLURefType,
   // CLUnitType,
   // CLOptionType,
   // CLResultType,
@@ -60,7 +59,9 @@ import {
   CLU64BytesParser,
   CLU128BytesParser,
   CLU256BytesParser,
-  CLU512BytesParser
+  CLU512BytesParser,
+  CLURefType,
+  CLURefBytesParser
 } from './index';
 
 export const TUPLE_MATCH_LEN_TO_ID = [TUPLE1_ID, TUPLE2_ID, TUPLE3_ID];
@@ -76,8 +77,8 @@ export const matchTypeToCLType = (type: any): CLType => {
       //   return new CLPublicKeyType();
       // case STRING_ID:
       //   return new CLStringType();
-      // case UREF_ID:
-      //   return new CLURefType();
+      case UREF_ID:
+        return new CLURefType();
       // case UNIT_ID:
       //   return new CLUnitType();
       case I32_ID:
@@ -181,6 +182,9 @@ export const matchByteParserByCLType = (
   }
   if (val instanceof CLByteArrayType) {
     return Ok(new CLByteArrayBytesParser());
+  }
+  if (val instanceof CLURefType) {
+    return Ok(new CLURefBytesParser());
   }
   return Err('Unknown type');
 };

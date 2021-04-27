@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { CLURef, AccessRights } from './index';
+import { CLURef, CLURefType, CLValueParsers, AccessRights } from './index';
 import { decodeBase16 } from '../../index';
 
 const urefAddr =
@@ -47,16 +47,16 @@ describe('CLUref', () => {
 
   it('toBytes() proper values', () => {
     const expectedBytes = Uint8Array.from([...Array(32).fill(42), 7]);
-    expect(RWExampleURef.toBytes().unwrap()).to.be.deep.eq(expectedBytes);
+    expect(CLValueParsers.toBytes(RWExampleURef).unwrap()).to.be.deep.eq(expectedBytes);
   });
 
   //TODO: Add tests for fromBytes
 
   it('fromJSON() / toJSON()', () => {
-    const json = RWExampleURef.toJSON().unwrap();
+    const json = CLValueParsers.toJSON(RWExampleURef).unwrap();
     const expectedJson = JSON.parse('{"bytes":"2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a07","cl_type":"URef"}');
 
-    expect(CLURef.fromJSON(expectedJson).unwrap()).to.be.deep.eq(RWExampleURef);
+    expect(CLValueParsers.fromJSON(expectedJson).unwrap()).to.be.deep.eq(RWExampleURef);
     expect(json).to.be.deep.eq(expectedJson);
   });
 });
