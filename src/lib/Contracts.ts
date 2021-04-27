@@ -4,7 +4,7 @@ import { CLPublicKey } from '../index';
 import * as DeployUtil from './DeployUtil';
 import { DeployParams, ExecutableDeployItem } from './DeployUtil';
 import { RuntimeArgs } from './RuntimeArgs';
-import { CLAccountHash, CLValue, CLKey } from './CLValue';
+import { CLAccountHash, CLValue, CLValueBuilder, CLKey } from './CLValue';
 import { AsymmetricKey } from './Keys';
 
 // https://www.npmjs.com/package/tweetnacl-ts
@@ -55,7 +55,7 @@ export class Contract {
   ): DeployUtil.Deploy {
     const session = ExecutableDeployItem.newModuleBytes(this.sessionWasm, args);
     const paymentArgs = RuntimeArgs.fromMap({
-      amount: CLValue.u512(paymentAmount.toString())
+      amount: CLValueBuilder.u512(paymentAmount.toString())
     });
 
     const payment = ExecutableDeployItem.newModuleBytes(
@@ -105,7 +105,7 @@ export class Faucet {
   public static args(accountPublicKeyHash: Uint8Array): RuntimeArgs {
     const accountKey = new CLKey(new CLAccountHash(accountPublicKeyHash));
     return RuntimeArgs.fromMap({
-      account: new CLValue(accountKey)
+      account: accountKey
     });
   }
 }
@@ -121,10 +121,10 @@ export class Transfer {
     accountPublicKeyHash: Uint8Array,
     amount: bigint
   ): RuntimeArgs {
-    const account = CLValue.key(new CLAccountHash(accountPublicKeyHash));
+    const account = CLValueBuilder.key(new CLAccountHash(accountPublicKeyHash));
     return RuntimeArgs.fromMap({
       account,
-      amount: CLValue.u512(amount.toString())
+      amount: CLValueBuilder.u512(amount.toString())
     });
   }
 }

@@ -4,6 +4,7 @@ import { Ok, Err } from 'ts-results';
 import {
   CLType,
   CLValue,
+  CLValueBytesParsers,
   CLErrorCodes,
   resultHelper,
   ResultAndRemainder,
@@ -37,9 +38,43 @@ export class CLPublicKeyType extends CLType {
   }
 }
 
+export class CLPublicKeyBytesParser extends CLValueBytesParsers {
+  public toBytes(value: CLPublicKey): ToBytesResult {
+    return Ok(concat([Uint8Array.from([value.tag]), value.data]));
+  }
+
+  fromBytesWithRemainder(
+    rawBytes: Uint8Array
+  ): ResultAndRemainder<CLPublicKey, CLErrorCodes> {
+    if (rawBytes.length < 1) {
+      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+    }
+
+    const variant = rawBytes[0];
+
+    let expectedPublicKeySize;
+    if (variant === CLPublicKeyTag.ED25519) {
+      expectedPublicKeySize = ED25519_LENGTH;
+    } else if (variant === CLPublicKeyTag.SECP256K1) {
+      expectedPublicKeySize = SECP256K1_LENGTH;
+    } else {
+      return resultHelper(Err(CLErrorCodes.Formatting));
+    }
+
+    const bytes = rawBytes.subarray(1, expectedPublicKeySize + 1);
+
+    const publicKey = new CLPublicKey(bytes, variant);
+
+    return resultHelper(
+      Ok(publicKey),
+      rawBytes.subarray(expectedPublicKeySize + 1)
+    );
+  }
+}
+
 export class CLPublicKey extends CLValue {
   data: Uint8Array;
-  private tag: CLPublicKeyTag;
+  tag: CLPublicKeyTag;
 
   constructor(rawPublicKey: Uint8Array, tag: CLPublicKeyTag | SignatureAlgorithm ) {
     super();
@@ -124,37 +159,5 @@ export class CLPublicKey extends CLValue {
     const publicKeyHexBytes = decodeBase16(publicKeyHex);
 
     return new CLPublicKey(publicKeyHexBytes.subarray(1), publicKeyHexBytes[0]);
-  }
-
-  public toBytes(): ToBytesResult {
-    return Ok(concat([Uint8Array.from([this.tag]), this.data]));
-  }
-
-  static fromBytesWithRemainder(
-    rawBytes: Uint8Array
-  ): ResultAndRemainder<CLPublicKey, CLErrorCodes> {
-    if (rawBytes.length < 1) {
-      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
-    }
-
-    const variant = rawBytes[0];
-
-    let expectedPublicKeySize;
-    if (variant === CLPublicKeyTag.ED25519) {
-      expectedPublicKeySize = ED25519_LENGTH;
-    } else if (variant === CLPublicKeyTag.SECP256K1) {
-      expectedPublicKeySize = SECP256K1_LENGTH;
-    } else {
-      return resultHelper(Err(CLErrorCodes.Formatting));
-    }
-
-    const bytes = rawBytes.subarray(1, expectedPublicKeySize + 1);
-
-    const publicKey = new CLPublicKey(bytes, variant);
-
-    return resultHelper(
-      Ok(publicKey),
-      rawBytes.subarray(expectedPublicKeySize + 1)
-    );
   }
 }

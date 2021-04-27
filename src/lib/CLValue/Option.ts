@@ -3,12 +3,15 @@ import { concat } from '@ethersproject/bytes';
 
 import {
   CLValue,
+  CLValueParsers,
+  CLValueBytesParsers,
   CLType,
   CLErrorCodes,
   ResultAndRemainder,
   ToBytesResult,
-  CLU8,
-  resultHelper
+  CLU8BytesParser,
+  resultHelper,
+  matchByteParserByCLType
 } from './index';
 
 import { CLTypeTag } from './constants';
@@ -49,6 +52,56 @@ export class CLOptionType<T extends CLType> extends CLType {
     };
   }
 }
+
+export class CLOptionBytesParser extends CLValueBytesParsers {
+  /**
+   * Serializes the `Option` into an array of bytes.
+   */
+  toBytes(value: CLOption<CLValue>): ToBytesResult {
+    if (value.data.none) {
+      return Ok(Uint8Array.from([OPTION_TAG_NONE]));
+    }
+    if (value.data.some) {
+      return Ok(concat([
+        Uint8Array.from([OPTION_TAG_SOME]),
+        CLValueParsers.toBytes(value.data.unwrap()).unwrap()
+      ]));
+    }
+
+    return Err(CLErrorCodes.UnknownValue);
+  }
+
+  fromBytesWithRemainder(
+    bytes: Uint8Array,
+    type: CLOptionType<CLType>
+  ): ResultAndRemainder<CLOption<CLValue>, CLErrorCodes> {
+    const { result: U8Res, remainder: U8Rem } = new CLU8BytesParser().fromBytesWithRemainder(bytes);
+
+    const optionTag = U8Res.unwrap().value().toNumber();
+
+    if (optionTag === OPTION_TAG_NONE) {
+      return resultHelper(Ok(new CLOption(None, type.inner)), U8Rem);
+    }
+
+    if (optionTag === OPTION_TAG_SOME) {
+      if (!U8Rem) return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+      const parser = matchByteParserByCLType(type.inner).unwrap();
+      const { result: valRes, remainder: valRem } = parser.fromBytesWithRemainder(
+        U8Rem,
+        type.inner
+      );
+
+      const clValue = valRes.unwrap();
+      return resultHelper(
+        Ok(new CLOption(Some(clValue))),
+        valRem
+      );
+    }
+
+    return resultHelper(Err(CLErrorCodes.Formatting));
+  }
+}
+
 
 export class CLOption<T extends CLValue> extends CLValue {
   private innerType: CLType;
@@ -97,49 +150,4 @@ export class CLOption<T extends CLValue> extends CLValue {
     return new CLOptionType(this.innerType);
   }
 
-  /**
-   * Serializes the `Option` into an array of bytes.
-   */
-  toBytes(): ToBytesResult {
-    if (this.data.none) {
-      return Ok(Uint8Array.from([OPTION_TAG_NONE]));
-    }
-    if (this.data.some) {
-      return Ok(concat([
-        Uint8Array.from([OPTION_TAG_SOME]),
-        this.data.val.toBytes().unwrap()
-      ]));
-    }
-
-    return Err(CLErrorCodes.UnknownValue);
-  }
-
-  static fromBytesWithRemainder(
-    bytes: Uint8Array,
-    type: CLOptionType<CLType>
-  ): ResultAndRemainder<CLOption<CLValue>, CLErrorCodes> {
-    const { result: U8Res, remainder: U8Rem } = CLU8.fromBytesWithRemainder(bytes);
-
-    const optionTag = U8Res.unwrap().value().toNumber();
-
-    if (optionTag === OPTION_TAG_NONE) {
-      return resultHelper(Ok(new CLOption(None, type.inner)), U8Rem);
-    }
-
-    if (optionTag === OPTION_TAG_SOME) {
-      const referenceClass = type.inner.linksTo;
-      const { result: valRes, remainder: valRem } = referenceClass.fromBytesWithRemainder(
-        U8Rem
-      );
-      if (!valRes.ok) {
-        return resultHelper(Err(valRes.val));
-      }
-      return resultHelper(
-        Ok(new CLOption(Some(valRes.val as CLValue ))),
-        valRem
-      );
-    }
-
-    return resultHelper(Err(CLErrorCodes.Formatting));
-  }
 }

@@ -13,7 +13,8 @@ import {
   // CLTypedAndToBytesHelper,
   // CLTypeHelper,
   CLValue,
-  CLValue,
+  CLValueBuilder,
+  CLValueParsers,
   // PublicKey,
   CLPublicKey,
   ToBytes,
@@ -159,7 +160,7 @@ export class DeployHeader implements ToBytes {
   public toBytes(): ToBytesResult {
     return Ok(
       concat([
-        this.account.toBytes().unwrap(),
+        CLValueParsers.toBytes(this.account).unwrap(),
         toBytesU64(this.timestamp),
         toBytesU64(this.ttl),
         toBytesU64(this.gasPrice),
@@ -208,11 +209,11 @@ abstract class ExecutableDeployItemInternal implements ToBytes {
 
   public abstract toBytes(): ToBytesResult;
 
-  public getArgByName(name: string): CLValue<CLValue> | undefined {
+  public getArgByName(name: string): CLValue | undefined {
     return this.args.args.get(name);
   }
 
-  public setArg(name: string, value: CLValue<CLValue>) {
+  public setArg(name: string, value: CLValue) {
     this.args.args.set(name, value);
   }
 }
@@ -390,7 +391,7 @@ export class StoredVersionedContractByName extends ExecutableDeployItemInternal 
       concat([
         Uint8Array.from([this.tag]),
         toBytesString(this.name),
-        serializedVersion.toBytes().unwrap(),
+        CLValueParsers.toBytes(serializedVersion).unwrap(),
         toBytesString(this.entryPoint),
         toBytesBytesArray(this.args.toBytes().unwrap())
       ])
@@ -451,7 +452,7 @@ export class StoredVersionedContractByHash extends ExecutableDeployItemInternal 
       concat([
         Uint8Array.from([this.tag]),
         toBytesBytesArray(this.hash),
-        serializedVersion.toBytes().unwrap(),
+        CLValueParsers.toBytes(serializedVersion).unwrap(),
         toBytesString(this.entryPoint),
         toBytesBytesArray(this.args.toBytes().unwrap())
       ])
@@ -546,7 +547,7 @@ export class ExecutableDeployItem implements ToBytes {
     throw new Error('failed to serialize ExecutableDeployItemJsonWrapper');
   }
 
-  public getArgByName(name: string): CLValue<CLValue> | undefined {
+  public getArgByName(name: string): CLValue | undefined {
     if (this.isModuleBytes()) {
       return this.moduleBytes!.getArgByName(name);
     } else if (this.isStoredContractByHash()) {
@@ -563,7 +564,7 @@ export class ExecutableDeployItem implements ToBytes {
     throw new Error('failed to serialize ExecutableDeployItemJsonWrapper');
   }
 
-  public setArg(name: string, value: CLValue<CLValue>) {
+  public setArg(name: string, value: CLValue) {
     if (this.isModuleBytes()) {
       return this.moduleBytes!.setArg(name, value);
     } else if (this.isStoredContractByHash()) {
@@ -673,23 +674,23 @@ export class ExecutableDeployItem implements ToBytes {
     id: number | null = null
   ): ExecutableDeployItem {
     const runtimeArgs = RuntimeArgs.fromMap({});
-    runtimeArgs.insert('amount', CLValue.u512(amount));
+    runtimeArgs.insert('amount', CLValueBuilder.u512(amount));
     if (sourcePurse) {
-      runtimeArgs.insert('source', new CLValue(sourcePurse));
+      runtimeArgs.insert('source', sourcePurse);
     }
     if (target instanceof CLURef) {
-      runtimeArgs.insert('target', new CLValue(target));
+      runtimeArgs.insert('target', target);
     } else if (target instanceof CLPublicKey) {
-      runtimeArgs.insert('target', CLValue.byteArray(target.toAccountHash()));
+      runtimeArgs.insert('target', CLValueBuilder.byteArray(target.toAccountHash()));
     } else {
       throw new Error('Please specify target');
     }
     if (!id) {
-      runtimeArgs.insert('id', CLValue.option(None, new CLU64Type()));
+      runtimeArgs.insert('id', CLValueBuilder.option(None, new CLU64Type()));
     } else {
       runtimeArgs.insert(
         'id',
-        CLValue.option(Some(new CLU64(id)), new CLU64Type())
+        CLValueBuilder.option(Some(new CLU64(id)), new CLU64Type())
       );
     }
     return ExecutableDeployItem.fromExecutableDeployItemInternal(
@@ -951,7 +952,7 @@ export const setSignature = (
  */
 export const standardPayment = (paymentAmount: BigNumberish) => {
   const paymentArgs = RuntimeArgs.fromMap({
-    amount: CLValue.u512(paymentAmount.toString())
+    amount: CLValueBuilder.u512(paymentAmount.toString())
   });
 
   return ExecutableDeployItem.newModuleBytes(Uint8Array.from([]), paymentArgs);
@@ -982,7 +983,7 @@ export const deployFromJson = (json: any) => {
 export const addArgToDeploy = (
   deploy: Deploy,
   name: string,
-  value: CLValue<CLValue>
+  value: CLValue
 ): Deploy => {
   if (deploy.approvals.length !== 0) {
     throw Error('Can not add argument to already signed deploy.');

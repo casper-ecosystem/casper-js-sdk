@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import {
   CLValue,
-  CLValue,
+  CLValueParsers,
   CLBool,
   CLBoolType,
   CLResult,
@@ -51,16 +51,16 @@ describe('CLResult', () => {
   });
 
   it('toBytes() / fromBytes()', () => {
-    const okBytes = myOkRes.toBytes().unwrap();
-    const errBytes = myErrRes.toBytes().unwrap();
+    const okBytes = CLValueParsers.toBytes(myOkRes).unwrap();
+    const errBytes = CLValueParsers.toBytes(myErrRes).unwrap();
     expect(okBytes).to.be.deep.eq(Uint8Array.from([1, 1]));
     expect(errBytes).to.be.deep.eq(Uint8Array.from([0, 1]));
 
-    const okFromBytes = CLResult.fromBytes(
+    const okFromBytes = CLValueParsers.fromBytes(
       okBytes,
       new CLResultType(myTypes)
     ).unwrap();
-    const errFromBytes = CLResult.fromBytes(
+    const errFromBytes = CLValueParsers.fromBytes( 
       errBytes,
       new CLResultType(myTypes)
     ).unwrap();
@@ -69,58 +69,58 @@ describe('CLResult', () => {
     expect(errFromBytes).to.be.deep.eq(myErrRes);
   });
 
-  it('toJSON() / fromJSON()', () => {
-    const myOkJson = myOkRes.toJSON().unwrap();
+  it('toJSON() / fromJSON() on Ok', () => {
+    const myOkJson = CLValueParsers.toJSON(myOkRes).unwrap();
     const expectedOkJson = JSON.parse(
       '{"bytes":"0101","cl_type":{"Result":{"ok":"Bool","err":"U8"}}}'
     );
 
-    const myOkFromJson = CLResult.fromJSON(expectedOkJson).unwrap();
+    const myOkFromJson = CLValueParsers.fromJSON(expectedOkJson).unwrap();
 
     expect(myOkJson).to.be.deep.eq(expectedOkJson);
     expect(myOkFromJson).to.be.deep.eq(myOkRes);
   });
 
-  it('toJSON() / fromJSON()', () => {
-    const myOkJson = myOkRes.toJSON().unwrap();
-    const expectedOkJson = JSON.parse(
-      '{"bytes":"0101","cl_type":{"Result":{"ok":"Bool","err":"U8"}}}'
+  it('toJSON() / fromJSON() on Err', () => {
+    const myErrJson = CLValueParsers.toJSON(myErrRes).unwrap();
+    const expectedErrJson = JSON.parse(
+      '{"bytes":"0001","cl_type":{"Result":{"ok":"Bool","err":"U8"}}}'
     );
 
-    const myOkFromJson = CLResult.fromJSON(expectedOkJson).unwrap();
+    const myErrFromJson = CLValueParsers.fromJSON(expectedErrJson).unwrap();
 
-    expect(myOkJson).to.be.deep.eq(expectedOkJson);
-    expect(myOkFromJson).to.be.deep.eq(myOkRes);
+    expect(myErrJson).to.be.deep.eq(expectedErrJson);
+    expect(myErrFromJson).to.be.deep.eq(myErrRes);
   });
 
-  it('toBytesWithCLType() / fromBytesWithCLType()', () => {
-    const okResBytesWithCLType = new CLValue(myOkRes).toBytes().unwrap();
-    const okFromBytes = CLValue.fromBytes(
+  it('toBytesWithType() / fromBytesWithType()', () => {
+    const okResBytesWithCLType = CLValueParsers.toBytesWithType(myOkRes).unwrap();
+    const okFromBytes = CLValueParsers.fromBytesWithType(
       okResBytesWithCLType
     ).unwrap();
 
-    const errResBytesWithCLType = new CLValue(myErrRes).toBytes().unwrap();
-    const errFromBytes = CLValue.fromBytes(
+    const errResBytesWithCLType = CLValueParsers.toBytesWithType(myErrRes).unwrap();
+    const errFromBytes = CLValueParsers.fromBytesWithType(
       errResBytesWithCLType
     ).unwrap();
 
-    expect(okFromBytes.innerEntity).to.be.deep.eq(myOkRes);
-    expect(errFromBytes.innerEntity).to.be.deep.eq(myErrRes);
+    expect(okFromBytes).to.be.deep.eq(myOkRes);
+    expect(errFromBytes).to.be.deep.eq(myErrRes);
   });
 
   // TODO: Maybe have another file with more "integration" tests of CLValue
   it('Complex examples toBytesWithCLType() / fromBytesWithCLType()', () => {
-    const okResBytesWithCLType = new CLValue(myOkComplexRes).toBytes().unwrap();
-    const okFromBytes = CLValue.fromBytes(
+    const okResBytesWithCLType = CLValueParsers.toBytesWithType(myOkComplexRes).unwrap();
+    const okFromBytes = CLValueParsers.fromBytesWithType(
       okResBytesWithCLType
     ).unwrap();
 
-    const errResBytesWithCLType = new CLValue(myOkComplexRes).toBytes().unwrap();
-    const errFromBytes = CLValue.fromBytes(
+    const errResBytesWithCLType = CLValueParsers.toBytesWithType(myErrComplexRes).unwrap();
+    const errFromBytes = CLValueParsers.fromBytesWithType(
       errResBytesWithCLType
     ).unwrap();
 
-    expect(okFromBytes.innerEntity).to.be.deep.eq(myOkComplexRes);
-    expect(errFromBytes.innerEntity).to.be.deep.eq(myErrComplexRes);
+    expect(okFromBytes).to.be.deep.eq(myOkComplexRes);
+    expect(errFromBytes).to.be.deep.eq(myErrComplexRes);
   });
 });

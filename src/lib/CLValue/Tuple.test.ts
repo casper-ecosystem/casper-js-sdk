@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import {
+  CLValueParsers,
   CLTuple1,
   CLTuple2,
   CLTuple3,
@@ -84,26 +85,26 @@ describe('CLTuple', () => {
       new CLString('XYZ')
     ]);
 
-    const myTup1Bytes = myTup1.toBytes().unwrap();
-    const myTup2Bytes = myTup2.toBytes().unwrap();
-    const myTup3Bytes = myTup3.toBytes().unwrap();
+    const myTup1Bytes = CLValueParsers.toBytes(myTup1).unwrap();
+    const myTup2Bytes = CLValueParsers.toBytes(myTup2).unwrap();
+    const myTup3Bytes = CLValueParsers.toBytes(myTup3).unwrap();
 
     expect(
-      CLTuple1.fromBytes(
+      CLValueParsers.fromBytes(
         myTup1Bytes,
         new CLTuple1Type([new CLBoolType()])
       ).unwrap()
     ).to.be.deep.eq(myTup1);
 
     expect(
-      CLTuple2.fromBytes(
+      CLValueParsers.fromBytes(
         myTup2Bytes,
         new CLTuple2Type([new CLBoolType(), new CLI32Type()])
       ).unwrap()
     ).to.be.deep.eq(myTup2);
 
     expect(
-      CLTuple3.fromBytes(
+      CLValueParsers.fromBytes(
         myTup3Bytes,
         new CLTuple3Type([
           new CLI32Type(),
@@ -123,26 +124,26 @@ describe('CLTuple', () => {
       new CLString('XYZ')
     ]);
 
-    const myTup1JSON = myTup1.toJSON().unwrap();
-    const myTup2JSON = myTup2.toJSON().unwrap();
-    const myTup3JSON = myTup3.toJSON().unwrap();
+    const myTup1JSON = CLValueParsers.toJSON(myTup1).unwrap();
+    const myTup2JSON = CLValueParsers.toJSON(myTup2).unwrap();
+    const myTup3JSON = CLValueParsers.toJSON(myTup3).unwrap();
 
     const expectedMyTup1JSON = JSON.parse('{"bytes":"01","cl_type":{"Tuple1":["Bool"]}}');
     const expectedMyTup2JSON = JSON.parse('{"bytes":"00d5fdffff","cl_type":{"Tuple2":["Bool","I32"]}}');
     const expectedMyTup3JSON = JSON.parse('{"bytes":"d5fdffff030000004142430300000058595a","cl_type":{"Tuple3":["I32","String","String"]}}');
 
     expect(
-      CLTuple1.fromJSON(expectedMyTup1JSON)
+      CLValueParsers.fromJSON(expectedMyTup1JSON)
       .unwrap()
     ).to.be.deep.eq(myTup1);
 
     expect(
-      CLTuple2.fromJSON(expectedMyTup2JSON)
+      CLValueParsers.fromJSON(expectedMyTup2JSON)
       .unwrap()
     ).to.be.deep.eq(myTup2);
 
     expect(
-      CLTuple3.fromJSON(expectedMyTup3JSON)
+      CLValueParsers.fromJSON(expectedMyTup3JSON)
       .unwrap()
     ).to.be.deep.eq(myTup3);
 

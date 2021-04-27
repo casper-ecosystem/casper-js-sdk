@@ -4,9 +4,12 @@ import { concat } from '@ethersproject/bytes';
 import {
   CLType,
   CLValue,
+  CLValueParsers,
+  CLValueBytesParsers,
   ResultAndRemainder,
   ToBytesResult,
   resultHelper,
+  matchByteParserByCLType,
   CLErrorCodes
 } from './index';
 import { TUPLE_MATCH_LEN_TO_ID } from './utils';
@@ -14,8 +17,71 @@ import { CLTypeTag } from './constants';
 
 type TupleTypes = typeof CLTuple1 | typeof CLTuple2 | typeof CLTuple3;
 
-// TBD: Do we want Tuple to have all of the values on init? If no, when it will be serialized it should throw an error that eg Tuple2 has only one element and is invalid
-abstract class GenericTuple extends CLValue {
+export abstract class CLTupleType extends CLType {
+  tag: CLTypeTag;
+  linksTo: TupleTypes;
+  inner: Array<CLType>;
+
+  constructor(inner: Array<CLType>, linksTo: TupleTypes, tag: CLTypeTag) {
+    super();
+    this.inner = inner;
+    this.linksTo = linksTo;
+    this.tag = tag;
+  }
+
+  toString(): string {
+    const innerTypes = this.inner.map(e => e.toString()).join(', ');
+    return `Tuple${this.inner.length} (${innerTypes})`;
+  }
+
+  toJSON(): any {
+    const id = TUPLE_MATCH_LEN_TO_ID[this.inner.length - 1];
+    return {
+      [id]: this.inner.map(t => t.toJSON())
+    };
+  }
+
+  toBytes(): any {
+    const inner = this.inner.map(t => t.toBytes());
+    return concat([Uint8Array.from([this.tag]), ...inner]);
+  }
+}
+
+export class CLTupleBytesParser extends CLValueBytesParsers {
+  toBytes(value: CLTuple ): ToBytesResult {
+    return Ok(concat(value.data.map(d => CLValueParsers.toBytes(d).unwrap())));
+  }
+
+  fromBytesWithRemainder(
+    rawBytes: Uint8Array,
+    type: CLTuple1Type | CLTuple2Type | CLTuple3Type
+  ): ResultAndRemainder<CLTuple , CLErrorCodes> {
+    let rem = rawBytes;
+    const val = type.inner.map((t: CLType) => {
+    const parser = matchByteParserByCLType(t).unwrap();
+      const {
+        result: vRes,
+        remainder: vRem
+      } = parser.fromBytesWithRemainder(rem);
+
+      rem = vRem!;
+      return vRes.unwrap();
+    });
+
+    if (val.length === 1) {
+      return resultHelper(Ok(new CLTuple1(val)), rem);
+    }
+    if (val.length === 2) {
+      return resultHelper(Ok(new CLTuple2(val)), rem);
+    }
+    if (val.length === 3) {
+      return resultHelper(Ok(new CLTuple3(val)), rem);
+    }
+    return resultHelper(Err(CLErrorCodes.Formatting));
+  }
+}
+
+abstract class CLTuple extends CLValue {
   data: Array<CLValue>;
   tupleSize: number;
 
@@ -54,79 +120,15 @@ abstract class GenericTuple extends CLValue {
   value(): Array<CLValue> {
     return this.data;
   }
-
-  toBytes(): ToBytesResult {
-    return Ok(concat(this.data.map(d => d.toBytes().unwrap())));
-  }
-
-  static fromBytesWithRemainder(
-    rawBytes: Uint8Array,
-    type: CLTuple1Type | CLTuple2Type | CLTuple3Type
-  ): ResultAndRemainder<GenericTuple, CLErrorCodes> {
-    let rem = rawBytes;
-    const val = type.inner.map((t: CLType) => {
-      const referenceClass = t.linksTo;
-      const {
-        result: vRes,
-        remainder: vRem
-      } = referenceClass.fromBytesWithRemainder(rem);
-      if (!vRes.ok) {
-        return resultHelper(Err(vRes.val));
-      }
-      rem = vRem;
-      return vRes.val;
-    });
-
-    if (val.length === 1) {
-      return resultHelper(Ok(new CLTuple1(val)), rem);
-    }
-    if (val.length === 2) {
-      return resultHelper(Ok(new CLTuple2(val)), rem);
-    }
-    if (val.length === 3) {
-      return resultHelper(Ok(new CLTuple3(val)), rem);
-    }
-    return resultHelper(Err(CLErrorCodes.Formatting));
-  }
 }
 
-abstract class GenericTupleType extends CLType {
-  tag: CLTypeTag;
-  linksTo: TupleTypes;
-  inner: Array<CLType>;
-
-  constructor(inner: Array<CLType>, linksTo: TupleTypes, tag: CLTypeTag) {
-    super();
-    this.inner = inner;
-    this.linksTo = linksTo;
-    this.tag = tag;
-  }
-
-  toString(): string {
-    const innerTypes = this.inner.map(e => e.toString()).join(', ');
-    return `Tuple${this.inner.length} (${innerTypes})`;
-  }
-
-  toJSON(): any {
-    const id = TUPLE_MATCH_LEN_TO_ID[this.inner.length - 1];
-    return {
-      [id]: this.inner.map(t => t.toJSON())
-    };
-  }
-
-  toBytes(): any {
-    const inner = this.inner.map(t => t.toBytes());
-    return concat([Uint8Array.from([this.tag]), ...inner]);
-  }
-}
-
-export class CLTuple1Type extends GenericTupleType {
+export class CLTuple1Type extends CLTupleType {
   constructor(inner: Array<CLType>) {
     super(inner, CLTuple1, CLTypeTag.Tuple1);
   }
 }
 
-export class CLTuple1 extends GenericTuple {
+export class CLTuple1 extends CLTuple {
   constructor(value: Array<CLValue>) {
     super(1, value);
   }
@@ -136,13 +138,13 @@ export class CLTuple1 extends GenericTuple {
   }
 }
 
-export class CLTuple2Type extends GenericTupleType {
+export class CLTuple2Type extends CLTupleType {
   constructor(inner: Array<CLType>) {
     super(inner, CLTuple2, CLTypeTag.Tuple2);
   }
 }
 
-export class CLTuple2 extends GenericTuple {
+export class CLTuple2 extends CLTuple {
   constructor(value: Array<CLValue>) {
     super(2, value);
   }
@@ -152,13 +154,13 @@ export class CLTuple2 extends GenericTuple {
   }
 }
 
-export class CLTuple3Type extends GenericTupleType {
+export class CLTuple3Type extends CLTupleType {
   constructor(inner: Array<CLType>) {
     super(inner, CLTuple3, CLTypeTag.Tuple3);
   }
 }
 
-export class CLTuple3 extends GenericTuple {
+export class CLTuple3 extends CLTuple {
   constructor(value: Array<CLValue>) {
     super(3, value);
   }

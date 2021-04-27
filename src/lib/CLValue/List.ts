@@ -68,6 +68,7 @@ export class CLListBytesParser extends CLValueBytesParsers {
 
     let remainder = u32Rem;
 
+    // console.log(listType);
     const parser = matchByteParserByCLType(listType.inner).unwrap();
 
     for (let i = 0; i < size; i++) {

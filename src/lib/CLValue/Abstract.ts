@@ -13,30 +13,30 @@ import {
 
 import {
   CLBool,
-  CLU32BytesParser
-  // CLU8,
-  // CLU32,
-  // CLU64,
-  // CLU128,
-  // CLU256,
-  // CLU512,
-  // CLI32,
-  // CLI64,
-  // CLKey,
-  // CLKeyParameters,
+  CLU32BytesParser,
+  CLU8,
+  CLU32,
+  CLU64,
+  CLU128,
+  CLU256,
+  CLU512,
+  CLI32,
+  CLI64,
+  CLKey,
+  CLKeyParameters,
   // CLUnit,
-  // CLString,
-  // CLURef,
-  // AccessRights,
-  // CLPublicKey,
-  // CLPublicKeyTag,
-  // CLList,
+  CLString,
+  CLURef,
+  AccessRights,
+  CLPublicKey,
+  CLPublicKeyTag,
+  CLList,
   // CLTuple1,
   // CLTuple2,
   // CLTuple3,
-  // CLOption,
-  // CLMap,
-  // CLByteArray
+  CLOption,
+  CLMap,
+  CLByteArray
 } from './index';
 
 import { encodeBase16, decodeBase16 } from '../Conversions';
@@ -86,57 +86,57 @@ export class CLValueBuilder {
     return new CLBool(val);
   };
 
-  // static u8 = (val: BigNumberish): CLU8 => {
-  //   return new CLU8(val);
-  // };
+  static u8 = (val: BigNumberish): CLU8 => {
+    return new CLU8(val);
+  };
 
-  // static u32 = (val: BigNumberish): CLU32 => {
-  //   return new CLU32(val);
-  // };
+  static u32 = (val: BigNumberish): CLU32 => {
+    return new CLU32(val);
+  };
 
-  // static i32 = (val: BigNumberish): CLI32 => {
-  //   return new CLI32(val);
-  // };
+  static i32 = (val: BigNumberish): CLI32 => {
+    return new CLI32(val);
+  };
 
-  // static u64 = (val: BigNumberish): CLU64 => {
-  //   return new CLU64(val);
-  // };
+  static u64 = (val: BigNumberish): CLU64 => {
+    return new CLU64(val);
+  };
 
-  // static i64 = (val: BigNumberish): CLI64 => {
-  //   return new CLI64(val);
-  // };
+  static i64 = (val: BigNumberish): CLI64 => {
+    return new CLI64(val);
+  };
 
-  // static u128 = (val: BigNumberish): CLU128 => {
-  //   return new CLU128(val);
-  // };
+  static u128 = (val: BigNumberish): CLU128 => {
+    return new CLU128(val);
+  };
 
-  // static u256 = (val: BigNumberish): CLU256 => {
-  //   return new CLU256(val);
-  // };
+  static u256 = (val: BigNumberish): CLU256 => {
+    return new CLU256(val);
+  };
 
-  // static u512 = (val: BigNumberish): CLU512 => {
-  //   return new CLU256(val);
-  // };
+  static u512 = (val: BigNumberish): CLU512 => {
+    return new CLU256(val);
+  };
 
   // static unit = (): CLUnit => {
   //   return new CLUnit();
   // };
 
-  // static string = (val: string): CLString => {
-  //   return new CLString(val);
-  // };
+  static string = (val: string): CLString => {
+    return new CLString(val);
+  };
 
-  // static key = (val: CLKeyParameters): CLKey => {
-  //   return new CLKey(val);
-  // };
+  static key = (val: CLKeyParameters): CLKey => {
+    return new CLKey(val);
+  };
 
-  // static uref = (val: Uint8Array, accessRights: AccessRights): CLURef => {
-  //   return new CLURef(val, accessRights);
-  // };
+  static uref = (val: Uint8Array, accessRights: AccessRights): CLURef => {
+    return new CLURef(val, accessRights);
+  };
 
-  // static list<T extends CLValue>(val: T[]): CLList<T> {
-  //   return new CLList(val);
-  // }
+  static list<T extends CLValue>(val: T[]): CLList<T> {
+    return new CLList(val);
+  }
 
   // static tuple1<T extends CLValue>(t0: T): CLTuple1 {
   //   return new CLTuple1([t0]);
@@ -150,23 +150,23 @@ export class CLValueBuilder {
   //   return new CLTuple3([t0, t1, t2]);
   // }
 
-  // static option(data: Option<CLValue>, innerType?: CLType): CLOption<CLValue> {
-  //   return new CLOption(data, innerType);
-  // }
+  static option(data: Option<CLValue>, innerType?: CLType): CLOption<CLValue> {
+    return new CLOption(data, innerType);
+  }
 
-  // static map<K extends CLValue, V extends CLValue>(
-  //   val: [K, V][] | [CLType, CLType]
-  // ): CLMap<K, V> {
-  //   return new CLMap(val);
-  // }
+  static map<K extends CLValue, V extends CLValue>(
+    val: [K, V][] | [CLType, CLType]
+  ): CLMap<K, V> {
+    return new CLMap(val);
+  }
 
-  // static publicKey(rawPublicKey: Uint8Array, tag: CLPublicKeyTag): CLPublicKey {
-  //   return new CLPublicKey(rawPublicKey, tag);
-  // }
+  static publicKey(rawPublicKey: Uint8Array, tag: CLPublicKeyTag): CLPublicKey {
+    return new CLPublicKey(rawPublicKey, tag);
+  }
 
-  // static byteArray(bytes: Uint8Array): CLByteArray {
-  //   return new CLByteArray(bytes);
-  // }
+  static byteArray(bytes: Uint8Array): CLByteArray {
+    return new CLByteArray(bytes);
+  }
 }
 
 export class CLValueParsers {

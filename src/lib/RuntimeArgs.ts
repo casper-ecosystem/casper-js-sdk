@@ -5,10 +5,10 @@ import { Ok, Err } from 'ts-results';
 import { toBytesString, toBytesVector } from './ByteConverters';
 import {
   CLValue,
-  CLValue,
+  CLValueParsers,
   // Result,
   // StringValue,
-  CLString,
+  CLStringBytesParser,
   ToBytes,
   ToBytesResult,
   ResultAndRemainder,
@@ -20,11 +20,11 @@ import { concat } from '@ethersproject/bytes';
 import { jsonMember, jsonObject } from 'typedjson';
 
 export class NamedArg implements ToBytes {
-  constructor(public name: string, public value: CLValue<CLValue>) {}
+  constructor(public name: string, public value: CLValue) {}
 
   public toBytes(): ToBytesResult {
     const name = toBytesString(this.name);
-    const value = this.value.toBytes();
+    const value = CLValueParsers.toBytesWithType(this.value);
     return Ok(concat([name, value.unwrap()]));
   }
 
@@ -34,13 +34,12 @@ export class NamedArg implements ToBytes {
     const {
       result: nameRes,
       remainder: nameRem
-    } = CLString.fromBytesWithRemainder(bytes);
+    } = new CLStringBytesParser().fromBytesWithRemainder(bytes);
     const name = nameRes.unwrap();
     if (!nameRem) {
       return resultHelper(Err('Missing data for value of named arg'));
     }
-    // Maybe there should also be fromBytesWithCLTypeWithRemainder ? (ofc better named)
-    const value = CLValue.fromBytes(nameRem).unwrap();
+    const value = CLValueParsers.fromBytesWithType(nameRem).unwrap(); 
     return resultHelper(Ok(new NamedArg(name.value(), value)));
   }
 }
@@ -48,15 +47,15 @@ export class NamedArg implements ToBytes {
 const desRA = (_arr: any) => {
   return new Map(
     Array.from(_arr, ([key, value]) => {
-      const val = CLValue.fromJSON(value);
+      const val = CLValueParsers.fromJSON(value);
       return [key, val.unwrap()];
     })
   );
 };
 
-const serRA = (map: Map<string, CLValue<CLValue>>) => {
+const serRA = (map: Map<string, CLValue>) => {
   return Array.from(map, ([key, value]) => {
-    return [key, value.toJSON().unwrap()];
+    return [key, CLValueParsers.toJSON(value).unwrap()];
   });
 };
 
@@ -66,33 +65,33 @@ export class RuntimeArgs implements ToBytes {
     serializer: serRA,
     deserializer: desRA
   })
-  public args: Map<string, CLValue<CLValue>>;
+  public args: Map<string, CLValue>;
 
-  constructor(args: Map<string, CLValue<CLValue>>) {
+  constructor(args: Map<string, CLValue>) {
     this.args = args;
   }
 
-  public static fromMap(args: Record<string, CLValue<CLValue>>) {
-    const map: Map<string, CLValue<CLValue>> = new Map(
+  public static fromMap(args: Record<string, CLValue>) {
+    const map: Map<string, CLValue> = new Map(
       Object.keys(args).map(k => [k, args[k]])
     );
     return new RuntimeArgs(map);
   }
 
   public static fromNamedArgs(namedArgs: NamedArg[]) {
-    const args = namedArgs.reduce<Record<string, CLValue<CLValue>>>((pre, cur) => {
+    const args = namedArgs.reduce<Record<string, CLValue>>((pre, cur) => {
       pre[cur.name] = cur.value;
       return pre;
     }, {});
     return RuntimeArgs.fromMap(args);
   }
 
-  public insert(key: string, value: CLValue<CLValue>) {
+  public insert(key: string, value: CLValue) {
     this.args.set(key, value);
   }
 
   public toBytes(): ToBytesResult {
-    const vec = Array.from(this.args.entries()).map((a: [string, CLValue<CLValue>]) => {
+    const vec = Array.from(this.args.entries()).map((a: [string, CLValue]) => {
       return new NamedArg(a[0], a[1]);
     });
     return Ok(toBytesVector(vec));

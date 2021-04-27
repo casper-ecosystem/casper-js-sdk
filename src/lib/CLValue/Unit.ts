@@ -3,6 +3,7 @@ import { Ok } from 'ts-results';
 import {
   CLType,
   CLValue,
+  CLValueBytesParsers,
   CLErrorCodes,
   ResultAndRemainder,
   ToBytesResult,
@@ -23,6 +24,18 @@ export class CLUnitType extends CLType {
   }
 }
 
+export class CLUnitBytesParser extends CLValueBytesParsers {
+  toBytes(): ToBytesResult {
+    return Ok(Uint8Array.from([]));
+  }
+
+  fromBytesWithRemainder(
+    rawBytes: Uint8Array
+  ): ResultAndRemainder<CLUnit, CLErrorCodes> {
+    return resultHelper(Ok(new CLUnit()), rawBytes);
+  }
+}
+
 export class CLUnit extends CLValue {
   data = undefined;
 
@@ -32,15 +45,5 @@ export class CLUnit extends CLValue {
 
   value(): undefined {
     return this.data;
-  }
-
-  toBytes(): ToBytesResult {
-    return Ok(Uint8Array.from([]));
-  }
-
-  static fromBytesWithRemainder(
-    rawBytes: Uint8Array
-  ): ResultAndRemainder<CLUnit, CLErrorCodes> {
-    return resultHelper(Ok(new CLUnit()), rawBytes);
   }
 }
