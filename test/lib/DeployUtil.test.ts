@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import { Keys, DeployUtil, CLValue } from '../../src/lib';
+import { Keys, DeployUtil, CLValue, CLValueBuilder } from '../../src/lib';
 import { TypedJSON } from 'typedjson';
 
 describe('DeployUtil', () => {
@@ -55,7 +55,6 @@ describe('DeployUtil', () => {
     assert.deepEqual(
       deploy.payment
         .getArgByName('amount')!
-        .innerData()
         .value()
         .toNumber(),
       paymentAmount
@@ -63,19 +62,17 @@ describe('DeployUtil', () => {
     assert.deepEqual(
       deploy.session
         .getArgByName('amount')!
-        .innerData()
         .value()
         .toNumber(),
       transferAmount
     );
     assert.deepEqual(
-      deploy.session.getArgByName('target')!.innerData().value(),
+      deploy.session.getArgByName('target')!.value(),
       recipientKey.accountHash()
     );
     assert.deepEqual(
       deploy.session
         .getArgByName('id')!
-        .innerData()
         .value()
         .unwrap()
         .value()
@@ -112,7 +109,7 @@ describe('DeployUtil', () => {
     let deploy = DeployUtil.addArgToDeploy(
       oldDeploy,
       'custom_id',
-      CLValue.u32(customId)
+      CLValueBuilder.u32(customId)
     );
 
     // Serialize and deserialize deploy.
@@ -122,7 +119,6 @@ describe('DeployUtil', () => {
     assert.deepEqual(
       deploy.session
         .getArgByName('custom_id')!
-      .innerData()
         .value()
         .toNumber(),
       customId
@@ -133,7 +129,6 @@ describe('DeployUtil', () => {
     assert.deepEqual(
       deploy.payment
         .getArgByName('amount')!
-        .innerData()
         .value()
         .toNumber(),
       paymentAmount
@@ -141,19 +136,17 @@ describe('DeployUtil', () => {
     assert.deepEqual(
       deploy.session
         .getArgByName('amount')!
-        .innerData()
         .value()
         .toNumber(),
       transferAmount
     );
     assert.deepEqual(
-      deploy.session.getArgByName('target')!.innerData().value(),
+      deploy.session.getArgByName('target')!.value(),
       recipientKey.accountHash()
     );
     assert.deepEqual(
       deploy.session
         .getArgByName('id')!
-        .innerData()
         .value()
         .unwrap()
         .value()
@@ -190,7 +183,7 @@ describe('DeployUtil', () => {
 
     expect(() => {
       // Add new argument.
-      DeployUtil.addArgToDeploy(deploy, 'custom_id', CLValue.u32(customId));
+      DeployUtil.addArgToDeploy(deploy, 'custom_id', CLValueBuilder.u32(customId));
     }).to.throw('Can not add argument to already signed deploy.');
   });
 
@@ -216,12 +209,12 @@ describe('DeployUtil', () => {
     let transferDeploy = DeployUtil.addArgToDeploy(
       deploy,
       'fromPublicKey',
-      new CLValue(from.publicKey)
+      from.publicKey
     );
 
     assert.deepEqual(
       transferDeploy.session.getArgByName('fromPublicKey'),
-      new CLValue(from.publicKey)
+      from.publicKey
     );
 
     let newTransferDeploy = DeployUtil.deployFromJson(
@@ -230,7 +223,7 @@ describe('DeployUtil', () => {
 
     assert.deepEqual(
       newTransferDeploy?.session.getArgByName('fromPublicKey'),
-      new CLValue(from.publicKey)
+      from.publicKey
     );
   });
 });

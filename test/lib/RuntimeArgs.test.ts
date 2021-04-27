@@ -3,6 +3,7 @@ import { None } from "ts-results";
 
 import {
   CLValue,
+  CLValueBuilder,
   RuntimeArgs,
   CLOption,
   CLList,
@@ -16,7 +17,7 @@ import { TypedJSON } from 'typedjson';
 describe(`RuntimeArgs`, () => {
   it('should serialize RuntimeArgs correctly', () => {
     const args = RuntimeArgs.fromMap({
-      foo: CLValue.i32(1)
+      foo: CLValueBuilder.i32(1)
     });
     const bytes = args.toBytes().unwrap();
     expect(bytes).to.deep.eq(
@@ -72,29 +73,29 @@ describe(`RuntimeArgs`, () => {
   // });
 
   it('should deserialize RuntimeArgs', () => {
-    let a = CLValue.u512(123);
+    let a = CLValueBuilder.u512(123);
     const runtimeArgs = RuntimeArgs.fromMap({
-      a: CLValue.option(None, a.clType())
+      a: CLValueBuilder.option(None, a.clType())
     });
     let serializer = new TypedJSON(RuntimeArgs);
     let str = serializer.stringify(runtimeArgs);
     let value = serializer.parse(str)!;
-    assert.isTrue((value.args.get('a')!.innerData() as CLOption<CLU512>).isNone());
+    assert.isTrue((value.args.get('a')! as CLOption<CLU512>).isNone());
   });
 
   it('should allow to extract lists of account hashes.', () => {
     const account0 = Keys.Ed25519.new().accountHash();
     const account1 = Keys.Ed25519.new().accountHash();
-    const account0byteArray =         CLValue.byteArray(account0);
-    const account1byteArray =         CLValue.byteArray(account1);
+    const account0byteArray =         CLValueBuilder.byteArray(account0);
+    const account1byteArray =         CLValueBuilder.byteArray(account1);
     let runtimeArgs = RuntimeArgs.fromMap({
-      accounts: CLValue.list([
-        account0byteArray.innerData(),
-        account1byteArray.innerData()
+      accounts: CLValueBuilder.list([
+        account0byteArray,
+        account1byteArray
       ])
     });
-    let accounts = runtimeArgs.args.get('accounts')!.innerData() as CLList<CLByteArray>;
-    assert.deepEqual(accounts.get(0), account0byteArray.innerData());
-    assert.deepEqual(accounts.get(1), account1byteArray.innerData());
+    let accounts = runtimeArgs.args.get('accounts')! as CLList<CLByteArray>;
+    assert.deepEqual(accounts.get(0), account0byteArray);
+    assert.deepEqual(accounts.get(1), account1byteArray);
   });
 });
