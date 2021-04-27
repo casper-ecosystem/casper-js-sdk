@@ -2,7 +2,7 @@ import { Result, Ok, Err } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
 
 import {
-  CLData,
+  CLValue,
   CLType,
   CLErrorCodes,
   ResultAndRemainder,
@@ -56,12 +56,12 @@ export class CLResultType<T extends CLType, E extends CLType> extends CLType {
  * resulting from a successful completion of a calculation, or an error. Similar to `Result` in Rust
  * or `Either` in Haskell.
  */
-export class CLResult<T extends CLType, E extends CLType> extends CLData {
-  data: Result<CLData, CLData>;
+export class CLResult<T extends CLType, E extends CLType> extends CLValue {
+  data: Result<CLValue, CLValue>;
   innerOk: T;
   innerErr: E;
 
-  constructor(data: Result<CLData, CLData>, { ok, err }: { ok: T; err: E }) {
+  constructor(data: Result<CLValue, CLValue>, { ok, err }: { ok: T; err: E }) {
     super();
     this.data = data;
     this.innerOk = ok;
@@ -70,7 +70,7 @@ export class CLResult<T extends CLType, E extends CLType> extends CLData {
   /**
    * Returns Result from ts-result based on stored value
    */
-  value(): Result<CLData, CLData> {
+  value(): Result<CLValue, CLValue> {
     return this.data;
   }
 
@@ -93,7 +93,7 @@ export class CLResult<T extends CLType, E extends CLType> extends CLData {
   }
 
   toBytes(): ToBytesResult {
-    if (this.data instanceof Ok && this.data.val instanceof CLData) {
+    if (this.data instanceof Ok && this.data.val instanceof CLValue) {
       return Ok(
         concat([
           Uint8Array.from([RESULT_TAG_OK]),
@@ -144,7 +144,7 @@ export class CLResult<T extends CLType, E extends CLType> extends CLData {
         result: valRes,
         remainder: valRem
       } = referenceOk.linksTo.fromBytesWithRemainder(U8Rem, type.innerOk);
-      const val = new CLResult(Ok(valRes.unwrap() as CLData), {
+      const val = new CLResult(Ok(valRes.unwrap() as CLValue), {
         ok: referenceOk,
         err: referenceErr
       });

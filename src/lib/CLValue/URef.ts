@@ -3,7 +3,7 @@ import { Ok, Err } from 'ts-results';
 
 import {
   CLType,
-  CLData,
+  CLValue,
   CLErrorCodes,
   ResultAndRemainder,
   ToBytesResult,
@@ -63,7 +63,7 @@ const ACCESS_RIGHT_LENGTH = 1;
 
 const UREF_BYTES_LENGTH = UREF_ADDR_LENGTH + ACCESS_RIGHT_LENGTH;
 
-export class CLURef extends CLData {
+export class CLURef extends CLValue {
   data: Uint8Array;
   accessRights: AccessRights;
 

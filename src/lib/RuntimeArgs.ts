@@ -5,7 +5,7 @@ import { Ok, Err } from 'ts-results';
 import { toBytesString, toBytesVector } from './ByteConverters';
 import {
   CLValue,
-  CLData,
+  CLValue,
   // Result,
   // StringValue,
   CLString,
@@ -20,7 +20,7 @@ import { concat } from '@ethersproject/bytes';
 import { jsonMember, jsonObject } from 'typedjson';
 
 export class NamedArg implements ToBytes {
-  constructor(public name: string, public value: CLValue<CLData>) {}
+  constructor(public name: string, public value: CLValue<CLValue>) {}
 
   public toBytes(): ToBytesResult {
     const name = toBytesString(this.name);
@@ -54,7 +54,7 @@ const desRA = (_arr: any) => {
   );
 };
 
-const serRA = (map: Map<string, CLValue<CLData>>) => {
+const serRA = (map: Map<string, CLValue<CLValue>>) => {
   return Array.from(map, ([key, value]) => {
     return [key, value.toJSON().unwrap()];
   });
@@ -66,33 +66,33 @@ export class RuntimeArgs implements ToBytes {
     serializer: serRA,
     deserializer: desRA
   })
-  public args: Map<string, CLValue<CLData>>;
+  public args: Map<string, CLValue<CLValue>>;
 
-  constructor(args: Map<string, CLValue<CLData>>) {
+  constructor(args: Map<string, CLValue<CLValue>>) {
     this.args = args;
   }
 
-  public static fromMap(args: Record<string, CLValue<CLData>>) {
-    const map: Map<string, CLValue<CLData>> = new Map(
+  public static fromMap(args: Record<string, CLValue<CLValue>>) {
+    const map: Map<string, CLValue<CLValue>> = new Map(
       Object.keys(args).map(k => [k, args[k]])
     );
     return new RuntimeArgs(map);
   }
 
   public static fromNamedArgs(namedArgs: NamedArg[]) {
-    const args = namedArgs.reduce<Record<string, CLValue<CLData>>>((pre, cur) => {
+    const args = namedArgs.reduce<Record<string, CLValue<CLValue>>>((pre, cur) => {
       pre[cur.name] = cur.value;
       return pre;
     }, {});
     return RuntimeArgs.fromMap(args);
   }
 
-  public insert(key: string, value: CLValue<CLData>) {
+  public insert(key: string, value: CLValue<CLValue>) {
     this.args.set(key, value);
   }
 
   public toBytes(): ToBytesResult {
-    const vec = Array.from(this.args.entries()).map((a: [string, CLValue<CLData>]) => {
+    const vec = Array.from(this.args.entries()).map((a: [string, CLValue<CLValue>]) => {
       return new NamedArg(a[0], a[1]);
     });
     return Ok(toBytesVector(vec));

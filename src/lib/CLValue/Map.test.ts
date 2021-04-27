@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { CLMap, CLMapType, CLBool, CLString, CLStringType, CLI32, CLI32Type } from './index';
 
-describe('CLData CLMap implementation', () => {
+describe('CLValue CLMap implementation', () => {
   it('Maps should return proper clType', () => {
     const myMap = new CLMap([[new CLBool(true), new CLBool(false)]]);
 

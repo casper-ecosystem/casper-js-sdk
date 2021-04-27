@@ -2,7 +2,7 @@ import { Ok, Err, Option, Some, None } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
 
 import {
-  CLData,
+  CLValue,
   CLType,
   CLErrorCodes,
   ResultAndRemainder,
@@ -50,7 +50,7 @@ export class CLOptionType<T extends CLType> extends CLType {
   }
 }
 
-export class CLOption<T extends CLData> extends CLData {
+export class CLOption<T extends CLValue> extends CLValue {
   private innerType: CLType;
   /**
    * Constructs a new option containing the value of Some or None from ts-result.
@@ -117,7 +117,7 @@ export class CLOption<T extends CLData> extends CLData {
   static fromBytesWithRemainder(
     bytes: Uint8Array,
     type: CLOptionType<CLType>
-  ): ResultAndRemainder<CLOption<CLData>, CLErrorCodes> {
+  ): ResultAndRemainder<CLOption<CLValue>, CLErrorCodes> {
     const { result: U8Res, remainder: U8Rem } = CLU8.fromBytesWithRemainder(bytes);
 
     const optionTag = U8Res.unwrap().value().toNumber();
@@ -135,7 +135,7 @@ export class CLOption<T extends CLData> extends CLData {
         return resultHelper(Err(valRes.val));
       }
       return resultHelper(
-        Ok(new CLOption(Some(valRes.val as CLData ))),
+        Ok(new CLOption(Some(valRes.val as CLValue ))),
         valRem
       );
     }

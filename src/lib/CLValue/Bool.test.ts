@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { CLBool, CLErrorCodes } from './index';
+import { CLValueBuilder, CLBool, CLBoolType, CLErrorCodes } from './index';
 
 describe('CLBool', () => {
   it('Bool should return proper clType', () => {
@@ -17,32 +17,32 @@ describe('CLBool', () => {
   });
 
   it('toBytes() / fromBytes() do proper bytes serialization', () => {
-    const myBool = new CLBool(false);
+    const myBool = CLValueBuilder.bool(false);
     const myBool2 = new CLBool(true);
-    const myBoolBytes = myBool.toBytes().unwrap();
-    const myBool2Bytes = myBool2.toBytes().unwrap();
+    const myBoolBytes = CLValueBuilder.toBytes(myBool).unwrap();
+    const myBool2Bytes = CLValueBuilder.toBytes(myBool2).unwrap();
 
-    const fromBytes1 = CLBool.fromBytes(myBoolBytes).unwrap();
-    const fromBytes2 = CLBool.fromBytes(myBool2Bytes).unwrap();
+    const fromBytes1 = CLValueBuilder.fromBytes(myBoolBytes, new CLBoolType()).unwrap();
+    const fromBytes2 = CLValueBuilder.fromBytes(myBool2Bytes, new CLBoolType()).unwrap();
 
     expect(myBoolBytes).to.be.deep.eq(Uint8Array.from([0]));
     expect(myBool2Bytes).to.be.deep.eq(Uint8Array.from([1]));
 
     expect(fromBytes1).to.be.deep.eq(myBool);
     expect(fromBytes2).to.be.deep.eq(myBool2);
-    expect(CLBool.fromBytes(Uint8Array.from([9, 1])).ok).to.be.eq(false);
-    expect(CLBool.fromBytes(Uint8Array.from([9, 1])).val).to.be.eq(CLErrorCodes.Formatting);
-    expect(CLBool.fromBytes(Uint8Array.from([])).ok).to.be.eq(false);
-    expect(CLBool.fromBytes(Uint8Array.from([])).val).to.be.eq(CLErrorCodes.EarlyEndOfStream);
+    expect(CLValueBuilder.fromBytes(Uint8Array.from([9, 1]), new CLBoolType()).ok).to.be.eq(false);
+    expect(CLValueBuilder.fromBytes(Uint8Array.from([9, 1]), new CLBoolType()).val).to.be.eq(CLErrorCodes.Formatting);
+    expect(CLValueBuilder.fromBytes(Uint8Array.from([]), new CLBoolType()).ok).to.be.eq(false);
+    expect(CLValueBuilder.fromBytes(Uint8Array.from([]), new CLBoolType()).val).to.be.eq(CLErrorCodes.EarlyEndOfStream);
   });
 
 
   it('toJSON() / fromJSON() do proper bytes serialization', () => {
     const myBool = new CLBool(false);
-    const json = myBool.toJSON().unwrap();
+    const json = CLValueBuilder.toJSON(myBool).unwrap();
     const expectedJson = JSON.parse('{"bytes":"00","cl_type":"Bool"}');
 
     expect(json).to.be.deep.eq(expectedJson);
-    expect(CLBool.fromJSON(expectedJson).unwrap()).to.be.deep.eq(myBool);
+    expect(CLValueBuilder.fromJSON(expectedJson).unwrap()).to.be.deep.eq(myBool);
   });
 });

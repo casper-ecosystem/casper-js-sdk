@@ -2,7 +2,7 @@ import { Ok, Err } from 'ts-results';
 
 import {
   CLType,
-  CLData,
+  CLValue,
   ResultAndRemainder,
   ToBytesResult,
   CLErrorCodes,
@@ -24,29 +24,12 @@ export class CLBoolType extends CLType {
   }
 }
 
-// abstract class CLValueBytesSerializer<T extends CLValue> {
-//   static toBytes(value: T): ResultAndRemainder<Uint8Array, CLErrorCodes> {
-//     return resultHelper(Err(CLErrorCodes.Formatting));
-//   };
-
-//   serialize(value: T): ResultAndRemainder<T, CLErrorCodes> {
-//     return this.toBytes(value);
-//   };
-// }
-
-// class CLBoolBytesSerializer extends CLValueBytesSerializer<CLBool> {
-//   static toBytes(value: CLBool): ResultAndRemainder<Uint8Array, CLErrorCodes> {
-//     return resultHelper(Ok(new Uint8Array([value.value() ? 1 : 0])));
-//   }
-// }
-
-
 export class CLBoolBytesParser extends CLValueBytesParser {
-  static toBytes(value: CLBool): ResultAndRemainder<Uint8Array, CLErrorCodes> {
-    return resultHelper(Ok(new Uint8Array([value.value() ? 1 : 0])));
+  toBytes(value: CLBool): ToBytesResult {
+    return Ok(new Uint8Array([value.value() ? 1 : 0]));
   }
 
-  static fromBytesWithRemainder(
+  fromBytesWithRemainder(
     bytes: Uint8Array
   ): ResultAndRemainder<CLBool, CLErrorCodes> {
     if (bytes.length === 0) {
@@ -62,7 +45,7 @@ export class CLBoolBytesParser extends CLValueBytesParser {
   }
 }
 
-export class CLBool extends CLData {
+export class CLBool extends CLValue {
   data: boolean;
   bytesParser: CLBoolBytesParser;
 

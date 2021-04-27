@@ -4,7 +4,7 @@ import { Ok, Err } from 'ts-results';
 
 import {
   CLType,
-  CLData,
+  CLValue,
   CLURef,
   CLAccountHash,
   CLErrorCodes,
@@ -32,7 +32,7 @@ export class CLKeyType extends CLType {
 // TBD: Maybe the first should be CLByteArray insted?
 export type CLKeyParameters = Uint8Array | CLURef | CLAccountHash;
 
-export class CLKey extends CLData {
+export class CLKey extends CLValue {
   data: CLKeyParameters;
 
   constructor(v: CLKeyParameters) {

@@ -1,4 +1,4 @@
-// NOTE: Currently this isn't supported CLData
+// NOTE: Currently this isn't supported CLValue
 import { Ok, Err } from 'ts-results';
 
 import {

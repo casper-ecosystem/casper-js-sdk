@@ -18,7 +18,7 @@ export enum KeyVariant {
 /**
  * Casper types, i.e. types which can be stored and manipulated by smart contracts.
  *
- * Provides a description of the underlying data type of a [[CLData]].
+ * Provides a description of the underlying data type of a [[CLValue]].
  */
 export enum CLTypeTag {
     /** A boolean value */

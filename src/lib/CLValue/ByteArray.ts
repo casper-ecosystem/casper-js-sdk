@@ -3,7 +3,7 @@ import { concat } from '@ethersproject/bytes';
 
 import {
   CLType,
-  CLData,
+  CLValue,
   ToBytesResult,
   CLErrorCodes,
   ResultAndRemainder,
@@ -14,7 +14,7 @@ import { toBytesU32 } from '../ByteConverters';
 
 export const CL_BYTE_ARRAY_MAX_LENGTH = 32;
 
-export class CLByteArray extends CLData {
+export class CLByteArray extends CLValue {
   data: Uint8Array;
   /**
    * Constructs a new `CLByteArray`.

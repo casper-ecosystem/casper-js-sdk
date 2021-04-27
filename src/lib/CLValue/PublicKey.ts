@@ -3,7 +3,7 @@ import { Ok, Err } from 'ts-results';
 
 import {
   CLType,
-  CLData,
+  CLValue,
   CLErrorCodes,
   resultHelper,
   ResultAndRemainder,
@@ -37,7 +37,7 @@ export class CLPublicKeyType extends CLType {
   }
 }
 
-export class CLPublicKey extends CLData {
+export class CLPublicKey extends CLValue {
   data: Uint8Array;
   private tag: CLPublicKeyTag;
 

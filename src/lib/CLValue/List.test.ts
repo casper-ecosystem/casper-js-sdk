@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import {
   CLValue,
-  CLData,
+  CLValue,
   CLList,
   CLListType,
   CLBool,
@@ -10,9 +10,9 @@ import {
   CLI32,
   CLI32Type
 } from './index';
-import { buildCLDataFromJson} from './utils';
+import { buildCLValueFromJson} from './utils';
 
-describe('CLData List implementation', () => {
+describe('CLValue List implementation', () => {
   it('List should return proper clType', () => {
     const myBool = new CLBool(false);
     const myList = new CLList([myBool]);

@@ -3,7 +3,7 @@ import { Ok, Err } from 'ts-results';
 
 import {
   CLType,
-  CLData,
+  CLValue,
   CLErrorCodes,
   resultHelper,
   ResultAndRemainder,
@@ -54,8 +54,8 @@ export interface MapEntryType {
 }
 
 const isValueConstructor = (
-  v: Array<[CLData, CLData]> | [CLType, CLType]
-): v is Array<[CLData, CLData]> => {
+  v: Array<[CLValue, CLValue]> | [CLType, CLType]
+): v is Array<[CLValue, CLValue]> => {
   return (
     Array.isArray(v) &&
     Array.isArray(v[0]) &&
@@ -65,10 +65,10 @@ const isValueConstructor = (
   );
 };
 
-type KeyVal = CLData; 
+type KeyVal = CLValue; 
 
-export class CLMap<K extends CLData , V extends CLData>
-  extends CLData
+export class CLMap<K extends CLValue , V extends CLValue>
+  extends CLValue
 {
   data: Map<K, V>;
   refType: [CLType, CLType];
