@@ -62,9 +62,10 @@ import {
   CLU512BytesParser,
   CLURefType,
   CLURefBytesParser,
-  CLKey,
   CLKeyType,
-  CLKeyBytesParser
+  CLKeyBytesParser,
+  CLListType,
+  CLListBytesParser
   // CLAccountHash,
 } from './index';
 
@@ -97,8 +98,8 @@ export const matchTypeToCLType = (type: any): CLType => {
         return new CLU64Type();
       case U128_ID:
         return new CLU128Type();
-      // case U256_ID:
-      //   return new CLU256Type();
+      case U256_ID:
+        return new CLU256Type();
       case U512_ID:
         return new CLU512Type();
       default:
@@ -107,10 +108,10 @@ export const matchTypeToCLType = (type: any): CLType => {
   }
 
   if (typeof type === typeof {}) {
-    // if (LIST_ID in type) {
-    // const inner = matchTypeToCLType(type[LIST_ID]);
-    // return new CLListType(inner);
-    // }
+    if (LIST_ID in type) {
+    const inner = matchTypeToCLType(type[LIST_ID]);
+    return new CLListType(inner);
+    }
     if (BYTE_ARRAY_ID in type) {
       const size = type[BYTE_ARRAY_ID];
       return new CLByteArrayType(size);
@@ -193,6 +194,9 @@ export const matchByteParserByCLType = (
   if (val instanceof CLKeyType) {
     return Ok(new CLKeyBytesParser());
   }
+  if (val instanceof CLListType) {
+    return Ok(new CLListBytesParser());
+  }
   return Err('Unknown type');
 };
 
@@ -238,13 +242,13 @@ export const matchBytesToCLType = (
 
     //   return resultHelper(Ok(new CLOptionType(innerType)), typeRem);
     // }
-    // case CLTypeTag.List: {
-    //   const { result, remainder: typeRem } = matchBytesToCLType(remainder);
+    case CLTypeTag.List: {
+      const { result, remainder: typeRem } = matchBytesToCLType(remainder);
 
-    //   const innerType = result.unwrap();
+      const innerType = result.unwrap();
 
-    //   return resultHelper(Ok(new CLListType(innerType)), typeRem);
-    // }
+      return resultHelper(Ok(new CLListType(innerType)), typeRem);
+    }
     // case CLTypeTag.ByteArray: {
     //   const { result, remainder: typeRem } = matchBytesToCLType(remainder);
     //   const innerType = result.unwrap();

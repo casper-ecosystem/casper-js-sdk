@@ -8,7 +8,7 @@ import { CLErrorCodes, CLTypeTag } from './constants';
 import { matchTypeToCLType, matchBytesToCLType, matchByteParserByCLType } from './utils';
 
 import {
-  CLBool,
+  CLBool,  CLU32BytesParser 
   // CLU8,
   // CLU32,
   // CLU64,
@@ -60,6 +60,10 @@ export abstract class CLType {
   abstract toJSON(): any;
   abstract linksTo: any;
   abstract tag: CLTypeTag;
+
+  toBytes(): Uint8Array {
+    return Uint8Array.from([this.tag]);
+  }
 }
 
 export abstract class ToBytes {
@@ -183,6 +187,42 @@ export class CLValueParsers {
   static toBytes(value: CLValue): ToBytesResult {
     const parser = matchByteParserByCLType(value.clType()).unwrap();
     return parser.toBytes(value);
+  }
+
+  static toBytesWithType(value: CLValue): Result<Uint8Array, CLErrorCodes> {
+    const clTypeBytes = value.clType().toBytes();
+    const parser = matchByteParserByCLType(value.clType()).unwrap();
+    const bytes = parser.toBytes(value).unwrap();
+    const result = concat([toBytesArrayU8(bytes), clTypeBytes]);
+    return Ok(result);
+  }
+
+  static fromBytesWithType(
+    rawBytes: Uint8Array
+  ): Result<CLValue, CLErrorCodes> {
+    const {
+      result: CLU32res,
+      remainder: CLU32rem
+    } = new CLU32BytesParser().fromBytesWithRemainder(rawBytes);
+
+    const length = CLU32res.unwrap()
+      .value()
+      .toNumber();
+
+    if (!CLU32rem) {
+      return Err(CLErrorCodes.EarlyEndOfStream);
+    }
+    const valueBytes = CLU32rem.subarray(0, length);
+    const typeBytes = CLU32rem.subarray(length);
+    const { result: clType } = matchBytesToCLType(typeBytes);
+
+    const parser = matchByteParserByCLType(clType.unwrap()).unwrap();
+
+    const clValue = parser
+      .fromBytes(valueBytes, clType.unwrap())
+      .unwrap();
+
+    return Ok(clValue as CLValue);
   }
 }
 

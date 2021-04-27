@@ -2,15 +2,18 @@ import { Ok, Err } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
 
 import {
-  CLType,
   CLValue,
+  CLType,
+  ToBytes,
   CLErrorCodes,
   resultHelper,
   ResultAndRemainder,
   ToBytesResult,
-  CLU32,
+  CLValueBytesParsers,
+  CLU32BytesParser,
+  matchByteParserByCLType
 } from './index';
-import { toBytesVector } from '../ByteConverters';
+import { toBytesVectorNew } from '../ByteConverters';
 
 import { LIST_ID, CLTypeTag } from "./constants";
 
@@ -41,6 +44,47 @@ export class CLListType<T extends CLType> extends CLType {
     return {
       [LIST_ID]: inner
     };
+  }
+}
+
+export class CLListBytesParser extends CLValueBytesParsers {
+  toBytes(value: CLList<CLValue & ToBytes>): ToBytesResult {
+    // TODO: change
+    return Ok(toBytesVectorNew(value.data));
+  }
+
+  fromBytesWithRemainder(
+    bytes: Uint8Array,
+    listType: CLListType<CLType>
+  ): ResultAndRemainder<CLList<CLValue>, CLErrorCodes> {
+    const { result: u32Res, remainder: u32Rem } = new CLU32BytesParser().fromBytesWithRemainder(bytes);
+    if (!u32Res.ok) {
+      return resultHelper(Err(u32Res.val));
+    }
+
+    const size = u32Res.val.value().toNumber();
+
+    const vec = [];
+
+    let remainder = u32Rem;
+
+    const parser = matchByteParserByCLType(listType.inner).unwrap();
+
+    for (let i = 0; i < size; i++) {
+      if (!remainder) return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+
+      const { result: vRes, remainder: vRem } = parser.fromBytesWithRemainder(
+        remainder,
+        listType.inner
+      );
+      if (!vRes.ok) {
+        return resultHelper(Err(vRes.val));
+      }
+      vec.push(vRes.val);
+      remainder = vRem;
+    }
+
+    return resultHelper(Ok(new CLList(vec)), remainder);
   }
 }
 
@@ -113,40 +157,5 @@ export class CLList<T extends CLValue> extends CLValue
 
   size(): number {
     return this.data.length;
-  }
-
-  toBytes(): ToBytesResult {
-    return Ok(toBytesVector(this.data));
-  }
-
-  static fromBytesWithRemainder(
-    bytes: Uint8Array,
-    listType: CLListType<CLType>
-  ): ResultAndRemainder<CLList<CLValue>, CLErrorCodes> {
-    const { result: u32Res, remainder: u32Rem } = CLU32.fromBytesWithRemainder(bytes);
-    if (!u32Res.ok) {
-      return resultHelper(Err(u32Res.val));
-    }
-
-    const size = u32Res.val.value().toNumber();
-
-    const vec = [];
-
-    let remainder = u32Rem;
-
-    for (let i = 0; i < size; i++) {
-      const referenceClass = listType.inner.linksTo;
-      const { result: vRes, remainder: vRem } = referenceClass.fromBytesWithRemainder(
-        remainder,
-        listType.inner
-      );
-      if (!vRes.ok) {
-        return resultHelper(Err(vRes.val));
-      }
-      vec.push(vRes.val);
-      remainder = vRem;
-    }
-
-    return resultHelper(Ok(new CLList(vec)), remainder);
   }
 }
