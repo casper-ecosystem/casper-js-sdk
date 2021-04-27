@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { CLKey, CLURef, AccessRights, CLAccountHash } from './index'; // CLURef, CLAccountHash } from './index';
+import { CLValueParsers, CLKey, CLKeyType, CLURef, AccessRights, CLAccountHash } from './index'; // CLURef, CLAccountHash } from './index';
 import { decodeBase16 } from '../../index';
 
 describe('CLKey', () => {
@@ -32,7 +32,7 @@ describe('CLKey', () => {
     expect(myKey.isAccount()).to.be.eq(true);
   });
 
-  it('toBytes() with Uint8Array', () => {
+  it('toBytes() / fromBytes() with Uint8Array', () => {
     const arr8 = Uint8Array.from(Array(32).fill(42));
     const expectedBytes = Uint8Array.from([
       1,
@@ -70,10 +70,13 @@ describe('CLKey', () => {
       42
     ]);
     const myKey = new CLKey(arr8);
-    expect(myKey.toBytes().unwrap()).to.be.deep.eq(expectedBytes);
+    const bytes = CLValueParsers.toBytes(myKey).unwrap();
+    const fromExpectedBytes = CLValueParsers.fromBytes(bytes, new CLKeyType()).unwrap();
+    expect(bytes).to.be.deep.eq(expectedBytes);
+    expect(fromExpectedBytes).to.be.deep.eq(myKey);
   });
 
-  it('toBytes() with CLAccountHash', () => {
+  it('toBytes() / fromBytes() with CLAccountHash', () => {
     const hash = new CLAccountHash(Uint8Array.from(Array(32).fill(42)));
     const expectedBytes = Uint8Array.from([
       0,
@@ -111,24 +114,26 @@ describe('CLKey', () => {
       42
     ]);
     const myKey = new CLKey(hash);
-    const bytes = myKey.toBytes().unwrap();
+    const bytes = CLValueParsers.toBytes(myKey).unwrap();
+    const fromExpectedBytes = CLValueParsers.fromBytes(bytes, new CLKeyType()).unwrap();
     expect(bytes).to.be.deep.eq(expectedBytes);
+    expect(fromExpectedBytes).to.be.deep.eq(myKey);
   });
 
 
   it('toJSON() / fromJSON() with CLAccountHash', () => {
     const hash = new CLAccountHash(Uint8Array.from(Array(32).fill(42)));
     const myKey = new CLKey(hash);
-    const json = myKey.toJSON().unwrap();
+    const json = CLValueParsers.toJSON(myKey).unwrap();
     const expectedJson = JSON.parse('{"bytes":"002a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a","cl_type":"Key"}');
 
-    const fromJson = CLKey.fromJSON(expectedJson).unwrap();
+    const fromJson = CLValueParsers.fromJSON(expectedJson).unwrap();
     
     expect(json).to.be.deep.eq(expectedJson);
     expect(fromJson).to.be.deep.eq(myKey);
   });
 
-  it('toBytes() with CLURef', () => {
+  it('toBytes() / fromBytes() with CLURef', () => {
     const urefAddr =
       '2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a';
     const truth = decodeBase16(
@@ -136,9 +141,10 @@ describe('CLKey', () => {
     );
     const uref = new CLURef(decodeBase16(urefAddr), AccessRights.READ_ADD_WRITE);
     const myKey = new CLKey(uref);
-    const bytes = myKey.toBytes().unwrap();
+    const bytes = CLValueParsers.toBytes(myKey).unwrap();
+    const fromExpectedBytes = CLValueParsers.fromBytes(bytes, new CLKeyType()).unwrap();
     expect(bytes).to.deep.eq(truth);
-    expect(CLKey.fromBytes(bytes).unwrap()).deep.eq(myKey);
+    expect(fromExpectedBytes).deep.eq(myKey);
   });
 
   it('toJSON() / fromJSON() with CLUref', () => {
@@ -146,10 +152,10 @@ describe('CLKey', () => {
       '2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a';
     const uref = new CLURef(decodeBase16(urefAddr), AccessRights.READ_ADD_WRITE);
     const myKey= new CLKey(uref);
-    const json = myKey.toJSON().unwrap();
+    const json = CLValueParsers.toJSON(myKey).unwrap();
     const expectedJson = JSON.parse('{"bytes":"022a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a07","cl_type":"Key"}');
 
-    const fromJson = CLKey.fromJSON(expectedJson).unwrap();
+    const fromJson = CLValueParsers.fromJSON(expectedJson).unwrap();
     
     expect(fromJson).to.be.deep.eq(myKey);
     expect(json).to.be.deep.eq(expectedJson);
@@ -157,7 +163,7 @@ describe('CLKey', () => {
 
   it('toBytes() with invalid data', () => {
     // @ts-ignore
-    const badFn = () => new CLKey([1, 2, 3]).toBytes();
+    const badFn = () => CLValueParsers.toBytes(new CLKey([1, 2, 3]));
     expect(badFn).to.throw('Unknown byte types');
   });
 

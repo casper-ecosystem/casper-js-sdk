@@ -61,7 +61,11 @@ import {
   CLU256BytesParser,
   CLU512BytesParser,
   CLURefType,
-  CLURefBytesParser
+  CLURefBytesParser,
+  CLKey,
+  CLKeyType,
+  CLKeyBytesParser
+  // CLAccountHash,
 } from './index';
 
 export const TUPLE_MATCH_LEN_TO_ID = [TUPLE1_ID, TUPLE2_ID, TUPLE3_ID];
@@ -71,8 +75,8 @@ export const matchTypeToCLType = (type: any): CLType => {
     switch (type) {
       case BOOL_ID:
         return new CLBoolType();
-      // case KEY_ID:
-      //   return new CLKeyType();
+      case KEY_ID:
+        return new CLKeyType();
       // case PUBLIC_KEY_ID:
       //   return new CLPublicKeyType();
       // case STRING_ID:
@@ -93,8 +97,8 @@ export const matchTypeToCLType = (type: any): CLType => {
         return new CLU64Type();
       case U128_ID:
         return new CLU128Type();
-      case U256_ID:
-        return new CLU256Type();
+      // case U256_ID:
+      //   return new CLU256Type();
       case U512_ID:
         return new CLU512Type();
       default:
@@ -186,6 +190,9 @@ export const matchByteParserByCLType = (
   if (val instanceof CLURefType) {
     return Ok(new CLURefBytesParser());
   }
+  if (val instanceof CLKeyType) {
+    return Ok(new CLKeyBytesParser());
+  }
   return Err('Unknown type');
 };
 
@@ -220,8 +227,8 @@ export const matchBytesToCLType = (
     //   return resultHelper(Ok(new CLUnitType()), remainder);
     // case CLTypeTag.String:
     //   return resultHelper(Ok(new CLStringType()), remainder);
-    // case CLTypeTag.Key:
-    //   return resultHelper(Ok(new CLKeyType()), remainder);
+    case CLTypeTag.Key:
+      return resultHelper(Ok(new CLKeyType()), remainder);
     // case CLTypeTag.URef:
     //   return resultHelper(Ok(new CLURefType()), remainder);
     // case CLTypeTag.Option: {

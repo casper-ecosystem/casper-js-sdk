@@ -1,6 +1,6 @@
 export * from "./Abstract"
 export * from "./ByteArray" 
-// export * from "./Key"
+export * from "./Key"
 // export * from "./List"
 // export * from "./Map"
 export * from "./Numeric" 
@@ -9,7 +9,7 @@ export * from "./Numeric"
 // export * from "./Tuple"
 export * from "./URef"
 // export * from "./Unit"
-// export * from "./AccountHash"
+export * from "./AccountHash"
 export * from "./Bool"
 // export * from "./URef";
 // export * from "./Result";
