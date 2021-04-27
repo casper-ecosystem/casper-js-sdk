@@ -159,30 +159,31 @@ export class CLValueBuilder {
   // static byteArray(bytes: Uint8Array): CLByteArray {
   //   return new CLByteArray(bytes);
   // }
+}
 
+export class CLValueParsers {
   static fromJSON(json: any): Result<CLValue, string> {
     const clType = matchTypeToCLType(json.cl_type);
     const uint8bytes = decodeBase16(json.bytes);
-    const clEntity = CLValueBuilder.fromBytes(uint8bytes, clType).unwrap();
+    const clEntity = CLValueParsers.fromBytes(uint8bytes, clType).unwrap();
     return Ok(clEntity as CLValue);
-  }
-
-  static toJSON(value: CLValue): Result<CLJSONFormat, CLErrorCodes> {
-    const rawBytes= CLValueBuilder.toBytes(value).unwrap();
-    const bytes = encodeBase16(rawBytes);
-    const clType = value.clType().toJSON();
-    return Ok({ bytes: bytes, cl_type: clType });
-  }
-
-
-  static toBytes(value: CLValue): ToBytesResult {
-    const parser = matchByteParserByCLType(value.clType()).unwrap(); //value.bytesParser.toBytes(value);
-    return parser.toBytes(value);
   }
 
   static fromBytes(bytes: Uint8Array, type: CLType): Result<CLValue, CLErrorCodes>{
     const parser = matchByteParserByCLType(type).unwrap();
     return parser.fromBytes(bytes, type);
+  }
+
+  static toJSON(value: CLValue): Result<CLJSONFormat, CLErrorCodes> {
+    const rawBytes= CLValueParsers.toBytes(value).unwrap();
+    const bytes = encodeBase16(rawBytes);
+    const clType = value.clType().toJSON();
+    return Ok({ bytes: bytes, cl_type: clType });
+  }
+
+  static toBytes(value: CLValue): ToBytesResult {
+    const parser = matchByteParserByCLType(value.clType()).unwrap(); //value.bytesParser.toBytes(value);
+    return parser.toBytes(value);
   }
 }
 
