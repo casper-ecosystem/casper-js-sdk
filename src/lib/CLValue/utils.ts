@@ -1,7 +1,5 @@
 import { Result, Ok, Err } from 'ts-results';
 
-import { ResultAndRemainder, resultHelper } from './Abstract';
-
 import {
   BOOL_ID,
   LIST_ID,
@@ -27,14 +25,11 @@ import {
   CLTypeTag
 } from './constants';
 import {
-  CLValue,
-  CLValueBytesParser,
+  CLValueBytesParsers,
   CLType,
-  CLBool,
-  CLBoolType,
-  CLBoolBytesParser
+  ResultAndRemainder,
+  resultHelper,
   // CLListType,
-  // CLByteArrayType,
   // CLKeyType,
   // CLPublicKeyType,
   // CLMapType,
@@ -43,17 +38,29 @@ import {
   // CLUnitType,
   // CLOptionType,
   // CLResultType,
-  // CLI32Type,
-  // CLI64Type,
-  // CLU8Type,
-  // CLU32Type,
-  // CLU64Type,
-  // CLU128Type,
-  // CLU256Type,
-  // CLU512Type,
   // CLTuple1Type,
   // CLTuple2Type,
   // CLTuple3Type
+  CLBoolType,
+  CLBoolBytesParser,
+  CLByteArrayType,
+  CLByteArrayBytesParser,
+  CLI32Type,
+  CLI64Type,
+  CLU8Type,
+  CLU32Type,
+  CLU64Type,
+  CLU128Type,
+  CLU256Type,
+  CLU512Type,
+  CLI32BytesParser,
+  CLI64BytesParser,
+  CLU8BytesParser,
+  CLU32BytesParser,
+  CLU64BytesParser,
+  CLU128BytesParser,
+  CLU256BytesParser,
+  CLU512BytesParser
 } from './index';
 
 export const TUPLE_MATCH_LEN_TO_ID = [TUPLE1_ID, TUPLE2_ID, TUPLE3_ID];
@@ -73,84 +80,107 @@ export const matchTypeToCLType = (type: any): CLType => {
       //   return new CLURefType();
       // case UNIT_ID:
       //   return new CLUnitType();
-      // case I32_ID:
-      //   return new CLI32Type();
-      // case I64_ID:
-      //   return new CLI64Type();
-      // case U8_ID:
-      //   return new CLU8Type();
-      // case U32_ID:
-      //   return new CLU32Type();
-      // case U64_ID:
-      //   return new CLU64Type();
-      // case U128_ID:
-      //   return new CLU128Type();
-      // case U256_ID:
-      //   return new CLU256Type();
-      // case U512_ID:
-      //   return new CLU512Type();
+      case I32_ID:
+        return new CLI32Type();
+      case I64_ID:
+        return new CLI64Type();
+      case U8_ID:
+        return new CLU8Type();
+      case U32_ID:
+        return new CLU32Type();
+      case U64_ID:
+        return new CLU64Type();
+      case U128_ID:
+        return new CLU128Type();
+      case U256_ID:
+        return new CLU256Type();
+      case U512_ID:
+        return new CLU512Type();
       default:
         throw new Error(`The simple type ${type} is not supported`);
     }
   }
 
-  // if (typeof type === typeof {}) {
-  // if (LIST_ID in type) {
-  // const inner = matchTypeToCLType(type[LIST_ID]);
-  // return new CLListType(inner);
-  // }
-  // if (BYTE_ARRAY_ID in type) {
-  // const size = type[BYTE_ARRAY_ID];
-  // return new CLByteArrayType(size);
-  // }
-  // if (MAP_ID in type) {
-  // const keyType = matchTypeToCLType(type[MAP_ID].key);
-  // const valType = matchTypeToCLType(type[MAP_ID].value);
-  // return new CLMapType([keyType, valType]);
-  // }
-  // if (TUPLE1_ID in type) {
-  // const vals = type[TUPLE1_ID].map((t: any) => matchTypeToCLType(t));
-  // return new CLTuple1Type(vals);
-  // }
-  // if (TUPLE2_ID in type) {
-  // const vals = type[TUPLE2_ID].map((t: any) => matchTypeToCLType(t));
-  // return new CLTuple2Type(vals);
-  // }
-  // if (TUPLE3_ID in type) {
-  // const vals = type[TUPLE3_ID].map((t: any) => matchTypeToCLType(t));
-  // return new CLTuple3Type(vals);
-  // }
-  // if (CLOptionType.TypeId in type) {
-  // const inner = matchTypeToCLType(type[CLOptionType.TypeId]);
-  // return new CLOptionType(inner);
-  // }
-  // if (RESULT_ID in type) {
-  // const innerOk = matchTypeToCLType(type[RESULT_ID].ok);
-  // const innerErr = matchTypeToCLType(type[RESULT_ID].err);
-  // return new CLResultType({ ok: innerOk, err: innerErr });
-  // }
-  // throw new Error(`The complex type ${type} is not supported`);
-  // }
+  if (typeof type === typeof {}) {
+    // if (LIST_ID in type) {
+    // const inner = matchTypeToCLType(type[LIST_ID]);
+    // return new CLListType(inner);
+    // }
+    if (BYTE_ARRAY_ID in type) {
+      const size = type[BYTE_ARRAY_ID];
+      return new CLByteArrayType(size);
+    }
+    // if (MAP_ID in type) {
+    // const keyType = matchTypeToCLType(type[MAP_ID].key);
+    // const valType = matchTypeToCLType(type[MAP_ID].value);
+    // return new CLMapType([keyType, valType]);
+    // }
+    // if (TUPLE1_ID in type) {
+    // const vals = type[TUPLE1_ID].map((t: any) => matchTypeToCLType(t));
+    // return new CLTuple1Type(vals);
+    // }
+    // if (TUPLE2_ID in type) {
+    // const vals = type[TUPLE2_ID].map((t: any) => matchTypeToCLType(t));
+    // return new CLTuple2Type(vals);
+    // }
+    // if (TUPLE3_ID in type) {
+    // const vals = type[TUPLE3_ID].map((t: any) => matchTypeToCLType(t));
+    // return new CLTuple3Type(vals);
+    // }
+    // if (CLOptionType.TypeId in type) {
+    // const inner = matchTypeToCLType(type[CLOptionType.TypeId]);
+    // return new CLOptionType(inner);
+    // }
+    // if (RESULT_ID in type) {
+    // const innerOk = matchTypeToCLType(type[RESULT_ID].ok);
+    // const innerErr = matchTypeToCLType(type[RESULT_ID].err);
+    // return new CLResultType({ ok: innerOk, err: innerErr });
+    // }
+    throw new Error(`The complex type ${type} is not supported`);
+  }
 
   throw new Error(`Unknown data provided.`);
 };
 
-export const buildCLValueFromJson = (json: any): Result<CLValue, string> => {
-  const clType = matchTypeToCLType(json.cl_type);
-  const ref = clType.linksTo;
-  const clValue = ref.fromJSON(json).unwrap();
-  return Ok(clValue as CLValue);
-};
-
 export const matchByteParserByCLType = (
   val: CLType
-): Result<CLValueBytesParser, string> => {
+): Result<CLValueBytesParsers, string> => {
   // const proto = (val as typeof CLValue).prototype;
   // if ((proto && proto === CLBool.prototype) || val instanceof CLBool) {
   //     return Ok(new CLBoolBytesParser());
   // }
   if (val instanceof CLBoolType) {
     return Ok(new CLBoolBytesParser());
+  }
+  if (val instanceof CLI32Type) {
+    return Ok(new CLI32BytesParser());
+  }
+  if (val instanceof CLI64Type) {
+    return Ok(new CLI64BytesParser());
+  }
+  if (val instanceof CLU8Type) {
+    return Ok(new CLU8BytesParser());
+  }
+  if (val instanceof CLU32Type) {
+    return Ok(new CLU32BytesParser());
+  }
+  if (val instanceof CLU64Type) {
+    return Ok(new CLU64BytesParser());
+  }
+  if (val instanceof CLU128Type) {
+    return Ok(new CLU128BytesParser());
+  }
+  if (val instanceof CLU256Type) {
+    return Ok(new CLU256BytesParser());
+  }
+  if (val instanceof CLU512Type) {
+    return Ok(new CLU512BytesParser());
+  }
+  if (val instanceof CLByteArrayType) {
+    return Ok(new CLByteArrayBytesParser());
+  }
+  if (val instanceof CLByteArrayType) {
+    return Ok(new CLByteArrayBytesParser());
   }
   return Err('Unknown type');
 };

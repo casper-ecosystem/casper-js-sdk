@@ -70,7 +70,6 @@ export abstract class CLValue {
   abstract clType(): CLType;
   abstract value(): any;
   abstract data: any;
-  abstract bytesParser: CLValueBytesParser;
 }
 
 export class CLValueBuilder {
@@ -182,12 +181,12 @@ export class CLValueParsers {
   }
 
   static toBytes(value: CLValue): ToBytesResult {
-    const parser = matchByteParserByCLType(value.clType()).unwrap(); //value.bytesParser.toBytes(value);
+    const parser = matchByteParserByCLType(value.clType()).unwrap();
     return parser.toBytes(value);
   }
 }
 
-export abstract class CLValueBytesParser {
+export abstract class CLValueBytesParsers {
   fromBytes(
     bytes: Uint8Array,
     innerType: CLType

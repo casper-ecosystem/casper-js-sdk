@@ -7,7 +7,7 @@ import {
   ToBytesResult,
   CLErrorCodes,
   resultHelper,
-  CLValueBytesParser
+  CLValueBytesParsers
 } from './index';
 import { BOOL_ID, CLTypeTag } from './constants';
 
@@ -24,7 +24,7 @@ export class CLBoolType extends CLType {
   }
 }
 
-export class CLBoolBytesParser extends CLValueBytesParser {
+export class CLBoolBytesParser extends CLValueBytesParsers {
   toBytes(value: CLBool): ToBytesResult {
     return Ok(new Uint8Array([value.value() ? 1 : 0]));
   }

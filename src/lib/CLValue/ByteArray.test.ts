@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { CLByteArray } from './index';
+import { CLByteArray, CLByteArrayType, CLValueParsers } from './index';
 
 describe('CLByteArray', () => {
   it('Should be able to return proper value by calling .value()', () => {
@@ -19,20 +19,20 @@ describe('CLByteArray', () => {
   it('Should be able to return proper byte array by calling toBytes() / fromBytes()', () => {
     const expectedBytes = Uint8Array.from(Array(32).fill(42))
     const hash = new CLByteArray(expectedBytes);
-    const bytes = hash.toBytes().unwrap();
+    const bytes = CLValueParsers.toBytes(hash).unwrap();
 
     expect(bytes).to.deep.eq(expectedBytes);
-    expect(CLByteArray.fromBytes(bytes).unwrap()).to.deep.eq(hash);
+    expect(CLValueParsers.fromBytes(bytes, new CLByteArrayType(32)).unwrap()).to.deep.eq(hash);
   });
 
   it('toJson() / fromJson()', () => {
     const bytes = Uint8Array.from(Array(32).fill(42))
     const hash = new CLByteArray(bytes);
-    const json = hash.toJSON().unwrap();
+    const json = CLValueParsers.toJSON(hash).unwrap();
     const expectedJson = JSON.parse('{"bytes":"2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a","cl_type":{"ByteArray":32}}');
 
     expect(json).to.deep.eq(expectedJson);
-    expect(CLByteArray.fromJSON(expectedJson).unwrap()).to.deep.eq(hash);
+    expect(CLValueParsers.fromJSON(expectedJson).unwrap()).to.deep.eq(hash);
   });
 });
 
