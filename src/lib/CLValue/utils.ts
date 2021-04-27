@@ -33,7 +33,6 @@ import {
   // CLKeyType,
   // CLPublicKeyType,
   // CLMapType,
-  // CLStringType,
   // CLUnitType,
   // CLOptionType,
   // CLResultType,
@@ -62,6 +61,8 @@ import {
   CLU512BytesParser,
   CLURefType,
   CLURefBytesParser,
+  CLStringType,
+  CLStringBytesParser,
   CLKeyType,
   CLKeyBytesParser,
   CLListType,
@@ -80,8 +81,8 @@ export const matchTypeToCLType = (type: any): CLType => {
         return new CLKeyType();
       // case PUBLIC_KEY_ID:
       //   return new CLPublicKeyType();
-      // case STRING_ID:
-      //   return new CLStringType();
+      case STRING_ID:
+        return new CLStringType();
       case UREF_ID:
         return new CLURefType();
       // case UNIT_ID:
@@ -151,10 +152,6 @@ export const matchTypeToCLType = (type: any): CLType => {
 export const matchByteParserByCLType = (
   val: CLType
 ): Result<CLValueBytesParsers, string> => {
-  // const proto = (val as typeof CLValue).prototype;
-  // if ((proto && proto === CLBool.prototype) || val instanceof CLBool) {
-  //     return Ok(new CLBoolBytesParser());
-  // }
   if (val instanceof CLBoolType) {
     return Ok(new CLBoolBytesParser());
   }
@@ -197,6 +194,9 @@ export const matchByteParserByCLType = (
   if (val instanceof CLListType) {
     return Ok(new CLListBytesParser());
   }
+  if (val instanceof CLStringType) {
+    return Ok(new CLStringBytesParser());
+  };
   return Err('Unknown type');
 };
 

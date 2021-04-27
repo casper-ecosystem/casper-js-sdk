@@ -5,10 +5,15 @@ import { BigNumberish } from '@ethersproject/bignumber';
 import { toBytesArrayU8 } from '../ByteConverters';
 import { CLErrorCodes, CLTypeTag } from './constants';
 
-import { matchTypeToCLType, matchBytesToCLType, matchByteParserByCLType } from './utils';
+import {
+  matchTypeToCLType,
+  matchBytesToCLType,
+  matchByteParserByCLType
+} from './utils';
 
 import {
-  CLBool,  CLU32BytesParser 
+  CLBool,
+  CLU32BytesParser
   // CLU8,
   // CLU32,
   // CLU64,
@@ -172,13 +177,16 @@ export class CLValueParsers {
     return Ok(clEntity as CLValue);
   }
 
-  static fromBytes(bytes: Uint8Array, type: CLType): Result<CLValue, CLErrorCodes>{
+  static fromBytes(
+    bytes: Uint8Array,
+    type: CLType
+  ): Result<CLValue, CLErrorCodes> {
     const parser = matchByteParserByCLType(type).unwrap();
     return parser.fromBytes(bytes, type);
   }
 
   static toJSON(value: CLValue): Result<CLJSONFormat, CLErrorCodes> {
-    const rawBytes= CLValueParsers.toBytes(value).unwrap();
+    const rawBytes = CLValueParsers.toBytes(value).unwrap();
     const bytes = encodeBase16(rawBytes);
     const clType = value.clType().toJSON();
     return Ok({ bytes: bytes, cl_type: clType });
@@ -218,9 +226,7 @@ export class CLValueParsers {
 
     const parser = matchByteParserByCLType(clType.unwrap()).unwrap();
 
-    const clValue = parser
-      .fromBytes(valueBytes, clType.unwrap())
-      .unwrap();
+    const clValue = parser.fromBytes(valueBytes, clType.unwrap()).unwrap();
 
     return Ok(clValue as CLValue);
   }

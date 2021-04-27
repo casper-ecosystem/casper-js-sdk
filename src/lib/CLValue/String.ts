@@ -2,11 +2,12 @@ import { Ok, Err } from 'ts-results';
 import {
   CLType,
   CLValue,
-  CLU32,
+  CLU32BytesParser,
   ResultAndRemainder,
   ToBytesResult,
   resultHelper,
-  CLErrorCodes
+  CLErrorCodes,
+  CLValueBytesParsers
 } from './index';
 import { STRING_ID, CLTypeTag } from './constants';
 import { toBytesString, fromBytesString } from '../ByteConverters';
@@ -21,6 +22,30 @@ export class CLStringType extends CLType {
 
   toJSON(): string {
     return this.toString();
+  }
+}
+
+export class CLStringBytesParser extends CLValueBytesParsers {
+  toBytes(value: CLString): ToBytesResult {
+    return Ok(toBytesString(value.data));
+  }
+
+  fromBytesWithRemainder(
+    rawBytes: Uint8Array
+  ): ResultAndRemainder<CLString, CLErrorCodes> {
+    const {
+      result: CLU32res,
+      remainder: CLU32rem
+    } = new CLU32BytesParser().fromBytesWithRemainder(rawBytes);
+
+    const len = CLU32res.unwrap().value().toNumber();
+
+    if (CLU32rem) {
+      const val = fromBytesString(CLU32rem.subarray(0, len));
+      return resultHelper(Ok(new CLString(val)), CLU32rem.subarray(len));
+    }
+
+    return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
   }
 }
 
@@ -47,29 +72,5 @@ export class CLString extends CLValue {
 
   size(): number {
     return this.data.length;
-  }
-
-  toBytes(): ToBytesResult {
-    return Ok(toBytesString(this.data));
-  }
-
-  static fromBytesWithRemainder(
-    rawBytes: Uint8Array
-  ): ResultAndRemainder<CLString, CLErrorCodes> {
-    const {
-      result: CLU32res,
-      remainder: CLU32rem
-    } = CLU32.fromBytesWithRemainder(rawBytes);
-    if (!CLU32res.ok) {
-      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
-    }
-    const len = CLU32res.val.value().toNumber();
-
-    if (CLU32rem) {
-      const val = fromBytesString(CLU32rem.subarray(0, len));
-      return resultHelper(Ok(new CLString(val)), CLU32rem.subarray(len));
-    }
-
-    return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
   }
 }
