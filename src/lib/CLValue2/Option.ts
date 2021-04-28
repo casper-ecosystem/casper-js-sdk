@@ -1,23 +1,72 @@
+import { Ok, Err, Option, Some, None } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
 
-import { Option } from 'ts-results';
+import {
+  CLValue,
+  CLType,
+  CLErrorCodes,
+  ResultAndRemainder,
+  ToBytesResult,
+  CLU8,
+  resultHelper
+} from './index';
 
-import { CLValue, CLType, ToBytes } from './index';
+import { CLTypeTag } from './constants';
 
 const OPTION_TAG_NONE = 0;
 const OPTION_TAG_SOME = 1;
 
-export class CLOptionType extends CLType {
+export class CLOptionType<T extends CLType> extends CLType {
+  static TypeId = "Option";
+
+  tag = CLTypeTag.Option;
+  linksTo = CLOption;
+  inner: T;
+
+  constructor(inner: T) {
+    super();
+    this.inner = inner;
+  }
+
   toString(): string {
-    return "Option" 
+    if (this.inner === null) {
+      return `${CLOptionType.TypeId} (None)`;
+    }
+
+    return `${CLOptionType.TypeId} (${this.inner.toString()})`;
+  }
+
+  toBytes(): Uint8Array {
+    return concat([
+      Uint8Array.from([this.tag]),
+      this.inner.toBytes()
+    ]);
+  }
+
+  toJSON(): any {
+    return {
+      [CLOptionType.TypeId]: this.inner.toJSON() 
+    };
   }
 }
 
-export class GenericOption <T> {
+export class CLOption<T extends CLValue> extends CLValue {
+  private innerType: CLType;
   /**
    * Constructs a new option containing the value of Some or None from ts-result.
    */
-  constructor(public data: Option<T>) {}
+  constructor(public data: Option<T>, innerType?: CLType) {
+    super();
+    if (data.none) {
+      if (!innerType) {
+        throw new Error('You had to assign innerType for None');
+      }
+      this.innerType = innerType;
+    } else {
+      this.innerType = data.val.clType();
+    }
+    super();
+  }
 
   /**
    * Checks whether the `Option` contains no value.
@@ -43,24 +92,54 @@ export class GenericOption <T> {
   value(): Option<T> {
     return this.data;
   }
-}
 
-export class CLOption extends GenericOption<CLValue & ToBytes> implements CLValue, ToBytes {
   clType(): CLType {
-    return new CLOptionType();
+    return new CLOptionType(this.innerType);
   }
 
   /**
    * Serializes the `Option` into an array of bytes.
    */
-  toBytes(): Uint8Array {
+  toBytes(): ToBytesResult {
     if (this.data.none) {
-      return Uint8Array.from([OPTION_TAG_NONE]);
+      return Ok(Uint8Array.from([OPTION_TAG_NONE]));
     }
     if (this.data.some) {
-      return concat([Uint8Array.from([OPTION_TAG_SOME]), this.data.val.toBytes()]);
+      return Ok(concat([
+        Uint8Array.from([OPTION_TAG_SOME]),
+        this.data.val.toBytes().unwrap()
+      ]));
     }
 
-    throw new Error('Unknown stored value');
+    return Err(CLErrorCodes.UnknownValue);
+  }
+
+  static fromBytesWithRemainder(
+    bytes: Uint8Array,
+    type: CLOptionType<CLType>
+  ): ResultAndRemainder<CLOption<CLValue>, CLErrorCodes> {
+    const { result: U8Res, remainder: U8Rem } = CLU8.fromBytesWithRemainder(bytes);
+
+    const optionTag = U8Res.unwrap().value().toNumber();
+
+    if (optionTag === OPTION_TAG_NONE) {
+      return resultHelper(Ok(new CLOption(None, type.inner)), U8Rem);
+    }
+
+    if (optionTag === OPTION_TAG_SOME) {
+      const referenceClass = type.inner.linksTo;
+      const { result: valRes, remainder: valRem } = referenceClass.fromBytesWithRemainder(
+        U8Rem
+      );
+      if (!valRes.ok) {
+        return resultHelper(Err(valRes.val));
+      }
+      return resultHelper(
+        Ok(new CLOption(Some(valRes.val as CLValue ))),
+        valRem
+      );
+    }
+
+    return resultHelper(Err(CLErrorCodes.Formatting));
   }
 }

@@ -1,9 +1,24 @@
 import { concat } from '@ethersproject/bytes';
+import { Ok, Err } from 'ts-results';
 
-import { CLType, CLValue, ToBytes } from './Abstract';
+import {
+  CLType,
+  CLValue,
+  ToBytes,
+  CLErrorCodes,
+  resultHelper,
+  ResultAndRemainder,
+  ToBytesResult,
+  CLU32,
+  FromBytes
+} from './index';
+import { MAP_ID, CLTypeTag } from "./constants";
 import { toBytesU32 } from '../ByteConverters';
 
 export class CLMapType<K extends CLType, V extends CLType> extends CLType {
+  tag = CLTypeTag.Map;
+  linksTo = CLMap;
+
   innerKey: K;
   innerValue: V;
 
@@ -14,7 +29,24 @@ export class CLMapType<K extends CLType, V extends CLType> extends CLType {
   }
 
   toString(): string {
-    return `Map (${this.innerKey.toString()}: ${this.innerValue.toString()})`;
+    return `${MAP_ID} (${this.innerKey.toString()}: ${this.innerValue.toString()})`;
+  }
+
+  toBytes(): Uint8Array {
+    return concat([
+      Uint8Array.from([this.tag]),
+      this.innerKey.toBytes(),
+      this.innerValue.toBytes(),
+    ]);
+  }
+
+  toJSON(): any {
+    return {
+      [MAP_ID]: {
+        key: this.innerKey.toJSON(),
+        value: this.innerValue.toJSON()
+      }
+    };
   }
 }
 
@@ -34,6 +66,8 @@ const isValueConstructor = (
     !!v[0][1].clType
   );
 };
+
+type KeyVal = CLValue & ToBytes & FromBytes;
 
 export class CLMap<K extends CLValue & ToBytes, V extends CLValue & ToBytes>
   extends CLValue
@@ -93,10 +127,56 @@ export class CLMap<K extends CLValue & ToBytes, V extends CLValue & ToBytes>
     return this.data.size;
   }
 
-  toBytes(): Uint8Array {
+  toBytes(): ToBytesResult {
     const kvBytes: Uint8Array[] = Array.from(this.data).map(([key, value]) =>
-      concat([key.toBytes(), value.toBytes()])
+      concat([key.toBytes().unwrap(), value.toBytes().unwrap()])
     );
-    return concat([toBytesU32(this.data.size), ...kvBytes]);
+    return Ok(concat([toBytesU32(this.data.size), ...kvBytes]));
+  }
+
+  static fromBytesWithRemainder(
+    bytes: Uint8Array,
+    mapType: CLMapType<CLType, CLType>
+  ): ResultAndRemainder<CLMap<KeyVal, KeyVal>, CLErrorCodes> {
+    const { result: u32Res, remainder: u32Rem } = CLU32.fromBytesWithRemainder(bytes);
+    if (!u32Res.ok) {
+      return resultHelper(Err(u32Res.val));
+    }
+
+    const size = u32Res.val.value().toNumber();
+
+    const vec: [KeyVal, KeyVal][] = [];
+
+    let remainder = u32Rem;
+
+    for (let i = 0; i < size; i++) {
+      const refKey = mapType.innerKey.linksTo;
+      const { result: kRes, remainder: kRem } = refKey.fromBytesWithRemainder(
+        remainder,
+        mapType.innerKey
+      );
+
+      if (!kRes.ok) {
+        return resultHelper(Err(kRes.val));
+      }
+
+      remainder = kRem;
+
+      const refVal = mapType.innerValue.linksTo;
+      const { result: vRes, remainder: vRem } = refVal.fromBytesWithRemainder(
+        remainder,
+        mapType.innerValue
+      );
+
+      if (!vRes.ok) {
+        return resultHelper(Err(vRes.val));
+      }
+
+      remainder = vRem;
+
+      vec.push([kRes.val, vRes.val]);
+    }
+
+    return resultHelper(Ok(new CLMap(vec)), remainder);
   }
 }

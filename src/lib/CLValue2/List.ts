@@ -1,20 +1,53 @@
-import { CLType, CLValue, ToBytes } from './Abstract';
+import { Ok, Err } from 'ts-results';
+import { concat } from '@ethersproject/bytes';
+
+import {
+  CLType,
+  CLValue,
+  ToBytes,
+  CLErrorCodes,
+  resultHelper,
+  ResultAndRemainder,
+  ToBytesResult,
+  CLU32,
+  FromBytes,
+} from './index';
 import { toBytesVector } from '../ByteConverters';
+
+import { LIST_ID, CLTypeTag } from "./constants";
 
 export class CLListType<T extends CLType> extends CLType {
   inner: T;
+  linksTo = CLList;
+  typeId = "List";
+  tag = CLTypeTag.List;
+
   constructor(inner: T) {
     super();
     this.inner = inner;
   }
 
   toString(): string {
-    return `List (${this.inner.toString()})`;
+    return `${LIST_ID} (${this.inner.toString()})`;
+  }
+
+  toBytes(): Uint8Array {
+    return concat([
+      Uint8Array.from([this.tag]),
+      this.inner.toBytes()
+    ]);
+  }
+
+  toJSON(): any {
+    const inner = this.inner.toJSON();
+    return {
+      [LIST_ID]: inner
+    };
   }
 }
 
-export class CLList<T extends CLValue & ToBytes> extends CLValue
-  implements ToBytes {
+export class CLList<T extends CLValue> extends CLValue
+  {
   data: Array<T>;
   vectorType: CLType;
 
@@ -50,14 +83,14 @@ export class CLList<T extends CLValue & ToBytes> extends CLValue
 
   get(index: number): T {
     if (index >= this.data.length) {
-      throw new Error("List index out of bounds.");
+      throw new Error('List index out of bounds.');
     }
     return this.data[index];
   }
 
   set(index: number, item: T): void {
     if (index >= this.data.length) {
-      throw new Error("List index out of bounds.");
+      throw new Error('List index out of bounds.');
     }
     this.data[index] = item;
   }
@@ -76,7 +109,6 @@ export class CLList<T extends CLValue & ToBytes> extends CLValue
     this.data.splice(index, 1);
   }
 
-  // TBD: we can throw an error here, but returing undefined from empty list is typical JS behavior
   pop(): T | undefined {
     return this.data.pop();
   }
@@ -85,7 +117,38 @@ export class CLList<T extends CLValue & ToBytes> extends CLValue
     return this.data.length;
   }
 
-  toBytes(): Uint8Array {
-    return toBytesVector(this.data);
+  toBytes(): ToBytesResult {
+    return Ok(toBytesVector(this.data));
+  }
+
+  static fromBytesWithRemainder(
+    bytes: Uint8Array,
+    listType: CLListType<CLType>
+  ): ResultAndRemainder<CLList<CLValue & ToBytes & FromBytes>, CLErrorCodes> {
+    const { result: u32Res, remainder: u32Rem } = CLU32.fromBytesWithRemainder(bytes);
+    if (!u32Res.ok) {
+      return resultHelper(Err(u32Res.val));
+    }
+
+    const size = u32Res.val.value().toNumber();
+
+    const vec = [];
+
+    let remainder = u32Rem;
+
+    for (let i = 0; i < size; i++) {
+      const referenceClass = listType.inner.linksTo;
+      const { result: vRes, remainder: vRem } = referenceClass.fromBytesWithRemainder(
+        remainder,
+        listType.inner
+      );
+      if (!vRes.ok) {
+        return resultHelper(Err(vRes.val));
+      }
+      vec.push(vRes.val);
+      remainder = vRem;
+    }
+
+    return resultHelper(Ok(new CLList(vec)), remainder);
   }
 }

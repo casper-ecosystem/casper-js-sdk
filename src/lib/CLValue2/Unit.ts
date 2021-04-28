@@ -1,23 +1,46 @@
-import { CLType, CLValue, ToBytes } from './Abstract';
+import { Ok } from 'ts-results';
 
-export class UnitType extends CLType {
+import {
+  CLType,
+  CLValue,
+  CLErrorCodes,
+  ResultAndRemainder,
+  ToBytesResult,
+  resultHelper
+} from './index';
+import { UNIT_ID, CLTypeTag } from "./constants";
+
+export class CLUnitType extends CLType {
+  tag = CLTypeTag.Unit;
+  linksTo = CLUnit;
+
   toString(): string {
-    return 'Unit';
+    return UNIT_ID;
+  }
+
+  toJSON(): string {
+    return this.toString();
   }
 }
 
-export class Unit extends CLValue implements ToBytes {
+export class CLUnit extends CLValue {
   data = undefined;
 
   clType(): CLType {
-    return new UnitType();
+    return new CLUnitType();
   }
 
   value(): undefined {
     return this.data;
   }
 
-  toBytes(): Uint8Array {
-    return Uint8Array.from([]);
+  toBytes(): ToBytesResult {
+    return Ok(Uint8Array.from([]));
+  }
+
+  static fromBytesWithRemainder(
+    rawBytes: Uint8Array
+  ): ResultAndRemainder<CLUnit, CLErrorCodes> {
+    return resultHelper(Ok(new CLUnit()), rawBytes);
   }
 }

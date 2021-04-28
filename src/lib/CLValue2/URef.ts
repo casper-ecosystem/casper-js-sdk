@@ -1,10 +1,20 @@
 import { concat } from '@ethersproject/bytes';
+import { Ok, Err } from 'ts-results';
 
-import { CLType, CLValue, ToBytes } from './Abstract';
+import {
+  CLType,
+  CLValue,
+  CLErrorCodes,
+  ResultAndRemainder,
+  ToBytesResult,
+  resultHelper
+} from './index';
+import { UREF_ID, CLTypeTag } from "./constants";
 import { decodeBase16, encodeBase16 } from '../Conversions';
 
 // TODO Move this to some utils
-const padNum = (v: string, n = 1) => new Array(n).join('0').slice((n || 2) * -1) + v;
+const padNum = (v: string, n = 1) =>
+  new Array(n).join('0').slice((n || 2) * -1) + v;
 
 // TBD: Maybe this should be in one file like src/lib/constants.ts ?
 export enum AccessRights {
@@ -27,14 +37,33 @@ export enum AccessRights {
 }
 
 export class CLURefType extends CLType {
+  linksTo = CLURef;
+  tag = CLTypeTag.URef;
+
   toString(): string {
-    return 'URef';
+    return UREF_ID;
+  }
+
+  toJSON(): string {
+    return this.toString();
   }
 }
 
 const FORMATTED_STRING_PREFIX = 'uref';
+/**
+ * Length of [[URef]] address field.
+ * @internal
+ */
+const UREF_ADDR_LENGTH = 32;
+/**
+ * Length of [[ACCESS_RIGHT]] field.
+ * @internal
+ */
+const ACCESS_RIGHT_LENGTH = 1;
 
-export class CLURef extends CLValue implements ToBytes {
+const UREF_BYTES_LENGTH = UREF_ADDR_LENGTH + ACCESS_RIGHT_LENGTH;
+
+export class CLURef extends CLValue {
   data: Uint8Array;
   accessRights: AccessRights;
 
@@ -64,7 +93,9 @@ export class CLURef extends CLValue implements ToBytes {
     if (!input.startsWith(`${FORMATTED_STRING_PREFIX}-`)) {
       throw new Error("Prefix is not 'uref-'");
     }
-    const parts = input.substring(`${FORMATTED_STRING_PREFIX}-`.length).split('-', 2);
+    const parts = input
+      .substring(`${FORMATTED_STRING_PREFIX}-`.length)
+      .split('-', 2);
     if (parts.length !== 2) {
       throw new Error('No access rights as suffix');
     }
@@ -87,12 +118,24 @@ export class CLURef extends CLValue implements ToBytes {
     return new CLURefType();
   }
 
-  value(): { data: Uint8Array, accessRights: AccessRights } {
+  value(): { data: Uint8Array; accessRights: AccessRights } {
     return { data: this.data, accessRights: this.accessRights };
   }
 
-  toBytes(): Uint8Array {
-    return concat([this.data, Uint8Array.from([this.accessRights])]);
+  toBytes(): ToBytesResult {
+    return Ok(concat([this.data, Uint8Array.from([this.accessRights])]));
   }
 
+  static fromBytesWithRemainder(
+    bytes: Uint8Array
+  ): ResultAndRemainder<CLURef, CLErrorCodes> {
+    if (bytes.length < UREF_BYTES_LENGTH) {
+      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+    }
+
+    const urefBytes = bytes.subarray(0, UREF_ADDR_LENGTH);
+    const accessRights = bytes[UREF_BYTES_LENGTH - 1];
+    const uref = new CLURef(urefBytes, accessRights);
+    return resultHelper(Ok(uref), bytes.subarray(UREF_BYTES_LENGTH));
+  }
 }

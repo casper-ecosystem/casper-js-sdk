@@ -1,8 +1,5 @@
 import { expect } from 'chai';
-import { CLMap } from './Map';
-import { CLBool } from './Bool';
-import { CLString, CLStringType } from './String';
-import { CLI32 } from './Numeric';
+import { CLMap, CLMapType, CLBool, CLString, CLStringType, CLI32, CLI32Type } from './index';
 
 describe('CLValue CLMap implementation', () => {
   it('Maps should return proper clType', () => {
@@ -24,6 +21,7 @@ describe('CLValue CLMap implementation', () => {
     const badFn = () =>
       new CLMap([
         [new CLString('ABC'), new CLI32(123)],
+        // @ts-ignore
         [new CLString('DEF'), new CLBool(false)]
       ]);
 
@@ -43,10 +41,10 @@ describe('CLValue CLMap implementation', () => {
     const myVal = new CLI32(10);
     const myMap = new CLMap([[myKey, myVal]]);
 
-    expect(myMap.get(myKey).value()).to.be.deep.eq(myVal.value());
+    expect(myMap.get(myKey)).to.be.deep.eq(myVal);
   });
 
-  it('Get() should return indefined on non-existing key', () => {
+  it('Get() should return undefined on non-existing key', () => {
     const myKey = new CLString('ABC');
     const myVal = new CLI32(10);
     const myMap = new CLMap([[myKey, myVal]]);
@@ -69,7 +67,7 @@ describe('CLValue CLMap implementation', () => {
 
     myMap.set(myKey, newVal);
 
-    expect(myMap.get(myKey).value()).to.deep.eq(newVal.value());
+    expect(myMap.get(myKey)).to.deep.eq(newVal);
   });
 
   it('Set should be able to set values at already declared keys', () => {
@@ -80,7 +78,7 @@ describe('CLValue CLMap implementation', () => {
 
     myMap.set(myKey, newVal);
 
-    expect(myMap.get(myKey).value()).to.deep.eq(newVal.value());
+    expect(myMap.get(myKey)).to.deep.eq(newVal);
     expect(myMap.size()).to.eq(1);
   });
 
@@ -93,7 +91,7 @@ describe('CLValue CLMap implementation', () => {
 
     myMap.set(newKey, newVal);
 
-    expect(myMap.get(newKey).value()).to.deep.eq(newVal.value());
+    expect(myMap.get(newKey)).to.deep.eq(newVal);
     expect(myMap.size()).to.eq(2);
   });
 
@@ -105,5 +103,28 @@ describe('CLValue CLMap implementation', () => {
     myMap.delete(myKey);
 
     expect(myMap.size()).to.eq(0);
+  });
+
+  it('fromBytes() / toBytes()', () => {
+    const myKey = new CLString('ABC');
+    const myVal = new CLI32(10);
+    const myMap = new CLMap([[myKey, myVal]]);
+
+    const bytes = myMap.toBytes();
+    const mapType = new CLMapType(new CLStringType(), new CLI32Type());
+
+    expect(CLMap.fromBytes(bytes.unwrap(), mapType).unwrap()).to.be.deep.eq(myMap);
+  });
+
+  it('fromJSON() / toJSON()', () => {
+    const myKey = new CLString('ABC');
+    const myVal = new CLI32(10);
+    const myMap = new CLMap([[myKey, myVal]]);
+
+    const json = myMap.toJSON().unwrap();
+    const expectedJson = JSON.parse('{"bytes":"01000000030000004142430a000000","cl_type":{"Map":{"key":"String","value":"I32"}}}');
+
+    expect(CLMap.fromJSON(expectedJson).unwrap()).to.be.deep.eq(myMap);
+    expect(json).to.be.deep.eq(expectedJson);
   });
 });
