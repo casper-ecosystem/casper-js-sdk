@@ -42,7 +42,6 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
       return Ok(
         concat([
           Uint8Array.from([KeyVariant.Account]),
-          // NOTE: We are using CLAccountHashBytesParser directly because CLAccountHash isn't publicly available.
           new CLAccountHashBytesParser().toBytes(value.data as CLAccountHash).unwrap()
         ])
       );
@@ -75,7 +74,6 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
 
     const tag = bytes[0];
 
-    // TODO: Review if fromBytesWithRemainder() usage is needed here
     if (tag === KeyVariant.Hash) {
       const hashBytes = bytes.subarray(1, ACCOUNT_HASH_LENGTH + 1);
       const { result: hashResult, remainder: hashRemainder } = new CLByteArrayBytesParser().fromBytesWithRemainder(hashBytes);
@@ -112,7 +110,6 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
   }
 }
 
-// TBD: Maybe the first should be CLByteArray insted?
 export type CLKeyParameters = CLByteArray | CLURef | CLAccountHash;
 
 export class CLKey extends CLValue {

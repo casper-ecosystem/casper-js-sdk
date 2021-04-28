@@ -14,7 +14,6 @@ import {
   CLU128
 } from './index';
 
-// const MAX_I32 = 2147483647;
 const MAX_I64 = '9223372036854775807';
 const MAX_U8 = 255;
 const MAX_U32 = 4294967295;
