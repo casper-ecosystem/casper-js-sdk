@@ -4,7 +4,7 @@ import { CLPublicKey } from '../index';
 import * as DeployUtil from './DeployUtil';
 import { DeployParams, ExecutableDeployItem } from './DeployUtil';
 import { RuntimeArgs } from './RuntimeArgs';
-import { CLAccountHash, CLValue, CLValueBuilder, CLKey } from './CLValue';
+import { CLAccountHash, CLValueBuilder, CLKey } from './CLValue';
 import { AsymmetricKey } from './Keys';
 
 // https://www.npmjs.com/package/tweetnacl-ts

@@ -11,8 +11,7 @@ import {
   CLU32Type,
   CLU64,
   CLU64Type,
-  CLU128,
-  CLU128Type
+  CLU128
 } from './index';
 
 // const MAX_I32 = 2147483647;

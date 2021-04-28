@@ -9,7 +9,6 @@ import {
   resultHelper,
   ResultAndRemainder,
   ToBytesResult,
-  CLU32,
   CLU32BytesParser,
   CLValueBytesParsers,
   matchByteParserByCLType

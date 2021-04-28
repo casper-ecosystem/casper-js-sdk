@@ -2,7 +2,6 @@ import { expect, assert } from 'chai';
 import { None } from "ts-results";
 
 import {
-  CLValue,
   CLValueBuilder,
   RuntimeArgs,
   CLOption,
@@ -52,25 +51,6 @@ describe(`RuntimeArgs`, () => {
     const bytes = runtimeArgs.toBytes().unwrap();
     expect(bytes).to.deep.eq(truth);
   });
-
-  // it('should deserialize U512', () => {
-  //   let value = CLValue.u512(43000000000);
-  //   let serializer = new TypedJSON(CLValue);
-  //   let str = serializer.stringify(value);
-  //   assert.deepEqual(value, serializer.parse(str));
-  // });
-
-  // it('should deserialize Option of U512', () => {
-  //   let a = CLValue.u512(123);
-  //   let value = CLValue.option(Some(a), a.clType());
-  //   let serializer = new TypedJSON(CLValue);
-  //   let str = serializer.stringify(value);
-  //   let parsed = serializer.parse(str)!;
-  //   assert.deepEqual(
-  //     value.value(),
-  //     parsed.getSome().asBigNumber()
-  //   );
-  // });
 
   it('should deserialize RuntimeArgs', () => {
     let a = CLValueBuilder.u512(123);

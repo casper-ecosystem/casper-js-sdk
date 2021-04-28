@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import {
-  CLValue,
   CLValueParsers,
   CLList,
   CLListType,

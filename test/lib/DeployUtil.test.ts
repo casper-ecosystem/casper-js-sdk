@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import { Keys, DeployUtil, CLValue, CLValueBuilder } from '../../src/lib';
+import { Keys, DeployUtil, CLValueBuilder } from '../../src/lib';
 import { TypedJSON } from 'typedjson';
 
 describe('DeployUtil', () => {
