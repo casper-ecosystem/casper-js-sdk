@@ -9,7 +9,7 @@ import {
   ResultAndRemainder,
   ToBytesResult,
   ACCOUNT_HASH_LENGTH,
-  resultHelper,
+  resultHelper
 } from './index';
 
 export class CLAccountHashType extends CLType {
@@ -30,7 +30,9 @@ export class CLAccountHashBytesParser extends CLValueBytesParsers {
     return Ok(value.data);
   }
 
-  fromBytesWithRemainder(bytes: Uint8Array): ResultAndRemainder<CLAccountHash, CLErrorCodes> {
+  fromBytesWithRemainder(
+    bytes: Uint8Array
+  ): ResultAndRemainder<CLAccountHash, CLErrorCodes> {
     if (bytes.length < ACCOUNT_HASH_LENGTH) {
       return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
     }
@@ -61,5 +63,4 @@ export class CLAccountHash extends CLValue {
   value(): Uint8Array {
     return this.data;
   }
-
 }

@@ -23,21 +23,19 @@ const myTypesComplex = {
   err: new CLOptionType(new CLListType(new CLListType(new CLU8Type())))
 };
 
-const myOkComplexRes = new CLResult(Ok(
-  new CLList([
-    new CLList([ new CLU8(5), new CLU8(10), new CLU8(15) ])
-  ])
-), myTypesComplex);
+const myOkComplexRes = new CLResult(
+  Ok(new CLList([new CLList([new CLU8(5), new CLU8(10), new CLU8(15)])])),
+  myTypesComplex
+);
 
-const myErrComplexRes = new CLResult(Err(
-  new CLOption(
-    Some(
-      new CLList([
-        new CLList([ new CLU8(5), new CLU8(10), new CLU8(15) ])
-      ])
+const myErrComplexRes = new CLResult(
+  Err(
+    new CLOption(
+      Some(new CLList([new CLList([new CLU8(5), new CLU8(10), new CLU8(15)])]))
     )
-  )
-), myTypesComplex);
+  ),
+  myTypesComplex
+);
 
 describe('CLResult', () => {
   it('Should be valid by construction', () => {
@@ -59,7 +57,7 @@ describe('CLResult', () => {
       okBytes,
       new CLResultType(myTypes)
     ).unwrap();
-    const errFromBytes = CLValueParsers.fromBytes( 
+    const errFromBytes = CLValueParsers.fromBytes(
       errBytes,
       new CLResultType(myTypes)
     ).unwrap();
@@ -93,12 +91,16 @@ describe('CLResult', () => {
   });
 
   it('toBytesWithType() / fromBytesWithType()', () => {
-    const okResBytesWithCLType = CLValueParsers.toBytesWithType(myOkRes).unwrap();
+    const okResBytesWithCLType = CLValueParsers.toBytesWithType(
+      myOkRes
+    ).unwrap();
     const okFromBytes = CLValueParsers.fromBytesWithType(
       okResBytesWithCLType
     ).unwrap();
 
-    const errResBytesWithCLType = CLValueParsers.toBytesWithType(myErrRes).unwrap();
+    const errResBytesWithCLType = CLValueParsers.toBytesWithType(
+      myErrRes
+    ).unwrap();
     const errFromBytes = CLValueParsers.fromBytesWithType(
       errResBytesWithCLType
     ).unwrap();
@@ -109,12 +111,16 @@ describe('CLResult', () => {
 
   // TODO: Maybe have another file with more "integration" tests of CLValue
   it('Complex examples toBytesWithCLType() / fromBytesWithCLType()', () => {
-    const okResBytesWithCLType = CLValueParsers.toBytesWithType(myOkComplexRes).unwrap();
+    const okResBytesWithCLType = CLValueParsers.toBytesWithType(
+      myOkComplexRes
+    ).unwrap();
     const okFromBytes = CLValueParsers.fromBytesWithType(
       okResBytesWithCLType
     ).unwrap();
 
-    const errResBytesWithCLType = CLValueParsers.toBytesWithType(myErrComplexRes).unwrap();
+    const errResBytesWithCLType = CLValueParsers.toBytesWithType(
+      myErrComplexRes
+    ).unwrap();
     const errFromBytes = CLValueParsers.fromBytesWithType(
       errResBytesWithCLType
     ).unwrap();

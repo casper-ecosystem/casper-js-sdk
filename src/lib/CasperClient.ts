@@ -192,7 +192,9 @@ export class CasperClient {
   /**
    * Get the balance of public key
    */
-  public async balanceOfByPublicKey(publicKey: CLPublicKey): Promise<BigNumber> {
+  public async balanceOfByPublicKey(
+    publicKey: CLPublicKey
+  ): Promise<BigNumber> {
     return this.balanceOfByAccountHash(encodeBase16(publicKey.toAccountHash()));
   }
 

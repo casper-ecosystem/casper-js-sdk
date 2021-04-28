@@ -1,5 +1,10 @@
 import { expect } from 'chai';
-import { CLPublicKey, CLPublicKeyType, CLPublicKeyTag, CLValueParsers } from './index';
+import {
+  CLPublicKey,
+  CLPublicKeyType,
+  CLPublicKeyTag,
+  CLValueParsers
+} from './index';
 import { Keys } from '../index';
 
 // prettier-ignore
@@ -119,16 +124,22 @@ describe('CLPublicKey', () => {
     const validResult = Uint8Array.from([1, ...Array(32).fill(42)]);
 
     expect(toBytes).to.be.deep.eq(validResult);
-    expect(CLValueParsers.fromBytes(toBytes, new CLPublicKeyType()).unwrap()).to.be.deep.eq(publicKey);
+    expect(
+      CLValueParsers.fromBytes(toBytes, new CLPublicKeyType()).unwrap()
+    ).to.be.deep.eq(publicKey);
   });
 
   it('toJSON() / fromJSON()', () => {
     const bytes = Uint8Array.from(Array(32).fill(42));
     const publicKey = CLPublicKey.fromEd25519(bytes);
     const json = CLValueParsers.toJSON(publicKey).unwrap();
-    const expectedJson = JSON.parse('{"bytes":"012a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a","cl_type":"PublicKey"}');
+    const expectedJson = JSON.parse(
+      '{"bytes":"012a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a","cl_type":"PublicKey"}'
+    );
 
     expect(json).to.be.deep.eq(expectedJson);
-    expect(CLValueParsers.fromJSON(expectedJson).unwrap()).to.be.deep.eq(publicKey);
+    expect(CLValueParsers.fromJSON(expectedJson).unwrap()).to.be.deep.eq(
+      publicKey
+    );
   });
 });

@@ -127,25 +127,25 @@ export const matchTypeToCLType = (type: any): CLType => {
       return new CLMapType([keyType, valType]);
     }
     if (TUPLE1_ID in type) {
-    const vals = type[TUPLE1_ID].map((t: any) => matchTypeToCLType(t));
-    return new CLTuple1Type(vals);
+      const vals = type[TUPLE1_ID].map((t: any) => matchTypeToCLType(t));
+      return new CLTuple1Type(vals);
     }
     if (TUPLE2_ID in type) {
-    const vals = type[TUPLE2_ID].map((t: any) => matchTypeToCLType(t));
-    return new CLTuple2Type(vals);
+      const vals = type[TUPLE2_ID].map((t: any) => matchTypeToCLType(t));
+      return new CLTuple2Type(vals);
     }
     if (TUPLE3_ID in type) {
-    const vals = type[TUPLE3_ID].map((t: any) => matchTypeToCLType(t));
-    return new CLTuple3Type(vals);
+      const vals = type[TUPLE3_ID].map((t: any) => matchTypeToCLType(t));
+      return new CLTuple3Type(vals);
     }
     if (CLOptionType.TypeId in type) {
-    const inner = matchTypeToCLType(type[CLOptionType.TypeId]);
-    return new CLOptionType(inner);
+      const inner = matchTypeToCLType(type[CLOptionType.TypeId]);
+      return new CLOptionType(inner);
     }
     if (RESULT_ID in type) {
-    const innerOk = matchTypeToCLType(type[RESULT_ID].ok);
-    const innerErr = matchTypeToCLType(type[RESULT_ID].err);
-    return new CLResultType({ ok: innerOk, err: innerErr });
+      const innerOk = matchTypeToCLType(type[RESULT_ID].ok);
+      const innerErr = matchTypeToCLType(type[RESULT_ID].err);
+      return new CLResultType({ ok: innerOk, err: innerErr });
     }
     throw new Error(`The complex type ${type} is not supported`);
   }
@@ -320,55 +320,70 @@ export const matchBytesToCLType = (
       return resultHelper(Ok(new CLTuple1Type([innerType])), rem);
     }
     case CLTypeTag.Tuple2: {
-      const { result: innerType1Res, remainder: innerType1Rem } = matchBytesToCLType(
-        remainder
-      );
+      const {
+        result: innerType1Res,
+        remainder: innerType1Rem
+      } = matchBytesToCLType(remainder);
       const innerType1 = innerType1Res.unwrap();
 
       if (!innerType1Rem) {
-        return resultHelper(Err('Missing second tuple type bytes in CLTuple2Type'));
+        return resultHelper(
+          Err('Missing second tuple type bytes in CLTuple2Type')
+        );
       }
 
-      const { result: innerType2Res, remainder: innerType2Rem } = matchBytesToCLType(
-        innerType1Rem
-      );
+      const {
+        result: innerType2Res,
+        remainder: innerType2Rem
+      } = matchBytesToCLType(innerType1Rem);
       const innerType2 = innerType2Res.unwrap();
 
-      return resultHelper(Ok(new CLTuple1Type([innerType1, innerType2])), innerType2Rem);
+      return resultHelper(
+        Ok(new CLTuple1Type([innerType1, innerType2])),
+        innerType2Rem
+      );
     }
     case CLTypeTag.Tuple3: {
-      const { result: innerType1Res, remainder: innerType1Rem } = matchBytesToCLType(
-        remainder
-      );
+      const {
+        result: innerType1Res,
+        remainder: innerType1Rem
+      } = matchBytesToCLType(remainder);
       const innerType1 = innerType1Res.unwrap();
 
       if (!innerType1Rem) {
-        return resultHelper(Err('Missing second tuple type bytes in CLTuple2Type'));
+        return resultHelper(
+          Err('Missing second tuple type bytes in CLTuple2Type')
+        );
       }
 
-      const { result: innerType2Res, remainder: innerType2Rem } = matchBytesToCLType(
-        innerType1Rem
-      );
+      const {
+        result: innerType2Res,
+        remainder: innerType2Rem
+      } = matchBytesToCLType(innerType1Rem);
       const innerType2 = innerType2Res.unwrap();
 
       if (!innerType2Rem) {
-        return resultHelper(Err('Missing third tuple type bytes in CLTuple2Type'));
+        return resultHelper(
+          Err('Missing third tuple type bytes in CLTuple2Type')
+        );
       }
 
-      const { result: innerType3Res, remainder: innerType3Rem } = matchBytesToCLType(
-        innerType2Rem
-      );
+      const {
+        result: innerType3Res,
+        remainder: innerType3Rem
+      } = matchBytesToCLType(innerType2Rem);
       const innerType3 = innerType3Res.unwrap();
 
-      return resultHelper(Ok(new CLTuple1Type([innerType1, innerType2, innerType3])), innerType3Rem);
+      return resultHelper(
+        Ok(new CLTuple1Type([innerType1, innerType2, innerType3])),
+        innerType3Rem
+      );
     }
     case CLTypeTag.Any: {
       return resultHelper(Err('Any unsupported'));
     }
     case CLTypeTag.PublicKey:
-      return resultHelper(
-        Ok(new CLPublicKeyType())
-      );
+      return resultHelper(Ok(new CLPublicKeyType()));
   }
 
   return resultHelper(Err('Unsuported type'));

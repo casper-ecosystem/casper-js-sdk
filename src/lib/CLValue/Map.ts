@@ -112,12 +112,12 @@ export class CLMapBytesParser extends CLValueBytesParsers {
       if (!remainder) return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
 
       const valParser = matchByteParserByCLType(mapType.innerValue).unwrap();
-      const { result: vRes, remainder: vRem } = valParser.fromBytesWithRemainder(
-        remainder,
-        mapType.innerValue
-      );
+      const {
+        result: vRes,
+        remainder: vRem
+      } = valParser.fromBytesWithRemainder(remainder, mapType.innerValue);
 
-      const finalValue= vRes.unwrap();
+      const finalValue = vRes.unwrap();
       remainder = vRem;
 
       vec.push([finalKey, finalValue]);

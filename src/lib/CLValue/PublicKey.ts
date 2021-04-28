@@ -76,7 +76,10 @@ export class CLPublicKey extends CLValue {
   data: Uint8Array;
   tag: CLPublicKeyTag;
 
-  constructor(rawPublicKey: Uint8Array, tag: CLPublicKeyTag | SignatureAlgorithm ) {
+  constructor(
+    rawPublicKey: Uint8Array,
+    tag: CLPublicKeyTag | SignatureAlgorithm
+  ) {
     super();
     // TODO: Two ifs because of the legacy indentifiers in ./Keys
     if (tag === CLPublicKeyTag.ED25519 || tag === SignatureAlgorithm.Ed25519) {
@@ -89,7 +92,10 @@ export class CLPublicKey extends CLValue {
       this.tag = CLPublicKeyTag.ED25519;
       return;
     }
-    if (tag === CLPublicKeyTag.SECP256K1 || tag === SignatureAlgorithm.Secp256K1) {
+    if (
+      tag === CLPublicKeyTag.SECP256K1 ||
+      tag === SignatureAlgorithm.Secp256K1
+    ) {
       if (rawPublicKey.length !== SECP256K1_LENGTH) {
         throw new Error(
           `Wrong length of SECP256K1 key. Expected ${SECP256K1_LENGTH}, but got ${rawPublicKey.length}.`

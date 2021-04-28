@@ -67,7 +67,7 @@ export class CLByteArray extends CLValue {
    * @param v The bytes array with max length 32.
    */
   constructor(v: Uint8Array) {
-   super();
+    super();
     if (v.length > CL_BYTE_ARRAY_MAX_LENGTH) {
       throw new Error(
         `Provided value has length ${v.length} which exceeded the limit (${CL_BYTE_ARRAY_MAX_LENGTH})`

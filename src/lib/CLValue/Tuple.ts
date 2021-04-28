@@ -48,21 +48,20 @@ export abstract class CLTupleType extends CLType {
 }
 
 export class CLTupleBytesParser extends CLValueBytesParsers {
-  toBytes(value: CLTuple ): ToBytesResult {
+  toBytes(value: CLTuple): ToBytesResult {
     return Ok(concat(value.data.map(d => CLValueParsers.toBytes(d).unwrap())));
   }
 
   fromBytesWithRemainder(
     rawBytes: Uint8Array,
     type: CLTuple1Type | CLTuple2Type | CLTuple3Type
-  ): ResultAndRemainder<CLTuple , CLErrorCodes> {
+  ): ResultAndRemainder<CLTuple, CLErrorCodes> {
     let rem = rawBytes;
     const val = type.inner.map((t: CLType) => {
-    const parser = matchByteParserByCLType(t).unwrap();
-      const {
-        result: vRes,
-        remainder: vRem
-      } = parser.fromBytesWithRemainder(rem);
+      const parser = matchByteParserByCLType(t).unwrap();
+      const { result: vRes, remainder: vRem } = parser.fromBytesWithRemainder(
+        rem
+      );
 
       rem = vRem!;
       return vRes.unwrap();

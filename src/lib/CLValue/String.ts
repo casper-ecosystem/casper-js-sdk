@@ -38,7 +38,9 @@ export class CLStringBytesParser extends CLValueBytesParsers {
       remainder: CLU32rem
     } = new CLU32BytesParser().fromBytesWithRemainder(rawBytes);
 
-    const len = CLU32res.unwrap().value().toNumber();
+    const len = CLU32res.unwrap()
+      .value()
+      .toNumber();
 
     if (CLU32rem) {
       const val = fromBytesString(CLU32rem.subarray(0, len));

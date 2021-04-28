@@ -128,28 +128,30 @@ describe('CLTuple', () => {
     const myTup2JSON = CLValueParsers.toJSON(myTup2).unwrap();
     const myTup3JSON = CLValueParsers.toJSON(myTup3).unwrap();
 
-    const expectedMyTup1JSON = JSON.parse('{"bytes":"01","cl_type":{"Tuple1":["Bool"]}}');
-    const expectedMyTup2JSON = JSON.parse('{"bytes":"00d5fdffff","cl_type":{"Tuple2":["Bool","I32"]}}');
-    const expectedMyTup3JSON = JSON.parse('{"bytes":"d5fdffff030000004142430300000058595a","cl_type":{"Tuple3":["I32","String","String"]}}');
+    const expectedMyTup1JSON = JSON.parse(
+      '{"bytes":"01","cl_type":{"Tuple1":["Bool"]}}'
+    );
+    const expectedMyTup2JSON = JSON.parse(
+      '{"bytes":"00d5fdffff","cl_type":{"Tuple2":["Bool","I32"]}}'
+    );
+    const expectedMyTup3JSON = JSON.parse(
+      '{"bytes":"d5fdffff030000004142430300000058595a","cl_type":{"Tuple3":["I32","String","String"]}}'
+    );
 
-    expect(
-      CLValueParsers.fromJSON(expectedMyTup1JSON)
-      .unwrap()
-    ).to.be.deep.eq(myTup1);
+    expect(CLValueParsers.fromJSON(expectedMyTup1JSON).unwrap()).to.be.deep.eq(
+      myTup1
+    );
 
-    expect(
-      CLValueParsers.fromJSON(expectedMyTup2JSON)
-      .unwrap()
-    ).to.be.deep.eq(myTup2);
+    expect(CLValueParsers.fromJSON(expectedMyTup2JSON).unwrap()).to.be.deep.eq(
+      myTup2
+    );
 
-    expect(
-      CLValueParsers.fromJSON(expectedMyTup3JSON)
-      .unwrap()
-    ).to.be.deep.eq(myTup3);
+    expect(CLValueParsers.fromJSON(expectedMyTup3JSON).unwrap()).to.be.deep.eq(
+      myTup3
+    );
 
     expect(myTup1JSON).to.be.deep.eq(expectedMyTup1JSON);
     expect(myTup2JSON).to.be.deep.eq(expectedMyTup2JSON);
     expect(myTup3JSON).to.be.deep.eq(expectedMyTup3JSON);
-
   });
 });

@@ -15,12 +15,12 @@ import {
 } from './index';
 import { toBytesVectorNew } from '../ByteConverters';
 
-import { LIST_ID, CLTypeTag } from "./constants";
+import { LIST_ID, CLTypeTag } from './constants';
 
 export class CLListType<T extends CLType> extends CLType {
   inner: T;
   linksTo = CLList;
-  typeId = "List";
+  typeId = 'List';
   tag = CLTypeTag.List;
 
   constructor(inner: T) {
@@ -33,10 +33,7 @@ export class CLListType<T extends CLType> extends CLType {
   }
 
   toBytes(): Uint8Array {
-    return concat([
-      Uint8Array.from([this.tag]),
-      this.inner.toBytes()
-    ]);
+    return concat([Uint8Array.from([this.tag]), this.inner.toBytes()]);
   }
 
   toJSON(): any {
@@ -57,7 +54,10 @@ export class CLListBytesParser extends CLValueBytesParsers {
     bytes: Uint8Array,
     listType: CLListType<CLType>
   ): ResultAndRemainder<CLList<CLValue>, CLErrorCodes> {
-    const { result: u32Res, remainder: u32Rem } = new CLU32BytesParser().fromBytesWithRemainder(bytes);
+    const {
+      result: u32Res,
+      remainder: u32Rem
+    } = new CLU32BytesParser().fromBytesWithRemainder(bytes);
     if (!u32Res.ok) {
       return resultHelper(Err(u32Res.val));
     }
@@ -88,8 +88,7 @@ export class CLListBytesParser extends CLValueBytesParsers {
   }
 }
 
-export class CLList<T extends CLValue> extends CLValue
-  {
+export class CLList<T extends CLValue> extends CLValue {
   data: Array<T>;
   vectorType: CLType;
 

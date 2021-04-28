@@ -12,7 +12,7 @@ import {
   ToBytes,
   ToBytesResult,
   ResultAndRemainder,
-  resultHelper,
+  resultHelper
   // U32
   // CLU32
 } from './CLValue';
@@ -39,7 +39,7 @@ export class NamedArg implements ToBytes {
     if (!nameRem) {
       return resultHelper(Err('Missing data for value of named arg'));
     }
-    const value = CLValueParsers.fromBytesWithType(nameRem).unwrap(); 
+    const value = CLValueParsers.fromBytesWithType(nameRem).unwrap();
     return resultHelper(Ok(new NamedArg(name.value(), value)));
   }
 }

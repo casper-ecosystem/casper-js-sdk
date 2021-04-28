@@ -10,7 +10,7 @@ import {
   ToBytesResult,
   resultHelper
 } from './index';
-import { UREF_ID, CLTypeTag } from "./constants";
+import { UREF_ID, CLTypeTag } from './constants';
 import { decodeBase16, encodeBase16 } from '../Conversions';
 
 // TODO Move this to some utils
@@ -141,5 +141,4 @@ export class CLURef extends CLValue {
   value(): { data: Uint8Array; accessRights: AccessRights } {
     return { data: this.data, accessRights: this.accessRights };
   }
-
 }

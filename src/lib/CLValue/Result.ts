@@ -79,15 +79,18 @@ export class CLResultBytesParser extends CLValueBytesParsers {
     bytes: Uint8Array,
     type: CLResultType<CLType, CLType>
   ): ResultAndRemainder<CLResult<CLType, CLType>, CLErrorCodes> {
-    const { result: U8Res, remainder: U8Rem } = new CLU8BytesParser().fromBytesWithRemainder(
-      bytes
-    );
+    const {
+      result: U8Res,
+      remainder: U8Rem
+    } = new CLU8BytesParser().fromBytesWithRemainder(bytes);
 
     if (!U8Rem) {
       return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
     }
 
-    const resultTag = U8Res.unwrap().value().toNumber();
+    const resultTag = U8Res.unwrap()
+      .value()
+      .toNumber();
     const referenceErr = type.innerErr;
     const referenceOk = type.innerOk;
 

@@ -1,4 +1,4 @@
-import { RequestManager, HTTPTransport, Client } from "@open-rpc/client-js";
+import { RequestManager, HTTPTransport, Client } from '@open-rpc/client-js';
 import { DeployUtil, encodeBase16, CLPublicKey } from '..';
 import { deployToJson } from '../lib/DeployUtil';
 import { TypedJSON } from 'typedjson';
@@ -193,39 +193,41 @@ export class CasperServiceByJsonRPC {
   public async getBlockInfo(
     blockHashBase16: JsonBlockHash
   ): Promise<GetBlockResult> {
-    return await this.client.request({
-      method: 'chain_get_block',
-      params: {
-        block_identifier: {
-          Hash: blockHashBase16
+    return await this.client
+      .request({
+        method: 'chain_get_block',
+        params: {
+          block_identifier: {
+            Hash: blockHashBase16
+          }
         }
-      }
-    }).then((res: GetBlockResult) => {
-      if (res.block !== null && res.block.hash !== blockHashBase16) {
-        throw new Error("Returned block does not have a matching hash.");
-      }
-      return res;
-    });
+      })
+      .then((res: GetBlockResult) => {
+        if (res.block !== null && res.block.hash !== blockHashBase16) {
+          throw new Error('Returned block does not have a matching hash.');
+        }
+        return res;
+      });
   }
 
-  public async getBlockInfoByHeight(
-    height: number
-  ): Promise<GetBlockResult> {
-    return await this.client.request({
-      method: 'chain_get_block',
-      params: {
-        block_identifier: {
-          Height: height
+  public async getBlockInfoByHeight(height: number): Promise<GetBlockResult> {
+    return await this.client
+      .request({
+        method: 'chain_get_block',
+        params: {
+          block_identifier: {
+            Height: height
+          }
         }
-      }
-    }).then((res: GetBlockResult) => {
-      if (res.block !== null && res.block.header.height !== height) {
-        throw new Error("Returned block does not have a matching height.");
-      }
-      return res;
-    });
+      })
+      .then((res: GetBlockResult) => {
+        if (res.block !== null && res.block.header.height !== height) {
+          throw new Error('Returned block does not have a matching height.');
+        }
+        return res;
+      });
   }
-  
+
   public async getLatestBlockInfo(): Promise<GetBlockResult> {
     return await this.client.request({
       method: 'chain_get_block'

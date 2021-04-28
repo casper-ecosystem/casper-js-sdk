@@ -1,5 +1,14 @@
 import { expect } from 'chai';
-import { CLValueParsers, CLMap, CLMapType, CLBool, CLString, CLStringType, CLI32, CLI32Type } from './index';
+import {
+  CLValueParsers,
+  CLMap,
+  CLMapType,
+  CLBool,
+  CLString,
+  CLStringType,
+  CLI32,
+  CLI32Type
+} from './index';
 
 describe('CLValue CLMap implementation', () => {
   it('Maps should return proper clType', () => {
@@ -122,8 +131,10 @@ describe('CLValue CLMap implementation', () => {
     const myVal = new CLI32(10);
     const myMap = new CLMap([[myKey, myVal]]);
 
-    const json= CLValueParsers.toJSON(myMap).unwrap();
-    const expectedJson = JSON.parse('{"bytes":"01000000030000004142430a000000","cl_type":{"Map":{"key":"String","value":"I32"}}}');
+    const json = CLValueParsers.toJSON(myMap).unwrap();
+    const expectedJson = JSON.parse(
+      '{"bytes":"01000000030000004142430a000000","cl_type":{"Map":{"key":"String","value":"I32"}}}'
+    );
 
     const fromJson = CLValueParsers.fromJSON(expectedJson).unwrap();
 

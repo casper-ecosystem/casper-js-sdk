@@ -9,17 +9,15 @@ describe('Unit implementation tests', () => {
 
   it('Unit clType() should return proper type', () => {
     const unit = new CLUnit();
-    expect(unit.clType().toString()).to.be.eq("Unit");
+    expect(unit.clType().toString()).to.be.eq('Unit');
   });
 
   it('fromJSON() / toJSON()', () => {
-    const unit = new CLUnit()
+    const unit = new CLUnit();
     const json = CLValueParsers.toJSON(unit).unwrap();
     const expectedJson = JSON.parse('{"bytes":"","cl_type":"Unit"}');
 
     expect(json).to.be.deep.eq(expectedJson);
     expect(CLValueParsers.fromJSON(expectedJson).unwrap()).to.be.deep.eq(unit);
   });
-
 });
-

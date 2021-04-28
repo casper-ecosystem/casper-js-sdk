@@ -11,7 +11,6 @@ import KeyEncoder from 'key-encoder';
 import { sha256 } from 'ethereum-cryptography/sha256';
 import { CasperHDKey } from './CasperHDKey';
 
-
 const keyEncoder = new KeyEncoder('secp256k1');
 const ec = new EC('secp256k1');
 
@@ -279,11 +278,7 @@ export class Ed25519 extends AsymmetricKey {
    * @param msg
    */
   public verify(signature: Uint8Array, msg: Uint8Array) {
-    return nacl.sign_detached_verify(
-      msg,
-      signature,
-      this.publicKey.value()
-    );
+    return nacl.sign_detached_verify(msg, signature, this.publicKey.value());
   }
 
   /**

@@ -98,9 +98,11 @@ describe('Numeric implementation tests', () => {
   it('CLU64 toJSON() / fromJSON()', () => {
     const num1 = new CLU64(MAX_U64);
     const num1JSON = CLValueParsers.toJSON(num1).unwrap();
-    const expectedJson = JSON.parse('{"bytes":"ffffffffffffffff","cl_type":"U64"}');
+    const expectedJson = JSON.parse(
+      '{"bytes":"ffffffffffffffff","cl_type":"U64"}'
+    );
 
-    expect(num1JSON).to.be.deep.eq(expectedJson)
-    expect(CLValueParsers.fromJSON(expectedJson).unwrap()).to.be.deep.eq(num1)
+    expect(num1JSON).to.be.deep.eq(expectedJson);
+    expect(CLValueParsers.fromJSON(expectedJson).unwrap()).to.be.deep.eq(num1);
   });
 });

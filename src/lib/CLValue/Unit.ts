@@ -9,7 +9,7 @@ import {
   ToBytesResult,
   resultHelper
 } from './index';
-import { UNIT_ID, CLTypeTag } from "./constants";
+import { UNIT_ID, CLTypeTag } from './constants';
 
 export class CLUnitType extends CLType {
   tag = CLTypeTag.Unit;

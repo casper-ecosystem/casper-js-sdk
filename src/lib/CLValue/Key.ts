@@ -42,14 +42,19 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
       return Ok(
         concat([
           Uint8Array.from([KeyVariant.Account]),
-          new CLAccountHashBytesParser().toBytes(value.data as CLAccountHash).unwrap()
+          new CLAccountHashBytesParser()
+            .toBytes(value.data as CLAccountHash)
+            .unwrap()
         ])
       );
     }
     if (value.isHash()) {
       return Ok(
-        concat([Uint8Array.from([KeyVariant.Hash]), 
-          new CLByteArrayBytesParser().toBytes(value.data as CLByteArray).unwrap() 
+        concat([
+          Uint8Array.from([KeyVariant.Hash]),
+          new CLByteArrayBytesParser()
+            .toBytes(value.data as CLByteArray)
+            .unwrap()
         ])
       );
     }
@@ -76,7 +81,10 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
 
     if (tag === KeyVariant.Hash) {
       const hashBytes = bytes.subarray(1, ACCOUNT_HASH_LENGTH + 1);
-      const { result: hashResult, remainder: hashRemainder } = new CLByteArrayBytesParser().fromBytesWithRemainder(hashBytes);
+      const {
+        result: hashResult,
+        remainder: hashRemainder
+      } = new CLByteArrayBytesParser().fromBytesWithRemainder(hashBytes);
       const hash = hashResult.unwrap();
       const key = new CLKey(hash);
       return resultHelper(Ok(key), hashRemainder);
@@ -97,7 +105,7 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
         remainder: accountHashRemainder
       } = new CLAccountHashBytesParser().fromBytesWithRemainder(
         bytes.subarray(1)
-      ); 
+      );
       if (accountHashResult.ok) {
         const key = new CLKey(accountHashResult.val);
         return resultHelper(Ok(key), accountHashRemainder);

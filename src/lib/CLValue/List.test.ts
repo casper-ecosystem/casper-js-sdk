@@ -134,7 +134,10 @@ describe('CLValue List implementation', () => {
     const myList = new CLList([new CLBool(false)]);
     const expected = Uint8Array.from([1, 0, 0, 0, 0]);
     const bytes = CLValueParsers.toBytes(myList).unwrap();
-    const fromBytes = CLValueParsers.fromBytes(expected, new CLListType(new CLBoolType())).unwrap();
+    const fromBytes = CLValueParsers.fromBytes(
+      expected,
+      new CLListType(new CLBoolType())
+    ).unwrap();
 
     expect(bytes).to.deep.eq(expected);
     expect(fromBytes).to.deep.eq(myList);
@@ -167,7 +170,9 @@ describe('CLValue List implementation', () => {
     const json = CLValueParsers.toJSON(myList).unwrap();
     const newList = CLValueParsers.fromJSON(json).unwrap();
 
-    const expectedJson = JSON.parse('{"bytes":"020000000200000001000100000000","cl_type":{"List":{"List":"Bool"}}}');
+    const expectedJson = JSON.parse(
+      '{"bytes":"020000000200000001000100000000","cl_type":{"List":{"List":"Bool"}}}'
+    );
     const newList2 = CLValueParsers.fromJSON(expectedJson).unwrap();
 
     expect(json).to.be.deep.eq(expectedJson);
@@ -183,7 +188,9 @@ describe('CLValue List implementation', () => {
 
     const bytesWithCLType = CLValueParsers.toBytesWithType(myList).unwrap();
 
-    const fromBytes = CLValueParsers.fromBytesWithType(bytesWithCLType).unwrap();
+    const fromBytes = CLValueParsers.fromBytesWithType(
+      bytesWithCLType
+    ).unwrap();
 
     expect(fromBytes).to.be.deep.eq(myList);
   });
