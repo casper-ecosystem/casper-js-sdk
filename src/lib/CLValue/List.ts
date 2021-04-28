@@ -20,7 +20,6 @@ import { LIST_ID, CLTypeTag } from './constants';
 export class CLListType<T extends CLType> extends CLType {
   inner: T;
   linksTo = CLList;
-  typeId = 'List';
   tag = CLTypeTag.List;
 
   constructor(inner: T) {

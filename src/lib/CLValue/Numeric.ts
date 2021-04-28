@@ -10,7 +10,17 @@ import {
 import { CLErrorCodes } from './constants';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { toBytesNumber } from '../ByteConverters';
-import { CLTypeTag } from './constants';
+import {
+  CLTypeTag,
+  I32_ID,
+  I64_ID,
+  U8_ID,
+  U32_ID,
+  U64_ID,
+  U128_ID,
+  U256_ID,
+  U512_ID
+} from './constants';
 
 abstract class NumericBytesParser extends CLValueBytesParsers {
   toBytes(value: Numeric): ToBytesResult {
@@ -41,11 +51,10 @@ abstract class Numeric extends CLValue {
 // CLI32
 export class CLI32Type extends CLType {
   linksTo = CLI32;
-  typeId = 'I32';
   tag = CLTypeTag.I32;
 
   toString(): string {
-    return this.typeId;
+    return I32_ID;
   }
 
   toJSON(): string {
@@ -84,7 +93,7 @@ export class CLI64Type extends CLType {
   tag = CLTypeTag.I64;
 
   toString(): string {
-    return 'I64';
+    return I64_ID;
   }
 
   toJSON(): string {
@@ -123,7 +132,7 @@ export class CLU8Type extends CLType {
   tag = CLTypeTag.U8;
 
   toString(): string {
-    return 'U8';
+    return U8_ID;
   }
 
   toJSON(): string {
@@ -158,7 +167,7 @@ export class CLU32Type extends CLType {
   tag = CLTypeTag.U32;
 
   toString(): string {
-    return 'U32';
+    return U32_ID;
   }
 
   toJSON(): string {
@@ -196,7 +205,7 @@ export class CLU64Type extends CLType {
   tag = CLTypeTag.U64;
 
   toString(): string {
-    return 'U64';
+    return U64_ID;
   }
 
   toJSON(): string {
@@ -234,7 +243,7 @@ export class CLU128Type extends CLType {
   tag = CLTypeTag.U128;
 
   toString(): string {
-    return 'U128';
+    return U128_ID;
   }
 
   toJSON(): string {
@@ -266,7 +275,7 @@ export class CLU256Type extends CLType {
   tag = CLTypeTag.U256;
 
   toString(): string {
-    return 'U256';
+    return U256_ID;
   }
 
   toJSON(): string {
@@ -298,7 +307,7 @@ export class CLU512Type extends CLType {
   tag = CLTypeTag.U512;
 
   toString(): string {
-    return 'U512';
+    return U512_ID;
   }
 
   toJSON(): string {

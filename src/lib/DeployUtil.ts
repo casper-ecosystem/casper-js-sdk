@@ -6,19 +6,14 @@
 import { Ok, Some, None } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
 import blake from 'blakejs';
-// import { Option } from './option';
 import { decodeBase16, encodeBase16 } from './Conversions';
 import humanizeDuration from 'humanize-duration';
 import {
-  // CLTypedAndToBytesHelper,
-  // CLTypeHelper,
   CLValue,
   CLValueBuilder,
   CLValueParsers,
-  // PublicKey,
   CLPublicKey,
   ToBytes,
-  // U32,
   CLU32,
   CLU32Type,
   CLU64,
@@ -33,7 +28,6 @@ import {
   toBytesDeployHash,
   toBytesString,
   toBytesU64,
-  // toBytesVecT
   toBytesVector
 } from './ByteConverters';
 import { RuntimeArgs } from './RuntimeArgs';

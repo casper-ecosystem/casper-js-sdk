@@ -6,15 +6,12 @@ import { toBytesString, toBytesVector } from './ByteConverters';
 import {
   CLValue,
   CLValueParsers,
-  // Result,
-  // StringValue,
   CLStringBytesParser,
+  CLU32BytesParser,
   ToBytes,
   ToBytesResult,
   ResultAndRemainder,
   resultHelper
-  // U32
-  // CLU32
 } from './CLValue';
 import { concat } from '@ethersproject/bytes';
 import { jsonMember, jsonObject } from 'typedjson';
@@ -98,22 +95,31 @@ export class RuntimeArgs implements ToBytes {
   }
 
   // TODO: Add tests to check if it is working properly
-  // public static fromBytes(bytes: Uint8Array): Result<RuntimeArgs> {
-  //   const sizeRes = U32.fromBytes(bytes);
-  //   if (sizeRes.hasError()) {
-  //     return Result.Err(sizeRes.error);
-  //   }
-  //   const size = sizeRes.value().val.toNumber();
-  //   let remainBytes = sizeRes.remainder();
-  //   const res: NamedArg[] = [];
-  //   for (let i = 0; i < size; i++) {
-  //     const namedArgRes = NamedArg.fromBytes(remainBytes);
-  //     if (namedArgRes.hasError()) {
-  //       return Result.Err(namedArgRes.error);
-  //     }
-  //     res.push(namedArgRes.value());
-  //     remainBytes = namedArgRes.remainder();
-  //   }
-  //   return Result.Ok(RuntimeArgs.fromNamedArgs(res), remainBytes);
-  // }
+  public static fromBytes(
+    bytes: Uint8Array
+  ): ResultAndRemainder<RuntimeArgs, string> {
+    const {
+      result: sizeRes,
+      remainder: sizeRem
+    } = new CLU32BytesParser().fromBytesWithRemainder(bytes);
+
+    const size = sizeRes
+      .unwrap()
+      .value()
+      .toNumber();
+
+    let remainBytes = sizeRem;
+    const res: NamedArg[] = [];
+    for (let i = 0; i < size; i++) {
+      if (!remainBytes) return resultHelper(Err('Error while parsing bytes'));
+      const {
+        result: namedArgRes,
+        remainder: namedArgRem
+      } = NamedArg.fromBytes(remainBytes);
+
+      res.push(namedArgRes.unwrap());
+      remainBytes = namedArgRem;
+    }
+    return resultHelper(Ok(RuntimeArgs.fromNamedArgs(res)), remainBytes);
+  }
 }

@@ -22,6 +22,7 @@ import {
   TUPLE1_ID,
   TUPLE2_ID,
   TUPLE3_ID,
+  OPTION_ID,
   CLTypeTag
 } from './constants';
 import {
@@ -138,8 +139,8 @@ export const matchTypeToCLType = (type: any): CLType => {
       const vals = type[TUPLE3_ID].map((t: any) => matchTypeToCLType(t));
       return new CLTuple3Type(vals);
     }
-    if (CLOptionType.TypeId in type) {
-      const inner = matchTypeToCLType(type[CLOptionType.TypeId]);
+    if (OPTION_ID in type) {
+      const inner = matchTypeToCLType(type[OPTION_ID]);
       return new CLOptionType(inner);
     }
     if (RESULT_ID in type) {

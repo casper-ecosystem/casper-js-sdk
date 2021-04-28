@@ -44,7 +44,9 @@ describe('CLResult', () => {
   });
 
   it('clType() should return proper type', () => {
-    expect(myOkRes.clType().toString()).to.be.eq('Result');
+    expect(myOkRes.clType().toString()).to.be.eq(
+      'Result (OK: Bool, ERR: Bool)'
+    );
   });
 
   it('toBytes() / fromBytes()', () => {

@@ -13,14 +13,13 @@ import {
   CLValueBytesParsers,
   matchByteParserByCLType
 } from './index';
-import { CLTypeTag } from './constants';
+import { CLTypeTag, RESULT_ID } from './constants';
 
 const RESULT_TAG_ERROR = 0;
 const RESULT_TAG_OK = 1;
 
 export class CLResultType<T extends CLType, E extends CLType> extends CLType {
   linksTo = CLResult;
-  typeId = 'Result';
   tag = CLTypeTag.Result;
 
   innerOk: T;
@@ -33,7 +32,7 @@ export class CLResultType<T extends CLType, E extends CLType> extends CLType {
   }
 
   toString(): string {
-    return 'Result';
+    return `${RESULT_ID} (OK: ${this.innerOk.toString()}, ERR: ${this.innerOk.toString()})`;
   }
 
   toBytes(): Uint8Array {
@@ -46,7 +45,7 @@ export class CLResultType<T extends CLType, E extends CLType> extends CLType {
 
   toJSON(): any {
     return {
-      [this.typeId]: {
+      [RESULT_ID]: {
         ok: this.innerOk.toJSON(),
         err: this.innerErr.toJSON()
       }

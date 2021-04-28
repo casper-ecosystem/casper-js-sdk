@@ -1,4 +1,6 @@
 // NOTE: Currently this isn't supported CLValue
+// Don't export it outside internal code!
+
 import { Ok, Err } from 'ts-results';
 
 import {
@@ -17,7 +19,7 @@ export class CLAccountHashType extends CLType {
   tag = -1;
 
   toString(): string {
-    return 'AccountHash';
+    return 'AccountHash (Not Supported as CLValue)';
   }
 
   toJSON(): string {
