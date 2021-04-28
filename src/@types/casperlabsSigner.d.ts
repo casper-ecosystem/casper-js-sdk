@@ -26,7 +26,12 @@ interface CasperLabsHelper {
    * Retrieve the active public key.
    * @returns {string} Hex-encoded public key with algorithm prefix.
    */
-   getActivePublicKey: () => Promise<string>;
+  getActivePublicKey: () => Promise<string>;
+
+  /*
+   * Forces Signer to disconnect from the currently open site.
+   */
+  disconnectFromSite: () => void;
 }
 
 interface SignerTestingHelper {
