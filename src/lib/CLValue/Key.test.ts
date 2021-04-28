@@ -1,16 +1,16 @@
 import { expect } from 'chai';
-import { CLValueParsers, CLKey, CLKeyType, CLURef, AccessRights, CLAccountHash } from './index'; // CLURef, CLAccountHash } from './index';
+import { CLValueParsers, CLKey, CLKeyType, CLURef, AccessRights, CLAccountHash, CLByteArray } from './index'; // CLURef, CLAccountHash } from './index';
 import { decodeBase16 } from '../../index';
 
 describe('CLKey', () => {
   const urefAddr =
     '2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a';
 
-  it('Create with (Uint8Array) and test .value() / isHash()', () => {
-    const arr8 = new Uint8Array([21, 31]);
-    const myKey = new CLKey(arr8);
+  it('Create with (CLByteArray) and test .value() / isHash()', () => {
+    const byteArr = new CLByteArray(new Uint8Array([21, 31]));
+    const myKey = new CLKey(byteArr);
 
-    expect(myKey.value()).to.be.deep.eq(arr8);
+    expect(myKey.value()).to.be.deep.eq(byteArr);
     expect(myKey.isHash()).to.be.eq(true);
   });
 
@@ -32,8 +32,9 @@ describe('CLKey', () => {
     expect(myKey.isAccount()).to.be.eq(true);
   });
 
-  it('toBytes() / fromBytes() with Uint8Array', () => {
+  it('toBytes() / fromBytes() with CLByteArray', () => {
     const arr8 = Uint8Array.from(Array(32).fill(42));
+    const byteArr = new CLByteArray(arr8);
     const expectedBytes = Uint8Array.from([
       1,
       42,
@@ -69,7 +70,7 @@ describe('CLKey', () => {
       42,
       42
     ]);
-    const myKey = new CLKey(arr8);
+    const myKey = new CLKey(byteArr);
     const bytes = CLValueParsers.toBytes(myKey).unwrap();
     const fromExpectedBytes = CLValueParsers.fromBytes(bytes, new CLKeyType()).unwrap();
     expect(bytes).to.be.deep.eq(expectedBytes);
@@ -78,41 +79,7 @@ describe('CLKey', () => {
 
   it('toBytes() / fromBytes() with CLAccountHash', () => {
     const hash = new CLAccountHash(Uint8Array.from(Array(32).fill(42)));
-    const expectedBytes = Uint8Array.from([
-      0,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42
-    ]);
+    const expectedBytes = Uint8Array.from([0, ...Array(32).fill(42)])
     const myKey = new CLKey(hash);
     const bytes = CLValueParsers.toBytes(myKey).unwrap();
     const fromExpectedBytes = CLValueParsers.fromBytes(bytes, new CLKeyType()).unwrap();
@@ -168,7 +135,7 @@ describe('CLKey', () => {
   });
 
   it('Should be able to return proper value by calling .clType()', () => {
-    const arr8 = new Uint8Array([21,31]);
+    const arr8 = new CLByteArray(new Uint8Array([21,31]));
     const myKey = new CLKey(arr8);
 
     expect(myKey.clType().toString()).to.be.eq("Key");

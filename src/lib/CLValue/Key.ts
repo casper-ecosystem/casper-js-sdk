@@ -1,10 +1,13 @@
 // NOTE: Revisit in future based on https://docs.rs/casper-types/1.0.1/casper_types/enum.Key.html
+
 import { concat } from '@ethersproject/bytes';
 import { Ok, Err } from 'ts-results';
 
 import {
   CLType,
   CLValue,
+  CLByteArray,
+  CLByteArrayBytesParser,
   CLURef,
   CLURefBytesParser,
   CLAccountHash,
@@ -46,7 +49,9 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
     }
     if (value.isHash()) {
       return Ok(
-        concat([Uint8Array.from([KeyVariant.Hash]), value.data as Uint8Array])
+        concat([Uint8Array.from([KeyVariant.Hash]), 
+          new CLByteArrayBytesParser().toBytes(value.data as CLByteArray).unwrap() 
+        ])
       );
     }
     if (value.isURef()) {
@@ -73,8 +78,10 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
     // TODO: Review if fromBytesWithRemainder() usage is needed here
     if (tag === KeyVariant.Hash) {
       const hashBytes = bytes.subarray(1, ACCOUNT_HASH_LENGTH + 1);
-      const key = new CLKey(hashBytes);
-      return resultHelper(Ok(key), bytes.subarray(ACCOUNT_HASH_LENGTH + 1));
+      const { result: hashResult, remainder: hashRemainder } = new CLByteArrayBytesParser().fromBytesWithRemainder(hashBytes);
+      const hash = hashResult.unwrap();
+      const key = new CLKey(hash);
+      return resultHelper(Ok(key), hashRemainder);
     } else if (tag === KeyVariant.URef) {
       const {
         result: urefResult,
@@ -106,7 +113,7 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
 }
 
 // TBD: Maybe the first should be CLByteArray insted?
-export type CLKeyParameters = Uint8Array | CLURef | CLAccountHash;
+export type CLKeyParameters = CLByteArray | CLURef | CLAccountHash;
 
 export class CLKey extends CLValue {
   data: CLKeyParameters;
@@ -125,7 +132,7 @@ export class CLKey extends CLValue {
   }
 
   isHash(): boolean {
-    return this.data instanceof Uint8Array;
+    return this.data instanceof CLByteArray;
   }
 
   isURef(): boolean {
