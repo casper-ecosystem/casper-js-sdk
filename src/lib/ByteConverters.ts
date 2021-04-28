@@ -6,7 +6,7 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { MaxUint256, NegativeOne, One, Zero } from '@ethersproject/constants';
 import { arrayify, concat } from '@ethersproject/bytes';
-import { CLValue } from './CLValue2';
+import { CLValue, CLValueParsers, ToBytes } from './CLValue';
 
 /**
  * Convert number to bytes
@@ -98,10 +98,10 @@ export const toBytesDeployHash = (deployHash: Uint8Array) => {
 /**
  * Serializes a string into an array of bytes.
  */
-export const toBytesString = (str: string): Uint8Array => {
-  const arr = new TextEncoder().encode(str);
+export function toBytesString(str: string): Uint8Array {
+  const arr = Uint8Array.from(Buffer.from(str));
   return concat([toBytesU32(arr.byteLength), arr]);
-};
+}
 
 export const fromBytesString = (byte: Uint8Array): string => {
   return new TextDecoder().decode(byte);
@@ -117,8 +117,23 @@ export function toBytesArrayU8(arr: Uint8Array): Uint8Array {
 /**
  * Serializes a vector of values of type `T` into an array of bytes.
  */
-export const toBytesVector = <T extends CLValue>(vec: T[]): Uint8Array => {
-  const valueByteList = vec.map(e => e.toBytes().unwrap());
+export const toBytesVector = <T extends ToBytes>(vec: T[]): Uint8Array => {
+  const valueByteList = vec.map(e => e.toBytes()).map(e => e.unwrap());
   valueByteList.splice(0, 0, toBytesU32(vec.length));
   return concat(valueByteList);
 };
+
+// TODO: Get rid after refactoring the whole
+export const toBytesVectorNew = <T extends CLValue>(vec: T[]): Uint8Array => {
+  const valueByteList = vec.map(e => CLValueParsers.toBytes(e).unwrap());
+  valueByteList.splice(0, 0, toBytesU32(vec.length));
+  return concat(valueByteList);
+};
+
+// TODO: Legacy code
+/**
+ * Serializes an byteArray, equal to [u8;n] in rust.
+ */
+export function toBytesBytesArray(arr: Uint8Array): Uint8Array {
+  return arr;
+}

@@ -18,7 +18,7 @@ describe('CasperClient', () => {
 
   it('should generate new Ed25519 key pair, and compute public key from private key', () => {
     const edKeyPair = casperClient.newKeyPair(SignatureAlgorithm.Ed25519);
-    const publicKey = edKeyPair.publicKey.rawPublicKey;
+    const publicKey = edKeyPair.publicKey.value();
     const privateKey = edKeyPair.privateKey;
     const convertFromPrivateKey = casperClient.privateToPublicKey(
       privateKey,
@@ -49,8 +49,8 @@ describe('CasperClient', () => {
       privateKeyFromFile
     );
 
-    expect(keyPairFromFile.publicKey.rawPublicKey).to.deep.equal(
-      edKeyPair.publicKey.rawPublicKey
+    expect(keyPairFromFile.publicKey.value()).to.deep.equal(
+      edKeyPair.publicKey.value()
     );
     expect(keyPairFromFile.privateKey).to.deep.equal(edKeyPair.privateKey);
 
@@ -59,15 +59,15 @@ describe('CasperClient', () => {
       tempDir + '/private.pem',
       SignatureAlgorithm.Ed25519
     );
-    expect(loadedKeyPair.publicKey.rawPublicKey).to.deep.equal(
-      edKeyPair.publicKey.rawPublicKey
+    expect(loadedKeyPair.publicKey.value()).to.deep.equal(
+      edKeyPair.publicKey.value()
     );
     expect(loadedKeyPair.privateKey).to.deep.equal(edKeyPair.privateKey);
   });
 
   it('should generate new Secp256K1 key pair, and compute public key from private key', () => {
     const edKeyPair = casperClient.newKeyPair(SignatureAlgorithm.Secp256K1);
-    const publicKey = edKeyPair.publicKey.rawPublicKey;
+    const publicKey = edKeyPair.publicKey.value();
     const privateKey = edKeyPair.privateKey;
     const convertFromPrivateKey = casperClient.privateToPublicKey(
       privateKey,
@@ -101,8 +101,8 @@ describe('CasperClient', () => {
       'raw'
     );
 
-    expect(keyPairFromFile.publicKey.rawPublicKey).to.deep.equal(
-      edKeyPair.publicKey.rawPublicKey
+    expect(keyPairFromFile.publicKey.value()).to.deep.equal(
+      edKeyPair.publicKey.value()
     );
     expect(keyPairFromFile.privateKey).to.deep.equal(edKeyPair.privateKey);
 
@@ -111,8 +111,8 @@ describe('CasperClient', () => {
       tempDir + '/private.pem',
       SignatureAlgorithm.Secp256K1
     );
-    expect(loadedKeyPair.publicKey.rawPublicKey).to.deep.equal(
-      edKeyPair.publicKey.rawPublicKey
+    expect(loadedKeyPair.publicKey.value()).to.deep.equal(
+      edKeyPair.publicKey.value()
     );
     expect(loadedKeyPair.privateKey).to.deep.equal(edKeyPair.privateKey);
   });

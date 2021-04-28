@@ -6,7 +6,7 @@ import {
   GetDeployResult,
   TransferResult
 } from '../services';
-import { DeployUtil, Keys, PublicKey } from './index';
+import { DeployUtil, Keys, CLPublicKey } from './index';
 import { encodeBase16 } from './Conversions';
 import { Deploy, DeployParams, ExecutableDeployItem } from './DeployUtil';
 import { AsymmetricKey, SignatureAlgorithm } from './Keys';
@@ -192,7 +192,9 @@ export class CasperClient {
   /**
    * Get the balance of public key
    */
-  public async balanceOfByPublicKey(publicKey: PublicKey): Promise<BigNumber> {
+  public async balanceOfByPublicKey(
+    publicKey: CLPublicKey
+  ): Promise<BigNumber> {
     return this.balanceOfByAccountHash(encodeBase16(publicKey.toAccountHash()));
   }
 
@@ -235,7 +237,7 @@ export class CasperClient {
    * @param limit
    */
   public async getAccountsDeploys(
-    publicKey: PublicKey,
+    publicKey: CLPublicKey,
     page = 0,
     limit = 20
   ): Promise<AccountDeploy[]> {
@@ -275,7 +277,7 @@ export class CasperClient {
    * @param publicKey
    */
   public async getAccountMainPurseUref(
-    publicKey: PublicKey
+    publicKey: CLPublicKey
   ): Promise<string | null> {
     const stateRootHash = await this.nodeClient
       .getLatestBlockInfo()
@@ -298,7 +300,7 @@ export class CasperClient {
    * @param publicKey
    */
   public async getTransfersByPublicKey(
-    publicKey: PublicKey
+    publicKey: CLPublicKey
   ): Promise<TransferResult[]> {
     return await this.eventStoreClient.getTransfersByAccountHash(
       encodeBase16(publicKey.toAccountHash())
