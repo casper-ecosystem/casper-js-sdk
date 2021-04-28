@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { CLURef, CLValueParsers, AccessRights } from './index';
+import { CLURef, CLURefType, CLValueParsers, AccessRights } from './index';
 import { decodeBase16 } from '../../index';
 
 const urefAddr =
@@ -45,14 +45,17 @@ describe('CLUref', () => {
     expect(badFn2).to.throw('No access rights as suffix');
   });
 
-  it('toBytes() proper values', () => {
+  it('toBytes() / fromBytes() proper values', () => {
     const expectedBytes = Uint8Array.from([...Array(32).fill(42), 7]);
-    expect(CLValueParsers.toBytes(RWExampleURef).unwrap()).to.be.deep.eq(
-      expectedBytes
-    );
-  });
+    const toBytes = CLValueParsers.toBytes(RWExampleURef).unwrap();
+    const fromBytes = CLValueParsers.fromBytes(
+      expectedBytes,
+      new CLURefType()
+    ).unwrap();
 
-  //TODO: Add tests for fromBytes
+    expect(toBytes).to.be.deep.eq(expectedBytes);
+    expect(fromBytes).to.be.deep.eq(RWExampleURef);
+  });
 
   it('fromJSON() / toJSON()', () => {
     const json = CLValueParsers.toJSON(RWExampleURef).unwrap();

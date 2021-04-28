@@ -111,7 +111,6 @@ describe('CLResult', () => {
     expect(errFromBytes).to.be.deep.eq(myErrRes);
   });
 
-  // TODO: Maybe have another file with more "integration" tests of CLValue
   it('Complex examples toBytesWithCLType() / fromBytesWithCLType()', () => {
     const okResBytesWithCLType = CLValueParsers.toBytesWithType(
       myOkComplexRes

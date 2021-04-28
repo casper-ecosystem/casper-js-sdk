@@ -45,7 +45,7 @@ export class CLListType<T extends CLType> extends CLType {
 
 export class CLListBytesParser extends CLValueBytesParsers {
   toBytes(value: CLList<CLValue & ToBytes>): ToBytesResult {
-    // TODO: change
+    // TODO: Change when there will not be any legacy code
     return Ok(toBytesVectorNew(value.data));
   }
 

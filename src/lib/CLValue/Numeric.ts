@@ -358,7 +358,6 @@ const fromBytesBigInt = (
 
   const value = BigNumber.from(bigIntBytes.reverse());
 
-  // TODO: Refactor so this can be more generic
   if (bitSize === 128) {
     return resultHelper(Ok(new CLU128(value)), remainder);
   }

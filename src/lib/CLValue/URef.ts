@@ -8,16 +8,12 @@ import {
   CLErrorCodes,
   ResultAndRemainder,
   ToBytesResult,
-  resultHelper
+  resultHelper,
+  padNum
 } from './index';
 import { UREF_ID, CLTypeTag } from './constants';
 import { decodeBase16, encodeBase16 } from '../Conversions';
 
-// TODO Move this to some utils
-const padNum = (v: string, n = 1) =>
-  new Array(n).join('0').slice((n || 2) * -1) + v;
-
-// TBD: Maybe this should be in one file like src/lib/constants.ts ?
 export enum AccessRights {
   // No permissions
   None = 0b0,

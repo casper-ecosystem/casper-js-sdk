@@ -389,3 +389,6 @@ export const matchBytesToCLType = (
 
   return resultHelper(Err('Unsuported type'));
 };
+
+export const padNum = (v: string, n = 1): string =>
+  new Array(n).join('0').slice((n || 2) * -1) + v;

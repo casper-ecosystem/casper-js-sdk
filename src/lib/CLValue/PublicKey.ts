@@ -14,7 +14,7 @@ import { PUBLIC_KEY_ID, CLTypeTag } from './constants';
 import { decodeBase16, encodeBase16 } from '../Conversions';
 import { byteHash } from '../Contracts';
 
-// TODO: Tidy up almost the same enum in
+// TODO: Tidy up almost the same enum in Keys.
 import { SignatureAlgorithm } from '../Keys';
 
 const ED25519_LENGTH = 32;
