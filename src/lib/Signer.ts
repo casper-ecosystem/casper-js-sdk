@@ -53,6 +53,13 @@ export const sign: (
   return window.casperlabsHelper!.sign(messageBase16, publicKeyBase64);
 };
 
+/*
+ * Forces Signer to disconnect from the currently open site.
+ */
+export const disconnectFromSite: () => void = () => {
+  return window.casperlabsHelper!.disconnectFromSite();
+};
+
 export const forceConnection: () => void = () => {
   return window.signerTestingHelper!.forceConnection();
 };
