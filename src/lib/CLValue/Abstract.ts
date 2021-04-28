@@ -24,16 +24,16 @@ import {
   CLI64,
   CLKey,
   CLKeyParameters,
-  // CLUnit,
+  CLUnit,
   CLString,
   CLURef,
   AccessRights,
   CLPublicKey,
   CLPublicKeyTag,
   CLList,
-  // CLTuple1,
-  // CLTuple2,
-  // CLTuple3,
+  CLTuple1,
+  CLTuple2,
+  CLTuple3,
   CLOption,
   CLMap,
   CLByteArray
@@ -118,9 +118,9 @@ export class CLValueBuilder {
     return new CLU256(val);
   };
 
-  // static unit = (): CLUnit => {
-  //   return new CLUnit();
-  // };
+  static unit = (): CLUnit => {
+    return new CLUnit();
+  };
 
   static string = (val: string): CLString => {
     return new CLString(val);
@@ -138,17 +138,17 @@ export class CLValueBuilder {
     return new CLList(val);
   }
 
-  // static tuple1<T extends CLValue>(t0: T): CLTuple1 {
-  //   return new CLTuple1([t0]);
-  // }
+  static tuple1<T extends CLValue>(t0: T): CLTuple1 {
+    return new CLTuple1([t0]);
+  }
 
-  // static tuple2<T extends CLValue>(t0: T, t1: T): CLTuple2 {
-  //   return new CLTuple2([t0, t1]);
-  // }
+  static tuple2<T extends CLValue>(t0: T, t1: T): CLTuple2 {
+    return new CLTuple2([t0, t1]);
+  }
 
-  // static tuple3<T extends CLValue>(t0: T, t1: T, t2: T): CLTuple3 {
-  //   return new CLTuple3([t0, t1, t2]);
-  // }
+  static tuple3<T extends CLValue>(t0: T, t1: T, t2: T): CLTuple3 {
+    return new CLTuple3([t0, t1, t2]);
+  }
 
   static option(data: Option<CLValue>, innerType?: CLType): CLOption<CLValue> {
     return new CLOption(data, innerType);
