@@ -8,7 +8,7 @@ const testDeploy = () => {
   const networkName = 'test-network';
   const paymentAmount = 10000000000000;
   const transferAmount = 10;
-  const id = 34;
+  const transferId = 34;
 
   let deployParams = new DeployUtil.DeployParams(
     senderKey.publicKey,
@@ -18,7 +18,7 @@ const testDeploy = () => {
     transferAmount,
     recipientKey.publicKey,
     undefined,
-    id
+    transferId
   );
   let payment = DeployUtil.standardPayment(paymentAmount);
   let deploy = DeployUtil.makeDeploy(deployParams, session, payment);
