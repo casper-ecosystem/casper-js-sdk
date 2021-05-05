@@ -228,4 +228,18 @@ describe('DeployUtil', () => {
     Object.assign(json.deploy, { header });
     assert.isUndefined(DeployUtil.deployFromJson(json));
   });
+
+  it('Should not allow to create new transfer without providing transfer-id', () => {
+    const recipientKey = Keys.Ed25519.new();
+    const transferAmount = 10;
+
+    /* @ts-ignore */
+    const badFn = () => DeployUtil.ExecutableDeployItem.newTransfer(
+      transferAmount,
+      recipientKey.publicKey,
+      undefined,
+    );
+
+    expect(badFn).to.throw('transfer-id missing in new transfer.');
+  });
 });
