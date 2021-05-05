@@ -661,7 +661,6 @@ export class ExecutableDeployItem implements ToBytes {
       throw new Error('Please specify target');
     }
     if (!id) {
-      // runtimeArgs.insert('id', CLValue.option(null, CLTypeHelper.u64()));
       throw new Error("transfer-id missing in new transfer.");
     } else {
       runtimeArgs.insert(
