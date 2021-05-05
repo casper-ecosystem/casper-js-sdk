@@ -8,7 +8,7 @@ const testDeploy = () => {
   const networkName = 'test-network';
   const paymentAmount = 10000000000000;
   const transferAmount = 10;
-  const id = 34;
+  const transferId = 34;
 
   let deployParams = new DeployUtil.DeployParams(
     senderKey.publicKey,
@@ -18,7 +18,7 @@ const testDeploy = () => {
     transferAmount,
     recipientKey.publicKey,
     undefined,
-    id
+    transferId
   );
   let payment = DeployUtil.standardPayment(paymentAmount);
   let deploy = DeployUtil.makeDeploy(deployParams, session, payment);
@@ -227,5 +227,19 @@ describe('DeployUtil', () => {
     header['body_hash'] = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
     Object.assign(json.deploy, { header });
     assert.isUndefined(DeployUtil.deployFromJson(json));
+  });
+
+  it('Should not allow to create new transfer without providing transfer-id', () => {
+    const recipientKey = Keys.Ed25519.new();
+    const transferAmount = 10;
+
+    /* @ts-ignore */
+    const badFn = () => DeployUtil.ExecutableDeployItem.newTransfer(
+      transferAmount,
+      recipientKey.publicKey,
+      undefined,
+    );
+
+    expect(badFn).to.throw('transfer-id missing in new transfer.');
   });
 });

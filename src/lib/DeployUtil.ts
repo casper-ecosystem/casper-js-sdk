@@ -640,13 +640,13 @@ export class ExecutableDeployItem implements ToBytes {
    * @param target URef of the target purse or the public key of target account. You could generate this public key from accountHex by PublicKey.fromHex
    * @param sourcePurse URef of the source purse. If this is omitted, the main purse of the account creating this \
    * transfer will be used as the source purse
-   * @param id user-defined transfer id
+   * @param id user-defined transfer id. This parameter is required.
    */
   public static newTransfer(
     amount: BigNumberish,
     target: URef | PublicKey,
-    sourcePurse?: URef,
-    id: number | null = null
+    sourcePurse: URef | null = null,
+    id: number
   ) {
     const runtimeArgs = RuntimeArgs.fromMap({});
     runtimeArgs.insert('amount', CLValue.u512(amount));
@@ -661,7 +661,7 @@ export class ExecutableDeployItem implements ToBytes {
       throw new Error('Please specify target');
     }
     if (!id) {
-      runtimeArgs.insert('id', CLValue.option(null, CLTypeHelper.u64()));
+      throw new Error("transfer-id missing in new transfer.");
     } else {
       runtimeArgs.insert(
         'id',
