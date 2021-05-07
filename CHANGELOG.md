@@ -4,6 +4,12 @@ All notable changes to casper-client-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.2.1
+
+### Fixed
+
+- Fixed problems with `deployFromJson` caused by missing support for deserialization TTL values other than `ms`.
+
 ## 1.2.0
 
 ### Changed
