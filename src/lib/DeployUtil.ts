@@ -36,14 +36,13 @@ import { Result, Ok, Err } from 'ts-results';
 const shortEnglishHumanizer = humanizeDuration.humanizer({
   spacer: '',
   serialComma: false,
+  conjunction: " ",
+  delimiter: " ",
   language: 'shortEn',
   languages: {
     // https://docs.rs/humantime/2.0.1/humantime/fn.parse_duration.html
     shortEn: {
-      y: () => 'y',
-      mo: () => 'M',
-      w: () => 'w',
-      d: () => 'd',
+      d: () => 'day',
       h: () => 'h',
       m: () => 'm',
       s: () => 's',
@@ -65,11 +64,39 @@ const byteArrayJsonDeserializer: (str: string) => Uint8Array = (
 };
 
 /**
- * Return a humanizer duration
+ * Returns a humanizer duration
  * @param ttl in milliseconds
  */
 export const humanizerTTL = (ttl: number) => {
   return shortEnglishHumanizer(ttl);
+};
+
+
+/**
+ * Returns duration in ms
+ * @param ttl in humanized string
+ */
+export const dehumanizerTTL = (ttl: string): number => {
+  const dehumanizeUnit = (s: string): number => {
+    if (s.includes("ms")) {
+      return Number(s.replace('ms', ''));
+    };
+    if (s.includes('s') && !s.includes('m')) {
+      return Number(s.replace('s', '')) * 1000;
+    }
+    if (s.includes('m') && !s.includes('s')) {
+      return Number(s.replace('m', '')) * 60 * 1000; 
+    }
+    if (s.includes('h')) {
+      return Number(s.replace('h', '')) * 60 * 60 * 1000; 
+    }
+    if (s.includes('day')) {
+      return Number(s.replace('day', '')) * 24 * 60 * 60 * 1000; 
+    }
+    throw Error("Unsuported TTL unit");
+  };
+
+  return ttl.split(" ").map(dehumanizeUnit).reduce((acc, val) => acc += val);
 };
 
 @jsonObject
@@ -91,8 +118,8 @@ export class DeployHeader implements ToBytes {
   public timestamp: number;
 
   @jsonMember({
-    serializer: (n: number) => String(n) + 'ms',
-    deserializer: (s: string) => Number(s.replace('ms', ''))
+    serializer: humanizerTTL,
+    deserializer: dehumanizerTTL
   })
   public ttl: number;
 

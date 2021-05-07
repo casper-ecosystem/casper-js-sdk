@@ -1,5 +1,6 @@
 import { expect, assert } from 'chai';
 import { Keys, DeployUtil, CLValue } from '../../src/lib';
+import { humanizerTTL, dehumanizerTTL } from '../../src/lib/DeployUtil';
 import { TypedJSON } from 'typedjson';
 
 const testDeploy = () => {
@@ -227,5 +228,37 @@ describe('DeployUtil', () => {
     header['body_hash'] = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
     Object.assign(json.deploy, { header });
     assert.isUndefined(DeployUtil.deployFromJson(json));
+  });
+
+  it('Should convert ms to humanized string', function () {
+    const strTtl30m = humanizerTTL(1800000);
+    const strTtl45m = humanizerTTL(2700000);
+    const strTtl1h = humanizerTTL(3600000);
+    const strTtl1h30m = humanizerTTL(5400000);
+    const strTtl1day = humanizerTTL(86400000);
+    const strTtlCustom = humanizerTTL(86103000);
+
+    expect(strTtl30m).to.be.eq("30m");
+    expect(strTtl45m).to.be.eq("45m");
+    expect(strTtl1h).to.be.eq("1h");
+    expect(strTtl1h30m).to.be.eq("1h 30m");
+    expect(strTtl1day).to.be.eq("1day");
+    expect(strTtlCustom).to.be.eq("23h 55m 3s");
+  });
+
+  it('Should convert humanized string to ms', function () {
+    const msTtl30m = dehumanizerTTL("30m");
+    const msTtl45m = dehumanizerTTL("45m");
+    const msTtl1h = dehumanizerTTL("1h");
+    const msTtl1h30m = dehumanizerTTL("1h 30m");
+    const msTtl1day = dehumanizerTTL("1day");
+    const msTtlCustom = dehumanizerTTL("23h 55m 3s");
+
+    expect(msTtl30m).to.be.eq(1800000);
+    expect(msTtl45m).to.be.eq(2700000);
+    expect(msTtl1h).to.be.eq(3600000);
+    expect(msTtl1h30m).to.be.eq(5400000);
+    expect(msTtl1day).to.be.eq(86400000);
+    expect(msTtlCustom).to.be.eq(86103000);
   });
 });
