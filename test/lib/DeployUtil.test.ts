@@ -9,7 +9,7 @@ const testDeploy = () => {
   const networkName = 'test-network';
   const paymentAmount = 10000000000000;
   const transferAmount = 10;
-  const id = 34;
+  const transferId = 34;
 
   let deployParams = new DeployUtil.DeployParams(
     senderKey.publicKey,
@@ -19,7 +19,7 @@ const testDeploy = () => {
     transferAmount,
     recipientKey.publicKey,
     undefined,
-    id
+    transferId
   );
   let payment = DeployUtil.standardPayment(paymentAmount);
   let deploy = DeployUtil.makeDeploy(deployParams, session, payment);
@@ -260,5 +260,19 @@ describe('DeployUtil', () => {
     expect(msTtl1h30m).to.be.eq(5400000);
     expect(msTtl1day).to.be.eq(86400000);
     expect(msTtlCustom).to.be.eq(86103000);
+  });
+
+  it('Should not allow to create new transfer without providing transfer-id', () => {
+    const recipientKey = Keys.Ed25519.new();
+    const transferAmount = 10;
+
+    /* @ts-ignore */
+    const badFn = () => DeployUtil.ExecutableDeployItem.newTransfer(
+      transferAmount,
+      recipientKey.publicKey,
+      undefined,
+    );
+
+    expect(badFn).to.throw('transfer-id missing in new transfer.');
   });
 });

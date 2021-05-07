@@ -4,6 +4,18 @@ All notable changes to casper-client-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.2.0
+
+### Changed
+
+- BIP-44 Index changed from `748` to `506`. It follows https://github.com/satoshilabs/slips/blob/master/slip-0044.md. All secret and public keys dervied using `CasperHDKey` class will change.
+
+## 1.1.0
+
+### Changed
+
+- `transfer-id` is required parameter in `DeployUtils.newTransfer`.
+
 ## 1.0.44
 
 ### Added

@@ -4,8 +4,8 @@ import { sha256 } from 'ethereum-cryptography/sha256';
 import { Secp256K1 } from './Keys';
 
 export class CasperHDKey {
-  // todo select a lucky number and register in https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-  private readonly bip44Index = 748;
+  // Registered at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
+  private readonly bip44Index = 506;
 
   constructor(private hdKey: HDKeyT) {}
 
