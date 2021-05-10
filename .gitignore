@@ -1,9 +1,9 @@
 node_modules
 /dist/
-/docs/*
-!/docs/README.md
 .eslintcache
 .nyc_output
+
+docs/
 
 .DS_Store
 

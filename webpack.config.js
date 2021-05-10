@@ -37,13 +37,15 @@ const clientConfig = {
     fallback: {
       stream: require.resolve('stream-browserify'),
       asert: require.resolve('assert'),
-      buffer: require.resolve('buffer/'),
       fs: false
     }
   },
   plugins: [
     new webpack.ProvidePlugin({
       process: 'process/browser'
+    }),
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer']
     })
   ],
   output: {

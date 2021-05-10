@@ -16,19 +16,29 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-18.04
-
     strategy:
       matrix:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
         node-version: [14.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - name: Checkout 🛎️
+      uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
         node-version: ${{ matrix.node-version }}
-    - run: npm install
-    - run: npm test
+    - name: Install Build & Test 🔧
+      run: | 
+        npm install
+        npm test
+        npm run docs
+    - name: Deploy Docs 🚀
+      if: ${{ github.event_name == 'push' }}
+      uses: JamesIves/github-pages-deploy-action@3.6.2
+      with:
+        TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        BRANCH: gh-pages # The branch the action should deploy to.
+        FOLDER: docs/ # The folder that the typedoc generates files.
+        CLEAN: true # Automatically remove deleted files from the deploy branch

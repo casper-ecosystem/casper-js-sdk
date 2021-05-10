@@ -137,7 +137,9 @@ export interface Bid {
 }
 
 export interface Delegators {
-  delegator: DelegatorInfo;
+  bonding_purse: string;
+  delegatee: string;
+  staked_amount: string;
   public_key: string;
 }
 
@@ -338,6 +340,15 @@ export class CasperServiceByJsonRPC {
   }
 
   public async deploy(signedDeploy: DeployUtil.Deploy) {
+    const oneMegaByte = 1048576;
+    const size = DeployUtil.deploySizeInBytes(signedDeploy);
+    if (size > oneMegaByte) {
+      throw Error(
+        `Deploy can not be send, because it's too large: ${size} bytes. ` +
+          `Max size is 1 megabyte.`
+      );
+    }
+
     return await this.client.request({
       method: 'account_put_deploy',
       params: deployToJson(signedDeploy)

@@ -4,6 +4,84 @@ All notable changes to casper-client-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.2.0
+
+### Changed
+
+- BIP-44 Index changed from `748` to `506`. It follows https://github.com/satoshilabs/slips/blob/master/slip-0044.md. All secret and public keys dervied using `CasperHDKey` class will change.
+
+## 1.1.0
+
+### Changed
+
+- `transfer-id` is required parameter in `DeployUtils.newTransfer`.
+
+## 1.0.44
+
+### Added
+
+- Support `disconnectFromSite` method from the Signer.
+
+## 1.0.43
+
+### Fixed
+
+- Missign interface for `getActivePublicKey` method from the Signer.
+
+## 1.0.42
+
+### Added
+
+- Support `getActivePublicKey` method from the Signer.
+
+## 1.0.41
+
+### Added
+
+- `DeployUtils.deployFromJson` verifies `Deploy`'s `hash` and `bodyHash`. If not matching return `undefined`, so the interface doesn't change.
+
+## 1.0.40
+
+### Changed
+
+- New url for docs.
+
+## 1.0.39
+
+### Fixed
+
+- Reverted usage of `TextEncoder` to support Node.js versions < 11.
+
+## 1.0.38
+
+### Fixed
+
+- Problem with U32 deserialization (and all values that uses Buffer polyfill).
+
+## 1.0.37
+
+### Changed
+
+- Changed the default `Deploy`'s ttl from 1h to 30min.
+
+## 1.0.36
+
+### Fixed
+
+- Fixed Delegator interface shape
+
+## 1.0.35
+
+### Changed
+
+- Validate the size of the `Deploy`. Now `CasperServiceByJsonRPC.deploy` throws an error if the size of the deploy is larger then 1 megabyte.`
+
+## 1.0.34
+
+### Fixed
+
+- Problems with Buffer polyfill not working in browser
+
 ## 1.0.32
 
 ### Added

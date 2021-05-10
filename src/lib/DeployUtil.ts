@@ -3,7 +3,7 @@
  *
  * @packageDocumentation
  */
-import { Ok, Some, None } from 'ts-results';
+import { Result, Ok, Err, Some, None } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
 import blake from 'blakejs';
 import { decodeBase16, encodeBase16 } from './Conversions';
@@ -659,13 +659,13 @@ export class ExecutableDeployItem implements ToBytes {
    * @param target URef of the target purse or the public key of target account. You could generate this public key from accountHex by PublicKey.fromHex
    * @param sourcePurse URef of the source purse. If this is omitted, the main purse of the account creating this \
    * transfer will be used as the source purse
-   * @param id user-defined transfer id
+   * @param id user-defined transfer id. This parameter is required.
    */
   public static newTransfer(
     amount: BigNumberish,
     target: CLURef | CLPublicKey,
-    sourcePurse?: CLURef,
-    id: number | null = null
+    sourcePurse: CLURef | null = null,
+    id: number
   ): ExecutableDeployItem {
     const runtimeArgs = RuntimeArgs.fromMap({});
     runtimeArgs.insert('amount', CLValueBuilder.u512(amount));
@@ -683,7 +683,7 @@ export class ExecutableDeployItem implements ToBytes {
       throw new Error('Please specify target');
     }
     if (!id) {
-      runtimeArgs.insert('id', CLValueBuilder.option(None, new CLU64Type()));
+      throw new Error('transfer-id missing in new transfer.');
     } else {
       runtimeArgs.insert(
         'id',
@@ -844,7 +844,7 @@ export class DeployParams {
    * @param accountPublicKey
    * @param chainName Name of the chain, to avoid the `Deploy` from being accidentally or maliciously included in a different chain.
    * @param gasPrice Conversion rate between the cost of Wasm opcodes and the motes sent by the payment code.
-   * @param ttl Time that the `Deploy` will remain valid for, in milliseconds. The default value is 3600000, which is 1 hour
+   * @param ttl Time that the `Deploy` will remain valid for, in milliseconds. The default value is 1800000, which is 30 minutes
    * @param dependencies Hex-encoded `Deploy` hashes of deploys which must be executed before this one.
    * @param timestamp  If `timestamp` is empty, the current time will be used. Note that timestamp is UTC, not local.
    */
@@ -852,7 +852,7 @@ export class DeployParams {
     public accountPublicKey: CLPublicKey,
     public chainName: string,
     public gasPrice: number = 1,
-    public ttl: number = 3600000,
+    public ttl: number = 1800000,
     public dependencies: Uint8Array[] = [],
     public timestamp?: number
   ) {
@@ -974,7 +974,11 @@ export const deployToJson = (deploy: Deploy) => {
  */
 export const deployFromJson = (json: any) => {
   const serializer = new TypedJSON(Deploy);
-  return serializer.parse(json.deploy);
+  const deploy = serializer.parse(json.deploy);
+  if (deploy !== undefined && validateDeploy(deploy).ok) {
+    return deploy;
+  }
+  return undefined;
 };
 
 export const addArgToDeploy = (
@@ -999,4 +1003,43 @@ export const addArgToDeploy = (
   session.setArg(name, value);
 
   return makeDeploy(deployParams, session, deploy.payment);
+};
+
+export const deploySizeInBytes = (deploy: Deploy): number => {
+  const hashSize = deploy.hash.length;
+  const bodySize = serializeBody(deploy.payment, deploy.session).length;
+  const headerSize = serializeHeader(deploy.header).unwrap().length;
+  const approvalsSize = deploy.approvals
+    .map(approval => {
+      return (approval.signature.length + approval.signer.length) / 2;
+    })
+    .reduce((a, b) => a + b, 0);
+
+  return hashSize + headerSize + bodySize + approvalsSize;
+};
+
+export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
+  const serializedBody = serializeBody(deploy.payment, deploy.session);
+  const bodyHash = blake.blake2b(serializedBody, null, 32);
+
+  if (!arrayEquals(deploy.header.bodyHash, bodyHash)) {
+    return Err(`Invalid deploy: bodyHash missmatch. Expected: ${bodyHash}, 
+                  got: ${deploy.header.bodyHash}.`);
+  }
+
+  const serializedHeader = serializeHeader(deploy.header).unwrap();
+  const deployHash = blake.blake2b(serializedHeader, null, 32);
+
+  if (!arrayEquals(deploy.hash, deployHash)) {
+    return Err(`Invalid deploy: hash missmatch. Expected: ${deployHash}, 
+                  got: ${deploy.hash}.`);
+  }
+
+  // TODO: Verify included signatures.
+
+  return Ok(deploy);
+};
+
+const arrayEquals = (a: Uint8Array, b: Uint8Array): boolean => {
+  return a.length === b.length && a.every((val, index) => val === b[index]);
 };

@@ -2,6 +2,30 @@ import { expect, assert } from 'chai';
 import { Keys, DeployUtil, CLValueBuilder } from '../../src/lib';
 import { TypedJSON } from 'typedjson';
 
+const testDeploy = () => {
+  const senderKey = Keys.Ed25519.new();
+  const recipientKey = Keys.Ed25519.new();
+  const networkName = 'test-network';
+  const paymentAmount = 10000000000000;
+  const transferAmount = 10;
+  const transferId = 34;
+
+  let deployParams = new DeployUtil.DeployParams(
+    senderKey.publicKey,
+    networkName
+  );
+  let session = DeployUtil.ExecutableDeployItem.newTransfer(
+    transferAmount,
+    recipientKey.publicKey,
+    undefined,
+    transferId
+  );
+  let payment = DeployUtil.standardPayment(paymentAmount);
+  let deploy = DeployUtil.makeDeploy(deployParams, session, payment);
+  deploy = DeployUtil.signDeploy(deploy, senderKey);
+  return deploy;
+}
+
 describe('DeployUtil', () => {
   it('should stringify/parse DeployHeader correctly', function() {
     const ed25519Key = Keys.Ed25519.new();
@@ -225,5 +249,35 @@ describe('DeployUtil', () => {
       newTransferDeploy?.session.getArgByName('fromPublicKey'),
       from.publicKey
     );
+  });
+
+  it('Should not allow for to deserialize a deploy from JSON with a wrong deploy hash', function () {
+    let deploy = testDeploy();
+    let json = DeployUtil.deployToJson(deploy);
+    Object.assign(json.deploy, { hash: "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" });
+    assert.isUndefined(DeployUtil.deployFromJson(json));
+  });
+
+  it('Should not allow for to deserialize a deploy from JSON with a wrong body_hash', function () {
+    let deploy = testDeploy();
+    let json = DeployUtil.deployToJson(deploy);
+    let header = Object(json.deploy)['header'];
+    header['body_hash'] = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
+    Object.assign(json.deploy, { header });
+    assert.isUndefined(DeployUtil.deployFromJson(json));
+  });
+
+  it('Should not allow to create new transfer without providing transfer-id', () => {
+    const recipientKey = Keys.Ed25519.new();
+    const transferAmount = 10;
+
+    /* @ts-ignore */
+    const badFn = () => DeployUtil.ExecutableDeployItem.newTransfer(
+      transferAmount,
+      recipientKey.publicKey,
+      undefined,
+    );
+
+    expect(badFn).to.throw('transfer-id missing in new transfer.');
   });
 });

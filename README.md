@@ -7,12 +7,16 @@
 npm install casper-client-sdk --save
 ```
 
-## Document
+## Documentation
 
-You could preview it at [https://casper-ecosystem.github.io/casper-client-sdk-docs/code](https://casper-ecosystem.github.io/casper-client-sdk-docs/code).
+Documentation generated from code is available [here](https://casper-ecosystem.github.io/casper-client-sdk/)
 
 ## Tests
 
 ```
 npm run test
 ```
+
+## Examples
+
+Basic examples of library usage are stored inside `/test` directory.
