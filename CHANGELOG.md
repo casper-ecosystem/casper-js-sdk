@@ -4,6 +4,15 @@ All notable changes to casper-client-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.4.0
+
+### Changed
+
+- Caution! This release contains rewritten CLValue from scratch, there are some breaking changes so consider it before upgrading.
+- `CLValue` static methods now are moved to `CLValueBuilder` eg. `CLValueBuilder.u512`
+- Every class inheriting from CLValue is now named with `CL` prefix, eg. `CLString, CLU64, CLOption, CLResult` etc.
+- There are API changes in `CLResult` - now it requires `{ ok, err }` in constructor.
+
 ## 1.3.0
 
 ### Changed
