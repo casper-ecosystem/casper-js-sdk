@@ -9,8 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Changed
 
 - Caution! This release contains rewritten CLValue from scratch, there are some breaking changes so consider it before upgrading.
+- Removed `CLTypedAndToBytesHelper` to have consistent way of creating new CLValues by using `new CLBool(true)` or `CLValueBuilder`
 - `CLValue` static methods now are moved to `CLValueBuilder` eg. `CLValueBuilder.u512`
-- Every class inheriting from CLValue is now named with `CL` prefix, eg. `CLString, CLU64, CLOption, CLResult` etc.
+- Every class inheriting from `CLValue` is now named with `CL` prefix, eg. `CLString, CLU64, CLOption, CLResult` etc.
 - There are API changes in `CLResult` - now it requires `{ ok, err }` in constructor.
 
 ## 1.3.0
