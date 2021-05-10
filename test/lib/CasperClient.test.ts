@@ -12,8 +12,7 @@ let casperClient: CasperClient;
 describe('CasperClient', () => {
   before(() => {
     casperClient = new CasperClient(
-      'http://192.168.2.166:40101/rpc',
-      'http://mock2:7777'
+      'http://192.168.2.166:40101/rpc'
     );
   });
 

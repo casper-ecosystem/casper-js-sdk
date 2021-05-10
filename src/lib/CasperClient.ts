@@ -1,10 +1,6 @@
 import {
-  AccountDeploy,
   CasperServiceByJsonRPC,
-  DeployResult,
-  EventService,
-  GetDeployResult,
-  TransferResult
+  GetDeployResult
 } from '../services';
 import { DeployUtil, Keys, PublicKey } from './index';
 import { encodeBase16 } from './Conversions';
@@ -15,11 +11,9 @@ import { BigNumber } from '@ethersproject/bignumber';
 
 export class CasperClient {
   private nodeClient: CasperServiceByJsonRPC;
-  private eventStoreClient: EventService;
 
-  constructor(nodeUrl: string, eventStoreUrl: string) {
+  constructor(nodeUrl: string) {
     this.nodeClient = new CasperServiceByJsonRPC(nodeUrl);
-    this.eventStoreClient = new EventService(eventStoreUrl);
   }
 
   /**
@@ -229,38 +223,11 @@ export class CasperClient {
   }
 
   /**
-   * Get deploys for specified account
-   * @param publicKey
-   * @param page
-   * @param limit
-   */
-  public async getAccountsDeploys(
-    publicKey: PublicKey,
-    page = 0,
-    limit = 20
-  ): Promise<AccountDeploy[]> {
-    const data = await this.eventStoreClient.getAccountDeploys(
-      publicKey.toAccountHex(),
-      page,
-      limit
-    );
-    return data.data;
-  }
-
-  /**
-   * Get deploy by hash
-   * @param deployHash
-   */
-  public async getDeployByHash(deployHash: string): Promise<DeployResult> {
-    return await this.eventStoreClient.getDeployByHash(deployHash);
-  }
-
-  /**
    * Get deploy by hash from RPC.
    * @param deployHash
    * @returns Tuple of Deploy and raw RPC response.
    */
-  public async getDeployByHashFromRPC(
+  public async getDeploy(
     deployHash: string
   ): Promise<[Deploy, GetDeployResult]> {
     return await this.nodeClient
@@ -291,17 +258,5 @@ export class CasperClient {
     );
 
     return balanceUref;
-  }
-
-  /**
-   * Get transfers to and from the specified public key, including sending and receiving transactions.
-   * @param publicKey
-   */
-  public async getTransfersByPublicKey(
-    publicKey: PublicKey
-  ): Promise<TransferResult[]> {
-    return await this.eventStoreClient.getTransfersByAccountHash(
-      encodeBase16(publicKey.toAccountHash())
-    );
   }
 }
