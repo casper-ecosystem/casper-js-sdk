@@ -110,7 +110,7 @@ export const dehumanizerTTL = (ttl: string): number => {
 export class DeployHeader implements ToBytes {
   @jsonMember({
     serializer: (account: CLPublicKey) => {
-      return account.toAccountHex();
+      return account.toHex();
     },
     deserializer: (hexStr: string) => {
       return CLPublicKey.fromHex(hexStr);
@@ -959,7 +959,7 @@ export const setSignature = (
   publicKey: CLPublicKey
 ): Deploy => {
   const approval = new Approval();
-  approval.signer = publicKey.toAccountHex();
+  approval.signer = publicKey.toHex();
   // TBD: Make sure it is proper
   if (publicKey.isEd25519()) {
     approval.signature = Keys.Ed25519.accountHex(sig);

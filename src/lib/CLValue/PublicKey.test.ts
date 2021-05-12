@@ -78,12 +78,12 @@ describe('CLPublicKey', () => {
     expect(pub.value()).to.be.deep.eq(rawSecp256K1Account);
   });
 
-  it('fromHex() should serializes to the same hex value by using toAccountHex()', () => {
+  it('fromHex() should serializes to the same hex value by using toHex()', () => {
     const accountKey =
       '01f9235ff9c46c990e1e2eee0d531e488101fab48c05b75b8ea9983658e228f06b';
 
     const publicKey = CLPublicKey.fromHex(accountKey);
-    const accountHex = publicKey.toAccountHex();
+    const accountHex = publicKey.toHex();
 
     expect(accountHex).to.be.eq(accountKey);
     expect(publicKey.isEd25519()).to.be.eq(true);

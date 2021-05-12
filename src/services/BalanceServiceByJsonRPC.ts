@@ -26,7 +26,7 @@ export class BalanceServiceByJsonRPC {
       const stateRootHash = await this.casperService.getStateRootHash(
         blockHashBase16
       );
-      let balanceUref = this.balanceUrefs.get(publicKey.toAccountHex());
+      let balanceUref = this.balanceUrefs.get(publicKey.toHex());
 
       // Find the balance Uref and cache it if we don't have it.
       if (!balanceUref) {
@@ -35,7 +35,7 @@ export class BalanceServiceByJsonRPC {
           publicKey
         );
         if (balanceUref) {
-          this.balanceUrefs.set(publicKey.toAccountHex(), balanceUref);
+          this.balanceUrefs.set(publicKey.toHex(), balanceUref);
         }
       }
 

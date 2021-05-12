@@ -91,7 +91,7 @@ export abstract class AsymmetricKey {
    * Get the account hex
    */
   public accountHex(): string {
-    return this.publicKey.toAccountHex();
+    return this.publicKey.toHex();
   }
 
   protected toPem(tag: string, content: string) {

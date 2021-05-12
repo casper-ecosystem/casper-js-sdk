@@ -112,10 +112,6 @@ export class CLPublicKey extends CLValue {
     return new CLPublicKeyType();
   }
 
-  toAccountHex(): string {
-    return `0${this.tag}${encodeBase16(this.data)}`;
-  }
-
   isEd25519(): boolean {
     return this.tag === CLPublicKeyTag.ED25519;
   }
@@ -124,7 +120,10 @@ export class CLPublicKey extends CLValue {
     return this.tag === CLPublicKeyTag.SECP256K1;
   }
 
-  // TBD - Maybe it should return hexstring?
+  toHex(): string {
+    return `0${this.tag}${encodeBase16(this.data)}`;
+  }
+
   toAccountHash(): Uint8Array {
     const algorithmIdentifier = CLPublicKeyTag[this.tag];
     const separator = Uint8Array.from([0]);
@@ -133,12 +132,17 @@ export class CLPublicKey extends CLValue {
       separator
     ]);
 
-    // TBD: Does it make sense or should we throw an error?
     if (this.data.length === 0) {
       return Uint8Array.from([]);
     } else {
       return byteHash(concat([prefix, this.data]));
     }
+  }
+
+  toAccountHashStr(): string {
+    const bytes = this.toAccountHash();
+    const hashHex = Buffer.from(bytes).toString('hex');
+    return `account-hash-${hashHex}`;
   }
 
   value(): Uint8Array {

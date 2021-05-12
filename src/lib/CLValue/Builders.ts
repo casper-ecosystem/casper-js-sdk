@@ -108,16 +108,16 @@ export class CLTypeBuilder {
     return new CLListType(val);
   }
 
-  static tuple1<T extends CLType>(types: [T]): CLTuple1Type {
-    return new CLTuple1Type(types);
+  static tuple1([t0]: [CLType]): CLTuple1Type {
+    return new CLTuple1Type([t0]);
   }
 
-  static tuple2<T extends CLType>(types: [T, T]): CLTuple2Type {
-    return new CLTuple2Type(types);
+  static tuple2([t0, t1]: [CLType, CLType]): CLTuple2Type {
+    return new CLTuple2Type([t0, t1]);
   }
 
-  static tuple3<T extends CLType>(types: [T, T, T]): CLTuple3Type {
-    return new CLTuple3Type(types);
+  static tuple3([t0, t1, t2]: [CLType, CLType, CLType]): CLTuple3Type {
+    return new CLTuple3Type([t0, t1, t2]);
   }
 
   static option<T extends CLType>(type: T): CLOptionType<T> {
@@ -194,15 +194,15 @@ export class CLValueBuilder {
     return new CLList(val);
   }
 
-  static tuple1<T extends CLValue>(t0: T): CLTuple1 {
+  static tuple1([t0]: [CLValue]): CLTuple1 {
     return new CLTuple1([t0]);
   }
 
-  static tuple2<T extends CLValue>(t0: T, t1: T): CLTuple2 {
+  static tuple2([t0, t1]: [CLValue, CLValue]): CLTuple2 {
     return new CLTuple2([t0, t1]);
   }
 
-  static tuple3<T extends CLValue>(t0: T, t1: T, t2: T): CLTuple3 {
+  static tuple3([t0, t1, t2]: [CLValue, CLValue, CLValue]): CLTuple3 {
     return new CLTuple3([t0, t1, t2]);
   }
 

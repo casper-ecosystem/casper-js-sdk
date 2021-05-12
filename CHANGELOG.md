@@ -9,7 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Changed
 
 - Caution! This release contains rewritten CLValue from scratch, there are some breaking changes so consider it before upgrading.
-- Removed `CLTypedAndToBytesHelper` to have consistent way of creating new CLValues by using `new CLBool(true)` or `CLValueBuilder`
+- Removed `CLTypedAndToBytesHelper` to have consistent way of creating new CLValues by using `new CLBool(true)` or `CLValueBuilder.bool(true)`
+- Removed `CLTypeHelper` have consistent way of creating new CLValues by using `new CLBoolType()` or `CLTypeBuilder.bool()`
 - `CLValue` static methods now are moved to `CLValueBuilder` eg. `CLValueBuilder.u512`
 - Every class inheriting from `CLValue` is now named with `CL` prefix, bigger naming changes:
   - `StringValue` -> `CLString`
@@ -17,7 +18,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   - `MapValue` -> `CLMap`
   - `Option` -> `CLOption`
 - There are API changes in `CLResult` - now it requires `{ ok, err }` in constructor.
+- There are API changes in `CLOption` - not it requires `Some` or `None` wrappers as argument (from `ts-result` library).
 - Now all the serialization methods are not connected to `CLValue` - `toJSON`, `fromJSON`, `toBytes`, `fromBytes` needs to be called with `CLValueParsers` eg. `CLValueParser.toJSON(CLValueBuilder.string("ABC")`
+- Renamed methods in `CLPublicKey`:
+  - `toAccountHex` -> `toHex` - old name led to misunderstandings as in fact this is hex representation of `public-key` prefixed with key-type.
+  - added method `toAccountHashStr` - this methods returns string containing account hash in hex form prefixed with `account-hash-`.
 
 ## 1.3.0
 
