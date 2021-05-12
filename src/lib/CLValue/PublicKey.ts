@@ -128,8 +128,8 @@ export class CLPublicKey extends CLValue {
   toAccountHash(): Uint8Array {
     const algorithmIdentifier = CLPublicKeyTag[this.tag];
     const separator = Uint8Array.from([0]);
-    const prefix = concat([
-      new TextEncoder().encode(algorithmIdentifier.toLowerCase()),
+    const prefix = Buffer.concat([
+      Buffer.from(algorithmIdentifier.toLowerCase()),
       separator
     ]);
 
