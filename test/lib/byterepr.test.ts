@@ -1,38 +1,9 @@
 import { expect } from 'chai';
-import { Some, None } from 'ts-results';
-// import {
-//   AccountHash,
-//   CLTypedAndToBytesHelper,
-//   CLTypeHelper,
-//   decodeBase16,
-//   I32,
-//   I64,
-//   Option,
-//   List,
-//   MapValue,
-//   StringValue,
-//   Tuple1,
-//   Tuple2,
-//   Tuple3,
-//   U128,
-//   U32,
-//   U64,
-//   U8,
-//   Unit
-// } from '../../src';
-// import {
-//   AccessRights,
-//   CLValue,
-//   KeyValue,
-//   PublicKey,
-//   Keys,
-//   URef
-// } from '../../src/lib';
+import { Some } from 'ts-results';
 import {
   CLValueBuilder,
   CLTypeBuilder,
   CLValueParsers,
-  CLKey,
   CLURef,
   CLAccountHash,
   CLPublicKey,
@@ -41,18 +12,7 @@ import {
   AccessRights,
   decodeBase16
 } from '../../src';
-import {
-  toBytesDeployHash,
-  toBytesI32,
-  toBytesI64,
-  toBytesString,
-  toBytesU128,
-  toBytesU32,
-  toBytesU64,
-  toBytesU8,
-  // toBytesVecT
-  toBytesVectorNew
-} from '../../src/lib/ByteConverters';
+import { toBytesDeployHash } from '../../src/lib/ByteConverters';
 
 describe(`numbers' toBytes`, () => {
   it('should be able to serialize/deserialize u8', () => {
@@ -385,7 +345,9 @@ describe(`numbers' toBytes`, () => {
     // prettier-ignore
     const expectedBytes = Uint8Array.from(
       [5, 0, 0, 0, 104, 101, 108, 108, 111, 64, 226, 1, 0, 0, 0, 0, 0]);
-    expect(CLValueParsers.toBytes(tuple2).unwrap()).to.deep.equal(expectedBytes);
+    expect(CLValueParsers.toBytes(tuple2).unwrap()).to.deep.equal(
+      expectedBytes
+    );
 
     expect(
       CLValueParsers.fromBytes(
@@ -415,12 +377,18 @@ describe(`numbers' toBytes`, () => {
     const expectedBytes = Uint8Array.from(
       [5, 0, 0, 0, 104, 101, 108, 108, 111, 64, 226, 1, 0, 0, 0, 0, 0, 1]
     );
-    expect(CLValueParsers.toBytes(tuple3).unwrap()).to.deep.equal(expectedBytes);
+    expect(CLValueParsers.toBytes(tuple3).unwrap()).to.deep.equal(
+      expectedBytes
+    );
 
     expect(
       CLValueParsers.fromBytes(
         expectedBytes,
-        CLTypeBuilder.tuple3([CLTypeBuilder.string(), CLTypeBuilder.u64(), CLTypeBuilder.bool()])
+        CLTypeBuilder.tuple3([
+          CLTypeBuilder.string(),
+          CLTypeBuilder.u64(),
+          CLTypeBuilder.bool()
+        ])
       )
         .unwrap()
         .clType()
@@ -430,7 +398,11 @@ describe(`numbers' toBytes`, () => {
       CLValueParsers.toBytes(
         CLValueParsers.fromBytes(
           expectedBytes,
-          CLTypeBuilder.tuple3([CLTypeBuilder.string(), CLTypeBuilder.u64(), CLTypeBuilder.bool()])
+          CLTypeBuilder.tuple3([
+            CLTypeBuilder.string(),
+            CLTypeBuilder.u64(),
+            CLTypeBuilder.bool()
+          ])
         ).unwrap()
       ).unwrap()
     ).to.deep.equal(expectedBytes);
@@ -448,8 +420,10 @@ describe(`numbers' toBytes`, () => {
     expect(CLValueParsers.toBytes(list).unwrap()).to.deep.eq(expectedBytes);
 
     expect(
-      CLValueParsers.fromBytes(expectedBytes, CLTypeBuilder.list(CLTypeBuilder.u32()))
-        .unwrap()
+      CLValueParsers.fromBytes(
+        expectedBytes,
+        CLTypeBuilder.list(CLTypeBuilder.u32())
+      ).unwrap()
     ).to.deep.eq(list);
   });
 
@@ -457,17 +431,11 @@ describe(`numbers' toBytes`, () => {
     const map = CLValueBuilder.map([
       [
         CLValueBuilder.string('test1'),
-        CLValueBuilder.list([
-          CLValueBuilder.u64(1),
-          CLValueBuilder.u64(2)
-        ])
+        CLValueBuilder.list([CLValueBuilder.u64(1), CLValueBuilder.u64(2)])
       ],
       [
         CLValueBuilder.string('test2'),
-        CLValueBuilder.list([
-          CLValueBuilder.u64(3),
-          CLValueBuilder.u64(4)
-        ])
+        CLValueBuilder.list([CLValueBuilder.u64(3), CLValueBuilder.u64(4)])
       ]
     ]);
     // prettier-ignore
@@ -481,28 +449,29 @@ describe(`numbers' toBytes`, () => {
         CLTypeBuilder.map([
           CLTypeBuilder.string(),
           CLTypeBuilder.list(CLTypeBuilder.u64())
-        ]),
-      )
-        .unwrap()
+        ])
+      ).unwrap()
     ).to.deep.eq(map);
   });
 
   it('should serialize/deserialize Option correctly', () => {
-    const opt = CLValueBuilder.option(
-      Some(CLValueBuilder.string('test'))
-    );
+    const opt = CLValueBuilder.option(Some(CLValueBuilder.string('test')));
     const expectedBytes = Uint8Array.from([1, 4, 0, 0, 0, 116, 101, 115, 116]);
     expect(CLValueParsers.toBytes(opt).unwrap()).to.deep.eq(expectedBytes);
 
     expect(
-      CLValueParsers.fromBytes(expectedBytes, CLTypeBuilder.option(CLTypeBuilder.string()), )
-        .unwrap()
+      CLValueParsers.fromBytes(
+        expectedBytes,
+        CLTypeBuilder.option(CLTypeBuilder.string())
+      ).unwrap()
     ).to.deep.eq(opt);
   });
 
   it('should serialize ByteArray correctly', () => {
     const byteArray = Uint8Array.from(Array(32).fill(42));
-    const bytes = CLValueParsers.toBytesWithType(CLValueBuilder.byteArray(byteArray)).unwrap();
+    const bytes = CLValueParsers.toBytesWithType(
+      CLValueBuilder.byteArray(byteArray)
+    ).unwrap();
     expect(bytes).to.deep.eq(
       Uint8Array.from([
         32,
@@ -552,7 +521,9 @@ describe(`numbers' toBytes`, () => {
 
   it('should serialize PublicKey correctly', () => {
     const publicKey = Uint8Array.from(Array(32).fill(42));
-    const bytes = CLValueParsers.toBytes(CLValueBuilder.publicKey(publicKey, CLPublicKeyTag.ED25519)).unwrap();
+    const bytes = CLValueParsers.toBytes(
+      CLValueBuilder.publicKey(publicKey, CLPublicKeyTag.ED25519)
+    ).unwrap();
     expect(bytes).to.deep.eq(
       Uint8Array.from([
         1,
@@ -604,6 +575,5 @@ describe(`numbers' toBytes`, () => {
     expect(CLPublicKey.fromHex(secp256K1AccountHex)).to.deep.equal(
       secp256K1Account.publicKey
     );
-
-  })
+  });
 });
