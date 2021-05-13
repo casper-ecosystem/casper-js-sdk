@@ -321,4 +321,16 @@ describe('DeployUtil', () => {
       transferId
     );
   });
+
+  it('DeployUtil.UniqAddress should serialize and deserialize', () => {
+    const recipientKey = Keys.Ed25519.new();
+    const hexAddress = recipientKey.publicKey.toAccountHex();
+    const transferId = "80172309";
+    const transferIdHex = "0x04c75515";
+
+    const uniqAddress = new DeployUtil.UniqAddress(recipientKey.publicKey, transferId);
+
+    expect(uniqAddress).to.be.instanceof(DeployUtil.UniqAddress);
+    expect(uniqAddress.toString()).to.be.eq(`${hexAddress}-${transferIdHex}`);
+  });
 });

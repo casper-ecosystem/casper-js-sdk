@@ -105,6 +105,11 @@ export class UniqAddress {
   publicKey: PublicKey;
   transferId: BigNumber;
 
+  /**
+  * Constructs UniqAddress
+  * @param publicKey PublicKey instance
+  * @param transferId BigNumberish value (can be also string representing number). Max U64.
+  */
   constructor(publicKey: PublicKey, transferId: BigNumberish) {
     if (!(publicKey instanceof PublicKey)) {
       throw new Error('publicKey is not an instance of PublicKey');
@@ -117,10 +122,18 @@ export class UniqAddress {
     this.publicKey = publicKey;
   }
 
+  /**
+  * Returns string in format "accountHex-transferIdHex"
+  * @param ttl in humanized string
+  */
   toString(): string {
-    return `${this.publicKey.toAccountHex}-${this.transferId.toHexString()}`;
+    return `${this.publicKey.toAccountHex()}-${this.transferId.toHexString()}`;
   }
 
+  /**
+  * Builds UniqAddress from string 
+  * @param value value returned from UniqAddress.toString()
+  */
   static fromString(value: string): UniqAddress {
     const [accountHex, transferHex] = value.split('-');
     const publicKey = PublicKey.fromHex(accountHex);
@@ -751,7 +764,6 @@ export class ExecutableDeployItem implements ToBytes {
     ttl = 1800000,
     sourcePurse?: URef
   ): Deploy {
-
     const deployParams = new DeployUtil.DeployParams(
       source,
       chainName,
