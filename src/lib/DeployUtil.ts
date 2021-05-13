@@ -716,7 +716,7 @@ export class ExecutableDeployItem implements ToBytes {
     } else {
       throw new Error('Please specify target');
     }
-    if (!id) {
+    if (id === undefined) {
       throw new Error('transfer-id missing in new transfer.');
     } else {
       runtimeArgs.insert(
