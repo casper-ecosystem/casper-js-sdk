@@ -275,4 +275,50 @@ describe('DeployUtil', () => {
 
     expect(badFn).to.throw('transfer-id missing in new transfer.');
   });
+
+  it('newTransferToUniqAddress should construct proper deploy', () => {
+    const senderKey = Keys.Ed25519.new();
+    const recipientKey = Keys.Ed25519.new();
+    const networkName = 'test-network';
+    const paymentAmount = 10000000000000;
+    const transferAmount = 10;
+    const transferId = 34;
+
+    const uniqAddress = new DeployUtil.UniqAddress(recipientKey.publicKey, transferId);
+
+    let deploy = DeployUtil.ExecutableDeployItem.newTransferToUniqAddress(
+      senderKey.publicKey,
+      uniqAddress,
+      transferAmount,
+      paymentAmount,
+      networkName
+    );
+
+    deploy = DeployUtil.signDeploy(deploy, senderKey);
+
+    assert.isTrue(deploy.isTransfer());
+    assert.isTrue(deploy.isStandardPayment());
+    assert.deepEqual(deploy.header.account, senderKey.publicKey);
+    assert.deepEqual(
+      deploy.payment.getArgByName('amount')!.asBigNumber().toNumber(),
+      paymentAmount
+    );
+    assert.deepEqual(
+      deploy.session.getArgByName('amount')!.asBigNumber().toNumber(),
+      transferAmount
+    );
+    assert.deepEqual(
+      deploy.session.getArgByName('target')!.asBytesArray(),
+      recipientKey.accountHash()
+    );
+    assert.deepEqual(
+      deploy.session
+        .getArgByName('id')!
+        .asOption()
+        .getSome()
+        .asBigNumber()
+        .toNumber(),
+      transferId
+    );
+  });
 });
