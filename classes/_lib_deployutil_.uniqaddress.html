@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Transfer | casper-client-sdk</title>
+	<title>UniqAddress | casper-client-sdk</title>
 	<meta name="description" content="Documentation for casper-client-sdk">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -59,10 +59,10 @@
 					<a href="../modules/_lib_deployutil_.html">&quot;lib/DeployUtil&quot;</a>
 				</li>
 				<li>
-					<a href="_lib_deployutil_.transfer.html">Transfer</a>
+					<a href="_lib_deployutil_.uniqaddress.html">UniqAddress</a>
 				</li>
 			</ul>
-			<h1>Class Transfer</h1>
+			<h1>Class UniqAddress</h1>
 		</div>
 	</div>
 </header>
@@ -73,19 +73,8 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<a href="_lib_deployutil_.executabledeployiteminternal.html" class="tsd-signature-type">ExecutableDeployItemInternal</a>
-						<ul class="tsd-hierarchy">
-							<li>
-								<span class="target">Transfer</span>
-							</li>
-						</ul>
+						<span class="target">UniqAddress</span>
 					</li>
-				</ul>
-			</section>
-			<section class="tsd-panel">
-				<h3>Implements</h3>
-				<ul class="tsd-hierarchy">
-					<li><a href="../interfaces/_lib_clvalue_.tobytes.html" class="tsd-signature-type">ToBytes</a></li>
 				</ul>
 			</section>
 			<section class="tsd-panel-group tsd-index-group">
@@ -95,22 +84,21 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_lib_deployutil_.transfer.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_lib_deployutil_.uniqaddress.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite"><a href="_lib_deployutil_.transfer.html#args" class="tsd-kind-icon">args</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-overwrite"><a href="_lib_deployutil_.transfer.html#tag" class="tsd-kind-icon">tag</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_lib_deployutil_.uniqaddress.html#publickey" class="tsd-kind-icon">public<wbr>Key</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_lib_deployutil_.uniqaddress.html#transferid" class="tsd-kind-icon">transfer<wbr>Id</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_lib_deployutil_.transfer.html#getargbyname" class="tsd-kind-icon">get<wbr>Arg<wbr>ByName</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_lib_deployutil_.transfer.html#setarg" class="tsd-kind-icon">set<wbr>Arg</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_lib_deployutil_.transfer.html#tobytes" class="tsd-kind-icon">to<wbr>Bytes</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_lib_deployutil_.uniqaddress.html#tostring" class="tsd-kind-icon">to<wbr>String</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_lib_deployutil_.uniqaddress.html#fromstring" class="tsd-kind-icon">from<wbr>String</a></li>
 							</ul>
 						</section>
 					</div>
@@ -122,124 +110,119 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Transfer<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="_lib_runtimeargs_.runtimeargs.html" class="tsd-signature-type">RuntimeArgs</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_lib_deployutil_.transfer.html" class="tsd-signature-type">Transfer</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Uniq<wbr>Address<span class="tsd-signature-symbol">(</span>publicKey<span class="tsd-signature-symbol">: </span><a href="_lib_clvalue_.publickey.html" class="tsd-signature-type">PublicKey</a>, transferId<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">BigNumberish</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_lib_deployutil_.uniqaddress.html" class="tsd-signature-type">UniqAddress</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/c20f886/src/lib/DeployUtil.ts#L517">src/lib/DeployUtil.ts:517</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/c20f886/src/lib/DeployUtil.ts#L106">src/lib/DeployUtil.ts:106</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Constructor for Transfer deploy item.</p>
+									<p>Constructs UniqAddress</p>
 								</div>
 							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>args: <a href="_lib_runtimeargs_.runtimeargs.html" class="tsd-signature-type">RuntimeArgs</a></h5>
+									<h5>publicKey: <a href="_lib_clvalue_.publickey.html" class="tsd-signature-type">PublicKey</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>PublicKey instance</p>
+										</div>
+									</div>
+								</li>
+								<li>
+									<h5>transferId: <span class="tsd-signature-type">BigNumberish</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>BigNumberish value (can be also string representing number). Max U64.</p>
+										</div>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_lib_deployutil_.transfer.html" class="tsd-signature-type">Transfer</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_lib_deployutil_.uniqaddress.html" class="tsd-signature-type">UniqAddress</a></h4>
 						</li>
 					</ul>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
-					<a name="args" class="tsd-anchor"></a>
-					<h3>args</h3>
-					<div class="tsd-signature tsd-kind-icon">args<span class="tsd-signature-symbol">:</span> <a href="_lib_runtimeargs_.runtimeargs.html" class="tsd-signature-type">RuntimeArgs</a></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="publickey" class="tsd-anchor"></a>
+					<h3>public<wbr>Key</h3>
+					<div class="tsd-signature tsd-kind-icon">public<wbr>Key<span class="tsd-signature-symbol">:</span> <a href="_lib_clvalue_.publickey.html" class="tsd-signature-type">PublicKey</a></div>
 					<aside class="tsd-sources">
-						<p>Overrides <a href="_lib_deployutil_.executabledeployiteminternal.html">ExecutableDeployItemInternal</a>.<a href="_lib_deployutil_.executabledeployiteminternal.html#args">args</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/c20f886/src/lib/DeployUtil.ts#L517">src/lib/DeployUtil.ts:517</a></li>
+							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/c20f886/src/lib/DeployUtil.ts#L105">src/lib/DeployUtil.ts:105</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
-					<a name="tag" class="tsd-anchor"></a>
-					<h3>tag</h3>
-					<div class="tsd-signature tsd-kind-icon">tag<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 5</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="transferid" class="tsd-anchor"></a>
+					<h3>transfer<wbr>Id</h3>
+					<div class="tsd-signature tsd-kind-icon">transfer<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">BigNumber</span></div>
 					<aside class="tsd-sources">
-						<p>Overrides <a href="_lib_deployutil_.executabledeployiteminternal.html">ExecutableDeployItemInternal</a>.<a href="_lib_deployutil_.executabledeployiteminternal.html#tag">tag</a></p>
 						<ul>
-							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/c20f886/src/lib/DeployUtil.ts#L511">src/lib/DeployUtil.ts:511</a></li>
+							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/c20f886/src/lib/DeployUtil.ts#L106">src/lib/DeployUtil.ts:106</a></li>
 						</ul>
 					</aside>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-					<a name="getargbyname" class="tsd-anchor"></a>
-					<h3>get<wbr>Arg<wbr>ByName</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Arg<wbr>ByName<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_lib_clvalue_.clvalue.html" class="tsd-signature-type">CLValue</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="tostring" class="tsd-anchor"></a>
+					<h3>to<wbr>String</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">to<wbr>String<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lib_deployutil_.executabledeployiteminternal.html">ExecutableDeployItemInternal</a>.<a href="_lib_deployutil_.executabledeployiteminternal.html#getargbyname">getArgByName</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/c20f886/src/lib/DeployUtil.ts#L268">src/lib/DeployUtil.ts:268</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/c20f886/src/lib/DeployUtil.ts#L129">src/lib/DeployUtil.ts:129</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_lib_clvalue_.clvalue.html" class="tsd-signature-type">CLValue</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></h4>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Returns string in format &quot;accountHex-transferIdHex&quot;</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-					<a name="setarg" class="tsd-anchor"></a>
-					<h3>set<wbr>Arg</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-						<li class="tsd-signature tsd-kind-icon">set<wbr>Arg<span class="tsd-signature-symbol">(</span>name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, value<span class="tsd-signature-symbol">: </span><a href="_lib_clvalue_.clvalue.html" class="tsd-signature-type">CLValue</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="fromstring" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> from<wbr>String</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">from<wbr>String<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_lib_deployutil_.uniqaddress.html" class="tsd-signature-type">UniqAddress</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
-								<p>Inherited from <a href="_lib_deployutil_.executabledeployiteminternal.html">ExecutableDeployItemInternal</a>.<a href="_lib_deployutil_.executabledeployiteminternal.html#setarg">setArg</a></p>
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/c20f886/src/lib/DeployUtil.ts#L272">src/lib/DeployUtil.ts:272</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/c20f886/src/lib/DeployUtil.ts#L137">src/lib/DeployUtil.ts:137</a></li>
 								</ul>
 							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Builds UniqAddress from string</p>
+								</div>
+							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>name: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5>value: <a href="_lib_clvalue_.clvalue.html" class="tsd-signature-type">CLValue</a></h5>
+									<h5>value: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>value returned from UniqAddress.toString()</p>
+									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-					<a name="tobytes" class="tsd-anchor"></a>
-					<h3>to<wbr>Bytes</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-						<li class="tsd-signature tsd-kind-icon">to<wbr>Bytes<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<p>Overrides <a href="_lib_deployutil_.executabledeployiteminternal.html">ExecutableDeployItemInternal</a>.<a href="_lib_deployutil_.executabledeployiteminternal.html#tobytes">toBytes</a></p>
-								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-client-sdk/blob/c20f886/src/lib/DeployUtil.ts#L532">src/lib/DeployUtil.ts:532</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Uint8Array</span></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_lib_deployutil_.uniqaddress.html" class="tsd-signature-type">UniqAddress</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -351,36 +334,33 @@
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="_lib_deployutil_.storedversionedcontractbyname.html" class="tsd-kind-icon">Stored<wbr>Versioned<wbr>Contract<wbr>ByName</a>
 					</li>
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="_lib_deployutil_.transfer.html" class="tsd-kind-icon">Transfer</a>
+					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-module">
-						<a href="_lib_deployutil_.transfer.html" class="tsd-kind-icon">Transfer</a>
+						<a href="_lib_deployutil_.uniqaddress.html" class="tsd-kind-icon">Uniq<wbr>Address</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_lib_deployutil_.transfer.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_lib_deployutil_.uniqaddress.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
-								<a href="_lib_deployutil_.transfer.html#args" class="tsd-kind-icon">args</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_lib_deployutil_.uniqaddress.html#publickey" class="tsd-kind-icon">public<wbr>Key</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-overwrite">
-								<a href="_lib_deployutil_.transfer.html#tag" class="tsd-kind-icon">tag</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_lib_deployutil_.uniqaddress.html#transferid" class="tsd-kind-icon">transfer<wbr>Id</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="_lib_deployutil_.transfer.html#getargbyname" class="tsd-kind-icon">get<wbr>Arg<wbr>ByName</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_lib_deployutil_.uniqaddress.html#tostring" class="tsd-kind-icon">to<wbr>String</a>
 							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
-								<a href="_lib_deployutil_.transfer.html#setarg" class="tsd-kind-icon">set<wbr>Arg</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
-								<a href="_lib_deployutil_.transfer.html#tobytes" class="tsd-kind-icon">to<wbr>Bytes</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_lib_deployutil_.uniqaddress.html#fromstring" class="tsd-kind-icon">from<wbr>String</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="_lib_deployutil_.uniqaddress.html" class="tsd-kind-icon">Uniq<wbr>Address</a>
-					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="../interfaces/_lib_deployutil_.deployjson.html" class="tsd-kind-icon">Deploy<wbr>Json</a>
 					</li>
@@ -472,7 +452,7 @@
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
 			</ul>
 		</div>
 	</div>
