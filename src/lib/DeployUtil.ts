@@ -28,7 +28,7 @@ import { RuntimeArgs } from './RuntimeArgs';
 // import JSBI from 'jsbi';
 import { DeployUtil, Keys, URef } from './index';
 import { AsymmetricKey, SignatureAlgorithm } from './Keys';
-import { BigNumberish } from '@ethersproject/bignumber';
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { jsonArrayMember, jsonMember, jsonObject, TypedJSON } from 'typedjson';
 import { ByteArray } from 'tweetnacl-ts';
 import { Result, Ok, Err } from 'ts-results';
@@ -36,8 +36,8 @@ import { Result, Ok, Err } from 'ts-results';
 const shortEnglishHumanizer = humanizeDuration.humanizer({
   spacer: '',
   serialComma: false,
-  conjunction: " ",
-  delimiter: " ",
+  conjunction: ' ',
+  delimiter: ' ',
   language: 'shortEn',
   languages: {
     // https://docs.rs/humantime/2.0.1/humantime/fn.parse_duration.html
@@ -71,33 +71,75 @@ export const humanizerTTL = (ttl: number) => {
   return shortEnglishHumanizer(ttl);
 };
 
-
 /**
  * Returns duration in ms
  * @param ttl in humanized string
  */
 export const dehumanizerTTL = (ttl: string): number => {
   const dehumanizeUnit = (s: string): number => {
-    if (s.includes("ms")) {
+    if (s.includes('ms')) {
       return Number(s.replace('ms', ''));
-    };
+    }
     if (s.includes('s') && !s.includes('m')) {
       return Number(s.replace('s', '')) * 1000;
     }
     if (s.includes('m') && !s.includes('s')) {
-      return Number(s.replace('m', '')) * 60 * 1000; 
+      return Number(s.replace('m', '')) * 60 * 1000;
     }
     if (s.includes('h')) {
-      return Number(s.replace('h', '')) * 60 * 60 * 1000; 
+      return Number(s.replace('h', '')) * 60 * 60 * 1000;
     }
     if (s.includes('day')) {
-      return Number(s.replace('day', '')) * 24 * 60 * 60 * 1000; 
+      return Number(s.replace('day', '')) * 24 * 60 * 60 * 1000;
     }
-    throw Error("Unsuported TTL unit");
+    throw Error('Unsuported TTL unit');
   };
 
-  return ttl.split(" ").map(dehumanizeUnit).reduce((acc, val) => acc += val);
+  return ttl
+    .split(' ')
+    .map(dehumanizeUnit)
+    .reduce((acc, val) => (acc += val));
 };
+
+export class UniqAddress {
+  publicKey: PublicKey;
+  transferId: BigNumber;
+
+  /**
+  * Constructs UniqAddress
+  * @param publicKey PublicKey instance
+  * @param transferId BigNumberish value (can be also string representing number). Max U64.
+  */
+  constructor(publicKey: PublicKey, transferId: BigNumberish) {
+    if (!(publicKey instanceof PublicKey)) {
+      throw new Error('publicKey is not an instance of PublicKey');
+    }
+    const bigNum = BigNumber.from(transferId);
+    if (bigNum.gt('18446744073709551615')) {
+      throw new Error('transferId max value is U64');
+    }
+    this.transferId = bigNum;
+    this.publicKey = publicKey;
+  }
+
+  /**
+  * Returns string in format "accountHex-transferIdHex"
+  * @param ttl in humanized string
+  */
+  toString(): string {
+    return `${this.publicKey.toAccountHex()}-${this.transferId.toHexString()}`;
+  }
+
+  /**
+  * Builds UniqAddress from string 
+  * @param value value returned from UniqAddress.toString()
+  */
+  static fromString(value: string): UniqAddress {
+    const [accountHex, transferHex] = value.split('-');
+    const publicKey = PublicKey.fromHex(accountHex);
+    return new UniqAddress(publicKey, transferHex);
+  }
+}
 
 @jsonObject
 export class DeployHeader implements ToBytes {
@@ -673,7 +715,7 @@ export class ExecutableDeployItem implements ToBytes {
     amount: BigNumberish,
     target: URef | PublicKey,
     sourcePurse: URef | null = null,
-    id: number
+    id: BigNumberish
   ) {
     const runtimeArgs = RuntimeArgs.fromMap({});
     runtimeArgs.insert('amount', CLValue.u512(amount));
@@ -687,8 +729,8 @@ export class ExecutableDeployItem implements ToBytes {
     } else {
       throw new Error('Please specify target');
     }
-    if (!id) {
-      throw new Error("transfer-id missing in new transfer.");
+    if (id === undefined) {
+      throw new Error('transfer-id missing in new transfer.');
     } else {
       runtimeArgs.insert(
         'id',
@@ -698,6 +740,47 @@ export class ExecutableDeployItem implements ToBytes {
     return ExecutableDeployItem.fromExecutableDeployItemInternal(
       new Transfer(runtimeArgs)
     );
+  }
+
+  /**
+   * Constructor for Transfer deploy item using UniqAddress.
+   * @param source PublicKey of source account
+   * @param target UniqAddress of target account
+   * @param amount The number of motes to transfer
+   * @param paymentAmount the number of motes paying to execution engine
+   * @param chainName Name of the chain, to avoid the `Deploy` from being accidentally or maliciously included in a different chain.
+   * @param gasPrice Conversion rate between the cost of Wasm opcodes and the motes sent by the payment code.
+   * @param ttl Time that the `Deploy` will remain valid for, in milliseconds. The default value is 1800000, which is 30 minutes
+   * @param sourcePurse URef of the source purse. If this is omitted, the main purse of the account creating this \
+   * transfer will be used as the source purse
+   */
+  public static newTransferToUniqAddress(
+    source: PublicKey,
+    target: UniqAddress,
+    amount: BigNumberish,
+    paymentAmount: BigNumberish,
+    chainName: string,
+    gasPrice = 1,
+    ttl = 1800000,
+    sourcePurse?: URef
+  ): Deploy {
+    const deployParams = new DeployUtil.DeployParams(
+      source,
+      chainName,
+      gasPrice,
+      ttl
+    );
+
+    const payment = DeployUtil.standardPayment(paymentAmount);
+
+    const session = DeployUtil.ExecutableDeployItem.newTransfer(
+      amount,
+      target.publicKey,
+      sourcePurse,
+      target.transferId
+    );
+
+    return DeployUtil.makeDeploy(deployParams, session, payment);
   }
 
   public isModuleBytes(): boolean {
@@ -1015,26 +1098,28 @@ export const deploySizeInBytes = (deploy: Deploy): number => {
   const hashSize = deploy.hash.length;
   const bodySize = serializeBody(deploy.payment, deploy.session).length;
   const headerSize = serializeHeader(deploy.header).length;
-  const approvalsSize = deploy.approvals.map(approval => {
-    return (approval.signature.length + approval.signer.length) / 2;
-  }).reduce((a, b) => a + b, 0);
+  const approvalsSize = deploy.approvals
+    .map(approval => {
+      return (approval.signature.length + approval.signer.length) / 2;
+    })
+    .reduce((a, b) => a + b, 0);
 
   return hashSize + headerSize + bodySize + approvalsSize;
-}
+};
 
 export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
   const serializedBody = serializeBody(deploy.payment, deploy.session);
   const bodyHash = blake.blake2b(serializedBody, null, 32);
 
-  if(!arrayEquals(deploy.header.bodyHash, bodyHash)) {
+  if (!arrayEquals(deploy.header.bodyHash, bodyHash)) {
     return Err(`Invalid deploy: bodyHash missmatch. Expected: ${bodyHash}, 
                   got: ${deploy.header.bodyHash}.`);
   }
 
   const serializedHeader = serializeHeader(deploy.header);
   const deployHash = blake.blake2b(serializedHeader, null, 32);
- 
-  if(!arrayEquals(deploy.hash, deployHash)) {
+
+  if (!arrayEquals(deploy.hash, deployHash)) {
     return Err(`Invalid deploy: hash missmatch. Expected: ${deployHash}, 
                   got: ${deploy.hash}.`);
   }
@@ -1042,8 +1127,8 @@ export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
   // TODO: Verify included signatures.
 
   return Ok(deploy);
-}
+};
 
 const arrayEquals = (a: Uint8Array, b: Uint8Array): boolean => {
   return a.length === b.length && a.every((val, index) => val === b[index]);
-}
+};
