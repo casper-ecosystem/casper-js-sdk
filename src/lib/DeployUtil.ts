@@ -22,7 +22,8 @@ import {
   toBytesDeployHash,
   toBytesString,
   toBytesU64,
-  toBytesVecT
+  toBytesVecT,
+  toBytesU32
 } from './byterepr';
 import { RuntimeArgs } from './RuntimeArgs';
 // import JSBI from 'jsbi';
@@ -901,7 +902,7 @@ export class Deploy {
  * Serialize deployHeader into a array of bytes
  * @param deployHeader
  */
-export const serializeHeader = (deployHeader: DeployHeader) => {
+export const serializeHeader = (deployHeader: DeployHeader): Uint8Array => {
   return deployHeader.toBytes();
 };
 
@@ -913,9 +914,20 @@ export const serializeHeader = (deployHeader: DeployHeader) => {
 export const serializeBody = (
   payment: ExecutableDeployItem,
   session: ExecutableDeployItem
-) => {
+): Uint8Array => {
   return concat([payment.toBytes(), session.toBytes()]);
 };
+
+export const serializeApprovals = (approvals: Approval[]): Uint8Array => {
+  const len = toBytesU32(approvals.length);
+  const bytes = concat(approvals.map(approval => {
+    return concat([
+      Uint8Array.from(Buffer.from(approval.signer, 'hex')),
+      Uint8Array.from(Buffer.from(approval.signature, 'hex'))
+    ]);
+  }));
+  return concat([len, bytes]);
+}
 
 /**
  * Supported contract type
@@ -1132,3 +1144,12 @@ export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
 const arrayEquals = (a: Uint8Array, b: Uint8Array): boolean => {
   return a.length === b.length && a.every((val, index) => val === b[index]);
 };
+
+export const deployToBytes = (deploy: Deploy): Uint8Array => {
+  return concat([
+    serializeHeader(deploy.header),
+    deploy.hash,
+    serializeBody(deploy.payment, deploy.session),
+    serializeApprovals(deploy.approvals)
+  ]);
+}
