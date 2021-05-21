@@ -24,7 +24,7 @@
   ],
   "author": "AbnerZheng <abner@casper.io>",
   "lint-staged": {
-    "*.{ts,tsx}": [
+    "src/**/*.{ts,tsx}": [
       "eslint src/ --fix",
       "git add"
     ],
