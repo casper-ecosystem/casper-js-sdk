@@ -4,11 +4,18 @@ All notable changes to casper-client-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 1.3.3
+
+## Fixed
+
+- `Keys.SECP256K1.new()` and other SECP256K1 releated methods now can work in a browser environment.
+
 ## 1.3.2
 
 ## Added
+
 - `DeployUtil.deployToBytes(deploy)` returns an `Uint8Array`, which is a byte representation of a deploy.
- 
+
 ## 1.3.1
 
 ### Changed
