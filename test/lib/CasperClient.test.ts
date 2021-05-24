@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+
 import { CasperClient } from '../../src/lib/CasperClient';
 import { Deploy } from '../../src/lib/DeployUtil';
 import * as fs from 'fs';
