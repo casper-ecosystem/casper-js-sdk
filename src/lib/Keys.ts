@@ -5,14 +5,13 @@ import { decodeBase64 } from 'tweetnacl-util';
 import { encodeBase16, encodeBase64 } from '../index';
 import { PublicKey } from '../lib/index';
 import { byteHash } from './Contracts';
-import { ec as EC } from 'elliptic';
+import eccrypto from "eccrypto";
 import * as secp256k1 from 'ethereum-cryptography/secp256k1';
 import KeyEncoder from 'key-encoder';
 import { sha256 } from 'ethereum-cryptography/sha256';
 import { CasperHDKey } from './CasperHDKey';
 
 const keyEncoder = new KeyEncoder('secp256k1');
-const ec = new EC('secp256k1');
 
 const ED25519_PEM_SECRET_KEY_TAG = 'PRIVATE KEY';
 const ED25519_PEM_PUBLIC_KEY_TAG = 'PUBLIC KEY';
@@ -317,9 +316,8 @@ export class Secp256K1 extends AsymmetricKey {
    * Generating a new Secp256K1 key pair
    */
   public static new() {
-    const keyPair = ec.genKeyPair();
-    const publicKey = Uint8Array.from(keyPair.getPublic(true, 'array'));
-    const privateKey = keyPair.getPrivate().toBuffer();
+    const privateKey = eccrypto.generatePrivate();
+    const publicKey = Uint8Array.from(eccrypto.getPublicCompressed(privateKey));
     return new Secp256K1(publicKey, privateKey);
   }
 
@@ -388,10 +386,8 @@ export class Secp256K1 extends AsymmetricKey {
     } else {
       rawKeyHex = encodeBase16(bytes);
     }
-    const privateKey = ec
-      .keyFromPrivate(rawKeyHex, 'hex')
-      .getPrivate()
-      .toBuffer();
+
+    const privateKey = Buffer.from(rawKeyHex, 'hex');
     return privateKey;
   }
 
@@ -407,7 +403,7 @@ export class Secp256K1 extends AsymmetricKey {
     }
 
     const publicKey = Uint8Array.from(
-      ec.keyFromPublic(rawKeyHex, 'hex').getPublic(true, 'array')
+      Buffer.from(rawKeyHex, 'hex')
     );
     return publicKey;
   }

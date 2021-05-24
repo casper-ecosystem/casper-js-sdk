@@ -35,6 +35,7 @@ const clientConfig = {
   resolve: {
     ...common.resolve,
     fallback: {
+      crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
       asert: require.resolve('assert'),
       fs: false
