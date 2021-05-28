@@ -6,6 +6,13 @@
  */
 
 /**
+ * Returns Signer version
+ */
+export const getVersion: () => string = () => {
+  return window.casperlabsHelper!.getVersion();
+};
+
+/**
  * Check whether CasperLabs Signer extension is connected
  */
 export const isConnected: () => Promise<boolean> = async () => {

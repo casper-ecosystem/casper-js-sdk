@@ -1,5 +1,10 @@
 interface CasperLabsHelper {
   /**
+   * Returns Signer version
+   */
+  getVersion: () => string;
+
+  /**
    * Returns connection status from Signer
    */
   isConnected: () => Promise<boolean>;
