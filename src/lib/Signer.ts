@@ -8,9 +8,9 @@
 /**
  * Returns Signer version
  */
-export const getVersion: () => string = () => {
+export const getVersion: () => Promise<string> = async () => {
   try {
-    return window.casperlabsHelper!.getVersion();
+    return await window.casperlabsHelper!.getVersion();
   } catch {
     return "<1.0.0";
   }
