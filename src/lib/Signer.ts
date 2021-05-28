@@ -9,7 +9,11 @@
  * Returns Signer version
  */
 export const getVersion: () => string = () => {
-  return window.casperlabsHelper!.getVersion();
+  try {
+    return window.casperlabsHelper!.getVersion();
+  } catch {
+    return "<1.0.0";
+  }
 };
 
 /**
