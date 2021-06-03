@@ -422,11 +422,4 @@ describe('DeployUtil', () => {
     let result = Buffer.from(DeployUtil.deployToBytes(deploy!)).toString('hex');
     assert.equal(result, expected);
   });
-
-  describe("xxx", () => {
-    console.log("HEY");
-    const deploy = DeployUtil.deployFromJson(JSON.parse(`{"deploy":{"hash":"5a323e12ff306b1bc6565ad7e4b4e135a1acd4aa583c2686e9e138af962c68a2","header":{"account":"02024ef1def792992eeed81b2c55c42420236700b9c0eb55229cfd31a5e1ef437ac4","timestamp":"2021-06-02T18:52:23.510Z","ttl":"30m","gas_price":1,"body_hash":"d995cec953d1cc0e21cdddafd6a24016334b544706e9e3669811431717c90d35","dependencies":[],"chain_name":"casper-test"},"payment":{"ModuleBytes":{"module_bytes":"","args":[["amount",{"cl_type":"U512","bytes":"0600a0724e1809","parsed":"null"}]]}},"session":{"Transfer":{"args":[["amount",{"cl_type":"U512","bytes":"0500f2052a01","parsed":"null"}],["target",{"cl_type":{"ByteArray":32},"bytes":"37f304a6632b214eacc45b85f6a45759194ea69f6684da0bca42d60e42ac8e12","parsed":"null"}],["id",{"cl_type":{"Option":"U64"},"bytes":"013e9e11ce79010000","parsed":"null"}]]}},"approvals":[{"signer":"02024ef1def792992eeed81b2c55c42420236700b9c0eb55229cfd31a5e1ef437ac4","signature":"02647b461570ee3ae1723189155148a969da57d6ebcf2653a55cfcacfd530c28330e540bfe5c3fb1b1aaee272bcf8267cae0685b941a4e869ec2a34170afa34dc0"}]}}`));
-
-    console.log(deploy);
-  });
 });
