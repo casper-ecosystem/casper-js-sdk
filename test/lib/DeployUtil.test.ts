@@ -4,8 +4,8 @@ import { humanizerTTL, dehumanizerTTL } from '../../src/lib/DeployUtil';
 import { TypedJSON } from 'typedjson';
 
 const testDeploy = () => {
-  const senderKey = Keys.Secp256K1.new();
-  const recipientKey = Keys.Secp256K1.new();
+  const senderKey = Keys.Ed25519.new();
+  const recipientKey = Keys.Ed25519.new();
   const networkName = 'test-network';
   const paymentAmount = 10000000000000;
   const transferAmount = 10;
@@ -24,7 +24,6 @@ const testDeploy = () => {
   let payment = DeployUtil.standardPayment(paymentAmount);
   let deploy = DeployUtil.makeDeploy(deployParams, session, payment);
   deploy = DeployUtil.signDeploy(deploy, senderKey);
-  console.log(JSON.stringify(DeployUtil.deployToJson(deploy)));
   return deploy;
 }
 
