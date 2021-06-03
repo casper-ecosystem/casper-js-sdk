@@ -51,7 +51,7 @@ export const getActivePublicKey: () => Promise<string> = () => {
 /**
  * Send Deploy in JSON format message to Signer plugin to sign.
  *
- * @param messageBase16 the base16 encoded message that plugin received to sign
+ * @param deploy deploy in JSON format
  * @param sourcePublicKey base64 encoded public key used to sign the deploy
  * @param targetPublicKey base64 encoded public key used to sign the deploy
  *
