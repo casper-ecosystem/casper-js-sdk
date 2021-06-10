@@ -770,7 +770,7 @@ export class ExecutableDeployItem implements ToBytes {
     } else {
       throw new Error('Please specify target');
     }
-    if (id !== undefined) {
+    if (id !== undefined && id !== null) {
       runtimeArgs.insert(
         'id',
         CLValue.option(CLTypedAndToBytesHelper.u64(id), CLTypeHelper.u64())
