@@ -107,10 +107,10 @@ export class UniqAddress {
   transferId: BigNumber;
 
   /**
-  * Constructs UniqAddress
-  * @param publicKey PublicKey instance
-  * @param transferId BigNumberish value (can be also string representing number). Max U64.
-  */
+   * Constructs UniqAddress
+   * @param publicKey PublicKey instance
+   * @param transferId BigNumberish value (can be also string representing number). Max U64.
+   */
   constructor(publicKey: PublicKey, transferId: BigNumberish) {
     if (!(publicKey instanceof PublicKey)) {
       throw new Error('publicKey is not an instance of PublicKey');
@@ -124,17 +124,17 @@ export class UniqAddress {
   }
 
   /**
-  * Returns string in format "accountHex-transferIdHex"
-  * @param ttl in humanized string
-  */
+   * Returns string in format "accountHex-transferIdHex"
+   * @param ttl in humanized string
+   */
   toString(): string {
     return `${this.publicKey.toAccountHex()}-${this.transferId.toHexString()}`;
   }
 
   /**
-  * Builds UniqAddress from string 
-  * @param value value returned from UniqAddress.toString()
-  */
+   * Builds UniqAddress from string
+   * @param value value returned from UniqAddress.toString()
+   */
   static fromString(value: string): UniqAddress {
     const [accountHex, transferHex] = value.split('-');
     const publicKey = PublicKey.fromHex(accountHex);
@@ -775,7 +775,10 @@ export class ExecutableDeployItem implements ToBytes {
         'id',
         CLValue.option(CLTypedAndToBytesHelper.u64(id), CLTypeHelper.u64())
       );
-    } 
+    } else {
+      runtimeArgs.insert('id', CLValue.option(null, CLTypeHelper.u64()));
+    }
+
     return ExecutableDeployItem.fromExecutableDeployItemInternal(
       new Transfer(runtimeArgs)
     );
@@ -958,14 +961,16 @@ export const serializeBody = (
 
 export const serializeApprovals = (approvals: Approval[]): Uint8Array => {
   const len = toBytesU32(approvals.length);
-  const bytes = concat(approvals.map(approval => {
-    return concat([
-      Uint8Array.from(Buffer.from(approval.signer, 'hex')),
-      Uint8Array.from(Buffer.from(approval.signature, 'hex'))
-    ]);
-  }));
+  const bytes = concat(
+    approvals.map(approval => {
+      return concat([
+        Uint8Array.from(Buffer.from(approval.signer, 'hex')),
+        Uint8Array.from(Buffer.from(approval.signature, 'hex'))
+      ]);
+    })
+  );
   return concat([len, bytes]);
-}
+};
 
 /**
  * Supported contract type
@@ -1190,4 +1195,4 @@ export const deployToBytes = (deploy: Deploy): Uint8Array => {
     serializeBody(deploy.payment, deploy.session),
     serializeApprovals(deploy.approvals)
   ]);
-}
+};
