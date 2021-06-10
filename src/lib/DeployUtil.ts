@@ -752,7 +752,7 @@ export class ExecutableDeployItem implements ToBytes {
    * transfer will be used as the source purse
    * @param id user-defined transfer id. This parameter is optional.
    */
-  public static newTransferWithoutObligatoryId(
+  public static newTransferWithOptionalTransferId(
     amount: BigNumberish,
     target: URef | PublicKey,
     sourcePurse?: URef | null,
