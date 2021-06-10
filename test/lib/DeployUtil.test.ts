@@ -313,4 +313,150 @@ describe('DeployUtil', () => {
 
     expect(badFn).to.throw('transfer-id missing in new transfer.');
   });
+
+  it('newTransferToUniqAddress should construct proper deploy', () => {
+    const senderKey = Keys.Ed25519.new();
+    const recipientKey = Keys.Ed25519.new();
+    const networkName = 'test-network';
+    const paymentAmount = 10000000000000;
+    const transferAmount = 10;
+    const transferId = 34;
+
+    const uniqAddress = new DeployUtil.UniqAddress(recipientKey.publicKey, transferId);
+
+    let deploy = DeployUtil.ExecutableDeployItem.newTransferToUniqAddress(
+      senderKey.publicKey,
+      uniqAddress,
+      transferAmount,
+      paymentAmount,
+      networkName
+    );
+
+    deploy = DeployUtil.signDeploy(deploy, senderKey);
+
+    assert.isTrue(deploy.isTransfer());
+    assert.isTrue(deploy.isStandardPayment());
+    assert.deepEqual(deploy.header.account, senderKey.publicKey);
+    assert.deepEqual(
+      deploy.payment.getArgByName('amount')!.asBigNumber().toNumber(),
+      paymentAmount
+    );
+    assert.deepEqual(
+      deploy.session.getArgByName('amount')!.asBigNumber().toNumber(),
+      transferAmount
+    );
+    assert.deepEqual(
+      deploy.session.getArgByName('target')!.asBytesArray(),
+      recipientKey.accountHash()
+    );
+    assert.deepEqual(
+      deploy.session
+        .getArgByName('id')!
+        .asOption()
+        .getSome()
+        .asBigNumber()
+        .toNumber(),
+      transferId
+    );
+  });
+
+  it('DeployUtil.UniqAddress should serialize and deserialize', () => {
+    const recipientKey = Keys.Ed25519.new();
+    const hexAddress = recipientKey.publicKey.toAccountHex();
+    const transferId = "80172309";
+    const transferIdHex = "0x04c75515";
+
+    const uniqAddress = new DeployUtil.UniqAddress(recipientKey.publicKey, transferId);
+
+    expect(uniqAddress).to.be.instanceof(DeployUtil.UniqAddress);
+    expect(uniqAddress.toString()).to.be.eq(`${hexAddress}-${transferIdHex}`);
+  });
+
+  it('DeployUtil.deployToBytes should produce correct byte representation.', () => {
+    let deploy = DeployUtil.deployFromJson({
+      "deploy": {
+        "hash": "d7a68bbe656a883d04bba9f26aa340dbe3f8ec99b2adb63b628f2bc920431998",
+        "header": {
+          "account": "017f747b67bd3fe63c2a736739dfe40156d622347346e70f68f51c178a75ce5537",
+          "timestamp": "2021-05-04T14:20:35.104Z",
+          "ttl": "30m",
+          "gas_price": 2,
+          "body_hash": "f2e0782bba4a0a9663cafc7d707fd4a74421bc5bfef4e368b7e8f38dfab87db8",
+          "dependencies": [
+            "0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f",
+            "1010101010101010101010101010101010101010101010101010101010101010"
+          ],
+          "chain_name": "mainnet"
+        },
+        "payment": {
+          "ModuleBytes": {
+            "module_bytes": "",
+            "args": [
+              [
+                "amount",
+                {
+                  "cl_type": "U512",
+                  "bytes": "0400ca9a3b",
+                  "parsed": "1000000000"
+                }
+              ]
+            ]
+          }
+        },
+        "session": {
+          "Transfer": {
+            "args": [
+              [
+                "amount",
+                {
+                  "cl_type": "U512",
+                  "bytes": "05005550b405",
+                  "parsed": "24500000000"
+                }
+              ],
+              [
+                "target",
+                {
+                  "cl_type": {
+                    "ByteArray": 32
+                  },
+                  "bytes": "0101010101010101010101010101010101010101010101010101010101010101",
+                  "parsed": "0101010101010101010101010101010101010101010101010101010101010101"
+                }
+              ],
+              [
+                "id",
+                {
+                  "cl_type": {
+                    "Option": "U64"
+                  },
+                  "bytes": "01e703000000000000",
+                  "parsed": 999
+                }
+              ],
+              [
+                "additional_info",
+                {
+                  "cl_type": "String",
+                  "bytes": "1000000074686973206973207472616e73666572",
+                  "parsed": "this is transfer"
+                }
+              ]
+            ]
+          }
+        },
+        "approvals": [
+          {
+            "signer": "017f747b67bd3fe63c2a736739dfe40156d622347346e70f68f51c178a75ce5537",
+            "signature": "0195a68b1a05731b7014e580b4c67a506e0339a7fffeaded9f24eb2e7f78b96bdd900b9be8ca33e4552a9a619dc4fc5e4e3a9f74a4b0537c14a5a8007d62a5dc06"
+          }
+        ]
+      }
+    });
+
+    let expected = "017f747b67bd3fe63c2a736739dfe40156d622347346e70f68f51c178a75ce5537a087c0377901000040771b00000000000200000000000000f2e0782bba4a0a9663cafc7d707fd4a74421bc5bfef4e368b7e8f38dfab87db8020000000f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f1010101010101010101010101010101010101010101010101010101010101010070000006d61696e6e6574d7a68bbe656a883d04bba9f26aa340dbe3f8ec99b2adb63b628f2bc92043199800000000000100000006000000616d6f756e74050000000400ca9a3b08050400000006000000616d6f756e740600000005005550b40508060000007461726765742000000001010101010101010101010101010101010101010101010101010101010101010f200000000200000069640900000001e7030000000000000d050f0000006164646974696f6e616c5f696e666f140000001000000074686973206973207472616e736665720a01000000017f747b67bd3fe63c2a736739dfe40156d622347346e70f68f51c178a75ce55370195a68b1a05731b7014e580b4c67a506e0339a7fffeaded9f24eb2e7f78b96bdd900b9be8ca33e4552a9a619dc4fc5e4e3a9f74a4b0537c14a5a8007d62a5dc06";
+
+    let result = Buffer.from(DeployUtil.deployToBytes(deploy!)).toString('hex');
+    assert.equal(result, expected);
+  });
 });

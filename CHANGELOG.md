@@ -1,12 +1,12 @@
 # Changelog
 
-All notable changes to casper-client-sdk.
+All notable changes to casper-js-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## 1.4.0
+## 1.5.0
 
-### Changed
+## Changed
 
 - Caution! This release contains rewritten CLValue from scratch, there are some breaking changes so consider it before upgrading.
 - Removed `CLTypedAndToBytesHelper` to have consistent way of creating new CLValues by using `new CLBool(true)` or `CLValueBuilder.bool(true)`
@@ -33,6 +33,37 @@ const myOkComplexRes = new CLResult( Ok(new CLList([new CLList([new CLU8(5), new
 - Renamed methods in `CLPublicKey`:
   - `toAccountHex` -> `toHex` - old name led to misunderstandings as in fact this is hex representation of `public-key` prefixed with key-type.
   - added method `toAccountHashStr` - this methods returns string containing account hash in hex form prefixed with `account-hash-`.
+
+## 1.4.0
+
+### Changed
+
+- `Signer.sign` now requires deploy in JSON format, `public-key hex` of a sender and `public-key hex` of a target.
+
+## 1.3.4
+
+### Added
+
+- `Signer.getVersion` returns running version of Signer.
+
+## 1.3.3
+
+### Fixed
+
+- `Keys.SECP256K1.new()` and other SECP256K1 releated methods now can work in a browser environment.
+
+## 1.3.2
+
+### Added
+
+- `DeployUtil.deployToBytes(deploy)` returns an `Uint8Array`, which is a byte representation of a deploy.
+
+## 1.3.1
+
+### Changed
+
+- Added `newTransferToUniqAddress` and `UniqAddress`.
+- Fix in `newTransfer` - `id` now can be `0`
 
 ## 1.3.0
 

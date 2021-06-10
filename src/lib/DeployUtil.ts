@@ -28,13 +28,14 @@ import {
   toBytesDeployHash,
   toBytesString,
   toBytesU64,
+  toBytesU32,
   toBytesVector
 } from './ByteConverters';
 import { RuntimeArgs } from './RuntimeArgs';
 // import JSBI from 'jsbi';
 import { DeployUtil, Keys } from './index';
 import { AsymmetricKey, SignatureAlgorithm } from './Keys';
-import { BigNumberish } from '@ethersproject/bignumber';
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { jsonArrayMember, jsonMember, jsonObject, TypedJSON } from 'typedjson';
 import { ByteArray } from 'tweetnacl-ts';
 
@@ -105,6 +106,46 @@ export const dehumanizerTTL = (ttl: string): number => {
     .map(dehumanizeUnit)
     .reduce((acc, val) => (acc += val));
 };
+
+export class UniqAddress {
+  publicKey: PublicKey;
+  transferId: BigNumber;
+
+  /**
+  * Constructs UniqAddress
+  * @param publicKey PublicKey instance
+  * @param transferId BigNumberish value (can be also string representing number). Max U64.
+  */
+  constructor(publicKey: PublicKey, transferId: BigNumberish) {
+    if (!(publicKey instanceof PublicKey)) {
+      throw new Error('publicKey is not an instance of PublicKey');
+    }
+    const bigNum = BigNumber.from(transferId);
+    if (bigNum.gt('18446744073709551615')) {
+      throw new Error('transferId max value is U64');
+    }
+    this.transferId = bigNum;
+    this.publicKey = publicKey;
+  }
+
+  /**
+  * Returns string in format "accountHex-transferIdHex"
+  * @param ttl in humanized string
+  */
+  toString(): string {
+    return `${this.publicKey.toAccountHex()}-${this.transferId.toHexString()}`;
+  }
+
+  /**
+  * Builds UniqAddress from string 
+  * @param value value returned from UniqAddress.toString()
+  */
+  static fromString(value: string): UniqAddress {
+    const [accountHex, transferHex] = value.split('-');
+    const publicKey = PublicKey.fromHex(accountHex);
+    return new UniqAddress(publicKey, transferHex);
+  }
+}
 
 @jsonObject
 export class DeployHeader implements ToBytes {
@@ -711,7 +752,7 @@ export class ExecutableDeployItem implements ToBytes {
     } else {
       throw new Error('Please specify target');
     }
-    if (!id) {
+    if (id === undefined) {
       throw new Error('transfer-id missing in new transfer.');
     } else {
       runtimeArgs.insert(
@@ -722,6 +763,47 @@ export class ExecutableDeployItem implements ToBytes {
     return ExecutableDeployItem.fromExecutableDeployItemInternal(
       new Transfer(runtimeArgs)
     );
+  }
+
+  /**
+   * Constructor for Transfer deploy item using UniqAddress.
+   * @param source PublicKey of source account
+   * @param target UniqAddress of target account
+   * @param amount The number of motes to transfer
+   * @param paymentAmount the number of motes paying to execution engine
+   * @param chainName Name of the chain, to avoid the `Deploy` from being accidentally or maliciously included in a different chain.
+   * @param gasPrice Conversion rate between the cost of Wasm opcodes and the motes sent by the payment code.
+   * @param ttl Time that the `Deploy` will remain valid for, in milliseconds. The default value is 1800000, which is 30 minutes
+   * @param sourcePurse URef of the source purse. If this is omitted, the main purse of the account creating this \
+   * transfer will be used as the source purse
+   */
+  public static newTransferToUniqAddress(
+    source: PublicKey,
+    target: UniqAddress,
+    amount: BigNumberish,
+    paymentAmount: BigNumberish,
+    chainName: string,
+    gasPrice = 1,
+    ttl = 1800000,
+    sourcePurse?: URef
+  ): Deploy {
+    const deployParams = new DeployUtil.DeployParams(
+      source,
+      chainName,
+      gasPrice,
+      ttl
+    );
+
+    const payment = DeployUtil.standardPayment(paymentAmount);
+
+    const session = DeployUtil.ExecutableDeployItem.newTransfer(
+      amount,
+      target.publicKey,
+      sourcePurse,
+      target.transferId
+    );
+
+    return DeployUtil.makeDeploy(deployParams, session, payment);
   }
 
   public isModuleBytes(): boolean {
@@ -842,7 +924,7 @@ export class Deploy {
  * Serialize deployHeader into a array of bytes
  * @param deployHeader
  */
-export const serializeHeader = (deployHeader: DeployHeader) => {
+export const serializeHeader = (deployHeader: DeployHeader): Uint8Array => {
   return deployHeader.toBytes();
 };
 
@@ -854,9 +936,21 @@ export const serializeHeader = (deployHeader: DeployHeader) => {
 export const serializeBody = (
   payment: ExecutableDeployItem,
   session: ExecutableDeployItem
-) => {
-  return concat([payment.toBytes().unwrap(), session.toBytes().unwrap()]);
+
+): Uint8Array => {
+  return concat([payment.toBytes(), session.toBytes()]);
 };
+
+export const serializeApprovals = (approvals: Approval[]): Uint8Array => {
+  const len = toBytesU32(approvals.length);
+  const bytes = concat(approvals.map(approval => {
+    return concat([
+      Uint8Array.from(Buffer.from(approval.signer, 'hex')),
+      Uint8Array.from(Buffer.from(approval.signature, 'hex'))
+    ]);
+  }));
+  return concat([len, bytes]);
+}
 
 /**
  * Supported contract type
@@ -1072,3 +1166,12 @@ export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
 const arrayEquals = (a: Uint8Array, b: Uint8Array): boolean => {
   return a.length === b.length && a.every((val, index) => val === b[index]);
 };
+
+export const deployToBytes = (deploy: Deploy): Uint8Array => {
+  return concat([
+    serializeHeader(deploy.header),
+    deploy.hash,
+    serializeBody(deploy.payment, deploy.session),
+    serializeApprovals(deploy.approvals)
+  ]);
+}
