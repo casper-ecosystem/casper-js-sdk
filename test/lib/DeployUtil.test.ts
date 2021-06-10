@@ -338,23 +338,23 @@ describe('DeployUtil', () => {
     assert.isTrue(deploy.isStandardPayment());
     assert.deepEqual(deploy.header.account, senderKey.publicKey);
     assert.deepEqual(
-      deploy.payment.getArgByName('amount')!.asBigNumber().toNumber(),
+      deploy.payment.getArgByName('amount')!.value().toNumber(),
       paymentAmount
     );
     assert.deepEqual(
-      deploy.session.getArgByName('amount')!.asBigNumber().toNumber(),
+      deploy.session.getArgByName('amount')!.value().toNumber(),
       transferAmount
     );
     assert.deepEqual(
-      deploy.session.getArgByName('target')!.asBytesArray(),
+      deploy.session.getArgByName('target')!.value(),
       recipientKey.accountHash()
     );
     assert.deepEqual(
       deploy.session
         .getArgByName('id')!
-        .asOption()
-        .getSome()
-        .asBigNumber()
+        .value()
+        .unwrap()
+        .value()
         .toNumber(),
       transferId
     );
@@ -362,7 +362,7 @@ describe('DeployUtil', () => {
 
   it('DeployUtil.UniqAddress should serialize and deserialize', () => {
     const recipientKey = Keys.Ed25519.new();
-    const hexAddress = recipientKey.publicKey.toAccountHex();
+    const hexAddress = recipientKey.publicKey.toHex();
     const transferId = "80172309";
     const transferIdHex = "0x04c75515";
 
