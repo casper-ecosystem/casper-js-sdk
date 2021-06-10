@@ -1,5 +1,0 @@
-**/target
-client/node_modules
-client/package-lock.json
-contract/Cargo.lock
-contract/target/*

@@ -4,12 +4,12 @@
 
 ```bash
 # Basic Node.JS installation
-npm install casper-client-sdk --save
+npm install casper-js-sdk --save
 ```
 
 ## Documentation
 
-Documentation generated from code is available [here](https://casper-ecosystem.github.io/casper-client-sdk/)
+Documentation generated from code is available [here](https://casper-ecosystem.github.io/casper-js-sdk/)
 
 ## Tests
 
