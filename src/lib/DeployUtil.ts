@@ -743,6 +743,44 @@ export class ExecutableDeployItem implements ToBytes {
     );
   }
 
+  // TODO: Abstract the logic of this and newTransfer so there won't be so much redundancy.
+  /**
+   * Constructor for Transfer deploy item without obligatory transfer-id.
+   * @param amount The number of motes to transfer
+   * @param target URef of the target purse or the public key of target account. You could generate this public key from accountHex by PublicKey.fromHex
+   * @param sourcePurse URef of the source purse. If this is omitted, the main purse of the account creating this \
+   * transfer will be used as the source purse
+   * @param id user-defined transfer id. This parameter is optional.
+   */
+  public static newTransferWithoutObligatoryId(
+    amount: BigNumberish,
+    target: URef | PublicKey,
+    sourcePurse?: URef | null,
+    id?: BigNumberish
+  ) {
+    const runtimeArgs = RuntimeArgs.fromMap({});
+    runtimeArgs.insert('amount', CLValue.u512(amount));
+    if (sourcePurse) {
+      runtimeArgs.insert('source', CLValue.uref(sourcePurse));
+    }
+    if (target instanceof URef) {
+      runtimeArgs.insert('target', CLValue.uref(target));
+    } else if (target instanceof PublicKey) {
+      runtimeArgs.insert('target', CLValue.byteArray(target.toAccountHash()));
+    } else {
+      throw new Error('Please specify target');
+    }
+    if (id !== undefined) {
+      runtimeArgs.insert(
+        'id',
+        CLValue.option(CLTypedAndToBytesHelper.u64(id), CLTypeHelper.u64())
+      );
+    } 
+    return ExecutableDeployItem.fromExecutableDeployItemInternal(
+      new Transfer(runtimeArgs)
+    );
+  }
+
   /**
    * Constructor for Transfer deploy item using UniqAddress.
    * @param source PublicKey of source account
