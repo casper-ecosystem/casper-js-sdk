@@ -85,7 +85,7 @@ export class CLTypeBuilder {
   };
 
   static u512 = (): CLU512Type => {
-    return new CLU256Type();
+    return new CLU512Type();
   };
 
   static unit = (): CLUnitType => {
@@ -171,7 +171,7 @@ export class CLValueBuilder {
   };
 
   static u512 = (val: BigNumberish): CLU512 => {
-    return new CLU256(val);
+    return new CLU512(val);
   };
 
   static unit = (): CLUnit => {
