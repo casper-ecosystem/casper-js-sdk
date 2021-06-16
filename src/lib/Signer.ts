@@ -12,7 +12,7 @@ export const getVersion: () => Promise<string> = async () => {
   try {
     return await window.casperlabsHelper!.getVersion();
   } catch {
-    return "<1.0.0";
+    return '<1.0.0';
   }
 };
 
@@ -60,13 +60,19 @@ export const getActivePublicKey: () => Promise<string> = () => {
  * @throws Error if targetPublicKeyHex is not the same as the key that is used as target in deploy.
  */
 export const sign: (
-  deploy: any, 
-  sourcePublicKey: string, 
+  deploy: any,
+  sourcePublicKey: string,
   targetPublicKey: string
 ) => Promise<any> = (
-  deploy: any, sourcePublicKey: string, targetPublicKey: string
+  deploy: any,
+  sourcePublicKey: string,
+  targetPublicKey: string
 ) => {
-  return window.casperlabsHelper!.sign(deploy, sourcePublicKey, targetPublicKey);
+  return window.casperlabsHelper!.sign(
+    deploy,
+    sourcePublicKey,
+    targetPublicKey
+  );
 };
 
 /*

@@ -5,7 +5,7 @@ import { decodeBase64 } from 'tweetnacl-util';
 import { encodeBase16, encodeBase64 } from '../index';
 import { CLPublicKey } from './CLValue';
 import { byteHash } from './Contracts';
-import eccrypto from "eccrypto";
+import eccrypto from 'eccrypto';
 import * as secp256k1 from 'ethereum-cryptography/secp256k1';
 import KeyEncoder from 'key-encoder';
 import { sha256 } from 'ethereum-cryptography/sha256';
@@ -398,9 +398,7 @@ export class Secp256K1 extends AsymmetricKey {
       rawKeyHex = encodeBase16(bytes);
     }
 
-    const publicKey = Uint8Array.from(
-      Buffer.from(rawKeyHex, 'hex')
-    );
+    const publicKey = Uint8Array.from(Buffer.from(rawKeyHex, 'hex'));
     return publicKey;
   }
 
