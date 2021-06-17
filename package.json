@@ -1,5 +1,5 @@
 {
-  "name": "casper-js0sdk",
+  "name": "casper-js-sdk",
   "version": "1.4.2",
   "license": "Apache 2.0",
   "description": "SDK to interact with the Casper blockchain",
