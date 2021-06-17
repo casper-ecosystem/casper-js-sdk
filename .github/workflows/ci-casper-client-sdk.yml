@@ -26,11 +26,14 @@ jobs:
     - name: Test
       run: |
         echo ${{github.ref}}
-        if [ ${{ github.ref }} == 'refs/heads/feature/gh-actions-fixes' ]; then
-          echo "Hello World"
+        if [ ${{ github.ref }} == 'refs/heads/feature/gh-actions-fixes2' ]; then
+          echo "release_tag=next"
         else
-          echo "Wrong branch"
+          echo "release_tag=latest"
         fi
+    - name: Test2
+      run: |
+        echo ${{ env.release_tag }}
     - name: Checkout 🛎️
       uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
