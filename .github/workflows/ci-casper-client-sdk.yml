@@ -52,5 +52,5 @@ jobs:
         TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH: gh-pages # The branch the action should deploy to.
         FOLDER: docs/ # The folder that the typedoc generates files.
-        TARGET-FOLDER: ${{ env.release_tag }}
+        TARGET_FOLDER: ${{ env.release_tag }}
         CLEAN: true # Automatically remove deleted files from the deploy branch
