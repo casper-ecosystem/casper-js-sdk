@@ -27,9 +27,9 @@ jobs:
       run: |
         echo ${{github.ref}}
         if [ ${{ github.ref }} == 'refs/heads/feature/gh-actions-fixes2' ]; then
-          echo "release_tag=next"
+          echo "release_tag=next" >> $GITHUB_ENV
         else
-          echo "release_tag=latest"
+          echo "release_tag=latest" >> $GITHUB_ENV
         fi
     - name: Test2
       run: |
