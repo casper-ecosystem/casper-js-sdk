@@ -5,12 +5,12 @@ name: ci-casper-js-sdk
 
 on:
   push:
-    branches: [ master, feature/gh-actions-fixes ]
+    branches: [ master, next ]
     paths-ignore:
       - '**.md'
 
   pull_request:
-    branches: [ master ]
+    branches: [ master, next ]
     paths-ignore:
       - '**.md'
 
@@ -23,17 +23,13 @@ jobs:
         node-version: [14.x]
 
     steps:
-    - name: Test
+    - name: Set release tag
       run: |
-        echo ${{github.ref}}
-        if [ ${{ github.ref }} == 'refs/heads/feature/gh-actions-fixes' ]; then
+        if [ ${{ github.ref }} == 'refs/heads/next' ]; then
           echo "release_tag=next" >> $GITHUB_ENV
         else
           echo "release_tag=latest" >> $GITHUB_ENV
         fi
-    - name: Test2
-      run: |
-        echo ${{ env.release_tag }}
     - name: Checkout 🛎️
       uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}

@@ -18,6 +18,13 @@ jobs:
         node-version: [14.x]
 
     steps:
+    - name: Set release tag
+      run: |
+        if [ ${{ github.ref }} == 'refs/heads/next' ]; then
+          echo "release_tag=next" >> $GITHUB_ENV
+        else
+          echo "release_tag=latest" >> $GITHUB_ENV
+        fi
     - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
@@ -27,6 +34,7 @@ jobs:
     - uses: JS-DevTools/npm-publish@v1
       with:
         token: ${{ secrets.NPM_TOKEN }}
+        tag: ${{ env.release_tag }}
         access: "public"
         check-version: true
     - name: Get latest release version number
@@ -36,5 +44,6 @@ jobs:
     - uses: meeDamian/github-release@2.0
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
+        tag: ${{ env.release_tag }}
         files: casper-js-sdk.v${{ steps.get_version.outputs.version }}.js
         allow_override: true
