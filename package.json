@@ -1,12 +1,12 @@
 {
-  "name": "casper-client-sdk",
+  "name": "casper-js-sdk",
   "version": "1.4.2",
   "license": "Apache 2.0",
   "description": "SDK to interact with the Casper blockchain",
-  "homepage": "https://github.com/casper-ecosystem/casper-client-sdk#README.md",
+  "homepage": "https://github.com/casper-ecosystem/casper-js-sdk#README.md",
   "repository": {
     "type": "git",
-    "url": "https://github.com/casper-ecosystem/casper-client-sdk.git"
+    "url": "https://github.com/casper-ecosystem/casper-js-sdk.git"
   },
   "main": "dist/lib.node.js",
   "browser": "dist/lib.js",
