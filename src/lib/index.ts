@@ -6,6 +6,5 @@ import * as Signer from './Signer';
 export * from './CLValue';
 export * from './RuntimeArgs';
 export * from './CasperClient';
-export * from './option';
 
 export { Contracts, Keys, Serialization, DeployUtil, Signer };

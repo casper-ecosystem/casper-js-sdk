@@ -1,7 +1,9 @@
 node_modules
 /dist/
 .eslintcache
+.nyc_output
 
 docs/
 
 .DS_Store
+

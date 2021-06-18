@@ -4,51 +4,81 @@ All notable changes to casper-js-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.0.0
+
+### Changed
+
+- Caution! This release contains rewritten CLValue from scratch, there are some breaking changes so consider it before upgrading.
+- Removed `CLTypedAndToBytesHelper` to have consistent way of creating new CLValues by using `new CLBool(true)` or `CLValueBuilder.bool(true)`
+- Removed `CLTypeHelper` have consistent way of creating new CLValues by using `new CLBoolType()` or `CLTypeBuilder.bool()`
+- `CLValue` static methods now are moved to `CLValueBuilder` eg. `CLValueBuilder.u512`
+- Every class inheriting from `CLValue` is now named with `CL` prefix, bigger naming changes:
+  - `StringValue` -> `CLString`
+  - `KeyValue` -> `CLKey`
+  - `MapValue` -> `CLMap`
+  - `Option` -> `CLOption`
+- There are API changes in `CLResult`
+
+```
+const myTypesComplex = {
+  ok: new CLListType(new CLListType(new CLU8Type())),
+  err: new CLOptionType(new CLListType(new CLListType(new CLU8Type())))
+};
+```
+
+const myOkComplexRes = new CLResult( Ok(new CLList([new CLList([new CLU8(5), new CLU8(10), new CLU8(15)])])), myTypesComplex );
+
+- There are API changes in `CLOption` - not it requires `Some` or `None` wrappers as argument (from `ts-result` library).
+- Now all the serialization methods are not connected to `CLValue` - `toJSON`, `fromJSON`, `toBytes`, `fromBytes` needs to be called with `CLValueParsers` eg. `CLValueParser.toJSON(CLValueBuilder.string("ABC"))`
+- Renamed methods in `CLPublicKey`:
+  - `toAccountHex` -> `toHex` - old name led to misunderstandings as in fact this is hex representation of `public-key` prefixed with key-type.
+  - added method `toAccountHashStr` - this methods returns string containing account hash in hex form prefixed with `account-hash-`.
+
 ## 1.4.4
 
-## Changed
+### Changed
 
 - Experimental release with `@next` tag.
 
 ## 1.4.3
 
-## Changed
+### Changed
 
 - Changed repo name and npm package name from `casper-client-sdk` to `casper-js-sdk`.
 
 ## 1.4.2
 
-## Added
+### Added
 
 - `newTransferWithoutObligatoryId` renamed to `newTransferWithOptionalTransferId`
 
 ## 1.4.1
 
-## Added
+### Added
 
 - `newTransferWithoutObligatoryId` restores the function that gives abilitity to send transfer without providing id.
 
 ## 1.4.0
 
-## Changed
+### Changed
 
 - `Signer.sign` now requires deploy in JSON format, `public-key hex` of a sender and `public-key hex` of a target.
 
 ## 1.3.4
 
-## Added
+### Added
 
 - `Signer.getVersion` returns running version of Signer.
 
 ## 1.3.3
 
-## Fixed
+### Fixed
 
 - `Keys.SECP256K1.new()` and other SECP256K1 releated methods now can work in a browser environment.
 
 ## 1.3.2
 
-## Added
+### Added
 
 - `DeployUtil.deployToBytes(deploy)` returns an `Uint8Array`, which is a byte representation of a deploy.
 
@@ -242,4 +272,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 
-- Changed CLValue's `value` to `value()` and `remainder` to `remainder()`.
+g Changed CLValue's `value` to `value()` and `remainder` to `remainder()`.

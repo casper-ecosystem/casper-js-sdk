@@ -2,7 +2,7 @@
  * A service to query balance for accounts
  */
 import { CasperServiceByJsonRPC } from './CasperServiceByJsonRPC';
-import { PublicKey } from '../lib';
+import { CLPublicKey } from '../lib';
 import { BigNumber } from '@ethersproject/bignumber';
 
 export class BalanceServiceByJsonRPC {
@@ -20,13 +20,13 @@ export class BalanceServiceByJsonRPC {
    */
   public async getAccountBalance(
     blockHashBase16: string,
-    publicKey: PublicKey
+    publicKey: CLPublicKey
   ): Promise<BigNumber | undefined> {
     try {
       const stateRootHash = await this.casperService.getStateRootHash(
         blockHashBase16
       );
-      let balanceUref = this.balanceUrefs.get(publicKey.toAccountHex());
+      let balanceUref = this.balanceUrefs.get(publicKey.toHex());
 
       // Find the balance Uref and cache it if we don't have it.
       if (!balanceUref) {
@@ -35,7 +35,7 @@ export class BalanceServiceByJsonRPC {
           publicKey
         );
         if (balanceUref) {
-          this.balanceUrefs.set(publicKey.toAccountHex(), balanceUref);
+          this.balanceUrefs.set(publicKey.toHex(), balanceUref);
         }
       }
 

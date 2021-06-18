@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import { Keys, DeployUtil, CLValue } from '../../src/lib';
+import { Keys, DeployUtil, CLValueBuilder } from '../../src/lib';
 import { humanizerTTL, dehumanizerTTL } from '../../src/lib/DeployUtil';
 import { TypedJSON } from 'typedjson';
 
@@ -28,7 +28,7 @@ const testDeploy = () => {
 }
 
 describe('DeployUtil', () => {
-  it('should stringify/parse DeployHeader correctly', function () {
+  it('should stringify/parse DeployHeader correctly', function() {
     const ed25519Key = Keys.Ed25519.new();
     const deployHeader = new DeployUtil.DeployHeader(
       ed25519Key.publicKey,
@@ -45,7 +45,7 @@ describe('DeployUtil', () => {
     expect(deployHeader1).to.deep.equal(deployHeader);
   });
 
-  it('should allow to extract data from Transfer', function () {
+  it('should allow to extract data from Transfer', function() {
     const senderKey = Keys.Ed25519.new();
     const recipientKey = Keys.Ed25519.new();
     const networkName = 'test-network';
@@ -78,23 +78,29 @@ describe('DeployUtil', () => {
     assert.isTrue(deploy.isStandardPayment());
     assert.deepEqual(deploy.header.account, senderKey.publicKey);
     assert.deepEqual(
-      deploy.payment.getArgByName('amount')!.asBigNumber().toNumber(),
+      deploy.payment
+        .getArgByName('amount')!
+        .value()
+        .toNumber(),
       paymentAmount
     );
     assert.deepEqual(
-      deploy.session.getArgByName('amount')!.asBigNumber().toNumber(),
+      deploy.session
+        .getArgByName('amount')!
+        .value()
+        .toNumber(),
       transferAmount
     );
     assert.deepEqual(
-      deploy.session.getArgByName('target')!.asBytesArray(),
+      deploy.session.getArgByName('target')!.value(),
       recipientKey.accountHash()
     );
     assert.deepEqual(
       deploy.session
         .getArgByName('id')!
-        .asOption()
-        .getSome()
-        .asBigNumber()
+        .value()
+        .unwrap()
+        .value()
         .toNumber(),
       id
     );
@@ -102,7 +108,7 @@ describe('DeployUtil', () => {
     assert.deepEqual(deploy.approvals[1].signer, recipientKey.accountHex());
   });
 
-  it('should allow to add arg to Deploy', function () {
+  it('should allow to add arg to Deploy', function() {
     const senderKey = Keys.Ed25519.new();
     const recipientKey = Keys.Ed25519.new();
     const networkName = 'test-network';
@@ -128,7 +134,7 @@ describe('DeployUtil', () => {
     let deploy = DeployUtil.addArgToDeploy(
       oldDeploy,
       'custom_id',
-      CLValue.u32(customId)
+      CLValueBuilder.u32(customId)
     );
 
     // Serialize and deserialize deploy.
@@ -136,30 +142,39 @@ describe('DeployUtil', () => {
     deploy = DeployUtil.deployFromJson(json)!;
 
     assert.deepEqual(
-      deploy.session.getArgByName('custom_id')!.asBigNumber().toNumber(),
+      deploy.session
+        .getArgByName('custom_id')!
+        .value()
+        .toNumber(),
       customId
     );
     assert.isTrue(deploy.isTransfer());
     assert.isTrue(deploy.isStandardPayment());
     assert.deepEqual(deploy.header.account, senderKey.publicKey);
     assert.deepEqual(
-      deploy.payment.getArgByName('amount')!.asBigNumber().toNumber(),
+      deploy.payment
+        .getArgByName('amount')!
+        .value()
+        .toNumber(),
       paymentAmount
     );
     assert.deepEqual(
-      deploy.session.getArgByName('amount')!.asBigNumber().toNumber(),
+      deploy.session
+        .getArgByName('amount')!
+        .value()
+        .toNumber(),
       transferAmount
     );
     assert.deepEqual(
-      deploy.session.getArgByName('target')!.asBytesArray(),
+      deploy.session.getArgByName('target')!.value(),
       recipientKey.accountHash()
     );
     assert.deepEqual(
       deploy.session
         .getArgByName('id')!
-        .asOption()
-        .getSome()
-        .asBigNumber()
+        .value()
+        .unwrap()
+        .value()
         .toNumber(),
       id
     );
@@ -168,9 +183,32 @@ describe('DeployUtil', () => {
     assert.notEqual(oldDeploy.header.bodyHash, deploy.header.bodyHash);
   });
 
-  it('should not allow to add arg to a signed Deploy', function () {
+  it('should not allow to add arg to a signed Deploy', function() {
+    const senderKey = Keys.Ed25519.new();
+    const recipientKey = Keys.Ed25519.new();
+    const networkName = 'test-network';
+    const paymentAmount = 10000000000000;
+    const transferAmount = 10;
+    const id = 34;
+    const customId = 60;
+
+    let deployParams = new DeployUtil.DeployParams(
+      senderKey.publicKey,
+      networkName
+    );
+    let session = DeployUtil.ExecutableDeployItem.newTransfer(
+      transferAmount,
+      recipientKey.publicKey,
+      undefined,
+      id
+    );
+    let payment = DeployUtil.standardPayment(paymentAmount);
+    let deploy = DeployUtil.makeDeploy(deployParams, session, payment);
+    deploy = DeployUtil.signDeploy(deploy, senderKey);
+
     expect(() => {
-      DeployUtil.addArgToDeploy(testDeploy(), 'custom_id', CLValue.u32(1));
+      // Add new argument.
+      DeployUtil.addArgToDeploy(deploy, 'custom_id', CLValueBuilder.u32(customId));
     }).to.throw('Can not add argument to already signed deploy.');
   });
 
@@ -196,11 +234,11 @@ describe('DeployUtil', () => {
     let transferDeploy = DeployUtil.addArgToDeploy(
       deploy,
       'fromPublicKey',
-      CLValue.publicKey(from.publicKey)
+      from.publicKey
     );
 
     assert.deepEqual(
-      transferDeploy.session.getArgByName('fromPublicKey')?.asPublicKey(),
+      transferDeploy.session.getArgByName('fromPublicKey'),
       from.publicKey
     );
 
@@ -209,7 +247,7 @@ describe('DeployUtil', () => {
     );
 
     assert.deepEqual(
-      newTransferDeploy?.session.getArgByName('fromPublicKey')?.asPublicKey(),
+      newTransferDeploy?.session.getArgByName('fromPublicKey'),
       from.publicKey
     );
   });
@@ -300,23 +338,23 @@ describe('DeployUtil', () => {
     assert.isTrue(deploy.isStandardPayment());
     assert.deepEqual(deploy.header.account, senderKey.publicKey);
     assert.deepEqual(
-      deploy.payment.getArgByName('amount')!.asBigNumber().toNumber(),
+      deploy.payment.getArgByName('amount')!.value().toNumber(),
       paymentAmount
     );
     assert.deepEqual(
-      deploy.session.getArgByName('amount')!.asBigNumber().toNumber(),
+      deploy.session.getArgByName('amount')!.value().toNumber(),
       transferAmount
     );
     assert.deepEqual(
-      deploy.session.getArgByName('target')!.asBytesArray(),
+      deploy.session.getArgByName('target')!.value(),
       recipientKey.accountHash()
     );
     assert.deepEqual(
       deploy.session
         .getArgByName('id')!
-        .asOption()
-        .getSome()
-        .asBigNumber()
+        .value()
+        .unwrap()
+        .value()
         .toNumber(),
       transferId
     );
@@ -324,7 +362,7 @@ describe('DeployUtil', () => {
 
   it('DeployUtil.UniqAddress should serialize and deserialize', () => {
     const recipientKey = Keys.Ed25519.new();
-    const hexAddress = recipientKey.publicKey.toAccountHex();
+    const hexAddress = recipientKey.publicKey.toHex();
     const transferId = "80172309";
     const transferIdHex = "0x04c75515";
 

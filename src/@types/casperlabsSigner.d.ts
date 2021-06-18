@@ -8,12 +8,12 @@ interface CasperLabsHelper {
    * Returns connection status from Signer
    */
   isConnected: () => Promise<boolean>;
-  
+
   /**
    * Attempt connection to Signer
    */
   requestConnection: () => void;
-  
+
   /**
    * Send Deploy in JSON format message to Signer plugin to sign.
    *
@@ -21,8 +21,12 @@ interface CasperLabsHelper {
    * @param sourcePublicKeyHex public key in hex format with algorithm prefix. Used to sign the deploy
    * @param targetPublicKeyHex public key in hex format with algorithm prefix. Used to display hex-formatted address on the UI
    */
-  sign: (deploy: any, sourcePublicKeyHex: string, targetPublicKeyHex: string) => Promise<JSON>;
-  
+  sign: (
+    deploy: any,
+    sourcePublicKeyHex: string,
+    targetPublicKeyHex: string
+  ) => Promise<JSON>;
+
   /*
    * Returns base64 encoded public key of user current selected account.
    */

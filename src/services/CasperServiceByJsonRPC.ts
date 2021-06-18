@@ -1,5 +1,5 @@
-import { RequestManager, HTTPTransport, Client } from "@open-rpc/client-js";
-import { DeployUtil, encodeBase16, PublicKey } from '..';
+import { RequestManager, HTTPTransport, Client } from '@open-rpc/client-js';
+import { DeployUtil, encodeBase16, CLPublicKey } from '..';
 import { deployToJson } from '../lib/DeployUtil';
 import { TypedJSON } from 'typedjson';
 import { StoredValue } from '../lib/StoredValue';
@@ -195,39 +195,41 @@ export class CasperServiceByJsonRPC {
   public async getBlockInfo(
     blockHashBase16: JsonBlockHash
   ): Promise<GetBlockResult> {
-    return await this.client.request({
-      method: 'chain_get_block',
-      params: {
-        block_identifier: {
-          Hash: blockHashBase16
+    return await this.client
+      .request({
+        method: 'chain_get_block',
+        params: {
+          block_identifier: {
+            Hash: blockHashBase16
+          }
         }
-      }
-    }).then((res: GetBlockResult) => {
-      if (res.block !== null && res.block.hash !== blockHashBase16) {
-        throw new Error("Returned block does not have a matching hash.");
-      }
-      return res;
-    });
+      })
+      .then((res: GetBlockResult) => {
+        if (res.block !== null && res.block.hash !== blockHashBase16) {
+          throw new Error('Returned block does not have a matching hash.');
+        }
+        return res;
+      });
   }
 
-  public async getBlockInfoByHeight(
-    height: number
-  ): Promise<GetBlockResult> {
-    return await this.client.request({
-      method: 'chain_get_block',
-      params: {
-        block_identifier: {
-          Height: height
+  public async getBlockInfoByHeight(height: number): Promise<GetBlockResult> {
+    return await this.client
+      .request({
+        method: 'chain_get_block',
+        params: {
+          block_identifier: {
+            Height: height
+          }
         }
-      }
-    }).then((res: GetBlockResult) => {
-      if (res.block !== null && res.block.header.height !== height) {
-        throw new Error("Returned block does not have a matching height.");
-      }
-      return res;
-    });
+      })
+      .then((res: GetBlockResult) => {
+        if (res.block !== null && res.block.header.height !== height) {
+          throw new Error('Returned block does not have a matching height.');
+        }
+        return res;
+      });
   }
-  
+
   public async getLatestBlockInfo(): Promise<GetBlockResult> {
     return await this.client.request({
       method: 'chain_get_block'
@@ -272,7 +274,7 @@ export class CasperServiceByJsonRPC {
    */
   public async getAccountBalanceUrefByPublicKey(
     stateRootHash: string,
-    publicKey: PublicKey
+    publicKey: CLPublicKey
   ) {
     return this.getAccountBalanceUrefByPublicKeyHash(
       stateRootHash,
@@ -340,10 +342,10 @@ export class CasperServiceByJsonRPC {
   public async deploy(signedDeploy: DeployUtil.Deploy) {
     const oneMegaByte = 1048576;
     const size = DeployUtil.deploySizeInBytes(signedDeploy);
-    if(size > oneMegaByte) {
+    if (size > oneMegaByte) {
       throw Error(
         `Deploy can not be send, because it's too large: ${size} bytes. ` +
-        `Max size is 1 megabyte.`
+          `Max size is 1 megabyte.`
       );
     }
 
