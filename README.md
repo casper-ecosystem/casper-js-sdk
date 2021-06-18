@@ -18,7 +18,7 @@ npm install casper-js-sdk --save
 
 ## Documentation
 
-Documentation generated from code for [`2.x`](https://casper-ecosystem.github.io/casper-js-sdk/next) and [`1.x`](https://casper-ecosystem.github.io/casper-js-sdk/latest). 
+Documentation generated from code for [`2.x`](https://casper-ecosystem.github.io/casper-js-sdk/next) and [`1.x`](https://casper-ecosystem.github.io/casper-js-sdk/latest/). 
 
 ## Tests
 
