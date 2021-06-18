@@ -23,8 +23,7 @@ jobs:
         ref: ${{ github.event.release.target_commitish }}
     - name: Set release tag
       run: |
-        echo ${{ github.event.release.target_commitish }}
-        if [ ${{ github.event.release.target_commitish }} == 'refs/heads/next' ]; then
+        if [ ${{ github.event.release.target_commitish }} == 'next' ]; then
           echo "release_tag=next" >> $GITHUB_ENV
         else
           echo "release_tag=latest" >> $GITHUB_ENV
