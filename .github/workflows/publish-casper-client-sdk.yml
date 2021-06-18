@@ -18,14 +18,17 @@ jobs:
         node-version: [14.x]
 
     steps:
+    - uses: actions/checkout@v2
+      with:
+        ref: ${{ github.event.release.target_commitish }}
     - name: Set release tag
       run: |
-        if [ ${{ github.ref }} == 'refs/heads/next' ]; then
+        echo ${{ github.event.release.target_commitish }}
+        if [ ${{ github.event.release.target_commitish }} == 'refs/heads/next' ]; then
           echo "release_tag=next" >> $GITHUB_ENV
         else
           echo "release_tag=latest" >> $GITHUB_ENV
         fi
-    - uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v2
       with:
