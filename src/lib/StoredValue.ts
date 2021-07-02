@@ -153,15 +153,6 @@ export class EraInfoJson {
   public seigniorageAllocations: SeigniorageAllocation[];
 }
 
-// const desRA = (_arr: any) => {
-//   return new Map(
-//     Array.from(_arr, ([key, value]) => {
-//       const val = CLValueParsers.fromJSON(value);
-//       return [key, val.unwrap()];
-//     })
-//   );
-// };
-
 /**
  * Named CLType arguments
  */
