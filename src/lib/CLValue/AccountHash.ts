@@ -65,9 +65,4 @@ export class CLAccountHash extends CLValue {
   value(): Uint8Array {
     return this.data;
   }
-
-  static fromString(value: string): CLAccountHash {
-    const arr = Uint8Array.from(Buffer.from(value, 'hex'));
-    return new CLAccountHash(arr);
-  }
 }
