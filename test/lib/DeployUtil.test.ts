@@ -72,7 +72,7 @@ describe('DeployUtil', () => {
     let json = DeployUtil.deployToJson(deploy);
 
     // Deserialize deploy from JSON.
-    deploy = DeployUtil.deployFromJson(json)!;
+    deploy = DeployUtil.deployFromJson(json).unwrap();
 
     assert.isTrue(deploy.isTransfer());
     assert.isTrue(deploy.isStandardPayment());
@@ -139,7 +139,7 @@ describe('DeployUtil', () => {
 
     // Serialize and deserialize deploy.
     let json = DeployUtil.deployToJson(deploy);
-    deploy = DeployUtil.deployFromJson(json)!;
+    deploy = DeployUtil.deployFromJson(json).unwrap();
 
     assert.deepEqual(
       deploy.session
@@ -244,7 +244,7 @@ describe('DeployUtil', () => {
 
     let newTransferDeploy = DeployUtil.deployFromJson(
       DeployUtil.deployToJson(transferDeploy)
-    );
+    ).unwrap();
 
     assert.deepEqual(
       newTransferDeploy?.session.getArgByName('fromPublicKey'),
@@ -256,7 +256,7 @@ describe('DeployUtil', () => {
     let deploy = testDeploy();
     let json = DeployUtil.deployToJson(deploy);
     Object.assign(json.deploy, { hash: "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" });
-    assert.isUndefined(DeployUtil.deployFromJson(json));
+    assert.isTrue(DeployUtil.deployFromJson(json).err);
   });
 
   it('Should not allow for to deserialize a deploy from JSON with a wrong body_hash', function () {
@@ -265,7 +265,7 @@ describe('DeployUtil', () => {
     let header = Object(json.deploy)['header'];
     header['body_hash'] = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
     Object.assign(json.deploy, { header });
-    assert.isUndefined(DeployUtil.deployFromJson(json));
+    assert.isTrue(DeployUtil.deployFromJson(json).err);
   });
 
   it('Should convert ms to humanized string', function () {
@@ -452,11 +452,11 @@ describe('DeployUtil', () => {
           }
         ]
       }
-    });
+    }).unwrap();
 
     let expected = "017f747b67bd3fe63c2a736739dfe40156d622347346e70f68f51c178a75ce5537a087c0377901000040771b00000000000200000000000000f2e0782bba4a0a9663cafc7d707fd4a74421bc5bfef4e368b7e8f38dfab87db8020000000f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f1010101010101010101010101010101010101010101010101010101010101010070000006d61696e6e6574d7a68bbe656a883d04bba9f26aa340dbe3f8ec99b2adb63b628f2bc92043199800000000000100000006000000616d6f756e74050000000400ca9a3b08050400000006000000616d6f756e740600000005005550b40508060000007461726765742000000001010101010101010101010101010101010101010101010101010101010101010f200000000200000069640900000001e7030000000000000d050f0000006164646974696f6e616c5f696e666f140000001000000074686973206973207472616e736665720a01000000017f747b67bd3fe63c2a736739dfe40156d622347346e70f68f51c178a75ce55370195a68b1a05731b7014e580b4c67a506e0339a7fffeaded9f24eb2e7f78b96bdd900b9be8ca33e4552a9a619dc4fc5e4e3a9f74a4b0537c14a5a8007d62a5dc06";
 
-    let result = Buffer.from(DeployUtil.deployToBytes(deploy!)).toString('hex');
+    let result = Buffer.from(DeployUtil.deployToBytes(deploy)).toString('hex');
 
     assert.equal(result, expected);
   });

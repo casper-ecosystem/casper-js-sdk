@@ -1144,13 +1144,32 @@ export const deployToJson = (deploy: Deploy) => {
  *
  * @param json
  */
-export const deployFromJson = (json: any) => {
-  const serializer = new TypedJSON(Deploy);
-  const deploy = serializer.parse(json.deploy);
-  if (deploy !== undefined && validateDeploy(deploy).ok) {
-    return deploy;
+export const deployFromJson = (json: any): Result<Deploy, Error> => {
+  if (json.deploy === undefined) {
+    return new Err(new Error("The Deploy JSON doesn't have 'deploy' key."));
   }
-  return undefined;
+  let deploy = null;
+  try {
+    const serializer = new TypedJSON(Deploy);
+    deploy = serializer.parse(json.deploy);
+  } catch (serializationError) {
+    return new Err(serializationError);
+  }
+
+  if (deploy === undefined || deploy === null) {
+    return Err(new Error("Can't parse to JSON"));
+  }
+
+  const valid = validateDeploy(deploy);
+  if (valid.err) {
+    return new Err(new Error(valid.val));
+  }
+
+  if (!(deploy instanceof Deploy)) {
+    return new Err(new Error("'deploy' is not an instance of Deploy class."));
+  }
+
+  return new Ok(deploy);
 };
 
 export const addArgToDeploy = (

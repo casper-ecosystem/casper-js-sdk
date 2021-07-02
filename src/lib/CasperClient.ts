@@ -232,7 +232,7 @@ export class CasperClient {
     return await this.nodeClient
       .getDeployInfo(deployHash)
       .then((result: GetDeployResult) => {
-        return [DeployUtil.deployFromJson(result)!, result];
+        return [DeployUtil.deployFromJson(result).unwrap(), result];
       });
   }
 

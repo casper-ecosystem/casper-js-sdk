@@ -4,6 +4,12 @@ All notable changes to casper-js-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.0.1
+
+### Changed
+
+- `DeployUtil.deployFromJson` returns now `Result<Deploy, Error>` instead of `Deploy | undefined`. `Error` has a `message` inside.
+
 ## 2.0.0
 
 ### Changed
@@ -27,7 +33,6 @@ const myTypesComplex = {
 
 const myOkComplexRes = new CLResult( Ok(new CLList([new CLList([new CLU8(5), new CLU8(10), new CLU8(15)])])), myTypesComplex );
 ```
-
 
 - There are API changes in `CLOption` - now it requires `Some` or `None` wrappers as argument (from `ts-result` library).
 - Now all the serialization methods are not connected to `CLValue` anymore - `toJSON`, `fromJSON`, `toBytes`, `fromBytes` needs to be called with `CLValueParsers` eg. `CLValueParser.toJSON(CLValueBuilder.string("ABC"))`
