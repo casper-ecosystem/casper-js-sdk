@@ -1,5 +1,5 @@
 import { jsonArrayMember, jsonMember, jsonObject } from 'typedjson';
-import { CLValue, CLType, matchTypeToCLType } from './CLValue';
+import { CLValue, CLType, CLValueParsers, matchTypeToCLType } from './CLValue';
 
 @jsonObject
 class NamedKey {
@@ -270,8 +270,15 @@ export class ContractPackageJson {
 @jsonObject
 export class StoredValue {
   // StoredVale
-  @jsonMember({ constructor: CLValue })
+  @jsonMember({
+    name: 'CLValue',
+    deserializer: json => {
+      if (!json) return;
+      return CLValueParsers.fromJSON(json).unwrap();
+    }
+  })
   public CLValue?: CLValue;
+
   // An account
   @jsonMember({ constructor: AccountJson })
   public Account?: AccountJson;
