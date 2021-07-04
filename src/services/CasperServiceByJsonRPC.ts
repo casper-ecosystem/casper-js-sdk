@@ -2,7 +2,7 @@ import { RequestManager, HTTPTransport, Client } from '@open-rpc/client-js';
 import { DeployUtil, encodeBase16, CLPublicKey } from '..';
 import { deployToJson } from '../lib/DeployUtil';
 import { TypedJSON } from 'typedjson';
-import { StoredValue } from '../lib/StoredValue';
+import { StoredValue, Transfers } from '../lib/StoredValue';
 import { BigNumber } from '@ethersproject/bignumber';
 
 interface RpcResult {
@@ -353,5 +353,29 @@ export class CasperServiceByJsonRPC {
       method: 'account_put_deploy',
       params: deployToJson(signedDeploy)
     });
+  }
+
+  /**
+   * Retrieves all transfers for a block from the network
+   * @param blockIdentifier Hex-encoded block hash or height of the block. If not given, the last block added to the chain as known at the given node will be used
+   */
+  public async getBlockTransfers(blockHash?: string): Promise<Transfers> {
+    const res = await this.client.request({
+      method: 'chain_get_block_transfers',
+      params: {
+        block_identifier: blockHash
+          ? {
+              Hash: blockHash
+            }
+          : null
+      }
+    });
+    if (res.error) {
+      return res;
+    } else {
+      const serializer = new TypedJSON(Transfers);
+      const storedValue = serializer.parse(res)!;
+      return storedValue;
+    }
   }
 }

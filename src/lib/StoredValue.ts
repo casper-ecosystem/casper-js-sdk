@@ -74,8 +74,14 @@ export class TransferJson {
   public gas: string;
 
   // User-defined id
-  @jsonMember({ constructor: String, preserveNull: true })
-  public id: string | null;
+  @jsonMember({ constructor: Number, preserveNull: true })
+  public id: number | null;
+}
+
+@jsonObject
+export class Transfers {
+  @jsonArrayMember(TransferJson)
+  transfers: TransferJson[];
 }
 
 @jsonObject
