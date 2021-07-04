@@ -1,4 +1,5 @@
 import { RequestManager, HTTPTransport, Client } from '@open-rpc/client-js';
+import { jsonMember, jsonObject } from 'typedjson';
 import { DeployUtil, encodeBase16, CLPublicKey } from '..';
 import { deployToJson } from '../lib/DeployUtil';
 import { TypedJSON } from 'typedjson';
@@ -121,6 +122,21 @@ export interface BidInfo {
 export interface ValidatorWeight {
   public_key: string;
   weight: string;
+}
+
+@jsonObject
+export class EraSummary {
+  @jsonMember({ constructor: String, name: 'block_hash' })
+  blockHash: string;
+
+  @jsonMember({ constructor: Number, name: 'era_id' })
+  eraId: number;
+
+  @jsonMember({ constructor: StoredValue, name: 'stored_value' })
+  StoredValue: StoredValue;
+
+  @jsonMember({ constructor: String, name: 'state_root_hash' })
+  stateRootHash: string;
 }
 
 export interface EraValidators {
@@ -357,7 +373,7 @@ export class CasperServiceByJsonRPC {
 
   /**
    * Retrieves all transfers for a block from the network
-   * @param blockIdentifier Hex-encoded block hash or height of the block. If not given, the last block added to the chain as known at the given node will be used
+   * @param blockIdentifier Hex-encoded block hash or height of the block. If not given, the last block added to the chain as known at the given node will be used. If not provided it will retrieve by latest block.
    */
   public async getBlockTransfers(blockHash?: string): Promise<Transfers> {
     const res = await this.client.request({
@@ -375,6 +391,57 @@ export class CasperServiceByJsonRPC {
     } else {
       const serializer = new TypedJSON(Transfers);
       const storedValue = serializer.parse(res)!;
+      return storedValue;
+    }
+  }
+
+  /**
+   * Retrieve era information by block hash.
+   * @param blockIdentifier Hex-encoded block hash or height of the block. If not given, the last block added to the chain as known at the given node will be used. If not provided it will retrieve by latest block.
+   */
+  public async getEraInfoBySwitchBlock(
+    blockHash?: string
+  ): Promise<EraSummary> {
+    const res = await this.client.request({
+      method: 'chain_get_era_info_by_switch_block',
+      params: {
+        block_identifier: blockHash
+          ? {
+              Hash: blockHash
+            }
+          : null
+      }
+    });
+    if (res.error) {
+      return res;
+    } else {
+      const serializer = new TypedJSON(EraSummary);
+      const storedValue = serializer.parse(res.era_summary)!;
+      return storedValue;
+    }
+  }
+
+  /**
+   * Retrieve era information by block height
+   * @param blockHeight
+   */
+  public async getEraInfoBySwitchBlockHeight(
+    height: number
+  ): Promise<EraSummary> {
+    const res = await this.client.request({
+      method: 'chain_get_era_info_by_switch_block',
+      params: {
+        block_identifier: {
+          Height: height
+        }
+      }
+    });
+    console.log('RES', res);
+    if (res.error) {
+      return res;
+    } else {
+      const serializer = new TypedJSON(EraSummary);
+      const storedValue = serializer.parse(res.era_summary)!;
       return storedValue;
     }
   }
