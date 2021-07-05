@@ -1146,7 +1146,7 @@ export const deployToJson = (deploy: Deploy) => {
  */
 export const deployFromJson = (json: any): Result<Deploy, Error> => {
   if (json.deploy === undefined) {
-    return new Err(new Error("The Deploy JSON doesn't have 'deploy' key."));
+    return new Err(new Error("The Deploy JSON doesn't have 'deploy' field."));
   }
   let deploy = null;
   try {
@@ -1157,16 +1157,12 @@ export const deployFromJson = (json: any): Result<Deploy, Error> => {
   }
 
   if (deploy === undefined || deploy === null) {
-    return Err(new Error("Can't parse to JSON"));
+    return Err(new Error("The JSON can't be parsed as a Deploy."));
   }
 
   const valid = validateDeploy(deploy);
   if (valid.err) {
     return new Err(new Error(valid.val));
-  }
-
-  if (!(deploy instanceof Deploy)) {
-    return new Err(new Error("'deploy' is not an instance of Deploy class."));
   }
 
   return new Ok(deploy);
@@ -1210,6 +1206,10 @@ export const deploySizeInBytes = (deploy: Deploy): number => {
 };
 
 export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
+  if (!(deploy instanceof Deploy)) {
+    return new Err("'deploy' is not an instance of Deploy class.");
+  }
+
   const serializedBody = serializeBody(deploy.payment, deploy.session);
   const bodyHash = blake.blake2b(serializedBody, null, 32);
 
