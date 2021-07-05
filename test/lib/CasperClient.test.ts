@@ -208,7 +208,7 @@ describe('CasperClient', () => {
         }
       }
     };
-    const fromJson = casperClient.deployFromJson(json);
+    const fromJson = casperClient.deployFromJson(json).unwrap();
 
     expect(fromJson).to.be.an.instanceof(Deploy);
     expect(fromJson!.header.ttl).to.be.eq(1800000);
