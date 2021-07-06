@@ -1,16 +1,16 @@
 # This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: ci-casper-client-sdk
+name: ci-casper-js-sdk
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master, next ]
     paths-ignore:
       - '**.md'
 
   pull_request:
-    branches: [ master ]
+    branches: [ master, next ]
     paths-ignore:
       - '**.md'
 
@@ -23,6 +23,13 @@ jobs:
         node-version: [14.x]
 
     steps:
+    - name: Set release tag
+      run: |
+        if [ ${{ github.ref }} == 'refs/heads/next' ]; then
+          echo "release_tag=next" >> $GITHUB_ENV
+        else
+          echo "release_tag=latest" >> $GITHUB_ENV
+        fi
     - name: Checkout 🛎️
       uses: actions/checkout@v2
     - name: Use Node.js ${{ matrix.node-version }}
@@ -41,4 +48,5 @@ jobs:
         TOKEN: ${{ secrets.GITHUB_TOKEN }}
         BRANCH: gh-pages # The branch the action should deploy to.
         FOLDER: docs/ # The folder that the typedoc generates files.
+        TARGET_FOLDER: ${{ env.release_tag }}
         CLEAN: true # Automatically remove deleted files from the deploy branch
