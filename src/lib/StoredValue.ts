@@ -188,7 +188,9 @@ export class EntryPoint {
   @jsonMember({ constructor: String })
   public name: string;
 
-  @jsonMember({ constructor: String })
+  @jsonMember({
+    deserializer: json => matchTypeToCLType(json)
+  })
   public ret: string;
 
   @jsonArrayMember(NamedCLTypeArg)
