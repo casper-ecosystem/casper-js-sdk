@@ -704,6 +704,11 @@ export class PublicKey extends CLTypedAndToBytes {
     if (publicKeyHex.length < 2) {
       throw new Error('asymmetric key error: too short');
     }
+    
+    if (!/^0[1,2][0-9a-f]{64}$/.test(publicKeyHex)) {
+      throw new Error('Invalid public key');
+    }
+    
     const publicKeyHexBytes = decodeBase16(publicKeyHex);
     switch (publicKeyHexBytes[0]) {
       case 1:
