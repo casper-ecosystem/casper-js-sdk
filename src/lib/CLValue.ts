@@ -705,7 +705,7 @@ export class PublicKey extends CLTypedAndToBytes {
       throw new Error('asymmetric key error: too short');
     }
     
-    if (!/^0[1,2][0-9a-f]{64}$/.test(publicKeyHex)) {
+    if (!/^0(1[0-9a-f]{64}|2[0-9a-f]{66})$/.test(publicKeyHex)) {
       throw new Error('Invalid public key');
     }
     
