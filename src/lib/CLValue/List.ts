@@ -83,6 +83,11 @@ export class CLListBytesParser extends CLValueBytesParsers {
       remainder = vRem;
     }
 
+    // Support for creating empty lists from bytes
+    if (vec.length === 0) {
+      return resultHelper(Ok(new CLList(listType.inner)), remainder);
+    }
+
     return resultHelper(Ok(new CLList(vec)), remainder);
   }
 }

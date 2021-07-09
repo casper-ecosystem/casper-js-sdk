@@ -1,14 +1,8 @@
 import { assert } from 'chai';
 import { CasperServiceByJsonRPC } from '../../src/services';
-import {
-  Keys,
-  DeployUtil,
-  RuntimeArgs,
-} from '../../src/index';
+import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
 
-let client = new CasperServiceByJsonRPC(
-    'http://127.0.0.1:40101/rpc',
-);
+let client = new CasperServiceByJsonRPC('http://127.0.0.1:40101/rpc');
 
 describe('RPC', () => {
   xit('should return correct block by number', async () => {
@@ -64,5 +58,15 @@ describe('RPC', () => {
             1} bytes. ` + `Max size is 1 megabyte.`;
         assert.equal(err.message, expectedMessage);
       });
+  });
+
+  it('xxx', () => {
+    client.getBlockState(
+      '239b9b06e19a1db2dee3f257d8b215e3931442c0fba4d4565eb0f60c1c662b04',
+      'hash-c69659d85cfc30293f91989abe2c548038974e1a1f0ff7e32435991e06cbf83a',
+      [
+        'tokens_d628defa8bdb930e01fe2c394e5fa4c5f3297ffc279502827c2a2e6bdbf176d2'
+      ]
+    );
   });
 });

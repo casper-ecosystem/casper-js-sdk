@@ -5,6 +5,7 @@ import {
   CLListType,
   CLBool,
   CLBoolType,
+  CLStringType,
   CLU8,
   CLI32,
   CLI32Type
@@ -159,6 +160,23 @@ describe('CLValue List implementation', () => {
     const fromBytes = CLValueParsers.fromBytes(bytes, listType).unwrap();
 
     expect(fromBytes).to.be.deep.eq(myList);
+  });
+
+  it('Runs toJSON() / fromJSON() on empty list', () => {
+    const myList = new CLList(new CLStringType());
+
+    const json = CLValueParsers.toJSON(myList).unwrap();
+
+    const expectedJson = JSON.parse(
+      '{"bytes":"00000000","cl_type":{"List": "String" }}'
+    );
+
+    const newList1 = CLValueParsers.fromJSON(json).unwrap();
+    const newList2 = CLValueParsers.fromJSON(expectedJson).unwrap();
+
+    expect(json).to.be.deep.eq(expectedJson);
+    expect(newList1).to.be.deep.eq(myList);
+    expect(newList2).to.be.deep.eq(myList);
   });
 
   it('Runs toJSON() / fromJSON() properly', () => {
