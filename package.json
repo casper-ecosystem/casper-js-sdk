@@ -1,6 +1,6 @@
 {
   "name": "casper-js-sdk",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "license": "Apache 2.0",
   "description": "SDK to interact with the Casper blockchain",
   "homepage": "https://github.com/casper-ecosystem/casper-js-sdk#README.md",
@@ -19,6 +19,7 @@
     "build": "webpack --config webpack.config.js",
     "clean": "rm -rf ./dist",
     "~build": "tsc --watch",
+    "test:nctl": "TS_NODE_FILES=true mocha -r ts-node/register test/nctl/*.test.ts",
     "test": "TS_NODE_FILES=true mocha -r ts-node/register test/**/*.test.ts src/lib/CLValue/*.test.ts",
     "test:coverage": "nyc npm run test",
     "docs": "typedoc --out docs/ src",
