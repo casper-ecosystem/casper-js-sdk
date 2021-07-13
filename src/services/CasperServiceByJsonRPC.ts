@@ -345,7 +345,6 @@ export class CasperServiceByJsonRPC {
         path
       }
     });
-    console.log('RES', res.stored_value);
     if (res.error) {
       return res;
     } else {
