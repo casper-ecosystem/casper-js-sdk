@@ -1144,13 +1144,28 @@ export const deployToJson = (deploy: Deploy) => {
  *
  * @param json
  */
-export const deployFromJson = (json: any) => {
-  const serializer = new TypedJSON(Deploy);
-  const deploy = serializer.parse(json.deploy);
-  if (deploy !== undefined && validateDeploy(deploy).ok) {
-    return deploy;
+export const deployFromJson = (json: any): Result<Deploy, Error> => {
+  if (json.deploy === undefined) {
+    return new Err(new Error("The Deploy JSON doesn't have 'deploy' field."));
   }
-  return undefined;
+  let deploy = null;
+  try {
+    const serializer = new TypedJSON(Deploy);
+    deploy = serializer.parse(json.deploy);
+  } catch (serializationError) {
+    return new Err(serializationError);
+  }
+
+  if (deploy === undefined || deploy === null) {
+    return Err(new Error("The JSON can't be parsed as a Deploy."));
+  }
+
+  const valid = validateDeploy(deploy);
+  if (valid.err) {
+    return new Err(new Error(valid.val));
+  }
+
+  return new Ok(deploy);
 };
 
 export const addArgToDeploy = (
@@ -1191,6 +1206,10 @@ export const deploySizeInBytes = (deploy: Deploy): number => {
 };
 
 export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
+  if (!(deploy instanceof Deploy)) {
+    return new Err("'deploy' is not an instance of Deploy class.");
+  }
+
   const serializedBody = serializeBody(deploy.payment, deploy.session);
   const bodyHash = blake.blake2b(serializedBody, null, 32);
 

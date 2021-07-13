@@ -15,7 +15,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - `getBlockTransfers`, `getEraInfoBySwitchBlock`, `getEraInfoBySwitchBlockHeight` methods to `CasperServiceByJsonRPC`
 
-###
+## 2.0.1
+
+### Changed
+
+- `DeployUtil.deployFromJson` returns now `Result<Deploy, Error>` instead of `Deploy | undefined`. `Error` has a `message` inside.
 
 ## 2.0.0
 
@@ -37,12 +41,12 @@ const myTypesComplex = {
   ok: new CLListType(new CLListType(new CLU8Type())),
   err: new CLOptionType(new CLListType(new CLListType(new CLU8Type())))
 };
-```
 
 const myOkComplexRes = new CLResult( Ok(new CLList([new CLList([new CLU8(5), new CLU8(10), new CLU8(15)])])), myTypesComplex );
+```
 
-- There are API changes in `CLOption` - not it requires `Some` or `None` wrappers as argument (from `ts-result` library).
-- Now all the serialization methods are not connected to `CLValue` - `toJSON`, `fromJSON`, `toBytes`, `fromBytes` needs to be called with `CLValueParsers` eg. `CLValueParser.toJSON(CLValueBuilder.string("ABC"))`
+- There are API changes in `CLOption` - now it requires `Some` or `None` wrappers as argument (from `ts-result` library).
+- Now all the serialization methods are not connected to `CLValue` anymore - `toJSON`, `fromJSON`, `toBytes`, `fromBytes` needs to be called with `CLValueParsers` eg. `CLValueParser.toJSON(CLValueBuilder.string("ABC"))`
 - Renamed methods in `CLPublicKey`:
   - `toAccountHex` -> `toHex` - old name led to misunderstandings as in fact this is hex representation of `public-key` prefixed with key-type.
   - added method `toAccountHashStr` - this methods returns string containing account hash in hex form prefixed with `account-hash-`.
