@@ -60,4 +60,11 @@ describe('RPC', () => {
       });
   });
 
+  it('xxx', () => {
+    let client2 = new CasperServiceByJsonRPC('http://127.0.0.1:40101/rpc', 'http://localhost:60101/events');
+    client2.eventHandler.subscribe("FinalitySignature", (value) => console.log("SUBSCRIBED VALUE", value));
+    // client2.eventHandler.start();
+    // client2.eventHandler.stop();
+  });
+
 });
