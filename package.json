@@ -19,7 +19,7 @@
     "build": "webpack --config webpack.config.js",
     "clean": "rm -rf ./dist",
     "~build": "tsc --watch",
-    "test:nctl": "TS_NODE_FILES=true mocha -r ts-node/register test/nctl/*.test.ts",
+    "test:nctl": "TS_NODE_FILES=true mocha -r ts-node/register test/nctl/*.test.ts --timeout 5000000",
     "test": "TS_NODE_FILES=true mocha -r ts-node/register test/**/*.test.ts src/lib/CLValue/*.test.ts",
     "test:coverage": "nyc npm run test",
     "docs": "typedoc --out docs/ src",

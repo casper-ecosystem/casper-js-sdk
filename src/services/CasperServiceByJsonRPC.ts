@@ -4,7 +4,6 @@ import { DeployUtil, encodeBase16, CLPublicKey } from '..';
 import { deployToJson } from '../lib/DeployUtil';
 import { TypedJSON } from 'typedjson';
 import { StoredValue, Transfers } from '../lib/StoredValue';
-import { EventHandler } from './EventHandler';
 import { BigNumber } from '@ethersproject/bignumber';
 
 interface RpcResult {
@@ -186,15 +185,11 @@ export interface ValidatorsInfoResult extends RpcResult {
 
 export class CasperServiceByJsonRPC {
   private client: Client;
-  public eventHandler: EventHandler;
 
-  constructor(url: string, eventStreamUrl?: string) {
+  constructor(url: string) {
     const transport = new HTTPTransport(url);
     const requestManager = new RequestManager([transport]);
     this.client = new Client(requestManager);
-    if (eventStreamUrl) {
-      this.eventHandler = new EventHandler(eventStreamUrl);
-    }
   }
 
   /**

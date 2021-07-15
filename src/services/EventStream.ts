@@ -9,27 +9,11 @@ interface EventSubscription {
   eventHandlerFn: EventHandlerFn;
 }
 
-export class EventHandler {
+export class EventStream {
   subscribedTo: EventSubscription[] = [];
   stream: any;
 
-  constructor(public eventStreamUrl: string) {
-    this.stream = got.stream(this.eventStreamUrl);
-
-    const runLoop = async () => {
-      for await (const eventString of this.stream) {
-        const res = parseEvent(Buffer.from(eventString).toString());
-        if (!res) return;
-        this.subscribedTo.forEach((sub: EventSubscription) => {
-          if (res.body && res.body.hasOwnProperty(sub.eventName)) {
-            sub.eventHandlerFn(res);
-          }
-        });
-      }
-    };
-
-    runLoop();
-  }
+  constructor(public eventStreamUrl: string) {}
 
   subscribe(
     eventName: EventName,
@@ -48,6 +32,29 @@ export class EventHandler {
     }
     this.subscribedTo.filter(d => d.eventName !== eventName);
     return Ok(true);
+  }
+
+  start(eventId = 0): void {
+    this.stream = got.stream(`${this.eventStreamUrl}?start_from=${eventId}`);
+
+    const runStreamRead = async () => {
+      for await (const eventString of this.stream) {
+        const res = parseEvent(Buffer.from(eventString).toString());
+        if (res) {
+          this.subscribedTo.forEach((sub: EventSubscription) => {
+            if (res.body.hasOwnProperty(sub.eventName)) {
+              sub.eventHandlerFn(res);
+            }
+          });
+        }
+      }
+    };
+
+    runStreamRead();
+  }
+
+  stop(): void {
+    this.stream.destroy();
   }
 }
 
