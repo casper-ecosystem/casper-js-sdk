@@ -1,5 +1,5 @@
 import { assert } from 'chai';
-import { CasperServiceByJsonRPC, EventStream } from '../../src/services';
+import { CasperServiceByJsonRPC, EventStream, EventName } from '../../src/services';
 import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
 
 let client = new CasperServiceByJsonRPC('http://127.0.0.1:40101/rpc');
@@ -62,7 +62,7 @@ describe('RPC', () => {
 
   it('EventHandler', () => {
     const client = new EventStream('http://localhost:60101/events');
-    client.subscribe("FinalitySignature", (value) => console.log("SUBSCRIBED VALUE", value));
+    client.subscribe(EventName.FinalitySignature, (value) => console.log("SUBSCRIBED VALUE", value));
     client.start();
     setTimeout(() => {
       console.log("STOP");

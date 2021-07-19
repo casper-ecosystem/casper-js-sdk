@@ -1,8 +1,15 @@
 import { Result, Ok, Err } from 'ts-results';
-import got from 'got';
+import http from 'http';
 
 type EventHandlerFn = (result: any) => void;
-type EventName = string;
+
+export enum EventName {
+  BlockAdded = 'BlockAdded',
+  BlockFinalized = 'BlockFinalized',
+  FinalitySignature = 'FinalitySignature',
+  Fault = 'Fault',
+  DeployProcessed = 'DeployProcessed'
+}
 
 interface EventSubscription {
   eventName: EventName;
@@ -30,27 +37,26 @@ export class EventStream {
     if (!this.subscribedTo.some(e => e.eventName === eventName)) {
       return Err('Cannot find provided subscription');
     }
-    this.subscribedTo.filter(d => d.eventName !== eventName);
+    this.subscribedTo = this.subscribedTo.filter(
+      d => d.eventName !== eventName
+    );
     return Ok(true);
   }
 
   start(eventId = 0): void {
-    this.stream = got.stream(`${this.eventStreamUrl}?start_from=${eventId}`);
-
-    const runStreamRead = async () => {
-      for await (const eventString of this.stream) {
-        const res = parseEvent(Buffer.from(eventString).toString());
-        if (res) {
+    http.get(`${this.eventStreamUrl}?start_from=${eventId}`, res => {
+      this.stream = res;
+      this.stream.on('data', (buf: Uint8Array) => {
+        const result = parseEvent(Buffer.from(buf).toString());
+        if (result) {
           this.subscribedTo.forEach((sub: EventSubscription) => {
-            if (res.body.hasOwnProperty(sub.eventName)) {
-              sub.eventHandlerFn(res);
+            if (result.body.hasOwnProperty(sub.eventName)) {
+              sub.eventHandlerFn(result);
             }
           });
         }
-      }
-    };
-
-    runStreamRead();
+      });
+    });
   }
 
   stop(): void {
@@ -58,7 +64,7 @@ export class EventStream {
   }
 }
 
-const parseEvent = (eventString: string): any => {
+export const parseEvent = (eventString: string): any => {
   if (eventString.startsWith('id')) {
     return { id: eventString.substr(3) };
   }
