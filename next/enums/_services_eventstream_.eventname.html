@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>CLPublicKeyTag | casper-js-sdk</title>
+	<title>EventName | casper-js-sdk</title>
 	<meta name="description" content="Documentation for casper-js-sdk">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_lib_clvalue_publickey_.html">&quot;lib/CLValue/PublicKey&quot;</a>
+					<a href="../modules/_services_eventstream_.html">&quot;services/EventStream&quot;</a>
 				</li>
 				<li>
-					<a href="_lib_clvalue_publickey_.clpublickeytag.html">CLPublicKeyTag</a>
+					<a href="_services_eventstream_.eventname.html">EventName</a>
 				</li>
 			</ul>
-			<h1>Enumeration CLPublicKeyTag</h1>
+			<h1>Enumeration EventName</h1>
 		</div>
 	</div>
 </header>
@@ -76,8 +76,11 @@
 						<section class="tsd-index-section ">
 							<h3>Enumeration members</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_lib_clvalue_publickey_.clpublickeytag.html#ed25519" class="tsd-kind-icon">ED25519</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_lib_clvalue_publickey_.clpublickeytag.html#secp256k1" class="tsd-kind-icon">SECP256<wbr>K1</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_services_eventstream_.eventname.html#blockadded" class="tsd-kind-icon">Block<wbr>Added</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_services_eventstream_.eventname.html#blockfinalized" class="tsd-kind-icon">Block<wbr>Finalized</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_services_eventstream_.eventname.html#deployprocessed" class="tsd-kind-icon">Deploy<wbr>Processed</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_services_eventstream_.eventname.html#fault" class="tsd-kind-icon">Fault</a></li>
+								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_services_eventstream_.eventname.html#finalitysignature" class="tsd-kind-icon">Finality<wbr>Signature</a></li>
 							</ul>
 						</section>
 					</div>
@@ -86,22 +89,52 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Enumeration members</h2>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="ed25519" class="tsd-anchor"></a>
-					<h3>ED25519</h3>
-					<div class="tsd-signature tsd-kind-icon">ED25519<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 1</span></div>
+					<a name="blockadded" class="tsd-anchor"></a>
+					<h3>Block<wbr>Added</h3>
+					<div class="tsd-signature tsd-kind-icon">Block<wbr>Added<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;BlockAdded&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/47a2f07/src/lib/CLValue/PublicKey.ts#L24">src/lib/CLValue/PublicKey.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/47a2f07/src/services/EventStream.ts#L7">src/services/EventStream.ts:7</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="secp256k1" class="tsd-anchor"></a>
-					<h3>SECP256<wbr>K1</h3>
-					<div class="tsd-signature tsd-kind-icon">SECP256<wbr>K1<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = 2</span></div>
+					<a name="blockfinalized" class="tsd-anchor"></a>
+					<h3>Block<wbr>Finalized</h3>
+					<div class="tsd-signature tsd-kind-icon">Block<wbr>Finalized<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;BlockFinalized&quot;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/47a2f07/src/lib/CLValue/PublicKey.ts#L25">src/lib/CLValue/PublicKey.ts:25</a></li>
+							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/47a2f07/src/services/EventStream.ts#L8">src/services/EventStream.ts:8</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="deployprocessed" class="tsd-anchor"></a>
+					<h3>Deploy<wbr>Processed</h3>
+					<div class="tsd-signature tsd-kind-icon">Deploy<wbr>Processed<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;DeployProcessed&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/47a2f07/src/services/EventStream.ts#L11">src/services/EventStream.ts:11</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="fault" class="tsd-anchor"></a>
+					<h3>Fault</h3>
+					<div class="tsd-signature tsd-kind-icon">Fault<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;Fault&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/47a2f07/src/services/EventStream.ts#L10">src/services/EventStream.ts:10</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
+					<a name="finalitysignature" class="tsd-anchor"></a>
+					<h3>Finality<wbr>Signature</h3>
+					<div class="tsd-signature tsd-kind-icon">Finality<wbr>Signature<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;FinalitySignature&quot;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/47a2f07/src/services/EventStream.ts#L9">src/services/EventStream.ts:9</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -114,7 +147,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="../modules/_lib_clvalue_publickey_.html">&quot;lib/CLValue/<wbr>Public<wbr>Key&quot;</a>
+						<a href="../modules/_services_eventstream_.html">&quot;services/<wbr>Event<wbr>Stream&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -123,32 +156,38 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-enum tsd-parent-kind-module">
-						<a href="_lib_clvalue_publickey_.clpublickeytag.html" class="tsd-kind-icon">CLPublic<wbr>Key<wbr>Tag</a>
+						<a href="_services_eventstream_.eventname.html" class="tsd-kind-icon">Event<wbr>Name</a>
 						<ul>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_lib_clvalue_publickey_.clpublickeytag.html#ed25519" class="tsd-kind-icon">ED25519</a>
+								<a href="_services_eventstream_.eventname.html#blockadded" class="tsd-kind-icon">Block<wbr>Added</a>
 							</li>
 							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_lib_clvalue_publickey_.clpublickeytag.html#secp256k1" class="tsd-kind-icon">SECP256<wbr>K1</a>
+								<a href="_services_eventstream_.eventname.html#blockfinalized" class="tsd-kind-icon">Block<wbr>Finalized</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_services_eventstream_.eventname.html#deployprocessed" class="tsd-kind-icon">Deploy<wbr>Processed</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_services_eventstream_.eventname.html#fault" class="tsd-kind-icon">Fault</a>
+							</li>
+							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
+								<a href="_services_eventstream_.eventname.html#finalitysignature" class="tsd-kind-icon">Finality<wbr>Signature</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_lib_clvalue_publickey_.clpublickey.html" class="tsd-kind-icon">CLPublic<wbr>Key</a>
+						<a href="../classes/_services_eventstream_.eventstream.html" class="tsd-kind-icon">Event<wbr>Stream</a>
 					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_lib_clvalue_publickey_.clpublickeybytesparser.html" class="tsd-kind-icon">CLPublic<wbr>Key<wbr>Bytes<wbr>Parser</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../interfaces/_services_eventstream_.eventsubscription.html" class="tsd-kind-icon">Event<wbr>Subscription</a>
 					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_lib_clvalue_publickey_.clpublickeytype.html" class="tsd-kind-icon">CLPublic<wbr>Key<wbr>Type</a>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_services_eventstream_.html#eventhandlerfn" class="tsd-kind-icon">Event<wbr>Handler<wbr>Fn</a>
 					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_lib_clvalue_publickey_.html#ed25519_length" class="tsd-kind-icon">ED25519_<wbr>LENGTH</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../modules/_lib_clvalue_publickey_.html#secp256k1_length" class="tsd-kind-icon">SECP256<wbr>K1_<wbr>LENGTH</a>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_services_eventstream_.html#parseevent" class="tsd-kind-icon">parse<wbr>Event</a>
 					</li>
 				</ul>
 			</nav>

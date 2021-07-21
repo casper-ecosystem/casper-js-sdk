@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;lib/Contracts&quot; | casper-js-sdk</title>
+	<title>&quot;services/EventStream&quot; | casper-js-sdk</title>
 	<meta name="description" content="Documentation for casper-js-sdk">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_lib_contracts_.html">&quot;lib/Contracts&quot;</a>
+					<a href="_services_eventstream_.html">&quot;services/EventStream&quot;</a>
 				</li>
 			</ul>
-			<h1>Module &quot;lib/Contracts&quot;</h1>
+			<h1>Module &quot;services/EventStream&quot;</h1>
 		</div>
 	</div>
 </header>
@@ -71,52 +71,94 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
+							<h3>Enumerations</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-enum tsd-parent-kind-module"><a href="../enums/_services_eventstream_.eventname.html" class="tsd-kind-icon">Event<wbr>Name</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
 							<h3>Classes</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_lib_contracts_.boundcontract.html" class="tsd-kind-icon">Bound<wbr>Contract</a></li>
-								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_lib_contracts_.contract.html" class="tsd-kind-icon">Contract</a></li>
-								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_lib_contracts_.faucet.html" class="tsd-kind-icon">Faucet</a></li>
-								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_lib_contracts_.transfer.html" class="tsd-kind-icon">Transfer</a></li>
+								<li class="tsd-kind-class tsd-parent-kind-module"><a href="../classes/_services_eventstream_.eventstream.html" class="tsd-kind-icon">Event<wbr>Stream</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section tsd-is-not-exported">
+							<h3>Interfaces</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported"><a href="../interfaces/_services_eventstream_.eventsubscription.html" class="tsd-kind-icon">Event<wbr>Subscription</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section tsd-is-not-exported">
+							<h3>Type aliases</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-type-alias tsd-parent-kind-module tsd-is-not-exported"><a href="_services_eventstream_.html#eventhandlerfn" class="tsd-kind-icon">Event<wbr>Handler<wbr>Fn</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_contracts_.html#bytehash" class="tsd-kind-icon">byte<wbr>Hash</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_services_eventstream_.html#parseevent" class="tsd-kind-icon">parse<wbr>Event</a></li>
 							</ul>
 						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+				<h2>Type aliases</h2>
+				<section class="tsd-panel tsd-member tsd-kind-type-alias tsd-parent-kind-module tsd-is-not-exported">
+					<a name="eventhandlerfn" class="tsd-anchor"></a>
+					<h3>Event<wbr>Handler<wbr>Fn</h3>
+					<div class="tsd-signature tsd-kind-icon">Event<wbr>Handler<wbr>Fn<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">void</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/47a2f07/src/services/EventStream.ts#L4">src/services/EventStream.ts:4</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-type-declaration">
+						<h4>Type declaration</h4>
+						<ul class="tsd-parameters">
+							<li class="tsd-parameter-signature">
+								<ul class="tsd-signatures tsd-kind-type-literal tsd-parent-kind-type-alias tsd-is-not-exported">
+									<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+								</ul>
+								<ul class="tsd-descriptions">
+									<li class="tsd-description">
+										<h4 class="tsd-parameters-title">Parameters</h4>
+										<ul class="tsd-parameters">
+											<li>
+												<h5>result: <span class="tsd-signature-type">any</span></h5>
+											</li>
+										</ul>
+										<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+									</li>
+								</ul>
+							</li>
+						</ul>
 					</div>
 				</section>
 			</section>
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
-					<a name="bytehash" class="tsd-anchor"></a>
-					<h3>byte<wbr>Hash</h3>
+					<a name="parseevent" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> parse<wbr>Event</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">byte<wbr>Hash<span class="tsd-signature-symbol">(</span>x<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span></li>
+						<li class="tsd-signature tsd-kind-icon">parse<wbr>Event<span class="tsd-signature-symbol">(</span>eventString<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/47a2f07/src/lib/Contracts.ts#L18">src/lib/Contracts.ts:18</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/47a2f07/src/services/EventStream.ts#L67">src/services/EventStream.ts:67</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Use blake2b to compute hash of ByteArray</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>x: <span class="tsd-signature-type">Uint8Array</span></h5>
-									<div class="tsd-comment tsd-typography">
-									</div>
+									<h5>eventString: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Uint8Array</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -129,26 +171,26 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-module">
-						<a href="_lib_contracts_.html">&quot;lib/<wbr>Contracts&quot;</a>
+						<a href="_services_eventstream_.html">&quot;services/<wbr>Event<wbr>Stream&quot;</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_lib_contracts_.boundcontract.html" class="tsd-kind-icon">Bound<wbr>Contract</a>
+					<li class=" tsd-kind-enum tsd-parent-kind-module">
+						<a href="../enums/_services_eventstream_.eventname.html" class="tsd-kind-icon">Event<wbr>Name</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_lib_contracts_.contract.html" class="tsd-kind-icon">Contract</a>
+						<a href="../classes/_services_eventstream_.eventstream.html" class="tsd-kind-icon">Event<wbr>Stream</a>
 					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_lib_contracts_.faucet.html" class="tsd-kind-icon">Faucet</a>
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../interfaces/_services_eventstream_.eventsubscription.html" class="tsd-kind-icon">Event<wbr>Subscription</a>
 					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="../classes/_lib_contracts_.transfer.html" class="tsd-kind-icon">Transfer</a>
+					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_services_eventstream_.html#eventhandlerfn" class="tsd-kind-icon">Event<wbr>Handler<wbr>Fn</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="_lib_contracts_.html#bytehash" class="tsd-kind-icon">byte<wbr>Hash</a>
+						<a href="_services_eventstream_.html#parseevent" class="tsd-kind-icon">parse<wbr>Event</a>
 					</li>
 				</ul>
 			</nav>
