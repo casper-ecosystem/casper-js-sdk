@@ -51,8 +51,6 @@ describe('CLValue CLMap implementation', () => {
     const myVal = new CLI32(10);
     const myMap = new CLMap([[myKey, myVal]]);
 
-    console.log('myMap', myMap);
-
     expect(myMap.get(myKey)).to.be.deep.eq(myVal);
   });
 
