@@ -38,6 +38,8 @@ const clientConfig = {
       crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
       asert: require.resolve('assert'),
+      http: require.resolve('stream-http'),
+      url: require.resolve('url/'),
       fs: false
     }
   },

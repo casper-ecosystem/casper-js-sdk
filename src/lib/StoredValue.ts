@@ -189,7 +189,7 @@ export class EntryPoint {
   public name: string;
 
   @jsonMember({
-    name: 'cl_type',
+    name: 'ret',
     deserializer: json => matchTypeToCLType(json)
   })
   public ret: string;
