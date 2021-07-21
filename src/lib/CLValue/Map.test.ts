@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import {
   CLValueParsers,
+  CLValueBuilder,
   CLMap,
   CLMapType,
   CLBool,
@@ -49,6 +50,8 @@ describe('CLValue CLMap implementation', () => {
     const myKey = new CLString('ABC');
     const myVal = new CLI32(10);
     const myMap = new CLMap([[myKey, myVal]]);
+
+    console.log('myMap', myMap);
 
     expect(myMap.get(myKey)).to.be.deep.eq(myVal);
   });
@@ -100,7 +103,7 @@ describe('CLValue CLMap implementation', () => {
 
     myMap.set(newKey, newVal);
 
-    expect(myMap.get(newKey)).to.deep.eq(newVal);
+    expect(myMap.get(newKey)).to.deep.eq(new CLI32(11));
     expect(myMap.size()).to.eq(2);
   });
 
@@ -140,5 +143,14 @@ describe('CLValue CLMap implementation', () => {
 
     expect(fromJson).to.be.deep.eq(myMap);
     expect(json).to.be.deep.eq(expectedJson);
+  });
+
+  it('Tests maps created used CLValueBuilder', () => {
+    const myMap = CLValueBuilder.map([
+      [CLValueBuilder.string('A'), CLValueBuilder.string('1')]
+    ]);
+    expect(myMap.get(CLValueBuilder.string('A'))).to.be.deep.eq(
+      CLValueBuilder.string('1')
+    );
   });
 });

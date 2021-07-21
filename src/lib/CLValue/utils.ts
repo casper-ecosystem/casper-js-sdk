@@ -151,6 +151,7 @@ export const matchTypeToCLType = (type: any): CLType => {
     throw new Error(`The complex type ${type} is not supported`);
   }
 
+  console.log(type);
   throw new Error(`Unknown data provided.`);
 };
 

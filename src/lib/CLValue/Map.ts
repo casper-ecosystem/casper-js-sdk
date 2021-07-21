@@ -168,7 +168,12 @@ export class CLMap<K extends CLValue, V extends CLValue> extends CLValue {
   }
 
   get(k: K): V | undefined {
-    return this.data.get(k);
+    for (const [key, value] of Array.from(this.data.entries())) {
+      if (key.value() === k.value()) {
+        return value;
+      }
+    }
+    return undefined;
   }
 
   set(k: K, val: V): void {

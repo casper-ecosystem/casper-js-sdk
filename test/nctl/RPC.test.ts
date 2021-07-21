@@ -60,7 +60,7 @@ describe('RPC', () => {
       });
   });
 
-  it('EventHandler', () => {
+  xit('EventHandler', () => {
     const client = new EventStream('http://localhost:60101/events');
     client.subscribe(EventName.FinalitySignature, (value) => console.log("SUBSCRIBED VALUE", value));
     client.start();
