@@ -50,7 +50,7 @@ export class EventStream {
         const result = parseEvent(Buffer.from(buf).toString());
         if (result && !result.err) {
           this.subscribedTo.forEach((sub: EventSubscription) => {
-            if (result.body.hasOwnProperty(sub.eventName)) {
+            if (result.body && result.body.hasOwnProperty(sub.eventName)) {
               sub.eventHandlerFn(result);
             }
           });
