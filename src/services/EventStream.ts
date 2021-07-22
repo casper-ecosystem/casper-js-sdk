@@ -48,7 +48,7 @@ export class EventStream {
       this.stream = res;
       this.stream.on('data', (buf: Uint8Array) => {
         const result = parseEvent(Buffer.from(buf).toString());
-        if (result) {
+        if (result && !result.err) {
           this.subscribedTo.forEach((sub: EventSubscription) => {
             if (result.body.hasOwnProperty(sub.eventName)) {
               sub.eventHandlerFn(result);
@@ -71,8 +71,12 @@ export const parseEvent = (eventString: string): any => {
 
   if (eventString.startsWith('data')) {
     const splitted = eventString.split('\n');
-    const body = JSON.parse(splitted[0].substr(5));
-    const id = splitted[1] ? splitted[1].substr(3) : null;
-    return { id, body };
+    try {
+      const body = JSON.parse(splitted[0].substr(5));
+      const id = splitted[1] ? splitted[1].substr(3) : null;
+      return { id, body };
+    } catch {
+      return { id: null, body: null, err: 'Not a valid JSON' };
+    }
   }
 };
