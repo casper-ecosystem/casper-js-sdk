@@ -77,7 +77,7 @@ export class CLMapBytesParser extends CLValueBytesParsers {
       const byteVal = CLValueParsers.toBytes(value).unwrap();
       return concat([byteKey, byteVal]);
     });
-    return Ok(concat([toBytesU32(value.data.size), ...kvBytes]));
+    return Ok(concat([toBytesU32(value.data.length), ...kvBytes]));
   }
 
   fromBytesWithRemainder(
@@ -96,6 +96,13 @@ export class CLMapBytesParser extends CLValueBytesParsers {
     const vec: [KeyVal, KeyVal][] = [];
 
     let remainder = u32Rem;
+
+    if (size === 0) {
+      return resultHelper(
+        Ok(new CLMap([mapType.innerKey, mapType.innerValue])),
+        remainder
+      );
+    }
 
     for (let i = 0; i < size; i++) {
       if (!remainder) return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
@@ -128,7 +135,7 @@ export class CLMapBytesParser extends CLValueBytesParsers {
 }
 
 export class CLMap<K extends CLValue, V extends CLValue> extends CLValue {
-  data: Map<K, V>;
+  data: [K, V][];
   refType: [CLType, CLType];
   /**
    * Constructs a new `MapValue`.
@@ -147,13 +154,13 @@ export class CLMap<K extends CLValue, V extends CLValue> extends CLValue {
           );
         })
       ) {
-        this.data = new Map(v);
+        this.data = v;
       } else {
         throw Error('Invalid data provided.');
       }
     } else if (v[0] instanceof CLType && v[1] instanceof CLType) {
       this.refType = v;
-      this.data = new Map();
+      this.data = [];
     } else {
       throw Error('Invalid data type(s) provided.');
     }
@@ -163,28 +170,30 @@ export class CLMap<K extends CLValue, V extends CLValue> extends CLValue {
     return new CLMapType(this.refType);
   }
 
-  value(): Map<K, V> {
+  value(): [K, V][] {
     return this.data;
   }
 
   get(k: K): V | undefined {
-    for (const [key, value] of Array.from(this.data.entries())) {
-      if (key.value() === k.value()) {
-        return value;
-      }
-    }
-    return undefined;
+    const result = this.data.find(d => d[0].value() === k.value());
+    return result ? result[1] : undefined;
   }
 
   set(k: K, val: V): void {
-    this.data.set(k, val);
+    if (this.get(k)) {
+      this.data = this.data.map(d =>
+        d[0].value() === k.value() ? [d[0], val] : d
+      );
+      return;
+    }
+    this.data = [...this.data, [k, val]];
   }
 
-  delete(k: K): boolean {
-    return this.data.delete(k);
+  delete(k: K): void {
+    this.data = this.data.filter(d => d[0].value() !== k.value());
   }
 
   size(): number {
-    return this.data.size;
+    return this.data.length;
   }
 }
