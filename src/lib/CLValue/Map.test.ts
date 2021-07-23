@@ -84,7 +84,6 @@ describe('CLValue CLMap implementation', () => {
     const myKey = new CLString('ABC');
     const myVal = new CLI32(10);
     const myMap = new CLMap([[myKey, myVal]]);
-    // const newVal = new CLI32(11);
 
     myMap.set(new CLString('ABC'), new CLI32(11));
 
