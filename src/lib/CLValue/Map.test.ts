@@ -24,7 +24,7 @@ describe('CLValue CLMap implementation', () => {
     const myMap = new CLMap([[myKey, myVal]]);
 
     expect(myMap).to.be.an.instanceof(CLMap);
-    expect(myMap.value()).to.be.deep.eq(new Map([[myKey, myVal]]));
+    expect(myMap).to.be.deep.eq(new CLMap([[myKey, myVal]]));
   });
 
   it('Should throw an error when CLMap is not correct by construction', () => {
@@ -51,7 +51,7 @@ describe('CLValue CLMap implementation', () => {
     const myVal = new CLI32(10);
     const myMap = new CLMap([[myKey, myVal]]);
 
-    expect(myMap.get(myKey)).to.be.deep.eq(myVal);
+    expect(myMap.get(new CLString('ABC'))).to.be.deep.eq(new CLI32(10));
   });
 
   it('Get() should return undefined on non-existing key', () => {
@@ -77,18 +77,17 @@ describe('CLValue CLMap implementation', () => {
 
     myMap.set(myKey, newVal);
 
-    expect(myMap.get(myKey)).to.deep.eq(newVal);
+    expect(myMap.get(new CLString('ABC'))).to.deep.eq(new CLI32(11));
   });
 
   it('Set should be able to set values at already declared keys', () => {
     const myKey = new CLString('ABC');
     const myVal = new CLI32(10);
     const myMap = new CLMap([[myKey, myVal]]);
-    const newVal = new CLI32(11);
 
-    myMap.set(myKey, newVal);
+    myMap.set(new CLString('ABC'), new CLI32(11));
 
-    expect(myMap.get(myKey)).to.deep.eq(newVal);
+    expect(myMap.get(new CLString('ABC'))).to.deep.eq(new CLI32(11));
     expect(myMap.size()).to.eq(1);
   });
 
@@ -96,12 +95,10 @@ describe('CLValue CLMap implementation', () => {
     const myKey = new CLString('ABC');
     const myVal = new CLI32(10);
     const myMap = new CLMap([[myKey, myVal]]);
-    const newKey = new CLString('DEF');
-    const newVal = new CLI32(11);
 
-    myMap.set(newKey, newVal);
+    myMap.set(new CLString('DEF'), new CLI32(11));
 
-    expect(myMap.get(newKey)).to.deep.eq(new CLI32(11));
+    expect(myMap.get(new CLString('DEF'))).to.deep.eq(new CLI32(11));
     expect(myMap.size()).to.eq(2);
   });
 
@@ -110,7 +107,7 @@ describe('CLValue CLMap implementation', () => {
     const myVal = new CLI32(10);
     const myMap = new CLMap([[myKey, myVal]]);
 
-    myMap.delete(myKey);
+    myMap.delete(new CLString('ABC'));
 
     expect(myMap.size()).to.eq(0);
   });
