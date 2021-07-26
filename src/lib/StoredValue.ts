@@ -179,7 +179,14 @@ export class NamedCLTypeArg {
  */
 @jsonObject
 export class EntryPoint {
-  @jsonMember({ constructor: String })
+  @jsonMember({
+    name: 'access',
+    deserializer: json => {
+      if (typeof json === 'string') return json;
+      // TODO: add support for object access
+      return null;
+    }
+  })
   public access: string;
 
   @jsonMember({ name: 'entry_point_type', constructor: String })
