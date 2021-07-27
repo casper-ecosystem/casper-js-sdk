@@ -86,7 +86,7 @@ describe('RPC', () => {
 
   xit('get-dictionary-item', async () => {
     const client = new CasperServiceByJsonRPC('http://127.0.0.1:11101/rpc');
-    const v = await client.getDictionaryItem(
+    const v = await client.getDictionaryItemByURef(
       '332ec11a30a3d880b62423a6c33016199eb16c3bd7c25f0984ace573dfd6ee72',
       'hun',
       'uref-49d9303967823eb3749423c4791c85433b0843f932f0d0d5b1d73f00a644d19e-007'
