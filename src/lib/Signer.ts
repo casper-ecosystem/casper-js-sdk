@@ -5,38 +5,75 @@
  * @packageDocumentation
  */
 
+import { JsonTypes } from 'typedjson';
+import {
+  CasperLabsHelper,
+  SignerTestingHelper
+} from '../@types/casperlabsSigner';
+
+declare global {
+  interface Window {
+    casperlabsHelper: CasperLabsHelper;
+    signerTestingHelper: SignerTestingHelper;
+  }
+}
+
+const helperPresent = () => {
+  return !(typeof window.casperlabsHelper === 'undefined');
+};
+
 /**
  * Returns Signer version
  */
 export const getVersion: () => Promise<string> = async () => {
-  try {
-    return await window.casperlabsHelper!.getVersion();
-  } catch {
-    return '<1.0.0';
+  if (helperPresent()) {
+    try {
+      return await window.casperlabsHelper.getVersion();
+    } catch {
+      return '<1.0.0';
+    }
   }
+  return Promise.reject(
+    new Error(
+      'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
+    )
+  );
 };
 
 /**
  * Check whether CasperLabs Signer extension is connected
  */
 export const isConnected: () => Promise<boolean> = async () => {
-  return await window.casperlabsHelper!.isConnected();
+  if (helperPresent()) return await window.casperlabsHelper.isConnected();
+  return Promise.reject(
+    new Error(
+      'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
+    )
+  );
 };
 
 /**
  * Attempt connection to Signer
  */
 export const sendConnectionRequest: () => void = () => {
-  return window.casperlabsHelper!.requestConnection();
+  if (helperPresent()) return window.casperlabsHelper.requestConnection();
+  throw new Error(
+    'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
+  );
 };
 
 /**
- * Return base64 encoded public key of user current selected account.
+ * **Deprecated** in favour of `getActivePublicKey()`.
+ * Returns `base64` encoded public key of currently selected account.
  *
  * @throws Error if haven't connected to CasperLabs Signer browser extension.
  */
 export const getSelectedPublicKeyBase64: () => Promise<string> = () => {
-  return window.casperlabsHelper!.getSelectedPublicKeyBase64();
+  if (helperPresent())
+    return window.casperlabsHelper.getSelectedPublicKeyBase64();
+  throw new Error(
+    'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
+  );
 };
 
 /**
@@ -45,7 +82,12 @@ export const getSelectedPublicKeyBase64: () => Promise<string> = () => {
  * @returns {string} Hex-encoded public key with algorithm prefix.
  */
 export const getActivePublicKey: () => Promise<string> = () => {
-  return window.casperlabsHelper!.getActivePublicKey();
+  if (helperPresent()) return window.casperlabsHelper.getActivePublicKey();
+  return Promise.reject(
+    new Error(
+      'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
+    )
+  );
 };
 
 /**
@@ -60,18 +102,24 @@ export const getActivePublicKey: () => Promise<string> = () => {
  * @throws Error if targetPublicKeyHex is not the same as the key that is used as target in deploy.
  */
 export const sign: (
-  deploy: any,
+  deploy: { deploy: JsonTypes },
   sourcePublicKey: string,
   targetPublicKey: string
-) => Promise<any> = (
-  deploy: any,
+) => Promise<{ deploy: JsonTypes }> = (
+  deploy: { deploy: JsonTypes },
   sourcePublicKey: string,
   targetPublicKey: string
 ) => {
-  return window.casperlabsHelper!.sign(
-    deploy,
-    sourcePublicKey,
-    targetPublicKey
+  if (helperPresent())
+    return window.casperlabsHelper.sign(
+      deploy,
+      sourcePublicKey,
+      targetPublicKey
+    );
+  return Promise.reject(
+    new Error(
+      'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
+    )
   );
 };
 
@@ -79,44 +127,91 @@ export const sign: (
  * Forces Signer to disconnect from the currently open site.
  */
 export const disconnectFromSite: () => void = () => {
-  return window.casperlabsHelper!.disconnectFromSite();
+  if (helperPresent()) return window.casperlabsHelper.disconnectFromSite();
+  return Promise.reject(
+    new Error(
+      'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
+    )
+  );
 };
 
 export const forceConnection: () => void = () => {
-  return window.signerTestingHelper!.forceConnection();
+  if (helperPresent()) return window.signerTestingHelper.forceConnection();
+  return Promise.reject(
+    new Error(
+      'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
+    )
+  );
 };
 
 export const forceDisconnect: () => void = () => {
-  return window.signerTestingHelper!.forceDisconnect();
+  if (helperPresent()) return window.signerTestingHelper.forceDisconnect();
+  return Promise.reject(
+    new Error(
+      'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
+    )
+  );
 };
 
 export const hasCreatedVault: () => Promise<boolean> = () => {
-  return window.signerTestingHelper!.hasCreatedVault();
+  if (helperPresent()) return window.signerTestingHelper.hasCreatedVault();
+  return Promise.reject(
+    new Error(
+      'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
+    )
+  );
 };
 
 export const resetExistingVault: () => Promise<void> = () => {
-  return window.signerTestingHelper!.resetExistingVault();
+  if (helperPresent()) return window.signerTestingHelper.resetExistingVault();
+  return Promise.reject(
+    new Error(
+      'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
+    )
+  );
 };
 
 export const createNewVault: (password: string) => Promise<void> = (
   password: string
 ) => {
-  return window.signerTestingHelper!.createNewVault(password);
+  if (helperPresent())
+    return window.signerTestingHelper.createNewVault(password);
+  return Promise.reject(
+    new Error(
+      'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
+    )
+  );
 };
 
 export const createTestAccount: (
   name: string,
   privateKey: string
 ) => Promise<void> = (name: string, privateKey: string) => {
-  return window.signerTestingHelper!.createTestAccount(name, privateKey);
+  if (helperPresent())
+    return window.signerTestingHelper.createTestAccount(name, privateKey);
+  return Promise.reject(
+    new Error(
+      'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
+    )
+  );
 };
 
 export const getToSignMessageID: () => Promise<number | null> = () => {
-  return window.signerTestingHelper!.getToSignMessageID();
+  if (helperPresent()) return window.signerTestingHelper.getToSignMessageID();
+  return Promise.reject(
+    new Error(
+      'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
+    )
+  );
 };
 
 export const signTestDeploy: (msgId: number) => Promise<void> = (
   msgId: number
 ) => {
-  return window.signerTestingHelper!.signTestDeploy(msgId);
+  if (helperPresent()) return window.signerTestingHelper.signTestDeploy(msgId);
+  return Promise.reject(
+    new Error(
+      'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
+    )
+  );
 };
