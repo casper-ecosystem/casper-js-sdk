@@ -1,3 +1,5 @@
+import { JsonTypes } from 'typedjson';
+
 interface CasperLabsHelper {
   /**
    * Returns Signer version
@@ -22,10 +24,10 @@ interface CasperLabsHelper {
    * @param targetPublicKeyHex public key in hex format with algorithm prefix. Used to display hex-formatted address on the UI
    */
   sign: (
-    deploy: any,
+    deploy: { deploy: JsonTypes },
     sourcePublicKeyHex: string,
     targetPublicKeyHex: string
-  ) => Promise<JSON>;
+  ) => Promise<{ deploy: JsonTypes }>;
 
   /*
    * Returns base64 encoded public key of user current selected account.
