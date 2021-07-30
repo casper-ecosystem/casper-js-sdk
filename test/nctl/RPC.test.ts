@@ -1,5 +1,9 @@
 import { assert } from 'chai';
-import { CasperServiceByJsonRPC, EventStream, EventName } from '../../src/services';
+import {
+  CasperServiceByJsonRPC,
+  EventStream,
+  EventName
+} from '../../src/services';
 import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
 
 let client = new CasperServiceByJsonRPC('http://127.0.0.1:40101/rpc');
@@ -62,20 +66,31 @@ describe('RPC', () => {
 
   xit('EventHandler', () => {
     const client = new EventStream('http://localhost:60101/events');
-    client.subscribe(EventName.FinalitySignature, (value) => console.log("SUBSCRIBED VALUE", value));
+    client.subscribe(EventName.FinalitySignature, value =>
+      console.log('SUBSCRIBED VALUE', value)
+    );
     client.start();
     setTimeout(() => {
-      console.log("STOP");
-    client.stop();
+      console.log('STOP');
+      client.stop();
     }, 10000);
     setTimeout(() => {
-      console.log("START");
-    client.start();
-    }, 3* 10000);
+      console.log('START');
+      client.start();
+    }, 3 * 10000);
     setTimeout(() => {
-      console.log("STOP");
-    client.stop();
+      console.log('STOP');
+      client.stop();
     }, 6 * 10000);
   });
 
+  xit('get-dictionary-item', async () => {
+    const client = new CasperServiceByJsonRPC('http://127.0.0.1:11101/rpc');
+    const v = await client.getDictionaryItemByURef(
+      '332ec11a30a3d880b62423a6c33016199eb16c3bd7c25f0984ace573dfd6ee72',
+      'hun',
+      'uref-49d9303967823eb3749423c4791c85433b0843f932f0d0d5b1d73f00a644d19e-007'
+    );
+    console.log(v);
+  });
 });

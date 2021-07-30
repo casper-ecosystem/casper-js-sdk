@@ -444,4 +444,37 @@ export class CasperServiceByJsonRPC {
       return storedValue;
     }
   }
+
+  /**
+   * get dictionary item by URef
+   * @param stateRootHash
+   * @param dictionaryItemKey
+   * @param seedUref
+   */
+  public async getDictionaryItemByURef(
+    stateRootHash: string,
+    dictionaryItemKey: string,
+    seedUref: string
+  ): Promise<StoredValue> {
+    const res = await this.client.request({
+      method: 'state_get_dictionary_item',
+      params: {
+        state_root_hash: stateRootHash,
+        dictionary_identifier: {
+          URef: {
+            seed_uref: seedUref,
+            dictionary_item_key: dictionaryItemKey
+          }
+        }
+      }
+    });
+    if (res.error) {
+      return res;
+    } else {
+      const storedValueJson = res.stored_value;
+      const serializer = new TypedJSON(StoredValue);
+      const storedValue = serializer.parse(storedValueJson)!;
+      return storedValue;
+    }
+  }
 }
