@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
+- `DeployWatcher` added
+
+## 2.3.0
+
+### Added
+
 - `state_get_dictionary_item` with URef support in `getDictionaryItemByURef` implemented
 
 ## 2.2.3

@@ -88,7 +88,6 @@ export class DeployWatcher {
   start() {
     this.es.subscribe(EventName.DeployProcessed, result => {
       const deployHash = result.body.DeployProcessed.deploy_hash;
-      console.log("!!!!", this.watchList);
       const pendingDeploy = this.watchList.find(
         d => d.deployHash === deployHash
       );
