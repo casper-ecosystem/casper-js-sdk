@@ -64,6 +64,47 @@ export class EventStream {
   }
 }
 
+interface DeploySubscription {
+  deployHash: string;
+  eventHandlerFn: EventHandlerFn;
+}
+
+export class DeployWatcher {
+  es: EventStream;
+  watchList: DeploySubscription[] = [];
+
+  constructor(public eventStreamUrl: string) {
+    this.es = new EventStream(eventStreamUrl);
+  }
+
+  subscribe(val: DeploySubscription[]): void {
+    this.watchList = [...this.watchList, ...val];
+  }
+
+  unsubscribe(deployHash: string): void {
+    this.watchList = this.watchList.filter(d => d.deployHash !== deployHash);
+  }
+
+  start() {
+    this.es.subscribe(EventName.DeployProcessed, result => {
+      const deployHash = result.body.DeployProcessed.deploy_hash;
+      console.log("!!!!", this.watchList);
+      const pendingDeploy = this.watchList.find(
+        d => d.deployHash === deployHash
+      );
+      if (pendingDeploy) {
+        pendingDeploy.eventHandlerFn(result);
+        this.unsubscribe(deployHash);
+      }
+    });
+    this.es.start();
+  }
+
+  stop() {
+    this.es.stop();
+  }
+}
+
 export const parseEvent = (eventString: string): any => {
   if (eventString.startsWith('id')) {
     return { id: eventString.substr(3) };
