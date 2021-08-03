@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import {
   CasperServiceByJsonRPC,
   EventStream,
+  DeployWatcher,
   EventName
 } from '../../src/services';
 import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
@@ -64,6 +65,21 @@ describe('RPC', () => {
       });
   });
 
+  xit('DeployWatcher', () => {
+    const client = new DeployWatcher('http://localhost:18101/events/main');
+    client.subscribe([{
+      deployHash: '418bd905f86cad3bc3c46340ddf5119da4c51d2da24cf07cfe7c79a7f14f50aa',
+      eventHandlerFn: value => console.log('SUBSCRIBED VALUE', value)
+    }]);
+    client.start();
+    setTimeout(() => {
+      client.subscribe([{
+        deployHash: '7a28f822a89b7dd65c0d29765e28d949a343d0b2c9cbee02abc89eaba542a7e5',
+        eventHandlerFn: value => console.log('SUBSCRIBED VALUE 2', value)
+      }]);
+    }, 3 * 10000);
+  });
+
   xit('EventHandler', () => {
     const client = new EventStream('http://localhost:60101/events');
     client.subscribe(EventName.FinalitySignature, value =>
@@ -84,12 +100,12 @@ describe('RPC', () => {
     }, 6 * 10000);
   });
 
-  xit('get-dictionary-item', async () => {
+  xit('get-dictionary-item using uref', async () => {
     const client = new CasperServiceByJsonRPC('http://127.0.0.1:11101/rpc');
     const v = await client.getDictionaryItemByURef(
-      '332ec11a30a3d880b62423a6c33016199eb16c3bd7c25f0984ace573dfd6ee72',
-      'hun',
-      'uref-49d9303967823eb3749423c4791c85433b0843f932f0d0d5b1d73f00a644d19e-007'
+      'b002db8e962a6abd8f5db2eafb681dbc420183f65464906876238757d99e47de',
+      '09c308da66ef5306ab1b83dd5b460340f97fd8604f4c526fa2bd2990a531baf9',
+      'uref-a0fbf737e6ce3350d1c4eafb2615917bb736389ac771a176c1ddb47c27649839-007'
     );
     console.log(v);
   });
