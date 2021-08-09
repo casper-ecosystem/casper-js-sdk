@@ -1,72 +1,17 @@
 import { Result, Ok, Err } from 'ts-results';
 import http from 'http';
 
-type EventHandlerFn = (result: any) => void;
-
-export enum EventName {
-  BlockAdded = 'BlockAdded',
-  BlockFinalized = 'BlockFinalized',
-  FinalitySignature = 'FinalitySignature',
-  Fault = 'Fault',
-  DeployProcessed = 'DeployProcessed'
-}
-
-interface EventSubscription {
-  eventName: EventName;
-  eventHandlerFn: EventHandlerFn;
-}
-
-export class EventStream {
-  subscribedTo: EventSubscription[] = [];
-  stream: any;
-
-  constructor(public eventStreamUrl: string) {}
-
-  subscribe(
-    eventName: EventName,
-    eventHandlerFn: EventHandlerFn
-  ): Result<boolean, string> {
-    if (this.subscribedTo.some(e => e.eventName === eventName)) {
-      return Err('Already subscribed to this event');
-    }
-    this.subscribedTo.push({ eventName, eventHandlerFn });
-    return Ok(true);
-  }
-
-  unsubscribe(eventName: EventName): Result<boolean, string> {
-    if (!this.subscribedTo.some(e => e.eventName === eventName)) {
-      return Err('Cannot find provided subscription');
-    }
-    this.subscribedTo = this.subscribedTo.filter(
-      d => d.eventName !== eventName
-    );
-    return Ok(true);
-  }
-
-  start(eventId = 0): void {
-    http.get(`${this.eventStreamUrl}?start_from=${eventId}`, res => {
-      this.stream = res;
-      this.stream.on('data', (buf: Uint8Array) => {
-        const result = parseEvent(Buffer.from(buf).toString());
-        if (result && !result.err) {
-          this.subscribedTo.forEach((sub: EventSubscription) => {
-            if (result.body && result.body.hasOwnProperty(sub.eventName)) {
-              sub.eventHandlerFn(result);
-            }
-          });
-        }
-      });
-    });
-  }
-
-  stop(): void {
-    this.stream.destroy();
-  }
-}
-
 interface DeploySubscription {
   deployHash: string;
   eventHandlerFn: EventHandlerFn;
+}
+
+enum StreamErrors {
+  NotAnEvent,
+  EarlyEndOfStream,
+  MissingDataHeader,
+  MissingDataHeaderAndId,
+  MissingId
 }
 
 export class DeployWatcher {
@@ -104,19 +49,152 @@ export class DeployWatcher {
   }
 }
 
-export const parseEvent = (eventString: string): any => {
-  if (eventString.startsWith('id')) {
-    return { id: eventString.substr(3) };
+type EventHandlerFn = (result: any) => void;
+
+export enum EventName {
+  BlockAdded = 'BlockAdded',
+  BlockFinalized = 'BlockFinalized',
+  FinalitySignature = 'FinalitySignature',
+  Fault = 'Fault',
+  DeployProcessed = 'DeployProcessed'
+}
+
+interface EventSubscription {
+  eventName: EventName;
+  eventHandlerFn: EventHandlerFn;
+}
+
+interface EventParseResult {
+  id: string | null;
+  err: StreamErrors | null;
+  body: any | null;
+}
+
+export class EventStream {
+  subscribedTo: EventSubscription[] = [];
+  pendingDeploysParts: EventParseResult[] = [];
+  pendingDeployString = '';
+  stream: any;
+
+  constructor(public eventStreamUrl: string) {}
+
+  subscribe(
+    eventName: EventName,
+    eventHandlerFn: EventHandlerFn
+  ): Result<boolean, string> {
+    if (this.subscribedTo.some(e => e.eventName === eventName)) {
+      return Err('Already subscribed to this event');
+    }
+    this.subscribedTo.push({ eventName, eventHandlerFn });
+    return Ok(true);
   }
 
+  unsubscribe(eventName: EventName): Result<boolean, string> {
+    if (!this.subscribedTo.some(e => e.eventName === eventName)) {
+      return Err('Cannot find provided subscription');
+    }
+    this.subscribedTo = this.subscribedTo.filter(
+      d => d.eventName !== eventName
+    );
+    return Ok(true);
+  }
+
+  runEventsLoop(result: EventParseResult) {
+    this.subscribedTo.forEach((sub: EventSubscription) => {
+      if (result.body && result.body.hasOwnProperty(sub.eventName)) {
+        sub.eventHandlerFn(result);
+      }
+    });
+  }
+
+  start(eventId = 0): void {
+    http.get(`${this.eventStreamUrl}?start_from=${eventId}`, res => {
+      this.stream = res;
+      this.stream.on('data', (buf: Uint8Array) => {
+        const result = parseEvent(Buffer.from(buf).toString());
+        if (result && !result.err) {
+          // Proper JSON with no errors and ID
+          this.runEventsLoop(result);
+        }
+        if (result.err === StreamErrors.MissingId) {
+          // console.log('SDK:EventStream > StreamErrors.MissingId');
+          // console.log('... result');
+          // console.log(result);
+        }
+        if (result.err === StreamErrors.EarlyEndOfStream) {
+          this.pendingDeployString = result.body;
+          // console.log('SDK:EventStream > StreamErrors.EarlyEndOfStream');
+          // console.log('... this.pendingDeployString');
+          // console.log(this.pendingDeployString);
+        }
+        if (result.err === StreamErrors.MissingDataHeaderAndId) {
+          this.pendingDeployString += result.body;
+          // console.log('SDK:EventStream > StreamErrors.MissingDataHeaderAndId');
+          // console.log('... this.pendingDeployString');
+          // console.log(this.pendingDeployString);
+        }
+        if (result.err === StreamErrors.MissingDataHeader) {
+          this.pendingDeployString += result.body;
+          this.pendingDeployString += `\nid:${result.id}`;
+          // console.log('SDK:EventStream > StreamErrors.MissingDataHeader');
+          // console.log('... this.pendingDeployString');
+          // console.log(this.pendingDeployString);
+
+          const newResult = parseEvent(this.pendingDeployString);
+          if (newResult.err === null) {
+            this.pendingDeployString = '';
+          }
+          this.runEventsLoop(newResult);
+          // console.log('... newResult');
+          // console.log(newResult);
+        }
+      });
+    });
+  }
+
+  stop(): void {
+    this.stream.destroy();
+  }
+}
+
+export const parseEvent = (eventString: string): any => {
   if (eventString.startsWith('data')) {
     const splitted = eventString.split('\n');
+    const id =
+      splitted[1] && splitted[1].startsWith('id:')
+        ? splitted[1].substr(3)
+        : null;
     try {
       const body = JSON.parse(splitted[0].substr(5));
-      const id = splitted[1] ? splitted[1].substr(3) : null;
-      return { id, body };
+      if (id) {
+        // Note: This is case where there is proper object with JSON body and id in one chunk.
+        return { id, body, err: null };
+      } else {
+        // Note: This is case where there is proper object with JSON body but without ID.
+        return { id, body, err: StreamErrors.MissingId };
+      }
     } catch {
-      return { id: null, body: null, err: 'Not a valid JSON' };
+      // Note: This is case where there is invalid JSON because of early end of stream.
+      const body = splitted[0];
+      return { id, body, err: StreamErrors.EarlyEndOfStream };
+    }
+  } else {
+    // Note: This is in case where there data chunk which isn't the first one.
+    const splitted = eventString.split('\n');
+    const body = splitted[0];
+    const id =
+      splitted[1] && splitted[1].startsWith('id:')
+        ? splitted[1].substr(3)
+        : null;
+
+    if (splitted[0] === ':' && splitted[1] === '' && splitted[2] === '') {
+      return { id: null, body: null, err: StreamErrors.NotAnEvent };
+    }
+
+    if (id) {
+      return { id, body, err: StreamErrors.MissingDataHeader };
+    } else {
+      return { id: null, body, err: StreamErrors.MissingDataHeaderAndId };
     }
   }
 };
