@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>EventName | casper-js-sdk</title>
+	<title>EventParseResult | casper-js-sdk</title>
 	<meta name="description" content="Documentation for casper-js-sdk">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -59,82 +59,68 @@
 					<a href="../modules/_services_eventstream_.html">&quot;services/EventStream&quot;</a>
 				</li>
 				<li>
-					<a href="_services_eventstream_.eventname.html">EventName</a>
+					<a href="_services_eventstream_.eventparseresult.html">EventParseResult</a>
 				</li>
 			</ul>
-			<h1>Enumeration EventName</h1>
+			<h1>Interface EventParseResult</h1>
 		</div>
 	</div>
 </header>
 <div class="container container-main">
 	<div class="row">
 		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<span class="target">EventParseResult</span>
+					</li>
+				</ul>
+			</section>
 			<section class="tsd-panel-group tsd-index-group">
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section ">
-							<h3>Enumeration members</h3>
+						<section class="tsd-index-section tsd-is-not-exported">
+							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_services_eventstream_.eventname.html#blockadded" class="tsd-kind-icon">Block<wbr>Added</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_services_eventstream_.eventname.html#blockfinalized" class="tsd-kind-icon">Block<wbr>Finalized</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_services_eventstream_.eventname.html#deployprocessed" class="tsd-kind-icon">Deploy<wbr>Processed</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_services_eventstream_.eventname.html#fault" class="tsd-kind-icon">Fault</a></li>
-								<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="_services_eventstream_.eventname.html#finalitysignature" class="tsd-kind-icon">Finality<wbr>Signature</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_services_eventstream_.eventparseresult.html#body" class="tsd-kind-icon">body</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_services_eventstream_.eventparseresult.html#err" class="tsd-kind-icon">err</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_services_eventstream_.eventparseresult.html#id" class="tsd-kind-icon">id</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group ">
-				<h2>Enumeration members</h2>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="blockadded" class="tsd-anchor"></a>
-					<h3>Block<wbr>Added</h3>
-					<div class="tsd-signature tsd-kind-icon">Block<wbr>Added<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;BlockAdded&quot;</span></div>
+			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+					<a name="body" class="tsd-anchor"></a>
+					<h3>body</h3>
+					<div class="tsd-signature tsd-kind-icon">body<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/01c4433/src/services/EventStream.ts#L55">src/services/EventStream.ts:55</a></li>
+							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/01c4433/src/services/EventStream.ts#L70">src/services/EventStream.ts:70</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="blockfinalized" class="tsd-anchor"></a>
-					<h3>Block<wbr>Finalized</h3>
-					<div class="tsd-signature tsd-kind-icon">Block<wbr>Finalized<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;BlockFinalized&quot;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+					<a name="err" class="tsd-anchor"></a>
+					<h3>err</h3>
+					<div class="tsd-signature tsd-kind-icon">err<span class="tsd-signature-symbol">:</span> <a href="../enums/_services_eventstream_.streamerrors.html" class="tsd-signature-type">StreamErrors</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/01c4433/src/services/EventStream.ts#L56">src/services/EventStream.ts:56</a></li>
+							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/01c4433/src/services/EventStream.ts#L69">src/services/EventStream.ts:69</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="deployprocessed" class="tsd-anchor"></a>
-					<h3>Deploy<wbr>Processed</h3>
-					<div class="tsd-signature tsd-kind-icon">Deploy<wbr>Processed<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;DeployProcessed&quot;</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+					<a name="id" class="tsd-anchor"></a>
+					<h3>id</h3>
+					<div class="tsd-signature tsd-kind-icon">id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">null</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/01c4433/src/services/EventStream.ts#L59">src/services/EventStream.ts:59</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="fault" class="tsd-anchor"></a>
-					<h3>Fault</h3>
-					<div class="tsd-signature tsd-kind-icon">Fault<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;Fault&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/01c4433/src/services/EventStream.ts#L58">src/services/EventStream.ts:58</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum">
-					<a name="finalitysignature" class="tsd-anchor"></a>
-					<h3>Finality<wbr>Signature</h3>
-					<div class="tsd-signature tsd-kind-icon">Finality<wbr>Signature<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol"> = &quot;FinalitySignature&quot;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/01c4433/src/services/EventStream.ts#L57">src/services/EventStream.ts:57</a></li>
+							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/01c4433/src/services/EventStream.ts#L68">src/services/EventStream.ts:68</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -153,32 +139,11 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-				</ul>
-				<ul class="current">
-					<li class="current tsd-kind-enum tsd-parent-kind-module">
-						<a href="_services_eventstream_.eventname.html" class="tsd-kind-icon">Event<wbr>Name</a>
-						<ul>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_services_eventstream_.eventname.html#blockadded" class="tsd-kind-icon">Block<wbr>Added</a>
-							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_services_eventstream_.eventname.html#blockfinalized" class="tsd-kind-icon">Block<wbr>Finalized</a>
-							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_services_eventstream_.eventname.html#deployprocessed" class="tsd-kind-icon">Deploy<wbr>Processed</a>
-							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_services_eventstream_.eventname.html#fault" class="tsd-kind-icon">Fault</a>
-							</li>
-							<li class=" tsd-kind-enum-member tsd-parent-kind-enum">
-								<a href="_services_eventstream_.eventname.html#finalitysignature" class="tsd-kind-icon">Finality<wbr>Signature</a>
-							</li>
-						</ul>
+					<li class=" tsd-kind-enum tsd-parent-kind-module">
+						<a href="../enums/_services_eventstream_.eventname.html" class="tsd-kind-icon">Event<wbr>Name</a>
 					</li>
-				</ul>
-				<ul class="after-current">
 					<li class=" tsd-kind-enum tsd-parent-kind-module tsd-is-not-exported">
-						<a href="_services_eventstream_.streamerrors.html" class="tsd-kind-icon">Stream<wbr>Errors</a>
+						<a href="../enums/_services_eventstream_.streamerrors.html" class="tsd-kind-icon">Stream<wbr>Errors</a>
 					</li>
 					<li class=" tsd-kind-class tsd-parent-kind-module">
 						<a href="../classes/_services_eventstream_.deploywatcher.html" class="tsd-kind-icon">Deploy<wbr>Watcher</a>
@@ -187,13 +152,28 @@
 						<a href="../classes/_services_eventstream_.eventstream.html" class="tsd-kind-icon">Event<wbr>Stream</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../interfaces/_services_eventstream_.deploysubscription.html" class="tsd-kind-icon">Deploy<wbr>Subscription</a>
+						<a href="_services_eventstream_.deploysubscription.html" class="tsd-kind-icon">Deploy<wbr>Subscription</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../interfaces/_services_eventstream_.eventparseresult.html" class="tsd-kind-icon">Event<wbr>Parse<wbr>Result</a>
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_services_eventstream_.eventparseresult.html" class="tsd-kind-icon">Event<wbr>Parse<wbr>Result</a>
+						<ul>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+								<a href="_services_eventstream_.eventparseresult.html#body" class="tsd-kind-icon">body</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+								<a href="_services_eventstream_.eventparseresult.html#err" class="tsd-kind-icon">err</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
+								<a href="_services_eventstream_.eventparseresult.html#id" class="tsd-kind-icon">id</a>
+							</li>
+						</ul>
 					</li>
+				</ul>
+				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
-						<a href="../interfaces/_services_eventstream_.eventsubscription.html" class="tsd-kind-icon">Event<wbr>Subscription</a>
+						<a href="_services_eventstream_.eventsubscription.html" class="tsd-kind-icon">Event<wbr>Subscription</a>
 					</li>
 					<li class=" tsd-kind-type-alias tsd-parent-kind-module tsd-is-not-exported">
 						<a href="../modules/_services_eventstream_.html#eventhandlerfn" class="tsd-kind-icon">Event<wbr>Handler<wbr>Fn</a>
@@ -221,6 +201,7 @@
 			<ul class="tsd-legend">
 				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
 				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
 			</ul>
 			<ul class="tsd-legend">
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
