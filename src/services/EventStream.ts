@@ -113,40 +113,23 @@ export class EventStream {
       this.stream.on('data', (buf: Uint8Array) => {
         const result = parseEvent(Buffer.from(buf).toString());
         if (result && !result.err) {
-          // Proper JSON with no errors and ID
           this.runEventsLoop(result);
-        }
-        if (result.err === StreamErrors.MissingId) {
-          // console.log('SDK:EventStream > StreamErrors.MissingId');
-          // console.log('... result');
-          // console.log(result);
         }
         if (result.err === StreamErrors.EarlyEndOfStream) {
           this.pendingDeployString = result.body;
-          // console.log('SDK:EventStream > StreamErrors.EarlyEndOfStream');
-          // console.log('... this.pendingDeployString');
-          // console.log(this.pendingDeployString);
         }
         if (result.err === StreamErrors.MissingDataHeaderAndId) {
           this.pendingDeployString += result.body;
-          // console.log('SDK:EventStream > StreamErrors.MissingDataHeaderAndId');
-          // console.log('... this.pendingDeployString');
-          // console.log(this.pendingDeployString);
         }
         if (result.err === StreamErrors.MissingDataHeader) {
           this.pendingDeployString += result.body;
           this.pendingDeployString += `\nid:${result.id}`;
-          // console.log('SDK:EventStream > StreamErrors.MissingDataHeader');
-          // console.log('... this.pendingDeployString');
-          // console.log(this.pendingDeployString);
 
           const newResult = parseEvent(this.pendingDeployString);
           if (newResult.err === null) {
             this.pendingDeployString = '';
           }
           this.runEventsLoop(newResult);
-          // console.log('... newResult');
-          // console.log(newResult);
         }
       });
     });
