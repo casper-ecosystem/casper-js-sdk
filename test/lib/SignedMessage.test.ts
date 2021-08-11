@@ -26,6 +26,6 @@ describe('SignedMessage', () => {
     const invalid = verifyMessageSignature(signKeyPair.publicKey, wrongMessage, signature);
 
     expect(valid).to.be.eq(true);
-    expect(invalid).to.be.eq(true);
+    expect(invalid).to.be.eq(false);
   });
 });
