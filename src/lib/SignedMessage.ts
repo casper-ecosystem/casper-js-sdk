@@ -43,5 +43,5 @@ export const verifyMessageSignature = (
     );
   }
 
-  throw new Error('Unsupported PublicKey.');
+  throw new Error('Unsupported algorithm.');
 };
