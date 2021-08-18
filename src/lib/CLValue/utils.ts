@@ -157,7 +157,7 @@ export const matchTypeToCLType = (type: any): CLType => {
 export const matchByteParserByCLType = (
   val: CLType
 ): Result<CLValueBytesParsers, string> => {
-  if (val instanceof CLBoolType) {
+  if (val.tag === BOOL_ID) {
     return Ok(new CLBoolBytesParser());
   }
   if (val instanceof CLI32Type) {
