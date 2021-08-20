@@ -1,5 +1,5 @@
 /**
- * Provide methods to communicate with [CasperLabs Signer Extension](https://github.com/CasperLabs/signer).
+ * Provide methods to communicate with [CasperLabs Signer Extension](https://github.com/casper-ecosystem/signer).
  * Works only on browser.
  *
  * @packageDocumentation
@@ -115,6 +115,25 @@ export const sign: (
       deploy,
       sourcePublicKey,
       targetPublicKey
+    );
+  return Promise.reject(
+    new Error(
+      'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
+    )
+  );
+};
+
+export const signMessage: (
+  messageWithHeaders: string,
+  signingPublicKey: string
+) => Promise<Uint8Array> = (
+  messageWithHeaders: string,
+  signingPublicKey: string
+) => {
+  if (helperPresent())
+    return window.casperlabsHelper.signMessage(
+      messageWithHeaders,
+      signingPublicKey
     );
   return Promise.reject(
     new Error(
