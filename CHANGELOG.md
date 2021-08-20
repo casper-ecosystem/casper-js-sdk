@@ -4,6 +4,37 @@ All notable changes to casper-js-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.5.0
+
+### Added
+
+- `signMessage` - added method to sign arbitrary string message
+- `verifyMessageSignature` - added method to verify signature of arbitrary string message
+
+## 2.4.1
+
+### Fixed
+
+- `EventStream` - fixed problems with multiple data chunks parsing
+
+## 2.4.0
+
+### Added
+
+- `DeployWatcher` added
+
+## 2.3.0
+
+### Added
+
+- `state_get_dictionary_item` with URef support in `getDictionaryItemByURef` implemented
+
+## 2.2.3
+
+### Fixed
+
+- `StoredValue` parsing access param hotfixed
+
 ## 2.2.2
 
 ### Fixed
