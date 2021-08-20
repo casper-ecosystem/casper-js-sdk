@@ -6,6 +6,16 @@ import { CLPublicKey } from './CLValue/';
 import { AsymmetricKey } from './Keys';
 
 /**
+ * Method for formatting messages with Casper header.
+ * @param message The string to be formatted.
+ * @returns The bytes of the formatted message
+ */
+export const formatMessageWithHeaders = (message: string): Uint8Array => {
+  // Avoiding usage of Text Encoder lib to support legacy node versions.
+  return Uint8Array.from(Buffer.from(`Casper Message:\n${message}`));
+};
+
+/**
  * Method for signing string message.
  * @param key AsymmetricKey used to sign the message
  * @param message Message that will be signed
@@ -15,8 +25,7 @@ export const signMessage = (
   key: AsymmetricKey,
   message: string
 ): Uint8Array => {
-  const messageWithHeader = Buffer.from(`Casper Message:\n${message}`);
-  return key.sign(messageWithHeader);
+  return key.sign(formatMessageWithHeaders(message));
 };
 
 /**
@@ -31,14 +40,14 @@ export const verifyMessageSignature = (
   message: string,
   signature: Uint8Array
 ): boolean => {
-  const messageWithHeader = Buffer.from(`Casper Message:\n${message}`);
+  const messageWithHeader = formatMessageWithHeaders(message);
   if (key.isEd25519()) {
     return nacl.sign_detached_verify(messageWithHeader, signature, key.value());
   }
   if (key.isSecp256K1()) {
     return secp256k1.ecdsaVerify(
       signature,
-      sha256(messageWithHeader),
+      sha256(Buffer.from(messageWithHeader)),
       key.value()
     );
   }
