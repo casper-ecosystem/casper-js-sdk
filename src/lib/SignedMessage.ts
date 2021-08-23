@@ -11,7 +11,7 @@ import { AsymmetricKey } from './Keys';
  * @returns The bytes of the formatted message
  */
 export const formatMessageWithHeaders = (message: string): Uint8Array => {
-  // Avoiding usage of Text Encoder lib to support legacy node versions.
+  // Avoiding usage of Text Encoder lib to support legacy nodejs versions.
   return Uint8Array.from(Buffer.from(`Casper Message:\n${message}`));
 };
 
@@ -21,11 +21,24 @@ export const formatMessageWithHeaders = (message: string): Uint8Array => {
  * @param message Message that will be signed
  * @return Uint8Array Signature in byte format
  */
-export const signMessage = (
+export const signRawMessage = (
   key: AsymmetricKey,
   message: string
 ): Uint8Array => {
   return key.sign(formatMessageWithHeaders(message));
+};
+
+/**
+ * Method for signing formatted message in bytes format.
+ * @param key AsymmetricKey used to sign the message
+ * @param formattedMessageBytes Bytes of the formatted message. (Strings can be formatted using the `formatMessageWithHeaders()` method)
+ * @returns Uint8Array Signature in byte format
+ */
+export const signFormattedMessage = (
+  key: AsymmetricKey,
+  formattedMessageBytes: Uint8Array
+): Uint8Array => {
+  return key.sign(formattedMessageBytes);
 };
 
 /**
