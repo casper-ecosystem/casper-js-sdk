@@ -123,31 +123,12 @@ export const sign: (
   );
 };
 
-export const signRawMessage: (
-  rawMessage: string,
+export const signMessage: (
+  message: string,
   signingPublicKey: string
-) => Promise<Uint8Array> = (rawMessage: string, signingPublicKey: string) => {
+) => Promise<string> = (message: string, signingPublicKey: string) => {
   if (helperPresent())
-    return window.casperlabsHelper.signRawMessage(rawMessage, signingPublicKey);
-  return Promise.reject(
-    new Error(
-      'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
-    )
-  );
-};
-
-export const signFormattedMessage: (
-  formattedMessageBytes: Uint8Array,
-  signingPublicKey: string
-) => Promise<Uint8Array> = (
-  formattedMessageBytes: Uint8Array,
-  signingPublicKey: string
-) => {
-  if (helperPresent())
-    return window.casperlabsHelper.signFormattedMessage(
-      formattedMessageBytes,
-      signingPublicKey
-    );
+    return window.casperlabsHelper.signMessage(message, signingPublicKey);
   return Promise.reject(
     new Error(
       'Content script not found - make sure you have the Signer installed and refresh the page before trying again.'
