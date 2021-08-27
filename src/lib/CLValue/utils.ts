@@ -36,7 +36,6 @@ import {
   CLOptionBytesParser,
   CLResultType,
   CLResultBytesParser,
-  CLTupleType,
   CLTuple1Type,
   CLTuple2Type,
   CLTuple3Type,
@@ -160,64 +159,65 @@ export const matchByteParserByCLType = (
   if (val.tag === CLTypeTag.Bool) {
     return Ok(new CLBoolBytesParser());
   }
-  if (val instanceof CLI32Type) {
+  if (val.tag === CLTypeTag.I32) {
     return Ok(new CLI32BytesParser());
   }
-  if (val instanceof CLI64Type) {
+  if (val.tag === CLTypeTag.I64) {
     return Ok(new CLI64BytesParser());
   }
-  if (val instanceof CLU8Type) {
+  if (val.tag === CLTypeTag.U8) {
     return Ok(new CLU8BytesParser());
   }
-  if (val instanceof CLU32Type) {
+  if (val.tag === CLTypeTag.U32) {
     return Ok(new CLU32BytesParser());
   }
-  if (val instanceof CLU64Type) {
+  if (val.tag === CLTypeTag.U64) {
     return Ok(new CLU64BytesParser());
   }
-  if (val instanceof CLU128Type) {
+  if (val.tag === CLTypeTag.U128) {
     return Ok(new CLU128BytesParser());
   }
-  if (val instanceof CLU256Type) {
+  if (val.tag === CLTypeTag.U256) {
     return Ok(new CLU256BytesParser());
   }
-  if (val instanceof CLU512Type) {
+  if (val.tag === CLTypeTag.U512) {
     return Ok(new CLU512BytesParser());
   }
-  if (val instanceof CLByteArrayType) {
+  if (val.tag === CLTypeTag.ByteArray) {
     return Ok(new CLByteArrayBytesParser());
   }
-  if (val instanceof CLByteArrayType) {
-    return Ok(new CLByteArrayBytesParser());
-  }
-  if (val instanceof CLURefType) {
+  if (val.tag === CLTypeTag.URef) {
     return Ok(new CLURefBytesParser());
   }
-  if (val instanceof CLKeyType) {
+  if (val.tag === CLTypeTag.Key) {
     return Ok(new CLKeyBytesParser());
   }
-  if (val instanceof CLPublicKeyType) {
+  if (val.tag === CLTypeTag.PublicKey) {
     return Ok(new CLPublicKeyBytesParser());
   }
-  if (val instanceof CLListType) {
+  if (val.tag === CLTypeTag.List) {
     return Ok(new CLListBytesParser());
   }
-  if (val instanceof CLMapType) {
+  if (val.tag === CLTypeTag.Map) {
     return Ok(new CLMapBytesParser());
   }
-  if (val instanceof CLTupleType) {
+  if (
+    val.tag === CLTypeTag.Tuple1 ||
+    val.tag === CLTypeTag.Tuple2 ||
+    val.tag === CLTypeTag.Tuple3
+  ) {
     return Ok(new CLTupleBytesParser());
   }
-  if (val instanceof CLOptionType) {
+  if (val.tag === CLTypeTag.Option) {
     return Ok(new CLOptionBytesParser());
   }
-  if (val instanceof CLResultType) {
+  if (val.tag === CLTypeTag.Result) {
     return Ok(new CLResultBytesParser());
   }
-  if (val instanceof CLStringType) {
+  if (val.tag === CLTypeTag.String) {
     return Ok(new CLStringBytesParser());
   }
-  if (val instanceof CLUnitType) {
+  if (val.tag === CLTypeTag.Unit) {
     return Ok(new CLUnitBytesParser());
   }
   return Err('Unknown type');
