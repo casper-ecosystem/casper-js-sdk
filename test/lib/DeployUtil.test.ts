@@ -93,7 +93,7 @@ describe('DeployUtil', () => {
     );
     assert.deepEqual(
       deploy.session.getArgByName('target')!.value(),
-      recipientKey.accountHash()
+      recipientKey.accountHex()
     );
     assert.deepEqual(
       deploy.session
@@ -167,7 +167,7 @@ describe('DeployUtil', () => {
     );
     assert.deepEqual(
       deploy.session.getArgByName('target')!.value(),
-      recipientKey.accountHash()
+      recipientKey.accountHex()
     );
     assert.deepEqual(
       deploy.session
@@ -347,7 +347,7 @@ describe('DeployUtil', () => {
     );
     assert.deepEqual(
       deploy.session.getArgByName('target')!.value(),
-      recipientKey.accountHash()
+      recipientKey.accountHex()
     );
     assert.deepEqual(
       deploy.session
