@@ -86,8 +86,8 @@ describe('DeployUtil', () => {
       transferAmount
     );
     assert.deepEqual(
-      deploy.session.getArgByName('target')!.asBytesArray(),
-      recipientKey.accountHash()
+      deploy.session.getArgByName('target')!.asString(),
+      recipientKey.accountHex()
     );
     assert.deepEqual(
       deploy.session
@@ -151,8 +151,8 @@ describe('DeployUtil', () => {
       transferAmount
     );
     assert.deepEqual(
-      deploy.session.getArgByName('target')!.asBytesArray(),
-      recipientKey.accountHash()
+      deploy.session.getArgByName('target')!.asString(),
+      recipientKey.accountHex()
     );
     assert.deepEqual(
       deploy.session
@@ -308,8 +308,8 @@ describe('DeployUtil', () => {
       transferAmount
     );
     assert.deepEqual(
-      deploy.session.getArgByName('target')!.asBytesArray(),
-      recipientKey.accountHash()
+      deploy.session.getArgByName('target')!.asString(),
+      recipientKey.accountHex()
     );
     assert.deepEqual(
       deploy.session
