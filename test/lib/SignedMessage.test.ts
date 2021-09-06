@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { Ed25519, Secp256K1 } from '../../src/lib/Keys';
-import { formatMessageWithHeaders, signMessage, verifyMessageSignature } from '../../src/index';
+import { formatMessageWithHeaders, signRawMessage, verifyMessageSignature } from '../../src/index';
 
 describe('SignedMessage', () => {
   it('Should generate proper signed message and validate it (Ed25519)', () => {
@@ -8,7 +8,7 @@ describe('SignedMessage', () => {
     const exampleMessage = "Hello World!";
     const wrongMessage = "!Hello World";
 
-    const signature = signMessage(signKeyPair, exampleMessage);
+    const signature = signRawMessage(signKeyPair, exampleMessage);
     const valid = verifyMessageSignature(signKeyPair.publicKey, exampleMessage, signature);
     const invalid = verifyMessageSignature(signKeyPair.publicKey, wrongMessage, signature);
 
@@ -21,7 +21,7 @@ describe('SignedMessage', () => {
     const exampleMessage = "Hello World!";
     const wrongMessage = "!Hello World";
 
-    const signature = signMessage(signKeyPair, exampleMessage);
+    const signature = signRawMessage(signKeyPair, exampleMessage);
     const valid = verifyMessageSignature(signKeyPair.publicKey, exampleMessage, signature);
     const invalid = verifyMessageSignature(signKeyPair.publicKey, wrongMessage, signature);
 
