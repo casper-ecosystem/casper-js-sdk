@@ -73,7 +73,9 @@
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signedmessage_.html#signmessage" class="tsd-kind-icon">sign<wbr>Message</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signedmessage_.html#formatmessagewithheaders" class="tsd-kind-icon">format<wbr>Message<wbr>With<wbr>Headers</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signedmessage_.html#signformattedmessage" class="tsd-kind-icon">sign<wbr>Formatted<wbr>Message</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signedmessage_.html#signrawmessage" class="tsd-kind-icon">sign<wbr>Raw<wbr>Message</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signedmessage_.html#verifymessagesignature" class="tsd-kind-icon">verify<wbr>Message<wbr>Signature</a></li>
 							</ul>
 						</section>
@@ -83,16 +85,92 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Functions</h2>
 				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
-					<a name="signmessage" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagConst">Const</span> sign<wbr>Message</h3>
+					<a name="formatmessagewithheaders" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> format<wbr>Message<wbr>With<wbr>Headers</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">sign<wbr>Message<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><a href="../classes/_lib_keys_.asymmetrickey.html" class="tsd-signature-type">AsymmetricKey</a>, message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span></li>
+						<li class="tsd-signature tsd-kind-icon">format<wbr>Message<wbr>With<wbr>Headers<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6ca3d2b/src/lib/SignedMessage.ts#L14">src/lib/SignedMessage.ts:14</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/SignedMessage.ts#L13">src/lib/SignedMessage.ts:13</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Method for formatting messages with Casper header.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>message: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>The string to be formatted.</p>
+										</div>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Uint8Array</span></h4>
+							<p>The bytes of the formatted message</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="signformattedmessage" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> sign<wbr>Formatted<wbr>Message</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">sign<wbr>Formatted<wbr>Message<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><a href="../classes/_lib_keys_.asymmetrickey.html" class="tsd-signature-type">AsymmetricKey</a>, formattedMessageBytes<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/SignedMessage.ts#L37">src/lib/SignedMessage.ts:37</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Method for signing formatted message in bytes format.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>key: <a href="../classes/_lib_keys_.asymmetrickey.html" class="tsd-signature-type">AsymmetricKey</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>AsymmetricKey used to sign the message</p>
+										</div>
+									</div>
+								</li>
+								<li>
+									<h5>formattedMessageBytes: <span class="tsd-signature-type">Uint8Array</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<div class="lead">
+											<p>Bytes of the formatted message. (Strings can be formatted using the <code>formatMessageWithHeaders()</code> method)</p>
+										</div>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Uint8Array</span></h4>
+							<p>Uint8Array Signature in byte format</p>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="signrawmessage" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> sign<wbr>Raw<wbr>Message</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">sign<wbr>Raw<wbr>Message<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><a href="../classes/_lib_keys_.asymmetrickey.html" class="tsd-signature-type">AsymmetricKey</a>, message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/SignedMessage.ts#L24">src/lib/SignedMessage.ts:24</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -134,7 +212,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6ca3d2b/src/lib/SignedMessage.ts#L29">src/lib/SignedMessage.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/SignedMessage.ts#L51">src/lib/SignedMessage.ts:51</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -190,7 +268,13 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-function tsd-parent-kind-module">
-						<a href="_lib_signedmessage_.html#signmessage" class="tsd-kind-icon">sign<wbr>Message</a>
+						<a href="_lib_signedmessage_.html#formatmessagewithheaders" class="tsd-kind-icon">format<wbr>Message<wbr>With<wbr>Headers</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_lib_signedmessage_.html#signformattedmessage" class="tsd-kind-icon">sign<wbr>Formatted<wbr>Message</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_lib_signedmessage_.html#signrawmessage" class="tsd-kind-icon">sign<wbr>Raw<wbr>Message</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="_lib_signedmessage_.html#verifymessagesignature" class="tsd-kind-icon">verify<wbr>Message<wbr>Signature</a>
@@ -205,6 +289,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
 				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>

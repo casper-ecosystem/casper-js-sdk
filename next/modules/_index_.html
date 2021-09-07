@@ -172,6 +172,7 @@
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#eravalidators" class="tsd-kind-icon">Era<wbr>Validators</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#eventname" class="tsd-kind-icon">Event<wbr>Name</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#eventstream" class="tsd-kind-icon">Event<wbr>Stream</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#executionresult" class="tsd-kind-icon">Execution<wbr>Result</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#getblockresult" class="tsd-kind-icon">Get<wbr>Block<wbr>Result</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#getdeployresult" class="tsd-kind-icon">Get<wbr>Deploy<wbr>Result</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#getpeersresult" class="tsd-kind-icon">Get<wbr>Peers<wbr>Result</a></li>
@@ -221,13 +222,15 @@
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#decodebase64" class="tsd-kind-icon">decode<wbr>Base64</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#encodebase16" class="tsd-kind-icon">encode<wbr>Base16</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#encodebase64" class="tsd-kind-icon">encode<wbr>Base64</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#formatmessagewithheaders" class="tsd-kind-icon">format<wbr>Message<wbr>With<wbr>Headers</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#matchbyteparserbycltype" class="tsd-kind-icon">match<wbr>Byte<wbr>Parser<wbr>ByCLType</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#matchbytestocltype" class="tsd-kind-icon">match<wbr>Bytes<wbr>ToCLType</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#matchtypetocltype" class="tsd-kind-icon">match<wbr>Type<wbr>ToCLType</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#padnum" class="tsd-kind-icon">pad<wbr>Num</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#parseevent" class="tsd-kind-icon">parse<wbr>Event</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#resulthelper" class="tsd-kind-icon">result<wbr>Helper</a></li>
-								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#signmessage" class="tsd-kind-icon">sign<wbr>Message</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#signformattedmessage" class="tsd-kind-icon">sign<wbr>Formatted<wbr>Message</a></li>
+								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#signrawmessage" class="tsd-kind-icon">sign<wbr>Raw<wbr>Message</a></li>
 								<li class="tsd-kind-reference tsd-parent-kind-module"><a href="_index_.html#verifymessagesignature" class="tsd-kind-icon">verify<wbr>Message<wbr>Signature</a></li>
 							</ul>
 						</section>
@@ -732,6 +735,11 @@
 					Re-exports <a href="../classes/_services_eventstream_.eventstream.html">EventStream</a>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="executionresult" class="tsd-anchor"></a>
+					<h3>Execution<wbr>Result</h3>
+					Re-exports <a href="../interfaces/_services_casperservicebyjsonrpc_.executionresult.html">ExecutionResult</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
 					<a name="getblockresult" class="tsd-anchor"></a>
 					<h3>Get<wbr>Block<wbr>Result</h3>
 					Re-exports <a href="../interfaces/_services_casperservicebyjsonrpc_.getblockresult.html">GetBlockResult</a>
@@ -977,6 +985,11 @@
 					Re-exports encodeBase64
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="formatmessagewithheaders" class="tsd-anchor"></a>
+					<h3>format<wbr>Message<wbr>With<wbr>Headers</h3>
+					Re-exports <a href="_lib_signedmessage_.html#formatmessagewithheaders">formatMessageWithHeaders</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
 					<a name="matchbyteparserbycltype" class="tsd-anchor"></a>
 					<h3>match<wbr>Byte<wbr>Parser<wbr>ByCLType</h3>
 					Re-exports <a href="_lib_clvalue_utils_.html#matchbyteparserbycltype">matchByteParserByCLType</a>
@@ -1007,9 +1020,14 @@
 					Re-exports <a href="_lib_clvalue_abstract_.html#resulthelper">resultHelper</a>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
-					<a name="signmessage" class="tsd-anchor"></a>
-					<h3>sign<wbr>Message</h3>
-					Re-exports <a href="_lib_signedmessage_.html#signmessage">signMessage</a>
+					<a name="signformattedmessage" class="tsd-anchor"></a>
+					<h3>sign<wbr>Formatted<wbr>Message</h3>
+					Re-exports <a href="_lib_signedmessage_.html#signformattedmessage">signFormattedMessage</a>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
+					<a name="signrawmessage" class="tsd-anchor"></a>
+					<h3>sign<wbr>Raw<wbr>Message</h3>
+					Re-exports <a href="_lib_signedmessage_.html#signrawmessage">signRawMessage</a>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-reference tsd-parent-kind-module">
 					<a name="verifymessagesignature" class="tsd-anchor"></a>
@@ -1329,6 +1347,9 @@
 						<a href="_index_.html#eventstream" class="tsd-kind-icon">Event<wbr>Stream</a>
 					</li>
 					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="_index_.html#executionresult" class="tsd-kind-icon">Execution<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
 						<a href="_index_.html#getblockresult" class="tsd-kind-icon">Get<wbr>Block<wbr>Result</a>
 					</li>
 					<li class=" tsd-kind-reference tsd-parent-kind-module">
@@ -1476,6 +1497,9 @@
 						<a href="_index_.html#encodebase64" class="tsd-kind-icon">encode<wbr>Base64</a>
 					</li>
 					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="_index_.html#formatmessagewithheaders" class="tsd-kind-icon">format<wbr>Message<wbr>With<wbr>Headers</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
 						<a href="_index_.html#matchbyteparserbycltype" class="tsd-kind-icon">match<wbr>Byte<wbr>Parser<wbr>ByCLType</a>
 					</li>
 					<li class=" tsd-kind-reference tsd-parent-kind-module">
@@ -1494,7 +1518,10 @@
 						<a href="_index_.html#resulthelper" class="tsd-kind-icon">result<wbr>Helper</a>
 					</li>
 					<li class=" tsd-kind-reference tsd-parent-kind-module">
-						<a href="_index_.html#signmessage" class="tsd-kind-icon">sign<wbr>Message</a>
+						<a href="_index_.html#signformattedmessage" class="tsd-kind-icon">sign<wbr>Formatted<wbr>Message</a>
+					</li>
+					<li class=" tsd-kind-reference tsd-parent-kind-module">
+						<a href="_index_.html#signrawmessage" class="tsd-kind-icon">sign<wbr>Raw<wbr>Message</a>
 					</li>
 					<li class=" tsd-kind-reference tsd-parent-kind-module">
 						<a href="_index_.html#verifymessagesignature" class="tsd-kind-icon">verify<wbr>Message<wbr>Signature</a>
@@ -1509,6 +1536,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
 				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>

@@ -69,7 +69,7 @@
 			<section class="tsd-panel tsd-comment">
 				<div class="tsd-comment tsd-typography">
 					<div class="lead">
-						<p>Provide methods to communicate with <a href="https://github.com/CasperLabs/signer">CasperLabs Signer Extension</a>.
+						<p>Provide methods to communicate with <a href="https://github.com/casper-ecosystem/signer">CasperLabs Signer Extension</a>.
 						Works only on browser.</p>
 					</div>
 				</div>
@@ -78,6 +78,12 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
+						<section class="tsd-index-section tsd-is-not-exported">
+							<h3>Namespaces</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-namespace tsd-parent-kind-module tsd-is-not-exported"><a href="_lib_signer_.__global.html" class="tsd-kind-icon">__global</a></li>
+							</ul>
+						</section>
 						<section class="tsd-index-section ">
 							<h3>Functions</h3>
 							<ul class="tsd-index-list">
@@ -91,10 +97,12 @@
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signer_.html#gettosignmessageid" class="tsd-kind-icon">get<wbr>ToSign<wbr>MessageID</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signer_.html#getversion" class="tsd-kind-icon">get<wbr>Version</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signer_.html#hascreatedvault" class="tsd-kind-icon">has<wbr>Created<wbr>Vault</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module tsd-is-not-exported"><a href="_lib_signer_.html#helperpresent" class="tsd-kind-icon">helper<wbr>Present</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signer_.html#isconnected" class="tsd-kind-icon">is<wbr>Connected</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signer_.html#resetexistingvault" class="tsd-kind-icon">reset<wbr>Existing<wbr>Vault</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signer_.html#sendconnectionrequest" class="tsd-kind-icon">send<wbr>Connection<wbr>Request</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signer_.html#sign" class="tsd-kind-icon">sign</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signer_.html#signmessage" class="tsd-kind-icon">sign<wbr>Message</a></li>
 								<li class="tsd-kind-function tsd-parent-kind-module"><a href="_lib_signer_.html#signtestdeploy" class="tsd-kind-icon">sign<wbr>Test<wbr>Deploy</a></li>
 							</ul>
 						</section>
@@ -113,7 +121,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6ca3d2b/src/lib/Signer.ts#L101">src/lib/Signer.ts:101</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/Signer.ts#L187">src/lib/Signer.ts:187</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -136,7 +144,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6ca3d2b/src/lib/Signer.ts#L110">src/lib/Signer.ts:110</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/Signer.ts#L202">src/lib/Signer.ts:202</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -156,16 +164,16 @@
 					<a name="disconnectfromsite" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> disconnect<wbr>From<wbr>Site</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">disconnect<wbr>From<wbr>Site<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">disconnect<wbr>From<wbr>Site<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6ca3d2b/src/lib/Signer.ts#L81">src/lib/Signer.ts:81</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/Signer.ts#L142">src/lib/Signer.ts:142</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -173,16 +181,16 @@
 					<a name="forceconnection" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> force<wbr>Connection</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">force<wbr>Connection<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">force<wbr>Connection<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6ca3d2b/src/lib/Signer.ts#L85">src/lib/Signer.ts:85</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/Signer.ts#L151">src/lib/Signer.ts:151</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -190,16 +198,16 @@
 					<a name="forcedisconnect" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> force<wbr>Disconnect</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">force<wbr>Disconnect<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">force<wbr>Disconnect<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6ca3d2b/src/lib/Signer.ts#L89">src/lib/Signer.ts:89</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/Signer.ts#L160">src/lib/Signer.ts:160</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">never</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -213,7 +221,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6ca3d2b/src/lib/Signer.ts#L47">src/lib/Signer.ts:47</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/Signer.ts#L84">src/lib/Signer.ts:84</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -236,12 +244,13 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6ca3d2b/src/lib/Signer.ts#L38">src/lib/Signer.ts:38</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/Signer.ts#L71">src/lib/Signer.ts:71</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Return base64 encoded public key of user current selected account.</p>
+									<p><strong>Deprecated</strong> in favour of <code>getActivePublicKey()</code>.
+									Returns <code>base64</code> encoded public key of currently selected account.</p>
 								</div>
 								<dl class="tsd-comment-tags">
 									<dt>throws</dt>
@@ -263,7 +272,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6ca3d2b/src/lib/Signer.ts#L114">src/lib/Signer.ts:114</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/Signer.ts#L212">src/lib/Signer.ts:212</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -280,7 +289,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6ca3d2b/src/lib/Signer.ts#L11">src/lib/Signer.ts:11</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/Signer.ts#L28">src/lib/Signer.ts:28</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -302,10 +311,27 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6ca3d2b/src/lib/Signer.ts#L93">src/lib/Signer.ts:93</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/Signer.ts#L169">src/lib/Signer.ts:169</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+					<a name="helperpresent" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> helper<wbr>Present</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<li class="tsd-signature tsd-kind-icon">helper<wbr>Present<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/Signer.ts#L21">src/lib/Signer.ts:21</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -319,7 +345,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6ca3d2b/src/lib/Signer.ts#L22">src/lib/Signer.ts:22</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/Signer.ts#L46">src/lib/Signer.ts:46</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -341,7 +367,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6ca3d2b/src/lib/Signer.ts#L97">src/lib/Signer.ts:97</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/Signer.ts#L178">src/lib/Signer.ts:178</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -358,7 +384,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6ca3d2b/src/lib/Signer.ts#L29">src/lib/Signer.ts:29</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/Signer.ts#L58">src/lib/Signer.ts:58</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -374,13 +400,13 @@
 					<a name="sign" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagConst">Const</span> sign</h3>
 					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
-						<li class="tsd-signature tsd-kind-icon">sign<span class="tsd-signature-symbol">(</span>deploy<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, sourcePublicKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, targetPublicKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">JSON</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">sign<span class="tsd-signature-symbol">(</span>deploy<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">{ </span>deploy<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JsonTypes</span><span class="tsd-signature-symbol"> }</span>, sourcePublicKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, targetPublicKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>deploy<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JsonTypes</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6ca3d2b/src/lib/Signer.ts#L66">src/lib/Signer.ts:66</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/Signer.ts#L108">src/lib/Signer.ts:108</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -402,12 +428,17 @@
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>deploy: <span class="tsd-signature-type">any</span></h5>
+									<h5>deploy: <span class="tsd-signature-symbol">{ </span>deploy<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JsonTypes</span><span class="tsd-signature-symbol"> }</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<div class="lead">
 											<p>deploy in JSON format</p>
 										</div>
 									</div>
+									<ul class="tsd-parameters">
+										<li class="tsd-parameter">
+											<h5>deploy<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JsonTypes</span></h5>
+										</li>
+									</ul>
 								</li>
 								<li>
 									<h5>sourcePublicKey: <span class="tsd-signature-type">string</span></h5>
@@ -416,7 +447,33 @@
 									<h5>targetPublicKey: <span class="tsd-signature-type">string</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">JSON</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span>deploy<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JsonTypes</span><span class="tsd-signature-symbol"> }</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-module">
+					<a name="signmessage" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> sign<wbr>Message</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-module">
+						<li class="tsd-signature tsd-kind-icon">sign<wbr>Message<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, signingPublicKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/Signer.ts#L129">src/lib/Signer.ts:129</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>message: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>signingPublicKey: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -430,7 +487,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6ca3d2b/src/lib/Signer.ts#L118">src/lib/Signer.ts:118</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/7d33be4/src/lib/Signer.ts#L221">src/lib/Signer.ts:221</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -453,6 +510,11 @@
 					</li>
 					<li class="current tsd-kind-module">
 						<a href="_lib_signer_.html">&quot;lib/<wbr>Signer&quot;</a>
+						<ul>
+							<li class=" tsd-kind-namespace tsd-parent-kind-module tsd-is-not-exported">
+								<a href="_lib_signer_.__global.html">__global</a>
+							</li>
+						</ul>
 					</li>
 				</ul>
 			</nav>
@@ -488,6 +550,9 @@
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="_lib_signer_.html#hascreatedvault" class="tsd-kind-icon">has<wbr>Created<wbr>Vault</a>
 					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module tsd-is-not-exported">
+						<a href="_lib_signer_.html#helperpresent" class="tsd-kind-icon">helper<wbr>Present</a>
+					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="_lib_signer_.html#isconnected" class="tsd-kind-icon">is<wbr>Connected</a>
 					</li>
@@ -499,6 +564,9 @@
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="_lib_signer_.html#sign" class="tsd-kind-icon">sign</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="_lib_signer_.html#signmessage" class="tsd-kind-icon">sign<wbr>Message</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="_lib_signer_.html#signtestdeploy" class="tsd-kind-icon">sign<wbr>Test<wbr>Deploy</a>
@@ -513,6 +581,7 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
 				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
