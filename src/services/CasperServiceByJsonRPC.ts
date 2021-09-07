@@ -37,9 +37,15 @@ export interface GetStateRootHashResult extends RpcResult {
   state_root_hash: string;
 }
 
-interface ExecutionResult {
+interface ExecutionResultBody {
   cost: number;
-  error_message: string | null;
+  error_message?: string | null;
+  transfers: string[];
+}
+
+export interface ExecutionResult {
+  Success?: ExecutionResultBody;
+  Failure?: ExecutionResultBody;
 }
 
 export interface JsonExecutionResult {

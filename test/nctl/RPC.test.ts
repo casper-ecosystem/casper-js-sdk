@@ -7,7 +7,7 @@ import {
 } from '../../src/services';
 import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
 
-let client = new CasperServiceByJsonRPC('http://127.0.0.1:40101/rpc');
+let client = new CasperServiceByJsonRPC('http://3.139.47.90:7777/rpc');
 
 describe('RPC', () => {
   xit('should return correct block by number', async () => {
@@ -98,15 +98,5 @@ describe('RPC', () => {
       console.log('STOP');
       client.stop();
     }, 6 * 10000);
-  });
-
-  xit('get-dictionary-item using uref', async () => {
-    const client = new CasperServiceByJsonRPC('http://127.0.0.1:11101/rpc');
-    const v = await client.getDictionaryItemByURef(
-      'b002db8e962a6abd8f5db2eafb681dbc420183f65464906876238757d99e47de',
-      '09c308da66ef5306ab1b83dd5b460340f97fd8604f4c526fa2bd2990a531baf9',
-      'uref-a0fbf737e6ce3350d1c4eafb2615917bb736389ac771a176c1ddb47c27649839-007'
-    );
-    console.log(v);
   });
 });
