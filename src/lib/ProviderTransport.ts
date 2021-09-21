@@ -85,8 +85,9 @@ class ProviderTransport extends Transport {
     return prom;
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
-  public close(): void {}
+  public close(): void {
+    return;
+  }
 
   private onlyNotifications = (data: JSONRPCRequestData) => {
     if (data instanceof Array) {
