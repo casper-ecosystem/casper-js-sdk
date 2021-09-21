@@ -190,7 +190,7 @@ export interface ValidatorsInfoResult extends RpcResult {
 }
 
 export class CasperServiceByJsonRPC {
-  private client: Client;
+  protected client: Client;
 
   constructor(url: string) {
     const transport = new HTTPTransport(url);

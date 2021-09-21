@@ -12,9 +12,7 @@ import { decodeBase16 } from '../../src';
 let casperClient: CasperClient;
 describe('CasperClient', () => {
   before(() => {
-    casperClient = new CasperClient(
-      'http://192.168.2.166:40101/rpc'
-    );
+    casperClient = new CasperClient('http://192.168.2.166:40101/rpc');
   });
 
   it('should generate new Ed25519 key pair, and compute public key from private key', () => {
