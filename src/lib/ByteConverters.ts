@@ -35,6 +35,10 @@ export const toBytesNumber = (bitSize: number, signed: boolean) => (
   if (valTwos.gte(0)) {
     // for positive number, we had to deal with paddings
     if (bitSize > 64) {
+      // if zero just return zero
+      if (valTwos.eq(0)) {
+        return bytes;
+      }
       // for u128, u256, u512, we have to and append extra byte for length
       return concat([bytes, Uint8Array.from([bytes.length])])
         .slice()
