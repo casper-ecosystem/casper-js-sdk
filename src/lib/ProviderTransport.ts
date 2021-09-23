@@ -26,11 +26,11 @@ export interface JRPCResponse<T> extends JRPCBase {
   error?: any;
 }
 
-export type SendCallBack = (err: any, providerRes: any) => void;
+export type SendCallBack<U> = (err: any, providerRes: U) => void;
 
 export interface SafeEventEmitterProvider {
   sendAsync: <T, U>(req: JRPCRequest<T>) => U | Promise<U>;
-  send: (req: JRPCRequest<string[]>, callback: SendCallBack) => void;
+  send: <T, U>(req: JRPCRequest<T>, callback: SendCallBack<U>) => void;
 }
 
 class ProviderTransport extends Transport {
