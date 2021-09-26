@@ -4,6 +4,12 @@ All notable changes to casper-js-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.5.2
+
+### Fixed
+
+- Problem when serializing U128, U256 ad U512 `toBytes`.
+
 ## 2.5.1
 
 ### Fixed
