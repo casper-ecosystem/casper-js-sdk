@@ -1,10 +1,12 @@
 import { RequestManager, HTTPTransport, Client } from '@open-rpc/client-js';
-import { jsonMember, jsonObject } from 'typedjson';
+import { TypedJSON, jsonMember, jsonObject } from 'typedjson';
 import { DeployUtil, encodeBase16, CLPublicKey } from '..';
 import { deployToJson } from '../lib/DeployUtil';
-import { TypedJSON } from 'typedjson';
 import { StoredValue, Transfers } from '../lib/StoredValue';
 import { BigNumber } from '@ethersproject/bignumber';
+import ProviderTransport, {
+  SafeEventEmitterProvider
+} from './ProviderTransport';
 
 interface RpcResult {
   api_version: string;
@@ -190,10 +192,15 @@ export interface ValidatorsInfoResult extends RpcResult {
 }
 
 export class CasperServiceByJsonRPC {
-  private client: Client;
+  protected client: Client;
 
-  constructor(url: string) {
-    const transport = new HTTPTransport(url);
+  constructor(provider: string | SafeEventEmitterProvider) {
+    let transport: HTTPTransport | ProviderTransport;
+    if (typeof provider === 'string') {
+      transport = new HTTPTransport(provider);
+    } else {
+      transport = new ProviderTransport(provider);
+    }
     const requestManager = new RequestManager([transport]);
     this.client = new Client(requestManager);
   }
