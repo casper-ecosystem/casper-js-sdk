@@ -65,7 +65,7 @@ class ProviderTransport extends Transport {
         JSON.stringify(result)
       );
       if (responseErr) {
-        // requirements are that batch requuests are successfully resolved
+        // requirements are that batch requests are successfully resolved
         // this ensures that individual requests within the batch request are settled
         this.transportRequestManager.settlePendingRequest(batch, responseErr);
         return Promise.reject(responseErr);

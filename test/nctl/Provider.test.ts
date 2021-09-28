@@ -6,10 +6,13 @@ import {
   EventName
 } from '../../src/services';
 import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
+import { MockProvider } from './provider.setup';
 
-let client = new CasperServiceByJsonRPC('http://3.139.47.90:7777/rpc');
+const rpcTarget = 'http://3.139.47.90:7777/rpc';
+const provider = new MockProvider(rpcTarget);
+const client = new CasperServiceByJsonRPC(provider);
 
-describe('RPC', () => {
+describe('Provider', () => {
   xit('should return correct block by number', async () => {
     let check = async (height: number) => {
       let result = await client.getBlockInfoByHeight(height);
