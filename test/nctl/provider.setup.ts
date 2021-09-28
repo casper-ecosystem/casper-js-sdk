@@ -85,26 +85,22 @@ const processDeploy = async (
   client: CasperClient,
   rpcTarget: string
 ) => {
-  try {
-    // we can do any preprocessing or validation on deploy here,
-    // and then finally sign deploy and send it blockchain.
-    const deserializedDeploy = DeployUtil.deployFromJson(req.params as any);
-    if (deserializedDeploy.ok) {
-      const signedDeploy = client.signDeploy(deserializedDeploy.val, keyPair);
-      req.params = DeployUtil.deployToJson(signedDeploy);
-      //   const jrpcResult = await sendRpcRequestToChain(req, rpcTarget);
-      const jrpcResult = { deploy_hash: '0x123', rpcTarget };
-      return {
-        id: req.id,
-        jsonrpc: req.jsonrpc,
-        result: jrpcResult,
-        error: null
-      };
-    }
-    throw new Error('Failed to parsed deploy');
-  } catch (error) {
-    throw error;
+  // we can do any preprocessing or validation on deploy here,
+  // and then finally sign deploy and send it blockchain.
+  const deserializedDeploy = DeployUtil.deployFromJson(req.params as any);
+  if (deserializedDeploy.ok) {
+    const signedDeploy = client.signDeploy(deserializedDeploy.val, keyPair);
+    req.params = DeployUtil.deployToJson(signedDeploy);
+    //   const jrpcResult = await sendRpcRequestToChain(req, rpcTarget);
+    const jrpcResult = { deploy_hash: '0x123', rpcTarget };
+    return {
+      id: req.id,
+      jsonrpc: req.jsonrpc,
+      result: jrpcResult,
+      error: null
+    };
   }
+  throw new Error('Failed to parsed deploy');
 };
 
 export class MockProvider {

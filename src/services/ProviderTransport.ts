@@ -29,7 +29,7 @@ export interface JRPCResponse<T> extends JRPCBase {
 export type SendCallBack<U> = (err: any, providerRes: U) => void;
 
 export interface SafeEventEmitterProvider {
-  sendAsync: <T, U>(req: JRPCRequest<T>) => U | Promise<U>;
+  sendAsync: <T, U>(req: JRPCRequest<T>) => Promise<U>;
   send: <T, U>(req: JRPCRequest<T>, callback: SendCallBack<U>) => void;
 }
 
