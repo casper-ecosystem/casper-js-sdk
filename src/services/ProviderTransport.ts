@@ -56,13 +56,19 @@ class ProviderTransport extends Transport {
       const result = await this.provider.sendAsync(
         (data.request as IJSONRPCRequest) as JRPCRequest<any>
       );
+      const jsonrpcResponse = {
+        id: data.request.id,
+        jsonrpc: data.request.jsonrpc,
+        result,
+        error: null
+      };
       // requirements are that notifications are successfully sent
       this.transportRequestManager.settlePendingRequest(notifications);
       if (this.onlyNotifications(data)) {
         return Promise.resolve();
       }
       const responseErr = this.transportRequestManager.resolveResponse(
-        JSON.stringify(result)
+        JSON.stringify(jsonrpcResponse)
       );
       if (responseErr) {
         // requirements are that batch requests are successfully resolved

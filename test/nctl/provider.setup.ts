@@ -93,14 +93,9 @@ const processDeploy = async (
     req.params = DeployUtil.deployToJson(signedDeploy);
     //   const jrpcResult = await sendRpcRequestToChain(req, rpcTarget);
     const jrpcResult = { deploy_hash: '0x123', rpcTarget };
-    return {
-      id: req.id,
-      jsonrpc: req.jsonrpc,
-      result: jrpcResult,
-      error: null
-    };
+    return jrpcResult
   }
-  throw new Error('Failed to parsed deploy');
+  throw new Error('Failed to parse deploy');
 };
 
 export class MockProvider {
@@ -121,19 +116,9 @@ export class MockProvider {
     } else {
       try {
         const jrpcResult = await sendRpcRequestToChain(req, this.rpcTarget);
-        return {
-          id: req.id,
-          jsonrpc: req.jsonrpc,
-          result: jrpcResult,
-          error: null
-        };
+        return jrpcResult
       } catch (error) {
-        return {
-          id: req.id,
-          jsonrpc: req.jsonrpc,
-          result: null,
-          error
-        };
+        throw error;
       }
     }
   }
