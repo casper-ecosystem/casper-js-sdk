@@ -1,19 +1,16 @@
 import { assert } from 'chai';
 import {
   CasperServiceByJsonRPC,
-  EventStream,
-  DeployWatcher,
-  EventName
 } from '../../src/services';
 import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
 import { MockProvider } from './provider.setup';
 
-const rpcTarget = 'http://3.139.47.90:7777/rpc';
+const rpcTarget = 'http://127.0.0.1:11101/rpc';
 const provider = new MockProvider(rpcTarget);
 const client = new CasperServiceByJsonRPC(provider);
 
 describe('Provider', () => {
-  xit('should return correct block by number', async () => {
+  it('should return correct block by number', async () => {
     let check = async (height: number) => {
       let result = await client.getBlockInfoByHeight(height);
       assert.equal(result.block?.header.height, height);
@@ -24,7 +21,7 @@ describe('Provider', () => {
     }
   });
 
-  xit('should return correct block by hash', async () => {
+  it('should return correct block by hash', async () => {
     let check = async (height: number) => {
       let block_by_height = await client.getBlockInfoByHeight(height);
       let block_hash = block_by_height.block?.hash!;
@@ -66,46 +63,5 @@ describe('Provider', () => {
             1} bytes. ` + `Max size is 1 megabyte.`;
         assert.equal(err.message, expectedMessage);
       });
-  });
-
-  xit('DeployWatcher', () => {
-    const client = new DeployWatcher('http://localhost:18101/events/main');
-    client.subscribe([
-      {
-        deployHash:
-          '418bd905f86cad3bc3c46340ddf5119da4c51d2da24cf07cfe7c79a7f14f50aa',
-        eventHandlerFn: value => console.log('SUBSCRIBED VALUE', value)
-      }
-    ]);
-    client.start();
-    setTimeout(() => {
-      client.subscribe([
-        {
-          deployHash:
-            '7a28f822a89b7dd65c0d29765e28d949a343d0b2c9cbee02abc89eaba542a7e5',
-          eventHandlerFn: value => console.log('SUBSCRIBED VALUE 2', value)
-        }
-      ]);
-    }, 3 * 10000);
-  });
-
-  xit('EventHandler', () => {
-    const client = new EventStream('http://localhost:60101/events');
-    client.subscribe(EventName.FinalitySignature, value =>
-      console.log('SUBSCRIBED VALUE', value)
-    );
-    client.start();
-    setTimeout(() => {
-      console.log('STOP');
-      client.stop();
-    }, 10000);
-    setTimeout(() => {
-      console.log('START');
-      client.start();
-    }, 3 * 10000);
-    setTimeout(() => {
-      console.log('STOP');
-      client.stop();
-    }, 6 * 10000);
   });
 });
