@@ -3,14 +3,14 @@ import {
   CasperServiceByJsonRPC,
 } from '../../src/services';
 import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
-import { MockProvider } from './provider.setup';
+import { MockProvider } from './Provider.setup';
 
 const rpcTarget = 'http://127.0.0.1:11101/rpc';
 const provider = new MockProvider(rpcTarget);
 const client = new CasperServiceByJsonRPC(provider);
 
 describe('Provider', () => {
-  it('should return correct block by number', async () => {
+  xit('should return correct block by number', async () => {
     let check = async (height: number) => {
       let result = await client.getBlockInfoByHeight(height);
       assert.equal(result.block?.header.height, height);
@@ -21,7 +21,7 @@ describe('Provider', () => {
     }
   });
 
-  it('should return correct block by hash', async () => {
+  xit('should return correct block by hash', async () => {
     let check = async (height: number) => {
       let block_by_height = await client.getBlockInfoByHeight(height);
       let block_hash = block_by_height.block?.hash!;
@@ -34,7 +34,7 @@ describe('Provider', () => {
     }
   });
 
-  it('should not allow to send deploy larger then 1 megabyte.', async () => {
+  xit('should not allow to send deploy larger then 1 megabyte.', async () => {
     // moduleBytes need to have length of (1 megabyte - 169 bytes) to produce
     // a deploy with the size of (1 megabyte + 1 byte).
     const oneMegaByte = 1048576;
