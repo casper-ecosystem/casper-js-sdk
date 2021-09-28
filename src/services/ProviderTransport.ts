@@ -29,7 +29,7 @@ export interface JRPCResponse<T> extends JRPCBase {
 export type SendCallBack<U> = (err: any, providerRes: U) => void;
 
 export interface SafeEventEmitterProvider {
-  sendAsync: <T, U>(req: JRPCRequest<T>) => U | Promise<U>;
+  sendAsync: <T, U>(req: JRPCRequest<T>) => Promise<U>;
   send: <T, U>(req: JRPCRequest<T>, callback: SendCallBack<U>) => void;
 }
 
@@ -56,16 +56,22 @@ class ProviderTransport extends Transport {
       const result = await this.provider.sendAsync(
         (data.request as IJSONRPCRequest) as JRPCRequest<any>
       );
+      const jsonrpcResponse = {
+        id: data.request.id,
+        jsonrpc: data.request.jsonrpc,
+        result,
+        error: null
+      };
       // requirements are that notifications are successfully sent
       this.transportRequestManager.settlePendingRequest(notifications);
       if (this.onlyNotifications(data)) {
         return Promise.resolve();
       }
       const responseErr = this.transportRequestManager.resolveResponse(
-        JSON.stringify(result)
+        JSON.stringify(jsonrpcResponse)
       );
       if (responseErr) {
-        // requirements are that batch requuests are successfully resolved
+        // requirements are that batch requests are successfully resolved
         // this ensures that individual requests within the batch request are settled
         this.transportRequestManager.settlePendingRequest(batch, responseErr);
         return Promise.reject(responseErr);

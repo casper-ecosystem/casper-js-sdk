@@ -8,6 +8,9 @@ import ProviderTransport, {
 import { TypedJSON } from 'typedjson';
 import { StoredValue, Transfers } from '../lib/StoredValue';
 import { BigNumber } from '@ethersproject/bignumber';
+import ProviderTransport, {
+  SafeEventEmitterProvider
+} from './ProviderTransport';
 
 interface RpcResult {
   api_version: string;
