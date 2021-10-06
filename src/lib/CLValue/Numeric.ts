@@ -21,16 +21,22 @@ import {
   U256_ID,
   U512_ID
 } from './constants';
+import { arrayEquals } from '../DeployUtil';
 
 abstract class NumericBytesParser extends CLValueBytesParsers {
   toBytes(value: Numeric): ToBytesResult {
-    const result = Ok(
-      toBytesNumber(value.bitSize, value.signed)(
-        value.data,
-        value.originalBytes
-      )
-    );
-    return result;
+    // NOTE: this is for historicial deploys that had zero represented as `0100`.
+    if (
+      (value.bitSize === 128 ||
+        value.bitSize === 256 ||
+        value.bitSize === 512) &&
+      value.originalBytes &&
+      arrayEquals(value.originalBytes, Uint8Array.from([1, 0]))
+    ) {
+      return Ok(value.originalBytes);
+    }
+
+    return Ok(toBytesNumber(value.bitSize, value.signed)(value.data));
   }
 }
 

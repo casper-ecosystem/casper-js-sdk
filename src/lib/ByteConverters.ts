@@ -7,14 +7,12 @@ import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { MaxUint256, NegativeOne, One, Zero } from '@ethersproject/constants';
 import { arrayify, concat } from '@ethersproject/bytes';
 import { CLValue, CLValueParsers, ToBytes } from './CLValue';
-import { arrayEquals } from './DeployUtil';
 
 /**
  * Convert number to bytes
  */
 export const toBytesNumber = (bitSize: number, signed: boolean) => (
-  value: BigNumberish,
-  originalBytes?: Uint8Array
+  value: BigNumberish
 ): Uint8Array => {
   const val = BigNumber.from(value);
 
@@ -39,13 +37,6 @@ export const toBytesNumber = (bitSize: number, signed: boolean) => (
     if (bitSize > 64) {
       // if zero just return zero
       if (valTwos.eq(0)) {
-        // NOTE: this is for historicial deploys that had zero represented as `0100`.
-        if (
-          originalBytes &&
-          arrayEquals(originalBytes, Uint8Array.from([1, 0]))
-        ) {
-          return originalBytes;
-        }
         return bytes;
       }
       // for u128, u256, u512, we have to and append extra byte for length
