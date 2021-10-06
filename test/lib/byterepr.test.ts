@@ -119,7 +119,7 @@ describe(`numbers' toBytes`, () => {
     ).unwrap();
     const clValBytes = CLValueParsers.toBytes(clVal).unwrap();
 
-    expect(clValFromBytes).to.deep.eq(clVal);
+    expect(clValFromBytes.value()).to.deep.eq(clVal.value());
     expect(clValBytes).to.deep.eq(validBytes);
   });
 
