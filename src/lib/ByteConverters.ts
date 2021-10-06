@@ -7,10 +7,7 @@ import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { MaxUint256, NegativeOne, One, Zero } from '@ethersproject/constants';
 import { arrayify, concat } from '@ethersproject/bytes';
 import { CLValue, CLValueParsers, ToBytes } from './CLValue';
-
-const arrayEquals = (a: Uint8Array, b: Uint8Array): boolean => {
-  return a.length === b.length && a.every((val, index) => val === b[index]);
-};
+import { arrayEquals } from './DeployUtil';
 
 /**
  * Convert number to bytes
