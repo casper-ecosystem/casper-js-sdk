@@ -26,6 +26,7 @@ import { arrayEquals } from '../DeployUtil';
 abstract class NumericBytesParser extends CLValueBytesParsers {
   toBytes(value: Numeric): ToBytesResult {
     // NOTE: this is for historicial deploys that had zero represented as `0100`.
+    // If there is zero in form of `0100` insted of `00` it should be serialized the same way to prevent changes in bodyHash.
     if (
       (value.bitSize === 128 ||
         value.bitSize === 256 ||
@@ -42,8 +43,7 @@ abstract class NumericBytesParser extends CLValueBytesParsers {
 
 abstract class Numeric extends CLValue {
   data: BigNumber;
-  // Note: Original bytes are only used for legacy purposes.
-  // If there is zero in form of `0100` insted of `00` it should be serialized the same way to prevent changes in bodyHash.
+  // NOTE: Original bytes are only used for legacy purposes.
   originalBytes?: Uint8Array;
   bitSize: number;
   signed: boolean;
