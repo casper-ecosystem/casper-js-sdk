@@ -1231,7 +1231,7 @@ export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
   return Ok(deploy);
 };
 
-const arrayEquals = (a: Uint8Array, b: Uint8Array): boolean => {
+export const arrayEquals = (a: Uint8Array, b: Uint8Array): boolean => {
   return a.length === b.length && a.every((val, index) => val === b[index]);
 };
 
