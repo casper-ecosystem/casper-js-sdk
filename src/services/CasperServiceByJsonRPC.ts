@@ -1,8 +1,7 @@
 import { RequestManager, HTTPTransport, Client } from '@open-rpc/client-js';
-import { jsonMember, jsonObject } from 'typedjson';
+import { TypedJSON, jsonMember, jsonObject } from 'typedjson';
 import { DeployUtil, encodeBase16, CLPublicKey } from '..';
 import { deployToJson } from '../lib/DeployUtil';
-import { TypedJSON } from 'typedjson';
 import { StoredValue, Transfers } from '../lib/StoredValue';
 import { BigNumber } from '@ethersproject/bignumber';
 import ProviderTransport, {
