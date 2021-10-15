@@ -4,6 +4,7 @@ const nodeExternals = require('webpack-node-externals');
 
 const common = {
   entry: './src/index.ts',
+  mode: 'production',
   module: {
     rules: [
       {
@@ -58,4 +59,21 @@ const clientConfig = {
   }
 };
 
-module.exports = [serverConfig, clientConfig];
+const bundlerConfig = {
+  ...common,
+  target: 'web',
+  resolve: {
+    ...common.resolve
+  },
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'lib.cjs.js',
+    libraryTarget: 'commonjs2'
+  },
+  externals: [nodeExternals()],
+  externalsPresets: {
+    node: true
+  }
+};
+
+module.exports = [serverConfig, clientConfig, bundlerConfig];
