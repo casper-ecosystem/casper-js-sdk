@@ -76,6 +76,7 @@ export class CLListBytesParser extends CLValueBytesParsers {
         remainder,
         listType.inner
       );
+
       if (!vRes.ok) {
         return resultHelper(Err(vRes.val));
       }

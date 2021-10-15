@@ -14,7 +14,7 @@ import {
   CLAccountHashBytesParser,
   CLErrorCodes,
   KeyVariant,
-  ACCOUNT_HASH_LENGTH,
+  // ACCOUNT_HASH_LENGTH,
   ResultAndRemainder,
   ToBytesResult,
   CLValueBytesParsers,
@@ -80,7 +80,7 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
     const tag = bytes[0];
 
     if (tag === KeyVariant.Hash) {
-      const hashBytes = bytes.subarray(1, ACCOUNT_HASH_LENGTH + 1);
+      const hashBytes = bytes.subarray(1);
       const {
         result: hashResult,
         remainder: hashRemainder
