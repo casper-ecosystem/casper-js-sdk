@@ -84,4 +84,4 @@ const bundlerConfig = {
   }
 };
 
-module.exports = [serverConfig];
+module.exports = [serverConfig, clientConfig, bundlerConfig];
