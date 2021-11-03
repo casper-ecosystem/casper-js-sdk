@@ -21,22 +21,45 @@ import {
   U256_ID,
   U512_ID
 } from './constants';
+import { arrayEquals } from '../DeployUtil';
 
 abstract class NumericBytesParser extends CLValueBytesParsers {
   toBytes(value: Numeric): ToBytesResult {
+    // NOTE: this is for historicial deploys that had zero represented as `0100`.
+    // If there is zero in form of `0100` insted of `00` it should be serialized the same way to prevent changes in bodyHash.
+    if (
+      (value.bitSize === 128 ||
+        value.bitSize === 256 ||
+        value.bitSize === 512) &&
+      value.originalBytes &&
+      arrayEquals(value.originalBytes, Uint8Array.from([1, 0]))
+    ) {
+      return Ok(value.originalBytes);
+    }
+
     return Ok(toBytesNumber(value.bitSize, value.signed)(value.data));
   }
 }
 
 abstract class Numeric extends CLValue {
   data: BigNumber;
+  // NOTE: Original bytes are only used for legacy purposes.
+  originalBytes?: Uint8Array;
   bitSize: number;
   signed: boolean;
 
-  constructor(bitSize: number, isSigned: boolean, value: BigNumberish) {
+  constructor(
+    bitSize: number,
+    isSigned: boolean,
+    value: BigNumberish,
+    originalBytes?: Uint8Array
+  ) {
     super();
     if (isSigned === false && Math.sign(value as number) < 0) {
       throw new Error("Can't provide negative numbers with isSigned=false");
+    }
+    if (originalBytes) {
+      this.originalBytes = originalBytes;
     }
     this.bitSize = bitSize;
     this.signed = isSigned;
@@ -260,8 +283,8 @@ export class CLU128BytesParser extends NumericBytesParser {
 }
 
 export class CLU128 extends Numeric {
-  constructor(num: BigNumberish) {
-    super(128, false, num);
+  constructor(num: BigNumberish, originalBytes?: Uint8Array) {
+    super(128, false, num, originalBytes);
   }
 
   clType(): CLType {
@@ -292,8 +315,8 @@ export class CLU256BytesParser extends NumericBytesParser {
 }
 
 export class CLU256 extends Numeric {
-  constructor(num: BigNumberish) {
-    super(256, false, num);
+  constructor(num: BigNumberish, originalBytes?: Uint8Array) {
+    super(256, false, num, originalBytes);
   }
 
   clType(): CLType {
@@ -324,8 +347,8 @@ export class CLU512BytesParser extends NumericBytesParser {
 }
 
 export class CLU512 extends Numeric {
-  constructor(num: BigNumberish) {
-    super(512, false, num);
+  constructor(num: BigNumberish, originalBytes?: Uint8Array) {
+    super(512, false, num, originalBytes);
   }
 
   clType(): CLType {
@@ -359,13 +382,13 @@ const fromBytesBigInt = (
   const value = BigNumber.from(bigIntBytes.slice().reverse());
 
   if (bitSize === 128) {
-    return resultHelper(Ok(new CLU128(value)), remainder);
+    return resultHelper(Ok(new CLU128(value, rawBytes)), remainder);
   }
   if (bitSize === 256) {
-    return resultHelper(Ok(new CLU256(value)), remainder);
+    return resultHelper(Ok(new CLU256(value, rawBytes)), remainder);
   }
   if (bitSize === 512) {
-    return resultHelper(Ok(new CLU512(value)), remainder);
+    return resultHelper(Ok(new CLU512(value, rawBytes)), remainder);
   }
 
   return resultHelper(Err(CLErrorCodes.Formatting));

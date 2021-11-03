@@ -4,6 +4,46 @@ All notable changes to casper-js-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.6.2
+
+### Added
+
+- Now minimal bundle without any polyfills included is a part of distribution package.
+
+## 2.6.1
+
+### Fixed
+
+- Added workaround for historical deploys with invalid serialized `0`.
+
+## 2.6.0
+
+### Added
+
+- Added `CasperProvider`
+
+## 2.5.2
+
+### Fixed
+
+- Problem when serializing U128, U256 ad U512 `toBytes`.
+
+## 2.5.1
+
+### Fixed
+
+- Added stronger validation to `PublicKey.fromHex` method
+- Fix for deploy's `execution_result` type signatures
+- Fix instanceof problem in `CLValueParser` which caused problems when two different versions of SDK was used in one project
+- Signer methods fixes
+
+## 2.5.0
+
+### Added
+
+- `signMessage` - added method to sign arbitrary string message
+- `verifyMessageSignature` - added method to verify signature of arbitrary string message
+
 ## 2.4.1
 
 ### Fixed
