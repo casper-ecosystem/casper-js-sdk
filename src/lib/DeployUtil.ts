@@ -746,7 +746,7 @@ export class ExecutableDeployItem implements ToBytes {
     if (target instanceof CLURef) {
       runtimeArgs.insert('target', target);
     } else if (target instanceof CLPublicKey) {
-      runtimeArgs.insert('target', CLValueBuilder.string(target.toHex()));
+      runtimeArgs.insert('target', target);
     } else {
       throw new Error('Please specify target');
     }
