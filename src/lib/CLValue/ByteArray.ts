@@ -47,15 +47,11 @@ export class CLByteArrayBytesParser extends CLValueBytesParsers {
   }
 
   fromBytesWithRemainder(
-    bytes: Uint8Array
+    bytes: Uint8Array,
+    type: CLByteArrayType
   ): ResultAndRemainder<CLByteArray, CLErrorCodes> {
-    const byteArray = new CLByteArray(
-      bytes.subarray(0, CL_BYTE_ARRAY_MAX_LENGTH)
-    );
-    return resultHelper(
-      Ok(byteArray),
-      bytes.subarray(CL_BYTE_ARRAY_MAX_LENGTH)
-    );
+    const byteArray = new CLByteArray(bytes.subarray(0, type.size));
+    return resultHelper(Ok(byteArray), bytes.subarray(type.size));
   }
 }
 
@@ -68,11 +64,6 @@ export class CLByteArray extends CLValue {
    */
   constructor(v: Uint8Array) {
     super();
-    if (v.length > CL_BYTE_ARRAY_MAX_LENGTH) {
-      throw new Error(
-        `Provided value has length ${v.length} which exceeded the limit (${CL_BYTE_ARRAY_MAX_LENGTH})`
-      );
-    }
     this.data = v;
   }
 

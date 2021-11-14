@@ -7,6 +7,7 @@ import {
   CLType,
   CLValue,
   CLByteArray,
+  CLByteArrayType,
   CLByteArrayBytesParser,
   CLURef,
   CLURefBytesParser,
@@ -22,6 +23,8 @@ import {
   resultHelper
 } from './index';
 import { KEY_ID, CLTypeTag } from './constants';
+
+const HASH_LENGTH = 32;
 
 export class CLKeyType extends CLType {
   linksTo = CLKey;
@@ -84,7 +87,10 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
       const {
         result: hashResult,
         remainder: hashRemainder
-      } = new CLByteArrayBytesParser().fromBytesWithRemainder(hashBytes);
+      } = new CLByteArrayBytesParser().fromBytesWithRemainder(
+        hashBytes,
+        new CLByteArrayType(HASH_LENGTH)
+      );
       const hash = hashResult.unwrap();
       const key = new CLKey(hash);
       return resultHelper(Ok(key), hashRemainder);
