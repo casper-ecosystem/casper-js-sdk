@@ -66,6 +66,14 @@ describe('CLPublicKey', () => {
 
     const badFn = () => CLPublicKey.fromHex('1');
     expect(badFn).to.throw('Asymmetric key error: too short');
+
+    // Check mixed case pubkeys
+    const goodFn = () =>
+      CLPublicKey.fromHex(
+        '0115C9b40c06fF99B0cBadf1140B061B5dBF92103E66a6330fbCc7768f5219C1ce'
+      );
+
+    expect(goodFn).to.not.throw();
   });
 
   it('CLPublicKey.fromEd25519() return proper value', () => {
