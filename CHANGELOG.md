@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Fixed
 
-- Adds support for mixed case hex representation of public keys introduced in `casper-node` `1.4.2`.
+- Added support for mixed case hex representation of public keys introduced in `casper-node` `1.4.2`.
 
 ## 2.7.0
 
