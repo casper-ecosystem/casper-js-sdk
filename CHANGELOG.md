@@ -10,6 +10,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Fix for bundling all of the existing types defined in the library.
 
+## 2.7.1
+
+### Fixed
+
+- Added support for mixed case hex representation of public keys introduced in `casper-node` `1.4.2`.
+
 ## 2.7.0
 
 ### Changed
