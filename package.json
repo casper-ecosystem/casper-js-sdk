@@ -1,6 +1,6 @@
 {
   "name": "casper-js-sdk",
-  "version": "2.7.2",
+  "version": "2.7.3",
   "license": "Apache 2.0",
   "description": "SDK to interact with the Casper blockchain",
   "homepage": "https://github.com/casper-ecosystem/casper-js-sdk#README.md",
@@ -90,6 +90,7 @@
     "@ethersproject/constants": "^5.0.5",
     "@open-rpc/client-js": "^1.6.2",
     "@types/eccrypto": "^1.1.2",
+    "@types/ws": "^8.2.2",
     "blakejs": "^1.1.0",
     "eccrypto": "^1.1.6",
     "eslint-plugin-prettier": "^3.4.0",
