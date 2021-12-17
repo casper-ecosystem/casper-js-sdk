@@ -234,7 +234,10 @@ export class CasperServiceByJsonRPC {
         }
       })
       .then((res: GetBlockResult) => {
-        if (res.block !== null && res.block.hash !== blockHashBase16) {
+        if (
+          res.block !== null &&
+          res.block.hash.toLowerCase() !== blockHashBase16.toLowerCase()
+        ) {
           throw new Error('Returned block does not have a matching hash.');
         }
         return res;
