@@ -15,7 +15,6 @@ import {
   CLAccountHashBytesParser,
   CLErrorCodes,
   KeyVariant,
-  // ACCOUNT_HASH_LENGTH,
   ResultAndRemainder,
   ToBytesResult,
   CLValueBytesParsers,

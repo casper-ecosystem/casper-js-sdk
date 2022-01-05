@@ -113,19 +113,6 @@ describe('CLKey', () => {
     expect(fromJson).to.be.deep.eq(myKey);
   });
 
-  // it('fromJSON() with CLByteArray', () => {
-  //   const json = JSON.parse(
-  //     '{"bytes":"0300000001301167268ec00eeb7edf7d12d9419921e15dbd7b145e454d94540aa91c260edb01301167268ec00eeb7edf7d12d9419921e15dbd7b145e454d94540aa91c260edb01301167268ec00eeb7edf7d12d9419921e15dbd7b145e454d94540aa91c260edb","cl_type": { "List": "Key" } }'
-  //   );
-
-  //   const fromJson = CLValueParsers.fromJSON(json).unwrap();
-
-  //   console.log(fromJson);
-
-  //   // expect(json).to.be.deep.eq(expectedJson);
-  //   // expect(fromJson).to.be.deep.eq(myKey);
-  // });
-
   it('toJSON() / fromJSON() with CLAccountHash', () => {
     const hash = new CLAccountHash(Uint8Array.from(Array(32).fill(42)));
     const myKey = new CLKey(hash);
