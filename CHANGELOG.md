@@ -4,6 +4,30 @@ All notable changes to casper-js-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.7.4
+
+### Fixed
+
+- Fixes problems with `getBlockInfo` and mixed case block hashes.
+
+## 2.7.3
+
+### Added
+
+- Added types missing in OpenRPC library
+
+## 2.7.2
+
+### Fixed
+
+- Fix for bundling all of the existing types defined in the library.
+
+## 2.7.1
+
+### Fixed
+
+- Added support for mixed case hex representation of public keys introduced in `casper-node` `1.4.2`.
+
 ## 2.7.0
 
 ### Changed

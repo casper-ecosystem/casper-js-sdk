@@ -14,7 +14,7 @@ import {
   resultHelper
 } from './CLValue';
 import { concat } from '@ethersproject/bytes';
-import { jsonMember, jsonObject } from 'typedjson';
+import { jsonMapMember, jsonObject } from 'typedjson';
 
 export class NamedArg implements ToBytes {
   constructor(public name: string, public value: CLValue) {}
@@ -58,7 +58,7 @@ const serRA = (map: Map<string, CLValue>) => {
 
 @jsonObject()
 export class RuntimeArgs implements ToBytes {
-  @jsonMember({
+  @jsonMapMember(String, CLValue, {
     serializer: serRA,
     deserializer: desRA
   })

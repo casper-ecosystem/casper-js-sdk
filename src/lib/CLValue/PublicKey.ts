@@ -166,7 +166,7 @@ export class CLPublicKey extends CLValue {
     if (publicKeyHex.length < 2) {
       throw new Error('Asymmetric key error: too short');
     }
-    if (!/^0(1[0-9a-f]{64}|2[0-9a-f]{66})$/.test(publicKeyHex)) {
+    if (!/^0(1[0-9a-fA-F]{64}|2[0-9a-fA-F]{66})$/.test(publicKeyHex)) {
       throw new Error('Invalid public key');
     }
     const publicKeyHexBytes = decodeBase16(publicKeyHex);
