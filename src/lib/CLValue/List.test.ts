@@ -8,7 +8,9 @@ import {
   CLStringType,
   CLU8,
   CLI32,
-  CLI32Type
+  CLI32Type,
+  CLKey,
+  CLByteArray
 } from './index';
 
 describe('CLValue List implementation', () => {
@@ -196,6 +198,53 @@ describe('CLValue List implementation', () => {
     expect(json).to.be.deep.eq(expectedJson);
     expect(newList).to.be.deep.eq(myList);
     expect(newList2).to.be.deep.eq(myList);
+  });
+
+  it('Runs toJSON() / fromJSON() properly', () => {
+    const clKey = new CLKey(
+      new CLByteArray(
+        Uint8Array.from([
+          48,
+          17,
+          103,
+          38,
+          142,
+          192,
+          14,
+          235,
+          126,
+          223,
+          125,
+          18,
+          217,
+          65,
+          153,
+          33,
+          225,
+          93,
+          189,
+          123,
+          20,
+          94,
+          69,
+          77,
+          148,
+          84,
+          10,
+          169,
+          28,
+          38,
+          14,
+          219
+        ])
+      )
+    );
+    const myList = new CLList([clKey, clKey, clKey]);
+
+    const json = CLValueParsers.toJSON(myList).unwrap();
+    const newList = CLValueParsers.fromJSON(json).unwrap();
+
+    expect(newList).to.be.deep.eq(myList);
   });
 
   it('toBytesWithCLType() / fromBytesWithCLType()', () => {

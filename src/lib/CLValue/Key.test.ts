@@ -101,6 +101,18 @@ describe('CLKey', () => {
     expect(fromExpectedBytes).to.be.deep.eq(myKey);
   });
 
+  it('toJSON() / fromJSON() with CLByteArray', () => {
+    const byteArr = new CLByteArray(new Uint8Array([21, 31]));
+    const myKey = new CLKey(byteArr);
+    const json = CLValueParsers.toJSON(myKey).unwrap();
+    const expectedJson = JSON.parse('{"bytes":"01151f","cl_type":"Key"}');
+
+    const fromJson = CLValueParsers.fromJSON(expectedJson).unwrap();
+
+    expect(json).to.be.deep.eq(expectedJson);
+    expect(fromJson).to.be.deep.eq(myKey);
+  });
+
   it('toJSON() / fromJSON() with CLAccountHash', () => {
     const hash = new CLAccountHash(Uint8Array.from(Array(32).fill(42)));
     const myKey = new CLKey(hash);

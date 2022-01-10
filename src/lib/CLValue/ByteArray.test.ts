@@ -38,4 +38,16 @@ describe('CLByteArray', () => {
     expect(json).to.deep.eq(expectedJson);
     expect(CLValueParsers.fromJSON(expectedJson).unwrap()).to.deep.eq(hash);
   });
+
+  it('fromJSON() with length more than 32 bytes', () => {
+    const json = {
+      bytes:
+        '7f8d377b97dc7fbf3a777f5ae75eb6edbe79739df9d747f86bbf3b7f7efcd37d7a7b475c7fcefb6f8d3cd7dedcf1a6bd',
+      cl_type: { ByteArray: 48 }
+    };
+
+    const parsed = CLValueParsers.fromJSON(json).unwrap();
+
+    expect(CLValueParsers.toJSON(parsed).unwrap()).to.deep.eq(json);
+  });
 });
