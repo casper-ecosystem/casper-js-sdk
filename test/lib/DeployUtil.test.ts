@@ -314,6 +314,19 @@ describe('DeployUtil', () => {
     expect(badFn).to.throw('transfer-id missing in new transfer.');
   });
 
+  it('Should be able create new transfer without providing transfer-id using newTransferWithOptionalTransferId()', () => {
+    const recipientKey = Keys.Ed25519.new();
+    const transferAmount = 10;
+
+    const goodFn = () => DeployUtil.ExecutableDeployItem.newTransferWithOptionalTransferId(
+      transferAmount,
+      recipientKey.publicKey,
+    );
+
+    expect(goodFn).to.not.throw();
+
+  });
+
   it('newTransferToUniqAddress should construct proper deploy', () => {
     const senderKey = Keys.Ed25519.new();
     const recipientKey = Keys.Ed25519.new();
