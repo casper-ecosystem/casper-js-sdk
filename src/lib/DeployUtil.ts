@@ -801,7 +801,7 @@ export class ExecutableDeployItem implements ToBytes {
     } else {
       runtimeArgs.insert(
         'id',
-        CLValueBuilder.option(Some(new CLU64(id!)), new CLU64Type())
+        CLValueBuilder.option(None, CLTypeBuilder.u64())
       );
     }
 
