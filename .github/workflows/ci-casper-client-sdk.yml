@@ -26,8 +26,8 @@ jobs:
     - name: Set release tag
       run: |
         echo ${{ github.ref }}
-        if [ ${{ github.ref }} == 'refs/heads/next' ]; then
-          echo "release_tag=next" >> $GITHUB_ENV
+        if [ ${{ github.ref }} == 'refs/heads/legacy' ]; then
+          echo "release_tag=legacy" >> $GITHUB_ENV
 
         else
           echo "release_tag=latest" >> $GITHUB_ENV
