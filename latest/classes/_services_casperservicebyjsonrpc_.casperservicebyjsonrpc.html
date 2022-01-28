@@ -87,10 +87,10 @@
 								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
+						<section class="tsd-index-section tsd-is-private-protected">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#client" class="tsd-kind-icon">client</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#client" class="tsd-kind-icon">client</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
@@ -103,7 +103,11 @@
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#getblockinfo" class="tsd-kind-icon">get<wbr>Block<wbr>Info</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#getblockinfobyheight" class="tsd-kind-icon">get<wbr>Block<wbr>Info<wbr>ByHeight</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#getblockstate" class="tsd-kind-icon">get<wbr>Block<wbr>State</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#getblocktransfers" class="tsd-kind-icon">get<wbr>Block<wbr>Transfers</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#getdeployinfo" class="tsd-kind-icon">get<wbr>Deploy<wbr>Info</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#getdictionaryitembyuref" class="tsd-kind-icon">get<wbr>Dictionary<wbr>Item<wbr>ByURef</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#geterainfobyswitchblock" class="tsd-kind-icon">get<wbr>Era<wbr>Info<wbr>BySwitch<wbr>Block</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#geterainfobyswitchblockheight" class="tsd-kind-icon">get<wbr>Era<wbr>Info<wbr>BySwitch<wbr>Block<wbr>Height</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#getlatestblockinfo" class="tsd-kind-icon">get<wbr>Latest<wbr>Block<wbr>Info</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#getpeers" class="tsd-kind-icon">get<wbr>Peers</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#getstateroothash" class="tsd-kind-icon">get<wbr>State<wbr>Root<wbr>Hash</a></li>
@@ -120,19 +124,19 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Casper<wbr>Service<wbr>ByJsonRPC<span class="tsd-signature-symbol">(</span>url<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html" class="tsd-signature-type">CasperServiceByJsonRPC</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Casper<wbr>Service<wbr>ByJsonRPC<span class="tsd-signature-symbol">(</span>provider<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_services_providertransport_.safeeventemitterprovider.html" class="tsd-signature-type">SafeEventEmitterProvider</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html" class="tsd-signature-type">CasperServiceByJsonRPC</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/dae83ae/src/services/CasperServiceByJsonRPC.ts#L171">src/services/CasperServiceByJsonRPC.ts:171</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L195">src/services/CasperServiceByJsonRPC.ts:195</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>url: <span class="tsd-signature-type">string</span></h5>
+									<h5>provider: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_services_providertransport_.safeeventemitterprovider.html" class="tsd-signature-type">SafeEventEmitterProvider</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html" class="tsd-signature-type">CasperServiceByJsonRPC</a></h4>
@@ -140,15 +144,15 @@
 					</ul>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
+			<section class="tsd-panel-group tsd-member-group tsd-is-private-protected">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 					<a name="client" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> client</h3>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> client</h3>
 					<div class="tsd-signature tsd-kind-icon">client<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Client</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/dae83ae/src/services/CasperServiceByJsonRPC.ts#L171">src/services/CasperServiceByJsonRPC.ts:171</a></li>
+							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L195">src/services/CasperServiceByJsonRPC.ts:195</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -165,7 +169,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/dae83ae/src/services/CasperServiceByJsonRPC.ts#L340">src/services/CasperServiceByJsonRPC.ts:340</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L374">src/services/CasperServiceByJsonRPC.ts:374</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -188,7 +192,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/dae83ae/src/services/CasperServiceByJsonRPC.ts#L283">src/services/CasperServiceByJsonRPC.ts:283</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L317">src/services/CasperServiceByJsonRPC.ts:317</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -208,13 +212,13 @@
 					<a name="getaccountbalanceurefbypublickey" class="tsd-anchor"></a>
 					<h3>get<wbr>Account<wbr>Balance<wbr>Uref<wbr>ByPublic<wbr>Key</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Account<wbr>Balance<wbr>Uref<wbr>ByPublic<wbr>Key<span class="tsd-signature-symbol">(</span>stateRootHash<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, publicKey<span class="tsd-signature-symbol">: </span><a href="_lib_clvalue_.publickey.html" class="tsd-signature-type">PublicKey</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Account<wbr>Balance<wbr>Uref<wbr>ByPublic<wbr>Key<span class="tsd-signature-symbol">(</span>stateRootHash<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, publicKey<span class="tsd-signature-symbol">: </span><a href="_lib_clvalue_publickey_.clpublickey.html" class="tsd-signature-type">CLPublicKey</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/dae83ae/src/services/CasperServiceByJsonRPC.ts#L273">src/services/CasperServiceByJsonRPC.ts:273</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L307">src/services/CasperServiceByJsonRPC.ts:307</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -228,7 +232,7 @@
 									<h5>stateRootHash: <span class="tsd-signature-type">string</span></h5>
 								</li>
 								<li>
-									<h5>publicKey: <a href="_lib_clvalue_.publickey.html" class="tsd-signature-type">PublicKey</a></h5>
+									<h5>publicKey: <a href="_lib_clvalue_publickey_.clpublickey.html" class="tsd-signature-type">CLPublicKey</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -245,7 +249,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/dae83ae/src/services/CasperServiceByJsonRPC.ts#L258">src/services/CasperServiceByJsonRPC.ts:258</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L292">src/services/CasperServiceByJsonRPC.ts:292</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -276,7 +280,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/dae83ae/src/services/CasperServiceByJsonRPC.ts#L195">src/services/CasperServiceByJsonRPC.ts:195</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L224">src/services/CasperServiceByJsonRPC.ts:224</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -299,7 +303,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/dae83ae/src/services/CasperServiceByJsonRPC.ts#L213">src/services/CasperServiceByJsonRPC.ts:213</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L247">src/services/CasperServiceByJsonRPC.ts:247</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -322,7 +326,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/dae83ae/src/services/CasperServiceByJsonRPC.ts#L317">src/services/CasperServiceByJsonRPC.ts:317</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L351">src/services/CasperServiceByJsonRPC.ts:351</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -349,6 +353,34 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getblocktransfers" class="tsd-anchor"></a>
+					<h3>get<wbr>Block<wbr>Transfers</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Block<wbr>Transfers<span class="tsd-signature-symbol">(</span>blockHash<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_lib_storedvalue_.transfers.html" class="tsd-signature-type">Transfers</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L394">src/services/CasperServiceByJsonRPC.ts:394</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Retrieves all transfers for a block from the network</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> blockHash: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_lib_storedvalue_.transfers.html" class="tsd-signature-type">Transfers</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="getdeployinfo" class="tsd-anchor"></a>
 					<h3>get<wbr>Deploy<wbr>Info</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -358,7 +390,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/dae83ae/src/services/CasperServiceByJsonRPC.ts#L184">src/services/CasperServiceByJsonRPC.ts:184</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L213">src/services/CasperServiceByJsonRPC.ts:213</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -379,6 +411,98 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="getdictionaryitembyuref" class="tsd-anchor"></a>
+					<h3>get<wbr>Dictionary<wbr>Item<wbr>ByURef</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Dictionary<wbr>Item<wbr>ByURef<span class="tsd-signature-symbol">(</span>stateRootHash<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, dictionaryItemKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, seedUref<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_lib_storedvalue_.storedvalue.html" class="tsd-signature-type">StoredValue</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L470">src/services/CasperServiceByJsonRPC.ts:470</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>get dictionary item by URef</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>stateRootHash: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>dictionaryItemKey: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>seedUref: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_lib_storedvalue_.storedvalue.html" class="tsd-signature-type">StoredValue</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="geterainfobyswitchblock" class="tsd-anchor"></a>
+					<h3>get<wbr>Era<wbr>Info<wbr>BySwitch<wbr>Block</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Era<wbr>Info<wbr>BySwitch<wbr>Block<span class="tsd-signature-symbol">(</span>blockHash<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_services_casperservicebyjsonrpc_.erasummary.html" class="tsd-signature-type">EraSummary</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L418">src/services/CasperServiceByJsonRPC.ts:418</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Retrieve era information by block hash.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> blockHash: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_services_casperservicebyjsonrpc_.erasummary.html" class="tsd-signature-type">EraSummary</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="geterainfobyswitchblockheight" class="tsd-anchor"></a>
+					<h3>get<wbr>Era<wbr>Info<wbr>BySwitch<wbr>Block<wbr>Height</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Era<wbr>Info<wbr>BySwitch<wbr>Block<wbr>Height<span class="tsd-signature-symbol">(</span>height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_services_casperservicebyjsonrpc_.erasummary.html" class="tsd-signature-type">EraSummary</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L444">src/services/CasperServiceByJsonRPC.ts:444</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Retrieve era information by block height</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>height: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_services_casperservicebyjsonrpc_.erasummary.html" class="tsd-signature-type">EraSummary</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
 					<a name="getlatestblockinfo" class="tsd-anchor"></a>
 					<h3>get<wbr>Latest<wbr>Block<wbr>Info</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -388,7 +512,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/dae83ae/src/services/CasperServiceByJsonRPC.ts#L231">src/services/CasperServiceByJsonRPC.ts:231</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L265">src/services/CasperServiceByJsonRPC.ts:265</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_services_casperservicebyjsonrpc_.getblockresult.html" class="tsd-signature-type">GetBlockResult</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -405,7 +529,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/dae83ae/src/services/CasperServiceByJsonRPC.ts#L237">src/services/CasperServiceByJsonRPC.ts:237</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L271">src/services/CasperServiceByJsonRPC.ts:271</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_services_casperservicebyjsonrpc_.getpeersresult.html" class="tsd-signature-type">GetPeersResult</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -422,7 +546,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/dae83ae/src/services/CasperServiceByJsonRPC.ts#L298">src/services/CasperServiceByJsonRPC.ts:298</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L332">src/services/CasperServiceByJsonRPC.ts:332</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -445,7 +569,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/dae83ae/src/services/CasperServiceByJsonRPC.ts#L243">src/services/CasperServiceByJsonRPC.ts:243</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L277">src/services/CasperServiceByJsonRPC.ts:277</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_services_casperservicebyjsonrpc_.getstatusresult.html" class="tsd-signature-type">GetStatusResult</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -462,7 +586,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/dae83ae/src/services/CasperServiceByJsonRPC.ts#L249">src/services/CasperServiceByJsonRPC.ts:249</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/ba138c1/src/services/CasperServiceByJsonRPC.ts#L283">src/services/CasperServiceByJsonRPC.ts:283</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_services_casperservicebyjsonrpc_.validatorsinforesult.html" class="tsd-signature-type">ValidatorsInfoResult</a><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -477,62 +601,8 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_index_.html">&quot;index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_lib_clvalue_.html">&quot;lib/CLValue&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_lib_casperclient_.html">&quot;lib/<wbr>Casper<wbr>Client&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_lib_casperhdkey_.html">&quot;lib/<wbr>CasperHDKey&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_lib_contracts_.html">&quot;lib/<wbr>Contracts&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_lib_conversions_.html">&quot;lib/<wbr>Conversions&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_lib_deployutil_.html">&quot;lib/<wbr>Deploy<wbr>Util&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_lib_keys_.html">&quot;lib/<wbr>Keys&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_lib_runtimeargs_.html">&quot;lib/<wbr>Runtime<wbr>Args&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_lib_serialization_.html">&quot;lib/<wbr>Serialization&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_lib_signer_.html">&quot;lib/<wbr>Signer&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_lib_storedvalue_.html">&quot;lib/<wbr>Stored<wbr>Value&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_lib_byterepr_.html">&quot;lib/byterepr&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_lib_index_.html">&quot;lib/index&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_lib_option_.html">&quot;lib/option&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_services_balanceservicebyjsonrpc_.html">&quot;services/<wbr>Balance<wbr>Service<wbr>ByJsonRPC&quot;</a>
-					</li>
 					<li class="current tsd-kind-module">
 						<a href="../modules/_services_casperservicebyjsonrpc_.html">&quot;services/<wbr>Casper<wbr>Service<wbr>ByJsonRPC&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_services_casperservicebyjsonrpc_test_.html">&quot;services/<wbr>Casper<wbr>Service<wbr>ByJsonRPC.test&quot;</a>
-					</li>
-					<li class=" tsd-kind-module">
-						<a href="../modules/_services_index_.html">&quot;services/index&quot;</a>
 					</li>
 				</ul>
 			</nav>
@@ -546,7 +616,7 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-protected">
 								<a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#client" class="tsd-kind-icon">client</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
@@ -571,7 +641,19 @@
 								<a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#getblockstate" class="tsd-kind-icon">get<wbr>Block<wbr>State</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#getblocktransfers" class="tsd-kind-icon">get<wbr>Block<wbr>Transfers</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#getdeployinfo" class="tsd-kind-icon">get<wbr>Deploy<wbr>Info</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#getdictionaryitembyuref" class="tsd-kind-icon">get<wbr>Dictionary<wbr>Item<wbr>ByURef</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#geterainfobyswitchblock" class="tsd-kind-icon">get<wbr>Era<wbr>Info<wbr>BySwitch<wbr>Block</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#geterainfobyswitchblockheight" class="tsd-kind-icon">get<wbr>Era<wbr>Info<wbr>BySwitch<wbr>Block<wbr>Height</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_services_casperservicebyjsonrpc_.casperservicebyjsonrpc.html#getlatestblockinfo" class="tsd-kind-icon">get<wbr>Latest<wbr>Block<wbr>Info</a>
@@ -592,6 +674,9 @@
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-class tsd-parent-kind-module">
+						<a href="_services_casperservicebyjsonrpc_.erasummary.html" class="tsd-kind-icon">Era<wbr>Summary</a>
+					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="../interfaces/_services_casperservicebyjsonrpc_.auctionstate.html" class="tsd-kind-icon">Auction<wbr>State</a>
 					</li>
@@ -610,8 +695,11 @@
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="../interfaces/_services_casperservicebyjsonrpc_.eravalidators.html" class="tsd-kind-icon">Era<wbr>Validators</a>
 					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
+					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="../interfaces/_services_casperservicebyjsonrpc_.executionresult.html" class="tsd-kind-icon">Execution<wbr>Result</a>
+					</li>
+					<li class=" tsd-kind-interface tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../interfaces/_services_casperservicebyjsonrpc_.executionresultbody.html" class="tsd-kind-icon">Execution<wbr>Result<wbr>Body</a>
 					</li>
 					<li class=" tsd-kind-interface tsd-parent-kind-module">
 						<a href="../interfaces/_services_casperservicebyjsonrpc_.getblockresult.html" class="tsd-kind-icon">Get<wbr>Block<wbr>Result</a>
@@ -686,6 +774,8 @@
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
 			<ul class="tsd-legend">
+				<li class="tsd-kind-namespace"><span class="tsd-kind-icon">Namespace</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
 				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
 				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
 				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
@@ -706,7 +796,7 @@
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
 			</ul>
 		</div>
 	</div>
