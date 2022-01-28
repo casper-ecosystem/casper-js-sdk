@@ -1,5 +1,5 @@
 import { jsonArrayMember, jsonMember, jsonObject } from 'typedjson';
-import { CLValue } from './CLValue';
+import { CLValue, CLType, CLValueParsers, matchTypeToCLType } from './CLValue';
 
 @jsonObject
 class NamedKey {
@@ -74,8 +74,14 @@ export class TransferJson {
   public gas: string;
 
   // User-defined id
-  @jsonMember({ constructor: String, preserveNull: true })
-  public id: string | null;
+  @jsonMember({ constructor: Number, preserveNull: true })
+  public id: number | null;
+}
+
+@jsonObject
+export class Transfers {
+  @jsonArrayMember(TransferJson)
+  transfers: TransferJson[];
 }
 
 @jsonObject
@@ -154,6 +160,52 @@ export class EraInfoJson {
 }
 
 /**
+ * Named CLType arguments
+ */
+@jsonObject
+export class NamedCLTypeArg {
+  @jsonMember({ constructor: String })
+  public name: string;
+
+  @jsonMember({
+    name: 'cl_type',
+    deserializer: json => matchTypeToCLType(json)
+  })
+  public clType: CLType;
+}
+
+/**
+ * Entry point metadata
+ */
+@jsonObject
+export class EntryPoint {
+  @jsonMember({
+    name: 'access',
+    deserializer: json => {
+      if (typeof json === 'string') return json;
+      // TODO: add support for object access
+      return null;
+    }
+  })
+  public access: string;
+
+  @jsonMember({ name: 'entry_point_type', constructor: String })
+  public entryPointType: string;
+
+  @jsonMember({ constructor: String })
+  public name: string;
+
+  @jsonMember({
+    name: 'ret',
+    deserializer: json => matchTypeToCLType(json)
+  })
+  public ret: string;
+
+  @jsonArrayMember(NamedCLTypeArg)
+  public args: NamedCLTypeArg[];
+}
+
+/**
  * Contract metadata.
  */
 @jsonObject
@@ -164,15 +216,85 @@ export class ContractMetadataJson {
   @jsonMember({ name: 'contract_wasm_hash', constructor: String })
   public contractWasmHash: string;
 
+  @jsonArrayMember(EntryPoint, { name: 'entry_points' })
+  public entrypoints: EntryPoint[];
+
   @jsonMember({ name: 'protocol_version', constructor: String })
   public protocolVersion: string;
+
+  @jsonArrayMember(NamedKey, { name: 'named_keys' })
+  public namedKeys: NamedKey[];
+}
+
+/**
+ * Contract Version.
+ */
+@jsonObject
+export class ContractVersionJson {
+  @jsonMember({ name: 'protocol_version_major', constructor: Number })
+  public protocolVersionMajor: number;
+
+  @jsonMember({ name: 'contract_version', constructor: Number })
+  public contractVersion: number;
+
+  @jsonMember({ name: 'contract_hash', constructor: String })
+  public contractHash: string;
+}
+
+/**
+ * Disabled Version.
+ */
+@jsonObject
+export class DisabledVersionJson {
+  @jsonMember({ name: 'protocol_version_major', constructor: Number })
+  public accessKey: number;
+
+  @jsonMember({ name: 'contract_version', constructor: Number })
+  public contractVersion: number;
+}
+
+/**
+ * Groups.
+ */
+@jsonObject
+export class GroupsJson {
+  @jsonMember({ name: 'group', constructor: String })
+  public group: string;
+
+  @jsonMember({ name: 'keys', constructor: String })
+  public keys: string;
+}
+
+/**
+ * Contract Package.
+ */
+@jsonObject
+export class ContractPackageJson {
+  @jsonMember({ name: 'access_key', constructor: String })
+  public accessKey: string;
+
+  @jsonArrayMember(ContractVersionJson, { name: 'versions' })
+  public versions: ContractVersionJson[];
+
+  @jsonArrayMember(DisabledVersionJson, { name: 'disabled_versions' })
+  public disabledVersions: DisabledVersionJson[];
+
+  @jsonArrayMember(GroupsJson, { name: 'groups' })
+  public groups: GroupsJson[];
 }
 
 @jsonObject
 export class StoredValue {
   // StoredVale
-  @jsonMember({ constructor: CLValue })
+  @jsonMember({
+    name: 'CLValue',
+    deserializer: json => {
+      if (!json) return;
+      return CLValueParsers.fromJSON(json).unwrap();
+    }
+  })
   public CLValue?: CLValue;
+
   // An account
   @jsonMember({ constructor: AccountJson })
   public Account?: AccountJson;
@@ -186,8 +308,8 @@ export class StoredValue {
   public Contract?: ContractMetadataJson;
 
   // A contract definition, metadata, and security container
-  @jsonMember({ constructor: String })
-  public ContractPackage?: string;
+  @jsonMember({ constructor: ContractPackageJson })
+  public ContractPackage?: ContractPackageJson;
 
   // A record of a transfer
   @jsonMember({ constructor: TransferJson })

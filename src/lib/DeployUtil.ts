@@ -3,18 +3,25 @@
  *
  * @packageDocumentation
  */
+import { Result, Ok, Err, Some, None } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
 import blake from 'blakejs';
-import { Option } from './option';
 import { decodeBase16, encodeBase16 } from './Conversions';
 import humanizeDuration from 'humanize-duration';
 import {
-  CLTypedAndToBytesHelper,
-  CLTypeHelper,
   CLValue,
-  PublicKey,
+  CLValueBuilder,
+  CLTypeBuilder,
+  CLValueParsers,
+  CLPublicKey,
   ToBytes,
-  U32
+  CLU32,
+  CLU32Type,
+  CLU64,
+  CLU64Type,
+  CLOption,
+  CLURef,
+  ToBytesResult
 } from './CLValue';
 import {
   toBytesArrayU8,
@@ -22,17 +29,16 @@ import {
   toBytesDeployHash,
   toBytesString,
   toBytesU64,
-  toBytesVecT,
-  toBytesU32
-} from './byterepr';
+  toBytesU32,
+  toBytesVector
+} from './ByteConverters';
 import { RuntimeArgs } from './RuntimeArgs';
 // import JSBI from 'jsbi';
-import { DeployUtil, Keys, URef } from './index';
+import { DeployUtil, Keys } from './index';
 import { AsymmetricKey, SignatureAlgorithm } from './Keys';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { jsonArrayMember, jsonMember, jsonObject, TypedJSON } from 'typedjson';
 import { ByteArray } from 'tweetnacl-ts';
-import { Result, Ok, Err } from 'ts-results';
 
 const shortEnglishHumanizer = humanizeDuration.humanizer({
   spacer: '',
@@ -103,17 +109,17 @@ export const dehumanizerTTL = (ttl: string): number => {
 };
 
 export class UniqAddress {
-  publicKey: PublicKey;
+  publicKey: CLPublicKey;
   transferId: BigNumber;
 
   /**
    * Constructs UniqAddress
-   * @param publicKey PublicKey instance
+   * @param publicKey CLPublicKey instance
    * @param transferId BigNumberish value (can be also string representing number). Max U64.
    */
-  constructor(publicKey: PublicKey, transferId: BigNumberish) {
-    if (!(publicKey instanceof PublicKey)) {
-      throw new Error('publicKey is not an instance of PublicKey');
+  constructor(publicKey: CLPublicKey, transferId: BigNumberish) {
+    if (!(publicKey instanceof CLPublicKey)) {
+      throw new Error('publicKey is not an instance of CLPublicKey');
     }
     const bigNum = BigNumber.from(transferId);
     if (bigNum.gt('18446744073709551615')) {
@@ -128,7 +134,7 @@ export class UniqAddress {
    * @param ttl in humanized string
    */
   toString(): string {
-    return `${this.publicKey.toAccountHex()}-${this.transferId.toHexString()}`;
+    return `${this.publicKey.toHex()}-${this.transferId.toHexString()}`;
   }
 
   /**
@@ -137,7 +143,7 @@ export class UniqAddress {
    */
   static fromString(value: string): UniqAddress {
     const [accountHex, transferHex] = value.split('-');
-    const publicKey = PublicKey.fromHex(accountHex);
+    const publicKey = CLPublicKey.fromHex(accountHex);
     return new UniqAddress(publicKey, transferHex);
   }
 }
@@ -145,14 +151,14 @@ export class UniqAddress {
 @jsonObject
 export class DeployHeader implements ToBytes {
   @jsonMember({
-    serializer: (account: PublicKey) => {
-      return account.toAccountHex();
+    serializer: (account: CLPublicKey) => {
+      return account.toHex();
     },
     deserializer: (hexStr: string) => {
-      return PublicKey.fromHex(hexStr);
+      return CLPublicKey.fromHex(hexStr);
     }
   })
-  public account: PublicKey;
+  public account: CLPublicKey;
 
   @jsonMember({
     serializer: (n: number) => new Date(n).toISOString(),
@@ -199,7 +205,7 @@ export class DeployHeader implements ToBytes {
    * @param chainName Which chain the deploy is supposed to be run on.
    */
   constructor(
-    account: PublicKey,
+    account: CLPublicKey,
     timestamp: number,
     ttl: number,
     gasPrice: number,
@@ -216,16 +222,18 @@ export class DeployHeader implements ToBytes {
     this.chainName = chainName;
   }
 
-  public toBytes(): Uint8Array {
-    return concat([
-      this.account.toBytes(),
-      toBytesU64(this.timestamp),
-      toBytesU64(this.ttl),
-      toBytesU64(this.gasPrice),
-      toBytesDeployHash(this.bodyHash),
-      toBytesVecT(this.dependencies.map(d => new DeployHash(d))),
-      toBytesString(this.chainName)
-    ]);
+  public toBytes(): ToBytesResult {
+    return Ok(
+      concat([
+        CLValueParsers.toBytes(this.account).unwrap(),
+        toBytesU64(this.timestamp),
+        toBytesU64(this.ttl),
+        toBytesU64(this.gasPrice),
+        toBytesDeployHash(this.bodyHash),
+        toBytesVector(this.dependencies.map(d => new DeployHash(d))),
+        toBytesString(this.chainName)
+      ])
+    );
   }
 }
 
@@ -235,8 +243,8 @@ export class DeployHeader implements ToBytes {
 class DeployHash implements ToBytes {
   constructor(private hash: Uint8Array) {}
 
-  public toBytes(): Uint8Array {
-    return toBytesDeployHash(this.hash);
+  public toBytes(): ToBytesResult {
+    return Ok(toBytesDeployHash(this.hash));
   }
 }
 
@@ -264,7 +272,7 @@ abstract class ExecutableDeployItemInternal implements ToBytes {
 
   public abstract args: RuntimeArgs;
 
-  public abstract toBytes(): Uint8Array;
+  public abstract toBytes(): ToBytesResult;
 
   public getArgByName(name: string): CLValue | undefined {
     return this.args.args.get(name);
@@ -313,12 +321,14 @@ export class ModuleBytes extends ExecutableDeployItemInternal {
     this.args = args;
   }
 
-  public toBytes(): Uint8Array {
-    return concat([
-      Uint8Array.from([this.tag]),
-      toBytesArrayU8(this.moduleBytes),
-      toBytesBytesArray(this.args.toBytes())
-    ]);
+  public toBytes(): ToBytesResult {
+    return Ok(
+      concat([
+        Uint8Array.from([this.tag]),
+        toBytesArrayU8(this.moduleBytes),
+        toBytesBytesArray(this.args.toBytes().unwrap())
+      ])
+    );
   }
 }
 
@@ -352,13 +362,15 @@ export class StoredContractByHash extends ExecutableDeployItemInternal {
     this.hash = hash;
   }
 
-  public toBytes(): Uint8Array {
-    return concat([
-      Uint8Array.from([this.tag]),
-      toBytesBytesArray(this.hash),
-      toBytesString(this.entryPoint),
-      toBytesBytesArray(this.args.toBytes())
-    ]);
+  public toBytes(): ToBytesResult {
+    return Ok(
+      concat([
+        Uint8Array.from([this.tag]),
+        toBytesBytesArray(this.hash),
+        toBytesString(this.entryPoint),
+        toBytesBytesArray(this.args.toBytes().unwrap())
+      ])
+    );
   }
 }
 
@@ -389,13 +401,15 @@ export class StoredContractByName extends ExecutableDeployItemInternal {
     this.args = args;
   }
 
-  public toBytes(): Uint8Array {
-    return concat([
-      Uint8Array.from([this.tag]),
-      toBytesString(this.name),
-      toBytesString(this.entryPoint),
-      toBytesBytesArray(this.args.toBytes())
-    ]);
+  public toBytes(): ToBytesResult {
+    return Ok(
+      concat([
+        Uint8Array.from([this.tag]),
+        toBytesString(this.name),
+        toBytesString(this.entryPoint),
+        toBytesBytesArray(this.args.toBytes().unwrap())
+      ])
+    );
   }
 }
 
@@ -431,20 +445,22 @@ export class StoredVersionedContractByName extends ExecutableDeployItemInternal 
     this.args = args;
   }
 
-  public toBytes(): Uint8Array {
+  public toBytes(): ToBytesResult {
     let serializedVersion;
     if (this.version === null) {
-      serializedVersion = new Option(null, CLTypeHelper.u32());
+      serializedVersion = new CLOption(None, new CLU32Type());
     } else {
-      serializedVersion = new Option(new U32(this.version as number));
+      serializedVersion = new CLOption(Some(new CLU32(this.version as number)));
     }
-    return concat([
-      Uint8Array.from([this.tag]),
-      toBytesString(this.name),
-      serializedVersion.toBytes(),
-      toBytesString(this.entryPoint),
-      toBytesBytesArray(this.args.toBytes())
-    ]);
+    return Ok(
+      concat([
+        Uint8Array.from([this.tag]),
+        toBytesString(this.name),
+        CLValueParsers.toBytes(serializedVersion).unwrap(),
+        toBytesString(this.entryPoint),
+        toBytesBytesArray(this.args.toBytes().unwrap())
+      ])
+    );
   }
 }
 
@@ -489,21 +505,23 @@ export class StoredVersionedContractByHash extends ExecutableDeployItemInternal 
     this.args = args;
   }
 
-  public toBytes(): Uint8Array {
+  public toBytes(): ToBytesResult {
     let serializedVersion;
 
     if (this.version === null) {
-      serializedVersion = new Option(null, CLTypeHelper.u32());
+      serializedVersion = new CLOption(None, new CLU32Type());
     } else {
-      serializedVersion = new Option(new U32(this.version as number));
+      serializedVersion = new CLOption(Some(new CLU32(this.version as number)));
     }
-    return concat([
-      Uint8Array.from([this.tag]),
-      toBytesBytesArray(this.hash),
-      serializedVersion.toBytes(),
-      toBytesString(this.entryPoint),
-      toBytesBytesArray(this.args.toBytes())
-    ]);
+    return Ok(
+      concat([
+        Uint8Array.from([this.tag]),
+        toBytesBytesArray(this.hash),
+        CLValueParsers.toBytes(serializedVersion).unwrap(),
+        toBytesString(this.entryPoint),
+        toBytesBytesArray(this.args.toBytes().unwrap())
+      ])
+    );
   }
 }
 
@@ -520,7 +538,7 @@ export class Transfer extends ExecutableDeployItemInternal {
   /**
    * Constructor for Transfer deploy item.
    * @param amount The number of motes to transfer
-   * @param target URef of the target purse or the public key of target account. You could generate this public key from accountHex by PublicKey.fromHex
+   * @param target URef of the target purse or the public key of target account. You could generate this public key from accountHex by CLPublicKey.fromHex
    * @param sourcePurse URef of the source purse. If this is omitted, the main purse of the account creating this \
    * transfer will be used as the source purse
    * @param id user-defined transfer id
@@ -530,11 +548,13 @@ export class Transfer extends ExecutableDeployItemInternal {
     this.args = args;
   }
 
-  public toBytes(): Uint8Array {
-    return concat([
-      Uint8Array.from([this.tag]),
-      toBytesBytesArray(this.args.toBytes())
-    ]);
+  public toBytes(): ToBytesResult {
+    return Ok(
+      concat([
+        Uint8Array.from([this.tag]),
+        toBytesBytesArray(this.args.toBytes().unwrap())
+      ])
+    );
   }
 }
 
@@ -575,7 +595,7 @@ export class ExecutableDeployItem implements ToBytes {
   })
   public transfer?: Transfer;
 
-  public toBytes(): Uint8Array {
+  public toBytes(): ToBytesResult {
     if (this.isModuleBytes()) {
       return this.moduleBytes!.toBytes();
     } else if (this.isStoredContractByHash()) {
@@ -707,26 +727,26 @@ export class ExecutableDeployItem implements ToBytes {
   /**
    * Constructor for Transfer deploy item.
    * @param amount The number of motes to transfer
-   * @param target URef of the target purse or the public key of target account. You could generate this public key from accountHex by PublicKey.fromHex
+   * @param target URef of the target purse or the public key of target account. You could generate this public key from accountHex by CLPublicKey.fromHex
    * @param sourcePurse URef of the source purse. If this is omitted, the main purse of the account creating this \
    * transfer will be used as the source purse
    * @param id user-defined transfer id. This parameter is required.
    */
   public static newTransfer(
     amount: BigNumberish,
-    target: URef | PublicKey,
-    sourcePurse: URef | null = null,
+    target: CLURef | CLPublicKey,
+    sourcePurse: CLURef | null = null,
     id: BigNumberish
-  ) {
+  ): ExecutableDeployItem {
     const runtimeArgs = RuntimeArgs.fromMap({});
-    runtimeArgs.insert('amount', CLValue.u512(amount));
+    runtimeArgs.insert('amount', CLValueBuilder.u512(amount));
     if (sourcePurse) {
-      runtimeArgs.insert('source', CLValue.uref(sourcePurse));
+      runtimeArgs.insert('source', sourcePurse);
     }
-    if (target instanceof URef) {
-      runtimeArgs.insert('target', CLValue.uref(target));
-    } else if (target instanceof PublicKey) {
-      runtimeArgs.insert('target', CLValue.byteArray(target.toAccountHash()));
+    if (target instanceof CLURef) {
+      runtimeArgs.insert('target', target);
+    } else if (target instanceof CLPublicKey) {
+      runtimeArgs.insert('target', target);
     } else {
       throw new Error('Please specify target');
     }
@@ -735,7 +755,7 @@ export class ExecutableDeployItem implements ToBytes {
     } else {
       runtimeArgs.insert(
         'id',
-        CLValue.option(CLTypedAndToBytesHelper.u64(id), CLTypeHelper.u64())
+        CLValueBuilder.option(Some(new CLU64(id)), new CLU64Type())
       );
     }
     return ExecutableDeployItem.fromExecutableDeployItemInternal(
@@ -754,29 +774,35 @@ export class ExecutableDeployItem implements ToBytes {
    */
   public static newTransferWithOptionalTransferId(
     amount: BigNumberish,
-    target: URef | PublicKey,
-    sourcePurse?: URef | null,
+    target: CLURef | CLPublicKey,
+    sourcePurse?: CLURef | null,
     id?: BigNumberish
   ) {
     const runtimeArgs = RuntimeArgs.fromMap({});
-    runtimeArgs.insert('amount', CLValue.u512(amount));
+    runtimeArgs.insert('amount', CLValueBuilder.u512(amount));
     if (sourcePurse) {
-      runtimeArgs.insert('source', CLValue.uref(sourcePurse));
+      runtimeArgs.insert('source', sourcePurse);
     }
-    if (target instanceof URef) {
-      runtimeArgs.insert('target', CLValue.uref(target));
-    } else if (target instanceof PublicKey) {
-      runtimeArgs.insert('target', CLValue.byteArray(target.toAccountHash()));
+    if (target instanceof CLURef) {
+      runtimeArgs.insert('target', target);
+    } else if (target instanceof CLPublicKey) {
+      runtimeArgs.insert(
+        'target',
+        CLValueBuilder.byteArray(target.toAccountHash())
+      );
     } else {
       throw new Error('Please specify target');
     }
     if (id !== undefined && id !== null) {
       runtimeArgs.insert(
         'id',
-        CLValue.option(CLTypedAndToBytesHelper.u64(id), CLTypeHelper.u64())
+        CLValueBuilder.option(Some(CLValueBuilder.u64(id)), CLTypeBuilder.u64())
       );
     } else {
-      runtimeArgs.insert('id', CLValue.option(null, CLTypeHelper.u64()));
+      runtimeArgs.insert(
+        'id',
+        CLValueBuilder.option(None, CLTypeBuilder.u64())
+      );
     }
 
     return ExecutableDeployItem.fromExecutableDeployItemInternal(
@@ -797,14 +823,14 @@ export class ExecutableDeployItem implements ToBytes {
    * transfer will be used as the source purse
    */
   public static newTransferToUniqAddress(
-    source: PublicKey,
+    source: CLPublicKey,
     target: UniqAddress,
     amount: BigNumberish,
     paymentAmount: BigNumberish,
     chainName: string,
     gasPrice = 1,
     ttl = 1800000,
-    sourcePurse?: URef
+    sourcePurse?: CLURef
   ): Deploy {
     const deployParams = new DeployUtil.DeployParams(
       source,
@@ -943,7 +969,7 @@ export class Deploy {
  * Serialize deployHeader into a array of bytes
  * @param deployHeader
  */
-export const serializeHeader = (deployHeader: DeployHeader): Uint8Array => {
+export const serializeHeader = (deployHeader: DeployHeader): ToBytesResult => {
   return deployHeader.toBytes();
 };
 
@@ -956,7 +982,7 @@ export const serializeBody = (
   payment: ExecutableDeployItem,
   session: ExecutableDeployItem
 ): Uint8Array => {
-  return concat([payment.toBytes(), session.toBytes()]);
+  return concat([payment.toBytes().unwrap(), session.toBytes().unwrap()]);
 };
 
 export const serializeApprovals = (approvals: Approval[]): Uint8Array => {
@@ -992,7 +1018,7 @@ export class DeployParams {
    * @param timestamp  If `timestamp` is empty, the current time will be used. Note that timestamp is UTC, not local.
    */
   constructor(
-    public accountPublicKey: PublicKey,
+    public accountPublicKey: CLPublicKey,
     public chainName: string,
     public gasPrice: number = 1,
     public ttl: number = 1800000,
@@ -1030,7 +1056,7 @@ export function makeDeploy(
     deployParam.chainName
   );
   const serializedHeader = serializeHeader(header);
-  const deployHash = blake.blake2b(serializedHeader, null, 32);
+  const deployHash = blake.blake2b(serializedHeader.unwrap(), null, 32);
   return new Deploy(deployHash, header, payment, session, []);
 }
 
@@ -1070,17 +1096,16 @@ export const signDeploy = (
 export const setSignature = (
   deploy: Deploy,
   sig: Uint8Array,
-  publicKey: PublicKey
+  publicKey: CLPublicKey
 ): Deploy => {
   const approval = new Approval();
-  approval.signer = publicKey.toAccountHex();
-  switch (publicKey.signatureAlgorithm()) {
-    case SignatureAlgorithm.Ed25519:
-      approval.signature = Keys.Ed25519.accountHex(sig);
-      break;
-    case SignatureAlgorithm.Secp256K1:
-      approval.signature = Keys.Secp256K1.accountHex(sig);
-      break;
+  approval.signer = publicKey.toHex();
+  // TBD: Make sure it is proper
+  if (publicKey.isEd25519()) {
+    approval.signature = Keys.Ed25519.accountHex(sig);
+  }
+  if (publicKey.isSecp256K1()) {
+    approval.signature = Keys.Secp256K1.accountHex(sig);
   }
   deploy.approvals.push(approval);
   return deploy;
@@ -1093,7 +1118,7 @@ export const setSignature = (
  */
 export const standardPayment = (paymentAmount: BigNumberish) => {
   const paymentArgs = RuntimeArgs.fromMap({
-    amount: CLValue.u512(paymentAmount.toString())
+    amount: CLValueBuilder.u512(paymentAmount.toString())
   });
 
   return ExecutableDeployItem.newModuleBytes(Uint8Array.from([]), paymentArgs);
@@ -1116,13 +1141,28 @@ export const deployToJson = (deploy: Deploy) => {
  *
  * @param json
  */
-export const deployFromJson = (json: any) => {
-  const serializer = new TypedJSON(Deploy);
-  const deploy = serializer.parse(json.deploy);
-  if (deploy !== undefined && validateDeploy(deploy).ok) {
-    return deploy;
+export const deployFromJson = (json: any): Result<Deploy, Error> => {
+  if (json.deploy === undefined) {
+    return new Err(new Error("The Deploy JSON doesn't have 'deploy' field."));
   }
-  return undefined;
+  let deploy = null;
+  try {
+    const serializer = new TypedJSON(Deploy);
+    deploy = serializer.parse(json.deploy);
+  } catch (serializationError) {
+    return new Err(serializationError);
+  }
+
+  if (deploy === undefined || deploy === null) {
+    return Err(new Error("The JSON can't be parsed as a Deploy."));
+  }
+
+  const valid = validateDeploy(deploy);
+  if (valid.err) {
+    return new Err(new Error(valid.val));
+  }
+
+  return new Ok(deploy);
 };
 
 export const addArgToDeploy = (
@@ -1152,7 +1192,7 @@ export const addArgToDeploy = (
 export const deploySizeInBytes = (deploy: Deploy): number => {
   const hashSize = deploy.hash.length;
   const bodySize = serializeBody(deploy.payment, deploy.session).length;
-  const headerSize = serializeHeader(deploy.header).length;
+  const headerSize = serializeHeader(deploy.header).unwrap().length;
   const approvalsSize = deploy.approvals
     .map(approval => {
       return (approval.signature.length + approval.signer.length) / 2;
@@ -1163,6 +1203,10 @@ export const deploySizeInBytes = (deploy: Deploy): number => {
 };
 
 export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
+  if (!(deploy instanceof Deploy)) {
+    return new Err("'deploy' is not an instance of Deploy class.");
+  }
+
   const serializedBody = serializeBody(deploy.payment, deploy.session);
   const bodyHash = blake.blake2b(serializedBody, null, 32);
 
@@ -1171,7 +1215,7 @@ export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
                   got: ${deploy.header.bodyHash}.`);
   }
 
-  const serializedHeader = serializeHeader(deploy.header);
+  const serializedHeader = serializeHeader(deploy.header).unwrap();
   const deployHash = blake.blake2b(serializedHeader, null, 32);
 
   if (!arrayEquals(deploy.hash, deployHash)) {
@@ -1184,13 +1228,13 @@ export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
   return Ok(deploy);
 };
 
-const arrayEquals = (a: Uint8Array, b: Uint8Array): boolean => {
+export const arrayEquals = (a: Uint8Array, b: Uint8Array): boolean => {
   return a.length === b.length && a.every((val, index) => val === b[index]);
 };
 
 export const deployToBytes = (deploy: Deploy): Uint8Array => {
   return concat([
-    serializeHeader(deploy.header),
+    serializeHeader(deploy.header).unwrap(),
     deploy.hash,
     serializeBody(deploy.payment, deploy.session),
     serializeApprovals(deploy.approvals)

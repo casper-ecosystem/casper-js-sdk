@@ -3,9 +3,9 @@ import * as nacl from 'tweetnacl-ts';
 import { SignKeyPair, SignLength } from 'tweetnacl-ts';
 import { decodeBase64 } from 'tweetnacl-util';
 import { encodeBase16, encodeBase64 } from '../index';
-import { PublicKey } from '../lib/index';
+import { CLPublicKey } from './CLValue';
 import { byteHash } from './Contracts';
-import eccrypto from "eccrypto";
+import eccrypto from 'eccrypto';
 import * as secp256k1 from 'ethereum-cryptography/secp256k1';
 import KeyEncoder from 'key-encoder';
 import { sha256 } from 'ethereum-cryptography/sha256';
@@ -65,7 +65,7 @@ export function readBase64WithPEM(content: string): Uint8Array {
 }
 
 export abstract class AsymmetricKey {
-  public readonly publicKey: PublicKey;
+  public readonly publicKey: CLPublicKey;
   public readonly privateKey: Uint8Array;
   public readonly signatureAlgorithm: SignatureAlgorithm;
 
@@ -74,7 +74,7 @@ export abstract class AsymmetricKey {
     privateKey: Uint8Array,
     signatureAlgorithm: SignatureAlgorithm
   ) {
-    this.publicKey = PublicKey.from(publicKey, signatureAlgorithm);
+    this.publicKey = new CLPublicKey(publicKey, signatureAlgorithm);
     this.privateKey = privateKey;
     this.signatureAlgorithm = signatureAlgorithm;
   }
@@ -90,7 +90,7 @@ export abstract class AsymmetricKey {
    * Get the account hex
    */
   public accountHex(): string {
-    return this.publicKey.toAccountHex();
+    return this.publicKey.toHex();
   }
 
   protected toPem(tag: string, content: string) {
@@ -258,7 +258,7 @@ export class Ed25519 extends AsymmetricKey {
     // prettier-ignore
     const derPrefix = Buffer.from([48, 42, 48, 5, 6, 3, 43, 101, 112, 3, 33, 0]);
     const encoded = encodeBase64(
-      Buffer.concat([derPrefix, Buffer.from(this.publicKey.rawPublicKey)])
+      Buffer.concat([derPrefix, Buffer.from(this.publicKey.value())])
     );
     return this.toPem(ED25519_PEM_PUBLIC_KEY_TAG, encoded);
   }
@@ -277,11 +277,7 @@ export class Ed25519 extends AsymmetricKey {
    * @param msg
    */
   public verify(signature: Uint8Array, msg: Uint8Array) {
-    return nacl.sign_detached_verify(
-      msg,
-      signature,
-      this.publicKey.rawPublicKey
-    );
+    return nacl.sign_detached_verify(msg, signature, this.publicKey.value());
   }
 
   /**
@@ -402,9 +398,7 @@ export class Secp256K1 extends AsymmetricKey {
       rawKeyHex = encodeBase16(bytes);
     }
 
-    const publicKey = Uint8Array.from(
-      Buffer.from(rawKeyHex, 'hex')
-    );
+    const publicKey = Uint8Array.from(Buffer.from(rawKeyHex, 'hex'));
     return publicKey;
   }
 
@@ -438,7 +432,7 @@ export class Secp256K1 extends AsymmetricKey {
    */
   public exportPublicKeyInPem(): string {
     return keyEncoder.encodePublic(
-      encodeBase16(this.publicKey.rawPublicKey),
+      encodeBase16(this.publicKey.value()),
       'raw',
       'pem'
     );
@@ -462,7 +456,7 @@ export class Secp256K1 extends AsymmetricKey {
     return secp256k1.ecdsaVerify(
       signature,
       sha256(Buffer.from(msg)),
-      this.publicKey.rawPublicKey
+      this.publicKey.value()
     );
   }
 

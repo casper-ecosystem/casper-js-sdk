@@ -1,8 +1,5 @@
-import {
-  CasperServiceByJsonRPC,
-  GetDeployResult
-} from '../services';
-import { DeployUtil, Keys, PublicKey } from './index';
+import { CasperServiceByJsonRPC, GetDeployResult } from '../services';
+import { DeployUtil, Keys, CLPublicKey } from './index';
 import { encodeBase16 } from './Conversions';
 import { Deploy, DeployParams, ExecutableDeployItem } from './DeployUtil';
 import { AsymmetricKey, SignatureAlgorithm } from './Keys';
@@ -186,7 +183,9 @@ export class CasperClient {
   /**
    * Get the balance of public key
    */
-  public async balanceOfByPublicKey(publicKey: PublicKey): Promise<BigNumber> {
+  public async balanceOfByPublicKey(
+    publicKey: CLPublicKey
+  ): Promise<BigNumber> {
     return this.balanceOfByAccountHash(encodeBase16(publicKey.toAccountHash()));
   }
 
@@ -233,7 +232,7 @@ export class CasperClient {
     return await this.nodeClient
       .getDeployInfo(deployHash)
       .then((result: GetDeployResult) => {
-        return [DeployUtil.deployFromJson(result)!, result];
+        return [DeployUtil.deployFromJson(result).unwrap(), result];
       });
   }
 
@@ -242,7 +241,7 @@ export class CasperClient {
    * @param publicKey
    */
   public async getAccountMainPurseUref(
-    publicKey: PublicKey
+    publicKey: CLPublicKey
   ): Promise<string | null> {
     const stateRootHash = await this.nodeClient
       .getLatestBlockInfo()

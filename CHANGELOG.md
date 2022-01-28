@@ -4,45 +4,231 @@ All notable changes to casper-js-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.7.6
+
+### Changed
+
+- Version 2.0 is now @latest.
+- README updated.
+
+## 2.7.6
+
+### Fixed
+
+- Fixes wrong logic in newTransferWithOptionalTransferId() method.
+
+## 2.7.5
+
+### Fixed
+
+- Fixes problems with Lists containing multiple Keys containing Hash or ByteArray.
+- Fixes problem with ByteArray with size different than 32 bytes.
+
+## 2.7.4
+
+### Fixed
+
+- Fixes problems with `getBlockInfo` and mixed case block hashes.
+
+## 2.7.3
+
+### Added
+
+- Added types missing in OpenRPC library
+
+## 2.7.2
+
+### Fixed
+
+- Fix for bundling all of the existing types defined in the library.
+
+## 2.7.1
+
+### Fixed
+
+- Added support for mixed case hex representation of public keys introduced in `casper-node` `1.4.2`.
+
+## 2.7.0
+
+### Changed
+
+- Now `target` in transfer is represented by `PublicKey` instead of `account-hash`.
+
+## 2.6.2
+
+### Added
+
+- Now minimal bundle without any polyfills included is a part of distribution package.
+
+## 2.6.1
+
+### Fixed
+
+- Added workaround for historical deploys with invalid serialized `0`.
+
+## 2.6.0
+
+### Added
+
+- Added `CasperProvider`
+
+## 2.5.2
+
+### Fixed
+
+- Problem when serializing U128, U256 ad U512 `toBytes`.
+
+## 2.5.1
+
+### Fixed
+
+- Added stronger validation to `PublicKey.fromHex` method
+- Fix for deploy's `execution_result` type signatures
+- Fix instanceof problem in `CLValueParser` which caused problems when two different versions of SDK was used in one project
+- Signer methods fixes
+
+## 2.5.0
+
+### Added
+
+- `signMessage` - added method to sign arbitrary string message
+- `verifyMessageSignature` - added method to verify signature of arbitrary string message
+
+## 2.4.1
+
+### Fixed
+
+- `EventStream` - fixed problems with multiple data chunks parsing
+
+## 2.4.0
+
+### Added
+
+- `DeployWatcher` added
+
+## 2.3.0
+
+### Added
+
+- `state_get_dictionary_item` with URef support in `getDictionaryItemByURef` implemented
+
+## 2.2.3
+
+### Fixed
+
+- `StoredValue` parsing access param hotfixed
+
+## 2.2.2
+
+### Fixed
+
+- `CLMap` fix for empty maps from bytes
+- `CLMap` replaced problematic Map implementation
+
+## 2.2.1
+
+### Fixed
+
+- `EventStream` now properly handle invalid JSONs
+
+## 2.2.0
+
+### Added
+
+- `EventStream` added
+
+## 2.1.0
+
+### Fixed
+
+- `state-get-item` due to RPC changes
+- `CLList` as empty list initialization from JSON
+
+### Added
+
+- `getBlockTransfers`, `getEraInfoBySwitchBlock`, `getEraInfoBySwitchBlockHeight` methods to `CasperServiceByJsonRPC`
+
+## 2.0.1
+
+### Changed
+
+- `DeployUtil.deployFromJson` returns now `Result<Deploy, Error>` instead of `Deploy | undefined`. `Error` has a `message` inside.
+
+## 2.0.0
+
+### Changed
+
+- Caution! This release contains rewritten CLValue from scratch, there are some breaking changes so consider it before upgrading.
+- Removed `CLTypedAndToBytesHelper` to have consistent way of creating new CLValues by using `new CLBool(true)` or `CLValueBuilder.bool(true)`
+- Removed `CLTypeHelper` have consistent way of creating new CLValues by using `new CLBoolType()` or `CLTypeBuilder.bool()`
+- `CLValue` static methods now are moved to `CLValueBuilder` eg. `CLValueBuilder.u512`
+- Every class inheriting from `CLValue` is now named with `CL` prefix, bigger naming changes:
+  - `StringValue` -> `CLString`
+  - `KeyValue` -> `CLKey`
+  - `MapValue` -> `CLMap`
+  - `Option` -> `CLOption`
+- There are API changes in `CLResult`
+
+```
+const myTypesComplex = {
+  ok: new CLListType(new CLListType(new CLU8Type())),
+  err: new CLOptionType(new CLListType(new CLListType(new CLU8Type())))
+};
+
+const myOkComplexRes = new CLResult( Ok(new CLList([new CLList([new CLU8(5), new CLU8(10), new CLU8(15)])])), myTypesComplex );
+```
+
+- There are API changes in `CLOption` - now it requires `Some` or `None` wrappers as argument (from `ts-result` library).
+- Now all the serialization methods are not connected to `CLValue` anymore - `toJSON`, `fromJSON`, `toBytes`, `fromBytes` needs to be called with `CLValueParsers` eg. `CLValueParser.toJSON(CLValueBuilder.string("ABC"))`
+- Renamed methods in `CLPublicKey`:
+  - `toAccountHex` -> `toHex` - old name led to misunderstandings as in fact this is hex representation of `public-key` prefixed with key-type.
+  - added method `toAccountHashStr` - this methods returns string containing account hash in hex form prefixed with `account-hash-`.
+
+## 1.4.4
+
+### Changed
+
+- Experimental release with `@next` tag.
+
 ## 1.4.3
 
-## Changed
+### Changed
 
 - Changed repo name and npm package name from `casper-client-sdk` to `casper-js-sdk`.
 
 ## 1.4.2
 
-## Added
+### Added
 
 - `newTransferWithoutObligatoryId` renamed to `newTransferWithOptionalTransferId`
 
 ## 1.4.1
 
-## Added
+### Added
 
 - `newTransferWithoutObligatoryId` restores the function that gives abilitity to send transfer without providing id.
 
 ## 1.4.0
 
-## Changed
+### Changed
 
 - `Signer.sign` now requires deploy in JSON format, `public-key hex` of a sender and `public-key hex` of a target.
 
 ## 1.3.4
 
-## Added
+### Added
 
 - `Signer.getVersion` returns running version of Signer.
 
 ## 1.3.3
 
-## Fixed
+### Fixed
 
 - `Keys.SECP256K1.new()` and other SECP256K1 releated methods now can work in a browser environment.
 
 ## 1.3.2
 
-## Added
+### Added
 
 - `DeployUtil.deployToBytes(deploy)` returns an `Uint8Array`, which is a byte representation of a deploy.
 
@@ -236,4 +422,4 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 
-- Changed CLValue's `value` to `value()` and `remainder` to `remainder()`.
+g Changed CLValue's `value` to `value()` and `remainder` to `remainder()`.

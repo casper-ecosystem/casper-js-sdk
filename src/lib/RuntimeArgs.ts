@@ -1,56 +1,64 @@
 /**
  * Implements a collection of runtime arguments.
  */
-import { toBytesString, toBytesVecT } from './byterepr';
-import { CLValue, Result, StringValue, ToBytes, U32 } from './CLValue';
+import { Ok, Err } from 'ts-results';
+import { toBytesString, toBytesVector } from './ByteConverters';
+import {
+  CLValue,
+  CLValueParsers,
+  CLStringBytesParser,
+  CLU32BytesParser,
+  ToBytes,
+  ToBytesResult,
+  ResultAndRemainder,
+  resultHelper
+} from './CLValue';
 import { concat } from '@ethersproject/bytes';
-import { jsonMember, jsonObject, TypedJSON } from 'typedjson';
+import { jsonMapMember, jsonObject } from 'typedjson';
 
 export class NamedArg implements ToBytes {
   constructor(public name: string, public value: CLValue) {}
 
-  public toBytes(): Uint8Array {
+  public toBytes(): ToBytesResult {
     const name = toBytesString(this.name);
-    const value = this.value.toBytes();
-    return concat([name, value]);
+    const value = CLValueParsers.toBytesWithType(this.value);
+    return Ok(concat([name, value.unwrap()]));
   }
 
-  public static fromBytes(bytes: Uint8Array): Result<NamedArg> {
-    const nameRes = StringValue.fromBytes(bytes);
-    if (nameRes.hasError()) {
-      return Result.Err(nameRes.error);
+  public static fromBytes(
+    bytes: Uint8Array
+  ): ResultAndRemainder<NamedArg, string> {
+    const {
+      result: nameRes,
+      remainder: nameRem
+    } = new CLStringBytesParser().fromBytesWithRemainder(bytes);
+    const name = nameRes.unwrap();
+    if (!nameRem) {
+      return resultHelper(Err('Missing data for value of named arg'));
     }
-    const clValueRes = CLValue.fromBytes(nameRes.remainder());
-    if (clValueRes.hasError()) {
-      return Result.Err(clValueRes.error);
-    }
-    return Result.Ok(
-      new NamedArg(nameRes.value().val, clValueRes.value()),
-      clValueRes.remainder()
-    );
+    const value = CLValueParsers.fromBytesWithType(nameRem).unwrap();
+    return resultHelper(Ok(new NamedArg(name.value(), value)));
   }
 }
 
 const desRA = (_arr: any) => {
-  const clValueSerializer = new TypedJSON(CLValue);
   return new Map(
     Array.from(_arr, ([key, value]) => {
-      return [key, clValueSerializer.parse(value)];
+      const val = CLValueParsers.fromJSON(value);
+      return [key, val.unwrap()];
     })
   );
 };
 
 const serRA = (map: Map<string, CLValue>) => {
-  const clValueSerializer = new TypedJSON(CLValue);
-  return Array.from(map, ([key, value]) => [
-    key,
-    clValueSerializer.toPlainJson(value)
-  ]);
+  return Array.from(map, ([key, value]) => {
+    return [key, CLValueParsers.toJSON(value).unwrap()];
+  });
 };
 
 @jsonObject()
 export class RuntimeArgs implements ToBytes {
-  @jsonMember({
+  @jsonMapMember(String, CLValue, {
     serializer: serRA,
     deserializer: desRA
   })
@@ -79,29 +87,39 @@ export class RuntimeArgs implements ToBytes {
     this.args.set(key, value);
   }
 
-  public toBytes() {
+  public toBytes(): ToBytesResult {
     const vec = Array.from(this.args.entries()).map((a: [string, CLValue]) => {
       return new NamedArg(a[0], a[1]);
     });
-    return toBytesVecT(vec);
+    return Ok(toBytesVector(vec));
   }
 
-  public static fromBytes(bytes: Uint8Array): Result<RuntimeArgs> {
-    const sizeRes = U32.fromBytes(bytes);
-    if (sizeRes.hasError()) {
-      return Result.Err(sizeRes.error);
-    }
-    const size = sizeRes.value().val.toNumber();
-    let remainBytes = sizeRes.remainder();
+  // TODO: Add tests to check if it is working properly
+  public static fromBytes(
+    bytes: Uint8Array
+  ): ResultAndRemainder<RuntimeArgs, string> {
+    const {
+      result: sizeRes,
+      remainder: sizeRem
+    } = new CLU32BytesParser().fromBytesWithRemainder(bytes);
+
+    const size = sizeRes
+      .unwrap()
+      .value()
+      .toNumber();
+
+    let remainBytes = sizeRem;
     const res: NamedArg[] = [];
     for (let i = 0; i < size; i++) {
-      const namedArgRes = NamedArg.fromBytes(remainBytes);
-      if (namedArgRes.hasError()) {
-        return Result.Err(namedArgRes.error);
-      }
-      res.push(namedArgRes.value());
-      remainBytes = namedArgRes.remainder();
+      if (!remainBytes) return resultHelper(Err('Error while parsing bytes'));
+      const {
+        result: namedArgRes,
+        remainder: namedArgRem
+      } = NamedArg.fromBytes(remainBytes);
+
+      res.push(namedArgRes.unwrap());
+      remainBytes = namedArgRem;
     }
-    return Result.Ok(RuntimeArgs.fromNamedArgs(res), remainBytes);
+    return resultHelper(Ok(RuntimeArgs.fromNamedArgs(res)), remainBytes);
   }
 }

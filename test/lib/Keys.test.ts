@@ -19,11 +19,11 @@ describe('Ed25519', () => {
     const bytes = Buffer.concat([
       name,
       sep,
-      signKeyPair.publicKey.rawPublicKey
+      signKeyPair.publicKey.value()
     ]);
     const hash = byteHash(bytes);
 
-    expect(Ed25519.accountHash(signKeyPair.publicKey.rawPublicKey)).deep.equal(
+    expect(Ed25519.accountHash(signKeyPair.publicKey.value())).deep.equal(
       hash
     );
   });
@@ -42,8 +42,8 @@ describe('Ed25519', () => {
     );
 
     // expect nacl could import the generated PEM
-    expect(encodeBase64(naclKeyPair.publicKey.rawPublicKey)).to.equal(
-      encodeBase64(signKeyPair2.publicKey.rawPublicKey)
+    expect(encodeBase64(naclKeyPair.publicKey.value())).to.equal(
+      encodeBase64(signKeyPair2.publicKey.value())
     );
     expect(encodeBase64(naclKeyPair.privateKey)).to.equal(
       encodeBase64(signKeyPair2.privateKey)
@@ -82,7 +82,7 @@ describe('Ed25519', () => {
       nacl.sign_detached_verify(
         message,
         signatureByNacl,
-        naclKeyPair.publicKey.rawPublicKey
+        naclKeyPair.publicKey.value()
       )
     ).to.true;
   });
@@ -115,12 +115,12 @@ describe('Secp256K1', () => {
     const bytes = Buffer.concat([
       name,
       sep,
-      signKeyPair.publicKey.rawPublicKey
+      signKeyPair.publicKey.value()
     ]);
     const hash = byteHash(bytes);
 
     expect(
-      Secp256K1.accountHash(signKeyPair.publicKey.rawPublicKey)
+      Secp256K1.accountHash(signKeyPair.publicKey.value())
     ).deep.equal(hash);
   });
 
@@ -137,7 +137,7 @@ describe('Secp256K1', () => {
 
     // expect importing keys from pem files works well
     expect(Secp256K1.parsePublicKeyFile(tempDir + '/public.pem')).to.deep.eq(
-      signKeyPair.publicKey.rawPublicKey
+      signKeyPair.publicKey.value()
     );
     expect(Secp256K1.parsePrivateKeyFile(tempDir + '/private.pem')).to.deep.eq(
       signKeyPair.privateKey
@@ -149,8 +149,8 @@ describe('Secp256K1', () => {
     );
 
     // expect parseKeyFiles could import files
-    expect(encodeBase64(signKeyPair.publicKey.rawPublicKey)).to.equal(
-      encodeBase64(signKeyPair2.publicKey.rawPublicKey)
+    expect(encodeBase64(signKeyPair.publicKey.value())).to.equal(
+      encodeBase64(signKeyPair2.publicKey.value())
     );
     expect(encodeBase64(signKeyPair.privateKey)).to.equal(
       encodeBase64(signKeyPair2.privateKey)
@@ -160,7 +160,7 @@ describe('Secp256K1', () => {
     const ecdh = Crypto.createECDH('secp256k1');
     ecdh.setPrivateKey(signKeyPair.privateKey);
     expect(ecdh.getPublicKey('hex', 'compressed')).to.deep.equal(
-      encodeBase16(signKeyPair.publicKey.rawPublicKey)
+      encodeBase16(signKeyPair.publicKey.value())
     );
 
     // expect we could sign the message and verify the signature later.

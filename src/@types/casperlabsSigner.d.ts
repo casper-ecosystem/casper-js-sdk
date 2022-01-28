@@ -1,3 +1,5 @@
+import { JsonTypes } from 'typedjson';
+
 interface CasperLabsHelper {
   /**
    * Returns Signer version
@@ -8,12 +10,12 @@ interface CasperLabsHelper {
    * Returns connection status from Signer
    */
   isConnected: () => Promise<boolean>;
-  
+
   /**
    * Attempt connection to Signer
    */
   requestConnection: () => void;
-  
+
   /**
    * Send Deploy in JSON format message to Signer plugin to sign.
    *
@@ -21,8 +23,23 @@ interface CasperLabsHelper {
    * @param sourcePublicKeyHex public key in hex format with algorithm prefix. Used to sign the deploy
    * @param targetPublicKeyHex public key in hex format with algorithm prefix. Used to display hex-formatted address on the UI
    */
-  sign: (deploy: any, sourcePublicKeyHex: string, targetPublicKeyHex: string) => Promise<JSON>;
-  
+  sign: (
+    deploy: { deploy: JsonTypes },
+    sourcePublicKeyHex: string,
+    targetPublicKeyHex: string
+  ) => Promise<{ deploy: JsonTypes }>;
+
+  /**
+   * Send raw string message to Signer for signing.
+   * @param message string to be signed.
+   * @param signingPublicKey public key in hex format, the corresponding secret key (from the vault) will be used to sign.
+   * @returns `Base16` signature
+   */
+  signMessage: (
+    rawMessage: string,
+    signingPublicKey: string
+  ) => Promise<string>;
+
   /*
    * Returns base64 encoded public key of user current selected account.
    */

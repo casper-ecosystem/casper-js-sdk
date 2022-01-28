@@ -1,9 +1,12 @@
-import { RequestManager, HTTPTransport, Client } from "@open-rpc/client-js";
-import { DeployUtil, encodeBase16, PublicKey } from '..';
+import { RequestManager, HTTPTransport, Client } from '@open-rpc/client-js';
+import { TypedJSON, jsonMember, jsonObject } from 'typedjson';
+import { DeployUtil, encodeBase16, CLPublicKey } from '..';
 import { deployToJson } from '../lib/DeployUtil';
-import { TypedJSON } from 'typedjson';
-import { StoredValue } from '../lib/StoredValue';
+import { StoredValue, Transfers } from '../lib/StoredValue';
 import { BigNumber } from '@ethersproject/bignumber';
+import ProviderTransport, {
+  SafeEventEmitterProvider
+} from './ProviderTransport';
 
 interface RpcResult {
   api_version: string;
@@ -36,9 +39,15 @@ export interface GetStateRootHashResult extends RpcResult {
   state_root_hash: string;
 }
 
-interface ExecutionResult {
+interface ExecutionResultBody {
   cost: number;
-  error_message: string | null;
+  error_message?: string | null;
+  transfers: string[];
+}
+
+export interface ExecutionResult {
+  Success?: ExecutionResultBody;
+  Failure?: ExecutionResultBody;
 }
 
 export interface JsonExecutionResult {
@@ -123,6 +132,21 @@ export interface ValidatorWeight {
   weight: string;
 }
 
+@jsonObject
+export class EraSummary {
+  @jsonMember({ constructor: String, name: 'block_hash' })
+  blockHash: string;
+
+  @jsonMember({ constructor: Number, name: 'era_id' })
+  eraId: number;
+
+  @jsonMember({ constructor: StoredValue, name: 'stored_value' })
+  StoredValue: StoredValue;
+
+  @jsonMember({ constructor: String, name: 'state_root_hash' })
+  stateRootHash: string;
+}
+
 export interface EraValidators {
   era_id: number;
   validator_weights: ValidatorWeight[];
@@ -168,10 +192,15 @@ export interface ValidatorsInfoResult extends RpcResult {
 }
 
 export class CasperServiceByJsonRPC {
-  private client: Client;
+  protected client: Client;
 
-  constructor(url: string) {
-    const transport = new HTTPTransport(url);
+  constructor(provider: string | SafeEventEmitterProvider) {
+    let transport: HTTPTransport | ProviderTransport;
+    if (typeof provider === 'string') {
+      transport = new HTTPTransport(provider);
+    } else {
+      transport = new ProviderTransport(provider);
+    }
     const requestManager = new RequestManager([transport]);
     this.client = new Client(requestManager);
   }
@@ -195,39 +224,44 @@ export class CasperServiceByJsonRPC {
   public async getBlockInfo(
     blockHashBase16: JsonBlockHash
   ): Promise<GetBlockResult> {
-    return await this.client.request({
-      method: 'chain_get_block',
-      params: {
-        block_identifier: {
-          Hash: blockHashBase16
+    return await this.client
+      .request({
+        method: 'chain_get_block',
+        params: {
+          block_identifier: {
+            Hash: blockHashBase16
+          }
         }
-      }
-    }).then((res: GetBlockResult) => {
-      if (res.block !== null && res.block.hash !== blockHashBase16) {
-        throw new Error("Returned block does not have a matching hash.");
-      }
-      return res;
-    });
+      })
+      .then((res: GetBlockResult) => {
+        if (
+          res.block !== null &&
+          res.block.hash.toLowerCase() !== blockHashBase16.toLowerCase()
+        ) {
+          throw new Error('Returned block does not have a matching hash.');
+        }
+        return res;
+      });
   }
 
-  public async getBlockInfoByHeight(
-    height: number
-  ): Promise<GetBlockResult> {
-    return await this.client.request({
-      method: 'chain_get_block',
-      params: {
-        block_identifier: {
-          Height: height
+  public async getBlockInfoByHeight(height: number): Promise<GetBlockResult> {
+    return await this.client
+      .request({
+        method: 'chain_get_block',
+        params: {
+          block_identifier: {
+            Height: height
+          }
         }
-      }
-    }).then((res: GetBlockResult) => {
-      if (res.block !== null && res.block.header.height !== height) {
-        throw new Error("Returned block does not have a matching height.");
-      }
-      return res;
-    });
+      })
+      .then((res: GetBlockResult) => {
+        if (res.block !== null && res.block.header.height !== height) {
+          throw new Error('Returned block does not have a matching height.');
+        }
+        return res;
+      });
   }
-  
+
   public async getLatestBlockInfo(): Promise<GetBlockResult> {
     return await this.client.request({
       method: 'chain_get_block'
@@ -272,7 +306,7 @@ export class CasperServiceByJsonRPC {
    */
   public async getAccountBalanceUrefByPublicKey(
     stateRootHash: string,
-    publicKey: PublicKey
+    publicKey: CLPublicKey
   ) {
     return this.getAccountBalanceUrefByPublicKeyHash(
       stateRootHash,
@@ -340,10 +374,10 @@ export class CasperServiceByJsonRPC {
   public async deploy(signedDeploy: DeployUtil.Deploy) {
     const oneMegaByte = 1048576;
     const size = DeployUtil.deploySizeInBytes(signedDeploy);
-    if(size > oneMegaByte) {
+    if (size > oneMegaByte) {
       throw Error(
         `Deploy can not be send, because it's too large: ${size} bytes. ` +
-        `Max size is 1 megabyte.`
+          `Max size is 1 megabyte.`
       );
     }
 
@@ -351,5 +385,112 @@ export class CasperServiceByJsonRPC {
       method: 'account_put_deploy',
       params: deployToJson(signedDeploy)
     });
+  }
+
+  /**
+   * Retrieves all transfers for a block from the network
+   * @param blockIdentifier Hex-encoded block hash or height of the block. If not given, the last block added to the chain as known at the given node will be used. If not provided it will retrieve by latest block.
+   */
+  public async getBlockTransfers(blockHash?: string): Promise<Transfers> {
+    const res = await this.client.request({
+      method: 'chain_get_block_transfers',
+      params: {
+        block_identifier: blockHash
+          ? {
+              Hash: blockHash
+            }
+          : null
+      }
+    });
+    if (res.error) {
+      return res;
+    } else {
+      const serializer = new TypedJSON(Transfers);
+      const storedValue = serializer.parse(res)!;
+      return storedValue;
+    }
+  }
+
+  /**
+   * Retrieve era information by block hash.
+   * @param blockIdentifier Hex-encoded block hash or height of the block. If not given, the last block added to the chain as known at the given node will be used. If not provided it will retrieve by latest block.
+   */
+  public async getEraInfoBySwitchBlock(
+    blockHash?: string
+  ): Promise<EraSummary> {
+    const res = await this.client.request({
+      method: 'chain_get_era_info_by_switch_block',
+      params: {
+        block_identifier: blockHash
+          ? {
+              Hash: blockHash
+            }
+          : null
+      }
+    });
+    if (res.error) {
+      return res;
+    } else {
+      const serializer = new TypedJSON(EraSummary);
+      const storedValue = serializer.parse(res.era_summary)!;
+      return storedValue;
+    }
+  }
+
+  /**
+   * Retrieve era information by block height
+   * @param blockHeight
+   */
+  public async getEraInfoBySwitchBlockHeight(
+    height: number
+  ): Promise<EraSummary> {
+    const res = await this.client.request({
+      method: 'chain_get_era_info_by_switch_block',
+      params: {
+        block_identifier: {
+          Height: height
+        }
+      }
+    });
+    if (res.error) {
+      return res;
+    } else {
+      const serializer = new TypedJSON(EraSummary);
+      const storedValue = serializer.parse(res.era_summary)!;
+      return storedValue;
+    }
+  }
+
+  /**
+   * get dictionary item by URef
+   * @param stateRootHash
+   * @param dictionaryItemKey
+   * @param seedUref
+   */
+  public async getDictionaryItemByURef(
+    stateRootHash: string,
+    dictionaryItemKey: string,
+    seedUref: string
+  ): Promise<StoredValue> {
+    const res = await this.client.request({
+      method: 'state_get_dictionary_item',
+      params: {
+        state_root_hash: stateRootHash,
+        dictionary_identifier: {
+          URef: {
+            seed_uref: seedUref,
+            dictionary_item_key: dictionaryItemKey
+          }
+        }
+      }
+    });
+    if (res.error) {
+      return res;
+    } else {
+      const storedValueJson = res.stored_value;
+      const serializer = new TypedJSON(StoredValue);
+      const storedValue = serializer.parse(storedValueJson)!;
+      return storedValue;
+    }
   }
 }

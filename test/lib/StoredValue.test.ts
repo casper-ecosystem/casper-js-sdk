@@ -106,18 +106,6 @@ describe('StoredValue', () => {
     );
   });
 
-  it('should parse ContractPackage stored value correctly', function () {
-    const mockJson = {
-      ContractPackage:
-        '9eab12b986299509b4471060fe4d17f087bdd2596871c38d39019ef94f8d10a6070100000001000000010000001c16234ad1d27b51614ec5dca0bc28ea235eb2dc3a1f9d98aa238dc3df1fd63a0000000000000000'
-    };
-
-    const serializer = new TypedJSON(StoredValue);
-    const storedValue = serializer.parse(mockJson);
-    expect(storedValue?.ContractPackage).to.not.eq(undefined);
-    expect(storedValue?.ContractPackage).to.eq(mockJson.ContractPackage);
-  });
-
   it('should parse DeployInfo stored value correctly', function () {
     const mockJson = {
       DeployInfo: {
