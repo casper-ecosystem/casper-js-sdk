@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## 2.7.6
 
+### Changed
+
+- Version 2.0 is now @latest.
+- README updated.
+
+## 2.7.6
+
 ### Fixed
 
 - Fixes wrong logic in newTransferWithOptionalTransferId() method.
