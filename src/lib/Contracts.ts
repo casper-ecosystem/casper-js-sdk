@@ -37,14 +37,6 @@ export class Contract {
     this.contractPackageHash = contractPackageHash;
   }
 
-  // private async putOrReturnDeploy(deploy: Deploy): Promise<Deploy | string> {
-  //   if (deploy && deploy.approvals.length > 0 && this.casperClient) {
-  //     const deployHash = await this.casperClient.putDeploy(deploy);
-  //     return deployHash;
-  //   }
-  //   return deploy;
-  // }
-
   public install(
     wasm: Uint8Array,
     args: RuntimeArgs,
@@ -62,7 +54,6 @@ export class Contract {
     const signedDeploy = deploy.sign(signingKeys);
 
     return signedDeploy;
-    // return await this.putOrReturnDeploy(signedDeploy);
   }
 
   private checkSetup(): boolean {
