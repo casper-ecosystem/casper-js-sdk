@@ -29,6 +29,14 @@ export class Contract {
 
   constructor(public casperClient?: CasperClient) {}
 
+  public setContractHash(
+    contractHash: string,
+    contractPackageHash?: string
+  ): void {
+    this.contractHash = contractHash;
+    this.contractPackageHash = contractPackageHash;
+  }
+
   public install(
     wasm: Uint8Array,
     args: RuntimeArgs,
@@ -49,7 +57,7 @@ export class Contract {
   }
 
   private checkSetup(): boolean {
-    if (this.contractHash && this.contractPackageHash) return true;
+    if (this.contractHash) return true;
     throw Error('You need to setContract before running this method.');
   }
 
