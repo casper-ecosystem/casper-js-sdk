@@ -1,6 +1,6 @@
 {
   "name": "casper-js-sdk",
-  "version": "2.7.7",
+  "version": "2.7.8",
   "license": "Apache 2.0",
   "description": "SDK to interact with the Casper blockchain",
   "homepage": "https://github.com/casper-ecosystem/casper-js-sdk#README.md",
@@ -31,7 +31,7 @@
     "BlockChain",
     "sdk"
   ],
-  "author": "AbnerZheng <abner@casper.io>",
+  "author": "Jan Hoffmann <jan@casperlabs.io>",
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
       "eslint --fix",
