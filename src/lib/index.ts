@@ -1,4 +1,4 @@
-import * as Contracts from './Contracts';
+import { Contract } from './Contracts';
 import * as DeployUtil from './DeployUtil';
 import * as Keys from './Keys';
 import * as Serialization from './Serialization';
@@ -8,4 +8,4 @@ export * from './RuntimeArgs';
 export * from './CasperClient';
 export * from './SignedMessage';
 
-export { Contracts, Keys, Serialization, DeployUtil, Signer };
+export { Contract, Keys, Serialization, DeployUtil, Signer };

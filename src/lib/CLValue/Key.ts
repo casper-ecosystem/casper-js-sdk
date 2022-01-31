@@ -19,6 +19,7 @@ import {
   ToBytesResult,
   CLValueBytesParsers,
   CLValueParsers,
+  CLPublicKey,
   resultHelper
 } from './index';
 import { KEY_ID, CLTypeTag } from './constants';
@@ -40,7 +41,15 @@ export class CLKeyType extends CLType {
 
 export class CLKeyBytesParser extends CLValueBytesParsers {
   toBytes(value: CLKey): ToBytesResult {
-    if (value.isAccount()) {
+    if (value.isPublicKey()) {
+      return Ok(
+        concat([
+          Uint8Array.from([KeyVariant.Account]),
+          (value.data as CLPublicKey).toAccountHash()
+        ])
+      );
+    }
+    if (value.isAccountHash()) {
       return Ok(
         concat([
           Uint8Array.from([KeyVariant.Account]),
@@ -123,7 +132,11 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
   }
 }
 
-export type CLKeyParameters = CLByteArray | CLURef | CLAccountHash;
+export type CLKeyParameters =
+  | CLByteArray
+  | CLURef
+  | CLAccountHash
+  | CLPublicKey;
 
 export class CLKey extends CLValue {
   data: CLKeyParameters;
@@ -149,7 +162,11 @@ export class CLKey extends CLValue {
     return this.data instanceof CLURef;
   }
 
-  isAccount(): boolean {
+  isAccountHash(): boolean {
     return this.data instanceof CLAccountHash;
+  }
+
+  isPublicKey(): boolean {
+    return this.data instanceof CLPublicKey;
   }
 }
