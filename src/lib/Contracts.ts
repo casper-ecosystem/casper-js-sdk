@@ -8,9 +8,6 @@ import { AsymmetricKey } from './Keys';
 import { StoredValue } from './StoredValue';
 import { DEFAULT_DEPLOY_TTL } from '../constants';
 
-// https://www.npmjs.com/package/tweetnacl-ts
-// https://github.com/dcposch/blakejs
-
 /**
  * Use blake2b to compute hash of ByteArray
  *
@@ -154,80 +151,3 @@ export class Contract {
     }
   }
 }
-
-// export class Contract {
-//   private sessionWasm: Uint8Array;
-//   private paymentWasm: Uint8Array;
-
-//   /**
-//    *
-//    * @param sessionPath
-//    * @param paymentPath the path of payment contract file, set it undefined if you want use standard payment
-//    */
-//   constructor(sessionPath: string, paymentPath?: string) {
-//     this.sessionWasm = fs.readFileSync(sessionPath);
-//     if (!paymentPath) {
-//       this.paymentWasm = Buffer.from('');
-//     } else {
-//       this.paymentWasm = fs.readFileSync(paymentPath);
-//     }
-//   }
-
-//   /**
-//    * Generate the Deploy message for this contract
-//    *
-//    * @param args Arguments
-//    * @param paymentAmount
-//    * @param accountPublicKey
-//    * @param signingKeyPair key pair to sign the deploy
-//    * @param chainName
-//    */
-//   public deploy(
-//     args: RuntimeArgs,
-//     paymentAmount: bigint,
-//     accountPublicKey: CLPublicKey,
-//     signingKeyPair: AsymmetricKey,
-//     chainName: string
-//   ): DeployUtil.Deploy {
-//     const session = ExecutableDeployItem.newModuleBytes(this.sessionWasm, args);
-//     const paymentArgs = RuntimeArgs.fromMap({
-//       amount: CLValueBuilder.u512(paymentAmount.toString())
-//     });
-
-//     const payment = ExecutableDeployItem.newModuleBytes(
-//       this.paymentWasm,
-//       paymentArgs
-//     );
-
-//     const deploy = DeployUtil.makeDeploy(
-//       new DeployParams(accountPublicKey, chainName),
-//       session,
-//       payment
-//     );
-//     return DeployUtil.signDeploy(deploy, signingKeyPair);
-//   }
-// }
-
-// /**
-//  * Always use the same account for deploying and signing.
-//  */
-// export class BoundContract {
-//   constructor(
-//     private contract: Contract,
-//     private contractKeyPair: AsymmetricKey
-//   ) {}
-
-//   public deploy(
-//     args: RuntimeArgs,
-//     paymentAmount: bigint,
-//     chainName: string
-//   ): DeployUtil.Deploy {
-//     return this.contract.deploy(
-//       args,
-//       paymentAmount,
-//       this.contractKeyPair.publicKey,
-//       this.contractKeyPair,
-//       chainName
-//     );
-//   }
-// }
