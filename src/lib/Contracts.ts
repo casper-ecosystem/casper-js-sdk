@@ -1,5 +1,5 @@
 import blake from 'blakejs';
-import { CLPublicKey, CLValue } from '../index';
+import { CLPublicKey, CLValue, CLValueBuilder, CLTypeBuilder } from '../index';
 import * as DeployUtil from './DeployUtil';
 import { CasperClient } from './CasperClient';
 import { Deploy } from './DeployUtil';
@@ -37,6 +37,14 @@ export class Contract {
     this.contractPackageHash = contractPackageHash;
   }
 
+  // private async putOrReturnDeploy(deploy: Deploy): Promise<Deploy | string> {
+  //   if (deploy && deploy.approvals.length > 0 && this.casperClient) {
+  //     const deployHash = await this.casperClient.putDeploy(deploy);
+  //     return deployHash;
+  //   }
+  //   return deploy;
+  // }
+
   public install(
     wasm: Uint8Array,
     args: RuntimeArgs,
@@ -54,6 +62,7 @@ export class Contract {
     const signedDeploy = deploy.sign(signingKeys);
 
     return signedDeploy;
+    // return await this.putOrReturnDeploy(signedDeploy);
   }
 
   private checkSetup(): boolean {
@@ -159,3 +168,14 @@ export class Contract {
     }
   }
 }
+
+export const toCLMap = (map: Map<string, string>) => {
+  const clMap = CLValueBuilder.map([
+    CLTypeBuilder.string(),
+    CLTypeBuilder.string()
+  ]);
+  for (const [key, value] of Array.from(map.entries())) {
+    clMap.set(CLValueBuilder.string(key), CLValueBuilder.string(value));
+  }
+  return clMap;
+};

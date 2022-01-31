@@ -138,7 +138,7 @@ export class CLKey extends CLValue {
     if (v instanceof CLPublicKey) {
       this.data = new CLAccountHash((v as CLPublicKey).toAccountHash());
       return;
-    } 
+    }
     this.data = v;
   }
 
