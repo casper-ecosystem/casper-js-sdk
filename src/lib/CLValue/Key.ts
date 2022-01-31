@@ -41,14 +41,6 @@ export class CLKeyType extends CLType {
 
 export class CLKeyBytesParser extends CLValueBytesParsers {
   toBytes(value: CLKey): ToBytesResult {
-    if (value.isPublicKey()) {
-      return Ok(
-        concat([
-          Uint8Array.from([KeyVariant.Account]),
-          (value.data as CLPublicKey).toAccountHash()
-        ])
-      );
-    }
     if (value.isAccountHash()) {
       return Ok(
         concat([
@@ -143,6 +135,10 @@ export class CLKey extends CLValue {
 
   constructor(v: CLKeyParameters) {
     super();
+    if (v instanceof CLPublicKey) {
+      this.data = new CLAccountHash((v as CLPublicKey).toAccountHash());
+      return;
+    } 
     this.data = v;
   }
 
@@ -164,9 +160,5 @@ export class CLKey extends CLValue {
 
   isAccountHash(): boolean {
     return this.data instanceof CLAccountHash;
-  }
-
-  isPublicKey(): boolean {
-    return this.data instanceof CLPublicKey;
   }
 }
