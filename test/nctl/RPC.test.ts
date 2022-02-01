@@ -105,4 +105,17 @@ describe('RPC', () => {
       client.stop();
     }, 6 * 10000);
   });
+
+  it('EventHandler', async () => {
+    const client = new CasperServiceByJsonRPC('http://localhost:11101/rpc');
+
+    const x = await client.getDictionaryItemByName(
+      "a3d10d7f95fe07e1cd85f427fa9e343e42a6a6da37583beca616a2ee9532ae72",
+      "hash-17d5e8913886ba67027536176a34271f81120d95f3dcbb3749b6084467c84c65",
+      "balances",
+      "043962f3169fedda65fae9e1e5313a71829103ae1f0e56e5ced229a67f0569e4"
+    );
+
+    console.log(x);
+  });
 });

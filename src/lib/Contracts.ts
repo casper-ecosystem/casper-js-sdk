@@ -100,11 +100,17 @@ export class Contract {
     const stateRootHashToUse =
       stateRootHash || (await client.nodeClient.getStateRootHash());
 
-    return await client.nodeClient.getBlockState(
+    const contractData = await client.nodeClient.getBlockState(
       stateRootHashToUse,
-      `hash-${this.contractHash}`,
+      this.contractHash!,
       path
     );
+
+    if (contractData && contractData.CLValue instanceof CLValue) {
+      return contractData.CLValue.value();
+    } else {
+      throw Error('Invalid stored value');
+    }
   }
 
   public async queryContractState(
