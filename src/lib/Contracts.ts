@@ -72,7 +72,9 @@ export class Contract {
   ): Deploy {
     this.checkSetup();
 
-    const contractHashAsByteArray = contractHashToByteArray(this.contractHash!);
+    const contractHashAsByteArray = contractHashToByteArray(
+      this.contractHash!.slice(5)
+    );
 
     const deploy = DeployUtil.makeDeploy(
       new DeployUtil.DeployParams(sender, chainName, 1, ttl),
@@ -159,7 +161,7 @@ export class Contract {
     );
 
     if (storedValue && storedValue.CLValue instanceof CLValue) {
-      return storedValue.CLValue.value();
+      return storedValue.CLValue;
     } else {
       throw Error('Invalid stored value');
     }
@@ -175,4 +177,14 @@ export const toCLMap = (map: Map<string, string>) => {
     clMap.set(CLValueBuilder.string(key), CLValueBuilder.string(value));
   }
   return clMap;
+};
+
+export const fromCLMap = (map: [CLValue, CLValue][]) => {
+  const jsMap = new Map();
+
+  for (const [innerKey, value] of map) {
+    jsMap.set(innerKey.value(), value.value());
+  }
+
+  return jsMap;
 };
