@@ -33,6 +33,15 @@ export class Contract {
     contractHash: string,
     contractPackageHash?: string
   ): void {
+    if (
+      !contractHash.startsWith('hash-') ||
+      !contractPackageHash.startsWith('hash-')
+    ) {
+      throw new Error(
+        'Please provide hash in a format that contains hash- prefix.'
+      );
+    }
+
     this.contractHash = contractHash;
     this.contractPackageHash = contractPackageHash;
   }
