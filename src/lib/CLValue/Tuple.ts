@@ -60,7 +60,8 @@ export class CLTupleBytesParser extends CLValueBytesParsers {
     const val = type.inner.map((t: CLType) => {
       const parser = matchByteParserByCLType(t).unwrap();
       const { result: vRes, remainder: vRem } = parser.fromBytesWithRemainder(
-        rem
+        rem,
+        t
       );
 
       rem = vRem!;
