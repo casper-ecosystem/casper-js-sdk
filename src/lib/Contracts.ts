@@ -35,10 +35,10 @@ export class Contract {
   ): void {
     if (
       !contractHash.startsWith('hash-') ||
-      !contractPackageHash.startsWith('hash-')
+      (contractPackageHash && !contractPackageHash.startsWith('hash-'))
     ) {
       throw new Error(
-        'Please provide hash in a format that contains hash- prefix.'
+        'Please provide contract hash in a format that contains hash- prefix.'
       );
     }
 
