@@ -115,30 +115,6 @@ export class Contract {
     }
   }
 
-  public async queryContractState(
-    key: string[],
-    stateRootHash?: string,
-    casperClient?: CasperClient
-  ): Promise<CLValue> {
-    const client = casperClient || this.casperClient;
-    if (!client) throw Error(NO_CLIENT_ERR);
-
-    const stateRootHashToUse =
-      stateRootHash || (await client.nodeClient.getStateRootHash());
-
-    const contractData = await this.queryContractData(
-      key,
-      client,
-      stateRootHashToUse
-    );
-
-    if (contractData && contractData.CLValue instanceof CLValue) {
-      return contractData.CLValue.value();
-    } else {
-      throw Error('Invalid stored value');
-    }
-  }
-
   public async queryContractDictionary(
     dictionaryName: string,
     dictionaryItemKey: string,
