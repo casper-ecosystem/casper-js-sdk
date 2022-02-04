@@ -10,10 +10,8 @@ import {
   CLListType,
   CLList,
   CLOptionType,
-  CLOption,
-  CLPublicKey
+  CLOption
 } from './index';
-import { RuntimeArgs, decodeBase16, DeployUtil } from '../../index';
 import { Ok, Err, Some } from 'ts-results';
 
 const myTypes = { ok: new CLBoolType(), err: new CLU8Type() };
