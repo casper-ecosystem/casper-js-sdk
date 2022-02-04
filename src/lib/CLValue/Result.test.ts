@@ -131,32 +131,4 @@ describe('CLResult', () => {
     expect(okFromBytes).to.be.deep.eq(myOkComplexRes);
     expect(errFromBytes).to.be.deep.eq(myErrComplexRes);
   });
-
-  it('Complex examples toBytesWithCLType() / fromBytesWithCLType()', () => {
-    const args = RuntimeArgs.fromMap({
-      ResultOk: new CLResult(Ok(new CLBool(true)), myTypes),
-      ResultErr: new CLResult(Err(new CLU8(1)), myTypes)
-    });
-
-    const publicKey = CLPublicKey.fromHex(
-      '01a296024a9a978e8957acacd50e1889930f1ae2afe74dfd170ebf19593c492355'
-    );
-    const contractHash = decodeBase16(
-      '0116e3ba15cfbc4daafb2b43e2c26490015f7d6a1f575e69556251df3f7eb915'
-    );
-
-    const session = DeployUtil.ExecutableDeployItem.newStoredContractByHash(
-      contractHash,
-      'test-args',
-      args
-    );
-    const deployParams = new DeployUtil.DeployParams(publicKey, 'casper');
-
-    const d = DeployUtil.makeDeploy(
-      deployParams,
-      session,
-      DeployUtil.standardPayment(1000000)
-    );
-    console.log(DeployUtil.deployToJson(d));
-  });
 });
