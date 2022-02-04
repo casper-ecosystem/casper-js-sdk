@@ -4,6 +4,16 @@ All notable changes to casper-js-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.8.0
+
+### Fixed
+
+- Added support to `CLPublicKey` passed as argument to `CLKey` (it gets serialized to `account-hash` when serializing).
+- Changed `CLKey` method checking stored value type from `isAccount` to `isAccountHash`.
+- New `Contracts` class that basically acts as contract client (possible to install WASM, call an entrypoint, query state or dictionary).
+- Added `getDictionaryItemByName` that uses `state_get_dictionary_item` with `dictionary_name` and `dictionary_item_key`
+- Added `sign` and `send` method on `Deploy` class.
+
 ## 2.7.9
 
 ### Fixed
