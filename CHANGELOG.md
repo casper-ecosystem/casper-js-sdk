@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## 2.8.0
 
-### Fixed
+### Added
 
 - Added support to `CLPublicKey` passed as argument to `CLKey` (it gets serialized to `account-hash` when serializing).
 - Changed `CLKey` method checking stored value type from `isAccount` to `isAccountHash`.
