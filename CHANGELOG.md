@@ -4,6 +4,12 @@ All notable changes to casper-js-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.7.9
+
+### Fixed
+
+- Fixed problems with CLResult when it got created using different version of ts-results.
+
 ## 2.7.8
 
 ### Fixed
