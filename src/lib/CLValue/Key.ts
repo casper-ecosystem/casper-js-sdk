@@ -41,7 +41,7 @@ export class CLKeyType extends CLType {
 
 export class CLKeyBytesParser extends CLValueBytesParsers {
   toBytes(value: CLKey): ToBytesResult {
-    if (value.isAccountHash()) {
+    if (value.isAccount()) {
       return Ok(
         concat([
           Uint8Array.from([KeyVariant.Account]),
@@ -158,7 +158,7 @@ export class CLKey extends CLValue {
     return this.data instanceof CLURef;
   }
 
-  isAccountHash(): boolean {
+  isAccount(): boolean {
     return this.data instanceof CLAccountHash;
   }
 }

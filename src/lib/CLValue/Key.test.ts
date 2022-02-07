@@ -32,12 +32,12 @@ describe('CLKey', () => {
     expect(myKey.isURef()).to.be.eq(true);
   });
 
-  it('Create with (CLAccountHash) and test .value() isAccountHash()', () => {
+  it('Create with (CLAccountHash) and test .value() isAccount()', () => {
     const arr8 = new Uint8Array([21, 31]);
     const myHash = new CLAccountHash(arr8);
     const myKey = new CLKey(myHash);
     expect(myKey.value()).to.deep.eq(myHash);
-    expect(myKey.isAccountHash()).to.be.eq(true);
+    expect(myKey.isAccount()).to.be.eq(true);
   });
 
   it('toBytes() / fromBytes() with CLByteArray', () => {
