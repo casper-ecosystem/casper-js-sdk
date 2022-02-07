@@ -87,17 +87,23 @@
 								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_lib_contracts_.contract.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
-						<section class="tsd-index-section tsd-is-private tsd-is-private-protected">
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_lib_contracts_.contract.html#paymentwasm" class="tsd-kind-icon">payment<wbr>Wasm</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_lib_contracts_.contract.html#sessionwasm" class="tsd-kind-icon">session<wbr>Wasm</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_lib_contracts_.contract.html#casperclient" class="tsd-kind-icon">casper<wbr>Client</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_lib_contracts_.contract.html#contracthash" class="tsd-kind-icon">contract<wbr>Hash</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_lib_contracts_.contract.html#contractpackagehash" class="tsd-kind-icon">contract<wbr>Package<wbr>Hash</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_lib_contracts_.contract.html#deploy" class="tsd-kind-icon">deploy</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_lib_contracts_.contract.html#callentrypoint" class="tsd-kind-icon">call<wbr>Entrypoint</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_lib_contracts_.contract.html#checksetup" class="tsd-kind-icon">check<wbr>Setup</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_lib_contracts_.contract.html#install" class="tsd-kind-icon">install</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_lib_contracts_.contract.html#querycontractdata" class="tsd-kind-icon">query<wbr>Contract<wbr>Data</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_lib_contracts_.contract.html#querycontractdictionary" class="tsd-kind-icon">query<wbr>Contract<wbr>Dictionary</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_lib_contracts_.contract.html#setcontracthash" class="tsd-kind-icon">set<wbr>Contract<wbr>Hash</a></li>
 							</ul>
 						</section>
 					</div>
@@ -109,29 +115,19 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Contract<span class="tsd-signature-symbol">(</span>sessionPath<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, paymentPath<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_lib_contracts_.contract.html" class="tsd-signature-type">Contract</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Contract<span class="tsd-signature-symbol">(</span>casperClient<span class="tsd-signature-symbol">?: </span><a href="../modules/_lib_index_.html#casperclient" class="tsd-signature-type">CasperClient</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_lib_contracts_.contract.html" class="tsd-signature-type">Contract</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/e96fcb0/src/lib/Contracts.ts#L24">src/lib/Contracts.ts:24</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3d11e89/src/lib/Contracts.ts#L28">src/lib/Contracts.ts:28</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
-									<h5>sessionPath: <span class="tsd-signature-type">string</span></h5>
-								</li>
-								<li>
-									<h5><span class="tsd-flag ts-flagOptional">Optional</span> paymentPath: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-										<div class="lead">
-											<p>the path of payment contract file, set it undefined if you want use standard payment</p>
-										</div>
-									</div>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> casperClient: <a href="../modules/_lib_index_.html#casperclient" class="tsd-signature-type">CasperClient</a></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_lib_contracts_.contract.html" class="tsd-signature-type">Contract</a></h4>
@@ -139,25 +135,35 @@
 					</ul>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-private tsd-is-private-protected">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="paymentwasm" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> payment<wbr>Wasm</h3>
-					<div class="tsd-signature tsd-kind-icon">payment<wbr>Wasm<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Uint8Array</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="casperclient" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> casper<wbr>Client</h3>
+					<div class="tsd-signature tsd-kind-icon">casper<wbr>Client<span class="tsd-signature-symbol">:</span> <a href="../modules/_lib_index_.html#casperclient" class="tsd-signature-type">CasperClient</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/e96fcb0/src/lib/Contracts.ts#L24">src/lib/Contracts.ts:24</a></li>
+							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3d11e89/src/lib/Contracts.ts#L30">src/lib/Contracts.ts:30</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="sessionwasm" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> session<wbr>Wasm</h3>
-					<div class="tsd-signature tsd-kind-icon">session<wbr>Wasm<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Uint8Array</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="contracthash" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> contract<wbr>Hash</h3>
+					<div class="tsd-signature tsd-kind-icon">contract<wbr>Hash<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/e96fcb0/src/lib/Contracts.ts#L23">src/lib/Contracts.ts:23</a></li>
+							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3d11e89/src/lib/Contracts.ts#L27">src/lib/Contracts.ts:27</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="contractpackagehash" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> contract<wbr>Package<wbr>Hash</h3>
+					<div class="tsd-signature tsd-kind-icon">contract<wbr>Package<wbr>Hash<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3d11e89/src/lib/Contracts.ts#L28">src/lib/Contracts.ts:28</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -165,50 +171,185 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Methods</h2>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
-					<a name="deploy" class="tsd-anchor"></a>
-					<h3>deploy</h3>
+					<a name="callentrypoint" class="tsd-anchor"></a>
+					<h3>call<wbr>Entrypoint</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">deploy<span class="tsd-signature-symbol">(</span>args<span class="tsd-signature-symbol">: </span><a href="_lib_runtimeargs_.runtimeargs.html" class="tsd-signature-type">RuntimeArgs</a>, paymentAmount<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">bigint</span>, accountPublicKey<span class="tsd-signature-symbol">: </span><a href="_lib_clvalue_publickey_.clpublickey.html" class="tsd-signature-type">CLPublicKey</a>, signingKeyPair<span class="tsd-signature-symbol">: </span><a href="_lib_keys_.asymmetrickey.html" class="tsd-signature-type">AsymmetricKey</a>, chainName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_lib_deployutil_.deploy.html" class="tsd-signature-type">Deploy</a></li>
+						<li class="tsd-signature tsd-kind-icon">call<wbr>Entrypoint<span class="tsd-signature-symbol">(</span>entryPoint<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, args<span class="tsd-signature-symbol">: </span><a href="_lib_runtimeargs_.runtimeargs.html" class="tsd-signature-type">RuntimeArgs</a>, sender<span class="tsd-signature-symbol">: </span><a href="_lib_clvalue_publickey_.clpublickey.html" class="tsd-signature-type">CLPublicKey</a>, chainName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, paymentAmount<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, signingKeys<span class="tsd-signature-symbol">?: </span><a href="_lib_keys_.asymmetrickey.html" class="tsd-signature-type">AsymmetricKey</a><span class="tsd-signature-symbol">[]</span>, ttl<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_lib_deployutil_.deploy.html" class="tsd-signature-type">Deploy</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/e96fcb0/src/lib/Contracts.ts#L49">src/lib/Contracts.ts:49</a></li>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3d11e89/src/lib/Contracts.ts#L73">src/lib/Contracts.ts:73</a></li>
 								</ul>
 							</aside>
-							<div class="tsd-comment tsd-typography">
-								<div class="lead">
-									<p>Generate the Deploy message for this contract</p>
-								</div>
-							</div>
 							<h4 class="tsd-parameters-title">Parameters</h4>
 							<ul class="tsd-parameters">
 								<li>
+									<h5>entryPoint: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
 									<h5>args: <a href="_lib_runtimeargs_.runtimeargs.html" class="tsd-signature-type">RuntimeArgs</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>Arguments</p>
-									</div>
 								</li>
 								<li>
-									<h5>paymentAmount: <span class="tsd-signature-type">bigint</span></h5>
-								</li>
-								<li>
-									<h5>accountPublicKey: <a href="_lib_clvalue_publickey_.clpublickey.html" class="tsd-signature-type">CLPublicKey</a></h5>
-								</li>
-								<li>
-									<h5>signingKeyPair: <a href="_lib_keys_.asymmetrickey.html" class="tsd-signature-type">AsymmetricKey</a></h5>
-									<div class="tsd-comment tsd-typography">
-										<p>key pair to sign the deploy</p>
-									</div>
+									<h5>sender: <a href="_lib_clvalue_publickey_.clpublickey.html" class="tsd-signature-type">CLPublicKey</a></h5>
 								</li>
 								<li>
 									<h5>chainName: <span class="tsd-signature-type">string</span></h5>
-									<div class="tsd-comment tsd-typography">
-									</div>
+								</li>
+								<li>
+									<h5>paymentAmount: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> signingKeys: <a href="_lib_keys_.asymmetrickey.html" class="tsd-signature-type">AsymmetricKey</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> ttl: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = DEFAULT_DEPLOY_TTL</span></h5>
 								</li>
 							</ul>
 							<h4 class="tsd-returns-title">Returns <a href="_lib_deployutil_.deploy.html" class="tsd-signature-type">Deploy</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="checksetup" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> check<wbr>Setup</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">check<wbr>Setup<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3d11e89/src/lib/Contracts.ts#L68">src/lib/Contracts.ts:68</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="install" class="tsd-anchor"></a>
+					<h3>install</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">install<span class="tsd-signature-symbol">(</span>wasm<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span>, args<span class="tsd-signature-symbol">: </span><a href="_lib_runtimeargs_.runtimeargs.html" class="tsd-signature-type">RuntimeArgs</a>, paymentAmount<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, sender<span class="tsd-signature-symbol">: </span><a href="_lib_clvalue_publickey_.clpublickey.html" class="tsd-signature-type">CLPublicKey</a>, chainName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, signingKeys<span class="tsd-signature-symbol">?: </span><a href="_lib_keys_.asymmetrickey.html" class="tsd-signature-type">AsymmetricKey</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_lib_deployutil_.deploy.html" class="tsd-signature-type">Deploy</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3d11e89/src/lib/Contracts.ts#L49">src/lib/Contracts.ts:49</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>wasm: <span class="tsd-signature-type">Uint8Array</span></h5>
+								</li>
+								<li>
+									<h5>args: <a href="_lib_runtimeargs_.runtimeargs.html" class="tsd-signature-type">RuntimeArgs</a></h5>
+								</li>
+								<li>
+									<h5>paymentAmount: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>sender: <a href="_lib_clvalue_publickey_.clpublickey.html" class="tsd-signature-type">CLPublicKey</a></h5>
+								</li>
+								<li>
+									<h5>chainName: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> signingKeys: <a href="_lib_keys_.asymmetrickey.html" class="tsd-signature-type">AsymmetricKey</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_lib_deployutil_.deploy.html" class="tsd-signature-type">Deploy</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="querycontractdata" class="tsd-anchor"></a>
+					<h3>query<wbr>Contract<wbr>Data</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">query<wbr>Contract<wbr>Data<span class="tsd-signature-symbol">(</span>path<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span>, casperClient<span class="tsd-signature-symbol">?: </span><a href="../modules/_lib_index_.html#casperclient" class="tsd-signature-type">CasperClient</a>, stateRootHash<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_lib_storedvalue_.storedvalue.html" class="tsd-signature-type">StoredValue</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3d11e89/src/lib/Contracts.ts#L103">src/lib/Contracts.ts:103</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> path: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> casperClient: <a href="../modules/_lib_index_.html#casperclient" class="tsd-signature-type">CasperClient</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> stateRootHash: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_lib_storedvalue_.storedvalue.html" class="tsd-signature-type">StoredValue</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="querycontractdictionary" class="tsd-anchor"></a>
+					<h3>query<wbr>Contract<wbr>Dictionary</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">query<wbr>Contract<wbr>Dictionary<span class="tsd-signature-symbol">(</span>dictionaryName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, dictionaryItemKey<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, stateRootHash<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span>, casperClient<span class="tsd-signature-symbol">?: </span><a href="../modules/_lib_index_.html#casperclient" class="tsd-signature-type">CasperClient</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_lib_clvalue_abstract_.clvalue.html" class="tsd-signature-type">CLValue</a><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3d11e89/src/lib/Contracts.ts#L127">src/lib/Contracts.ts:127</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>dictionaryName: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5>dictionaryItemKey: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> stateRootHash: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> casperClient: <a href="../modules/_lib_index_.html#casperclient" class="tsd-signature-type">CasperClient</a></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="_lib_clvalue_abstract_.clvalue.html" class="tsd-signature-type">CLValue</a><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="setcontracthash" class="tsd-anchor"></a>
+					<h3>set<wbr>Contract<wbr>Hash</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">set<wbr>Contract<wbr>Hash<span class="tsd-signature-symbol">(</span>contractHash<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, contractPackageHash<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3d11e89/src/lib/Contracts.ts#L32">src/lib/Contracts.ts:32</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>contractHash: <span class="tsd-signature-type">string</span></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> contractPackageHash: <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -227,9 +368,6 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="_lib_contracts_.boundcontract.html" class="tsd-kind-icon">Bound<wbr>Contract</a>
-					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-module">
@@ -238,27 +376,51 @@
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
 								<a href="_lib_contracts_.contract.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_lib_contracts_.contract.html#paymentwasm" class="tsd-kind-icon">payment<wbr>Wasm</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_lib_contracts_.contract.html#casperclient" class="tsd-kind-icon">casper<wbr>Client</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_lib_contracts_.contract.html#sessionwasm" class="tsd-kind-icon">session<wbr>Wasm</a>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_lib_contracts_.contract.html#contracthash" class="tsd-kind-icon">contract<wbr>Hash</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_lib_contracts_.contract.html#contractpackagehash" class="tsd-kind-icon">contract<wbr>Package<wbr>Hash</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_lib_contracts_.contract.html#deploy" class="tsd-kind-icon">deploy</a>
+								<a href="_lib_contracts_.contract.html#callentrypoint" class="tsd-kind-icon">call<wbr>Entrypoint</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_lib_contracts_.contract.html#checksetup" class="tsd-kind-icon">check<wbr>Setup</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_lib_contracts_.contract.html#install" class="tsd-kind-icon">install</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_lib_contracts_.contract.html#querycontractdata" class="tsd-kind-icon">query<wbr>Contract<wbr>Data</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_lib_contracts_.contract.html#querycontractdictionary" class="tsd-kind-icon">query<wbr>Contract<wbr>Dictionary</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_lib_contracts_.contract.html#setcontracthash" class="tsd-kind-icon">set<wbr>Contract<wbr>Hash</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="_lib_contracts_.faucet.html" class="tsd-kind-icon">Faucet</a>
-					</li>
-					<li class=" tsd-kind-class tsd-parent-kind-module">
-						<a href="_lib_contracts_.transfer.html" class="tsd-kind-icon">Transfer</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-module tsd-is-not-exported">
+						<a href="../modules/_lib_contracts_.html#no_client_err" class="tsd-kind-icon">NO_<wbr>CLIENT_<wbr>ERR</a>
 					</li>
 					<li class=" tsd-kind-function tsd-parent-kind-module">
 						<a href="../modules/_lib_contracts_.html#bytehash" class="tsd-kind-icon">byte<wbr>Hash</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lib_contracts_.html#contracthashtobytearray" class="tsd-kind-icon">contract<wbr>Hash<wbr>ToByte<wbr>Array</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lib_contracts_.html#fromclmap" class="tsd-kind-icon">fromCLMap</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-module">
+						<a href="../modules/_lib_contracts_.html#toclmap" class="tsd-kind-icon">toCLMap</a>
 					</li>
 				</ul>
 			</nav>
@@ -282,6 +444,7 @@
 				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
 				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
 				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
 				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
 			</ul>
 			<ul class="tsd-legend">
@@ -292,7 +455,7 @@
 				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
 			</ul>
 			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
 			</ul>
 		</div>
 	</div>
