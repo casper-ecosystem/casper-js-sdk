@@ -94,3 +94,5 @@ export const RESULT_ID = 'Result';
 export const TUPLE1_ID = 'Tuple1';
 export const TUPLE2_ID = 'Tuple2';
 export const TUPLE3_ID = 'Tuple3';
+
+export const ACCOUNT_HASH_ID = 'AccountHash';

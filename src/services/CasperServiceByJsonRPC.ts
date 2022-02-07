@@ -330,13 +330,13 @@ export class CasperServiceByJsonRPC {
   }
 
   public async getStateRootHash(
-    blockHashBase16: JsonBlockHash
+    blockHashBase16?: JsonBlockHash
   ): Promise<string> {
     return await this.client
       .request({
         method: 'chain_get_state_root_hash',
         params: {
-          block_hash: blockHashBase16
+          block_hash: blockHashBase16 || null
         }
       })
       .then((res: GetStateRootHashResult) => res.state_root_hash);
@@ -479,6 +479,40 @@ export class CasperServiceByJsonRPC {
         dictionary_identifier: {
           URef: {
             seed_uref: seedUref,
+            dictionary_item_key: dictionaryItemKey
+          }
+        }
+      }
+    });
+    if (res.error) {
+      return res;
+    } else {
+      const storedValueJson = res.stored_value;
+      const serializer = new TypedJSON(StoredValue);
+      const storedValue = serializer.parse(storedValueJson)!;
+      return storedValue;
+    }
+  }
+
+  /**
+   * get dictionary item by name
+   * @param stateRootHash
+   * @param dictionaryItemKey
+   */
+  public async getDictionaryItemByName(
+    stateRootHash: string,
+    contractHash: string,
+    dictionaryName: string,
+    dictionaryItemKey: string
+  ): Promise<StoredValue> {
+    const res = await this.client.request({
+      method: 'state_get_dictionary_item',
+      params: {
+        state_root_hash: stateRootHash,
+        dictionary_identifier: {
+          ContractNamedKey: {
+            key: contractHash,
+            dictionary_name: dictionaryName,
             dictionary_item_key: dictionaryItemKey
           }
         }

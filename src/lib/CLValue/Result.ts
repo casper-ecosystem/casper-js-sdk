@@ -55,7 +55,7 @@ export class CLResultType<T extends CLType, E extends CLType> extends CLType {
 
 export class CLResultBytesParser extends CLValueBytesParsers {
   toBytes(value: CLResult<CLType, CLType>): ToBytesResult {
-    if (value.isOk() && value.data.val.isCLValue()) {
+    if (value.isOk() && value.data.val.isCLValue) {
       return Ok(
         concat([
           Uint8Array.from([RESULT_TAG_OK]),

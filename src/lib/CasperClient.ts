@@ -7,7 +7,7 @@ import { CasperHDKey } from './CasperHDKey';
 import { BigNumber } from '@ethersproject/bignumber';
 
 export class CasperClient {
-  private nodeClient: CasperServiceByJsonRPC;
+  public nodeClient: CasperServiceByJsonRPC;
 
   constructor(nodeUrl: string) {
     this.nodeClient = new CasperServiceByJsonRPC(nodeUrl);
