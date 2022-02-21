@@ -91,29 +91,30 @@ export const getActivePublicKey: () => Promise<string> = () => {
 };
 
 /**
- * Send Deploy in JSON format message to Signer plugin to sign.
+ * Send Deploy in JSON format to Signer extension to be signed.
  *
- * @param deploy deploy in JSON format
- * @param sourcePublicKeyHex public key in hex format with algorithm prefix. Used to sign the deploy
- * @param targetPublicKeyHex public key in hex format with algorithm prefix. Used to display hex-formatted address on the UI
+ * @param deploy - deploy in JSON format
+ * @param signingPublicKeyHex - Hex-formatted public key. The corresponding secret key is used to sign the deploy.
+ * @param {string} [targetPublicKeyHex] - Hex-formatted public key.
+ * If the `target` in the deploy is an account hash this can be used to verify it and display the hex-formatted public key in the UI.
  *
- * @throws Error if haven't connected to CasperLabs Signer browser extension.
- * @throws Error if sourcePublicKeyHex is not the same as the key that Signer used to sign the message
- * @throws Error if targetPublicKeyHex is not the same as the key that is used as target in deploy.
+ * @throws Errors if the Signer extension is not connected.
+ * @throws Errors if signingPublicKey is not available or does not match the Active Key in the Signer.
+ * @throws Errors if targetPublicKeyHex is not the same as the key (or corresponding account hash) that is used as target in deploy.
  */
 export const sign: (
   deploy: { deploy: JsonTypes },
-  sourcePublicKey: string,
-  targetPublicKey: string
+  signingPublicKey: string,
+  targetPublicKey?: string
 ) => Promise<{ deploy: JsonTypes }> = (
   deploy: { deploy: JsonTypes },
-  sourcePublicKey: string,
-  targetPublicKey: string
+  signingPublicKey: string,
+  targetPublicKey?: string
 ) => {
   if (helperPresent())
     return window.casperlabsHelper.sign(
       deploy,
-      sourcePublicKey,
+      signingPublicKey,
       targetPublicKey
     );
   return Promise.reject(
