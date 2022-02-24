@@ -99,23 +99,23 @@ export const getActivePublicKey: () => Promise<string> = () => {
  * If the `target` in the deploy is an account hash this can be used to verify it and display the hex-formatted public key in the UI.
  *
  * @throws Errors if the Signer extension is not connected.
- * @throws Errors if signingPublicKey is not available or does not match the Active Key in the Signer.
+ * @throws Errors if signingPublicKeyHex is not available or does not match the Active Key in the Signer.
  * @throws Errors if targetPublicKeyHex is not the same as the key (or corresponding account hash) that is used as target in deploy.
  */
 export const sign: (
   deploy: { deploy: JsonTypes },
-  signingPublicKey: string,
-  targetPublicKey?: string
+  signingPublicKeyHex: string,
+  targetPublicKeyHex?: string
 ) => Promise<{ deploy: JsonTypes }> = (
   deploy: { deploy: JsonTypes },
-  signingPublicKey: string,
-  targetPublicKey?: string
+  signingPublicKeyHex: string,
+  targetPublicKeyHex?: string
 ) => {
   if (helperPresent())
     return window.casperlabsHelper.sign(
       deploy,
-      signingPublicKey,
-      targetPublicKey
+      signingPublicKeyHex,
+      targetPublicKeyHex
     );
   return Promise.reject(
     new Error(
