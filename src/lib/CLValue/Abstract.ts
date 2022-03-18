@@ -59,7 +59,7 @@ export abstract class CLValue {
   }
 
   toJSON(): any {
-    return this;
+    return this.data;
   }
 }
 

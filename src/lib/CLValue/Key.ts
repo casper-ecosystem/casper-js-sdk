@@ -157,6 +157,10 @@ export class CLKey extends CLValue {
     return this.data;
   }
 
+  toJSON(): any {
+    return Buffer.from(this.data.value() as Uint8Array).toString('hex');
+  }
+
   isHash(): boolean {
     return this.data.clType().toString() === BYTE_ARRAY_ID;
   }
