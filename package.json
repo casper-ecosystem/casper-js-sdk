@@ -1,6 +1,6 @@
 {
   "name": "casper-js-sdk",
-  "version": "2.7.7",
+  "version": "2.8.0",
   "license": "Apache 2.0",
   "description": "SDK to interact with the Casper blockchain",
   "homepage": "https://github.com/casper-ecosystem/casper-js-sdk#README.md",
@@ -21,7 +21,6 @@
     "~build": "tsc --watch",
     "test:nctl": "TS_NODE_FILES=true mocha -r ts-node/register test/nctl/*.test.ts --timeout 5000000",
     "test": "TS_NODE_FILES=true mocha -r ts-node/register test/**/*.test.ts src/lib/CLValue/*.test.ts",
-    "test2": "TS_NODE_FILES=true mocha -r ts-node/register src/lib/CLValue/ByteArray.test.ts",
     "test:coverage": "nyc npm run test",
     "docs": "typedoc --out docs/ src",
     "publish-doc": "yarn run docs && gh-pages -d docs -r https://github.com/casper-ecosystem/casper-client-sdk-docs"
@@ -31,7 +30,7 @@
     "BlockChain",
     "sdk"
   ],
-  "author": "AbnerZheng <abner@casper.io>",
+  "author": "Jan Hoffmann <jan@casperlabs.io>",
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
       "eslint --fix",

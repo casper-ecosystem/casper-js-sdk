@@ -37,6 +37,7 @@ import { RuntimeArgs } from './RuntimeArgs';
 import { DeployUtil, Keys } from './index';
 import { AsymmetricKey, SignatureAlgorithm } from './Keys';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
+import { CasperClient } from './CasperClient';
 import { jsonArrayMember, jsonMember, jsonObject, TypedJSON } from 'typedjson';
 import { ByteArray } from 'tweetnacl-ts';
 
@@ -962,6 +963,23 @@ export class Deploy {
       return this.payment.asModuleBytes()?.moduleBytes.length === 0;
     }
     return false;
+  }
+
+  public async send(nodeUrl: string): Promise<string> {
+    const client = new CasperClient(nodeUrl);
+
+    const deployHash = client.putDeploy(this);
+
+    return deployHash;
+  }
+
+  public sign(keys: AsymmetricKey[]): Deploy {
+    const signedDeploy = keys.reduce((acc: Deploy, key: AsymmetricKey) => {
+      acc = signDeploy(acc, key);
+      return acc;
+    }, this);
+
+    return signedDeploy;
   }
 }
 

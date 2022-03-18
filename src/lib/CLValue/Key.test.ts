@@ -169,7 +169,7 @@ describe('CLKey', () => {
   it('toBytes() with invalid data', () => {
     // @ts-ignore
     const badFn = () => CLValueParsers.toBytes(new CLKey([1, 2, 3]));
-    expect(badFn).to.throw('Unknown byte types');
+    expect(badFn).to.throw('Provided parameter is not a valid CLValue');
   });
 
   it('Should be able to return proper value by calling .clType()', () => {
