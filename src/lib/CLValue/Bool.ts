@@ -62,6 +62,10 @@ export class CLBool extends CLValue {
     return this.data;
   }
 
+  toJSON(): any {
+    return this.data;
+  }
+
   static fromBytesWithRemainder(
     bytes: Uint8Array
   ): ResultAndRemainder<CLBool, CLErrorCodes> {
