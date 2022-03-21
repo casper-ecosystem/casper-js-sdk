@@ -4,6 +4,17 @@ All notable changes to casper-js-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.9.0
+
+### Added
+
+- Now all stored value contains raw JSON from RPC under `raw` key.
+- New method `getValidatorsInfoByBlockHeight` added.
+
+### Changed
+
+- `targetPublicKeyHex` is now optional in `Signer` class.
+
 ## 2.8.0
 
 ### Added
