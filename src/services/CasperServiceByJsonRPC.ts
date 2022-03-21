@@ -286,6 +286,22 @@ export class CasperServiceByJsonRPC {
     });
   }
 
+  public async getValidatorsInfoByBlockHeight(
+    blockHeight: number
+  ): Promise<ValidatorsInfoResult> {
+    return await this.client.request({
+      method: 'state_get_auction_info',
+      params: {
+        block_identifier:
+          blockHeight >= 0
+            ? {
+                Height: blockHeight
+              }
+            : null
+      }
+    });
+  }
+
   /**
    * Get the reference to the balance so we can cache it.
    */
