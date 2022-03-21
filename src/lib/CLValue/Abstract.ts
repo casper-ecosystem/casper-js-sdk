@@ -49,6 +49,7 @@ export abstract class ToBytes {
 }
 
 export abstract class CLValue {
+  isCLValue = true;
   abstract clType(): CLType;
   abstract value(): any;
   abstract data: any;

@@ -55,14 +55,14 @@ export class CLResultType<T extends CLType, E extends CLType> extends CLType {
 
 export class CLResultBytesParser extends CLValueBytesParsers {
   toBytes(value: CLResult<CLType, CLType>): ToBytesResult {
-    if (value.data instanceof Ok && value.data.val instanceof CLValue) {
+    if (value.isOk() && value.data.val.isCLValue) {
       return Ok(
         concat([
           Uint8Array.from([RESULT_TAG_OK]),
           CLValueParsers.toBytes(value.data.val).unwrap()
         ])
       );
-    } else if (value.data instanceof Err) {
+    } else if (value.isError()) {
       return Ok(
         concat([
           Uint8Array.from([RESULT_TAG_ERROR]),
@@ -154,14 +154,14 @@ export class CLResult<T extends CLType, E extends CLType> extends CLValue {
    * Checks if stored value is error
    */
   isError(): boolean {
-    return this.data instanceof Err;
+    return this.data.err && !this.data.ok;
   }
 
   /**
    * Checks if stored value is valid
    */
   isOk(): boolean {
-    return this.data.ok;
+    return this.data.ok && !this.data.err;
   }
 
   clType(): CLType {
