@@ -130,6 +130,10 @@ export class CLURef extends CLValue {
     ].join('-');
   }
 
+  toJSON(): string {
+    return this.toFormattedStr();
+  }
+
   clType(): CLType {
     return new CLURefType();
   }

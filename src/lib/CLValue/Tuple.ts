@@ -120,6 +120,10 @@ abstract class CLTuple extends CLValue {
   value(): Array<CLValue> {
     return this.data;
   }
+
+  toJSON(): any {
+    return this.data.map(d => d.toJSON());
+  }
 }
 
 export class CLTuple1Type extends CLTupleType {
