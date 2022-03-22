@@ -117,7 +117,7 @@ export class Contract {
       path
     );
 
-    if (contractData && contractData.CLValue instanceof CLValue) {
+    if (contractData && contractData.CLValue?.isCLValue) {
       return contractData.CLValue.value();
     } else {
       throw Error('Invalid stored value');
@@ -145,7 +145,7 @@ export class Contract {
       dictionaryItemKey
     );
 
-    if (storedValue && storedValue.CLValue instanceof CLValue) {
+    if (storedValue && storedValue.CLValue?.isCLValue) {
       return storedValue.CLValue;
     } else {
       throw Error('Invalid stored value');
