@@ -286,6 +286,22 @@ export class CasperServiceByJsonRPC {
     });
   }
 
+  public async getValidatorsInfoByBlockHeight(
+    blockHeight: number
+  ): Promise<ValidatorsInfoResult> {
+    return await this.client.request({
+      method: 'state_get_auction_info',
+      params: {
+        block_identifier:
+          blockHeight >= 0
+            ? {
+                Height: blockHeight
+              }
+            : null
+      }
+    });
+  }
+
   /**
    * Get the reference to the balance so we can cache it.
    */
@@ -470,7 +486,8 @@ export class CasperServiceByJsonRPC {
   public async getDictionaryItemByURef(
     stateRootHash: string,
     dictionaryItemKey: string,
-    seedUref: string
+    seedUref: string,
+    { rawData } = { rawData: false }
   ): Promise<StoredValue> {
     const res = await this.client.request({
       method: 'state_get_dictionary_item',
@@ -488,9 +505,11 @@ export class CasperServiceByJsonRPC {
       return res;
     } else {
       const storedValueJson = res.stored_value;
-      const serializer = new TypedJSON(StoredValue);
-      const storedValue = serializer.parse(storedValueJson)!;
-      return storedValue;
+      if (!rawData) {
+        const serializer = new TypedJSON(StoredValue);
+        return serializer.parse(storedValueJson)!;
+      }
+      return storedValueJson;
     }
   }
 
@@ -503,7 +522,8 @@ export class CasperServiceByJsonRPC {
     stateRootHash: string,
     contractHash: string,
     dictionaryName: string,
-    dictionaryItemKey: string
+    dictionaryItemKey: string,
+    { rawData } = { rawData: false }
   ): Promise<StoredValue> {
     const res = await this.client.request({
       method: 'state_get_dictionary_item',
@@ -522,9 +542,11 @@ export class CasperServiceByJsonRPC {
       return res;
     } else {
       const storedValueJson = res.stored_value;
-      const serializer = new TypedJSON(StoredValue);
-      const storedValue = serializer.parse(storedValueJson)!;
-      return storedValue;
+      if (!rawData) {
+        const serializer = new TypedJSON(StoredValue);
+        return serializer.parse(storedValueJson)!;
+      }
+      return storedValueJson;
     }
   }
 }
