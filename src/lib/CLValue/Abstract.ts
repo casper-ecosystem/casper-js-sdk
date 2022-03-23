@@ -54,10 +54,6 @@ export abstract class CLValue {
   abstract value(): any;
   abstract data: any;
 
-  toString(): string {
-    return '';
-  }
-
   toJSON(): any {
     return this.data;
   }
