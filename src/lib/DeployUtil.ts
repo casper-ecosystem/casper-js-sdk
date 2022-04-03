@@ -1241,16 +1241,17 @@ export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
                   got: ${deploy.hash}.`);
   }
 
-  deploy.approvals.forEach(({ signer, signature }) => {
+  const isProperlySigned = deploy.approvals.every(({ signer, signature }) => {
     const pk = CLPublicKey.fromHex(signer);
     const signatureRaw = decodeBase16(signature.slice(2));
-    const isValid = validateSignature(deploy.hash, signatureRaw, pk);
-    if (!isValid) throw Error('Invalid signature');
+    return validateSignature(deploy.hash, signatureRaw, pk);
   });
 
-  // CLPublicKey.fromHex(
-
-  return Ok(deploy);
+  if (!isProperlySigned) {
+    return Err('Invalid signature.');
+  } else {
+    return Ok(deploy);
+  }
 };
 
 export const arrayEquals = (a: Uint8Array, b: Uint8Array): boolean => {
