@@ -130,16 +130,6 @@ describe('CasperClient', () => {
     expect(secpKey2.verify(signature2, msg)).to.be.equal(true);
   });
 
-  it('should create deploy from Deploy JSON with ttl in minutes', function() {
-    const json = JSON.parse(
-      '{"deploy":{"hash":"1e4111d01748fca01c2986b2f6a576fb105fd8bc93c86e381b5c2b59dd177ef1","header":{"account":"0109791772400ea911e2adcb7569d805da75654fc1360c06f93832f020e13aa0cf","timestamp":"2022-04-03T16:22:46.995Z","ttl":"30m","gas_price":1,"body_hash":"ea0a6bc12489f4ccf0b7564bcacd2918b744b9e4b8cad71d52afd9159f33b108","dependencies":[],"chain_name":"casper-test"},"payment":{"ModuleBytes":{"module_bytes":"","args":[["amount",{"bytes":"0500e40b5402","cl_type":"U512"}]]}},"session":{"Transfer":{"args":[["amount",{"bytes":"0500ba1dd205","cl_type":"U512"}],["target",{"bytes":"01861759c3e71b1953f2be3a92c406a3423fd36ea6a8ff6fd0e71bb39685d68893","cl_type":"PublicKey"}],["id",{"bytes":"01addd020000000000","cl_type":{"Option":"U64"}}]]}},"approvals":[{"signer":"0109791772400ea911e2adcb7569d805da75654fc1360c06f93832f020e13aa0cf","signature":"01ddfc9ae220175a4a81527647b990dbceac97bb684916f5e8b6a40ba416d5174c3717629cd25d914805b7fd62fe0eaa04b943c66f6ad402b25ccca816c0911c03"}]}}'
-    );
-    const fromJson = casperClient.deployFromJson(json).unwrap();
-
-    expect(fromJson).to.be.an.instanceof(Deploy);
-    expect(fromJson!.header.ttl).to.be.eq(1800000);
-  });
-
   it('Signatures in deploy signed using Secp256K1 key', function() {
     const json = JSON.parse(
       '{"deploy":{"hash":"510d968d880a89cb92b985578312a535ea1412aaa6cb4a514456135d415b32f5","header":{"account":"0109791772400ea911e2adcb7569d805da75654fc1360c06f93832f020e13aa0cf","timestamp":"2022-04-03T19:18:42.176Z","ttl":"30m","gas_price":1,"body_hash":"ea0a6bc12489f4ccf0b7564bcacd2918b744b9e4b8cad71d52afd9159f33b108","dependencies":[],"chain_name":"casper-test"},"payment":{"ModuleBytes":{"module_bytes":"","args":[["amount",{"bytes":"0500e40b5402","cl_type":"U512"}]]}},"session":{"Transfer":{"args":[["amount",{"bytes":"0500ba1dd205","cl_type":"U512"}],["target",{"bytes":"01861759c3e71b1953f2be3a92c406a3423fd36ea6a8ff6fd0e71bb39685d68893","cl_type":"PublicKey"}],["id",{"bytes":"01addd020000000000","cl_type":{"Option":"U64"}}]]}},"approvals":[]}}'
@@ -159,5 +149,7 @@ describe('CasperClient', () => {
         .unwrap();
       expect(validDeploy).to.be.an.instanceof(Deploy);
     });
+
+    expect(casperClient.deployFromJson(json).unwrap().header.ttl).to.be.eq(1800000);
   });
 });
