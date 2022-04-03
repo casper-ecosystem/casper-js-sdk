@@ -131,81 +131,19 @@ describe('CasperClient', () => {
   });
 
   it('should create deploy from Deploy JSON with ttl in minutes', function() {
-    const json = {
-      deploy: {
-        approvals: [
-          {
-            signature: '130 chars',
-            signer:
-              '012d9dded24145247421eb8b904dda5cce8a7c77ae18de819a25628c4a01adbf76'
-          }
-        ],
-        hash:
-          'ceaaa76e7fb850a09d5c9d16ac995cb52eff2944066cfd8cac27f3595f11b652',
-        header: {
-          account:
-            '012d9dded24145247421eb8b904dda5cce8a7c77ae18de819a25628c4a01adbf76',
-          body_hash:
-            '0e68d66a9dfab19bb1898d5f4d11a4f55dd06a0cae3917afc1eae4a5b56352e7',
-          chain_name: 'casper-test',
-          dependencies: [],
-          gas_price: 1,
-          timestamp: '2021-05-06T07:49:32.583Z',
-          ttl: '30m'
-        },
-        payment: {
-          ModuleBytes: {
-            args: [
-              [
-                'amount',
-                {
-                  bytes: '0500e40b5402',
-                  cl_type: 'U512',
-                  parsed: '10000000000'
-                }
-              ]
-            ],
-            module_bytes: ''
-          }
-        },
-        session: {
-          Transfer: {
-            args: [
-              [
-                'amount',
-                {
-                  bytes: '0500743ba40b',
-                  cl_type: 'U512',
-                  parsed: '50000000000'
-                }
-              ],
-              [
-                'target',
-                {
-                  bytes:
-                    '1541566bdad3a3cfa9eb4cba3dcf33ee6583e0733ae4b2ccdfe92cd1bd92ee16',
-                  cl_type: {
-                    ByteArray: 32
-                  },
-                  parsed:
-                    '1541566bdad3a3cfa9eb4cba3dcf33ee6583e0733ae4b2ccdfe92cd1bd92ee16'
-                }
-              ],
-              [
-                'id',
-                {
-                  bytes: '01a086010000000000',
-                  cl_type: {
-                    Option: 'U64'
-                  },
-                  parsed: 100000
-                }
-              ]
-            ]
-          }
-        }
-      }
-    };
+    const json = JSON.parse(
+      '{"deploy":{"hash":"1e4111d01748fca01c2986b2f6a576fb105fd8bc93c86e381b5c2b59dd177ef1","header":{"account":"0109791772400ea911e2adcb7569d805da75654fc1360c06f93832f020e13aa0cf","timestamp":"2022-04-03T16:22:46.995Z","ttl":"30m","gas_price":1,"body_hash":"ea0a6bc12489f4ccf0b7564bcacd2918b744b9e4b8cad71d52afd9159f33b108","dependencies":[],"chain_name":"casper-test"},"payment":{"ModuleBytes":{"module_bytes":"","args":[["amount",{"bytes":"0500e40b5402","cl_type":"U512"}]]}},"session":{"Transfer":{"args":[["amount",{"bytes":"0500ba1dd205","cl_type":"U512"}],["target",{"bytes":"01861759c3e71b1953f2be3a92c406a3423fd36ea6a8ff6fd0e71bb39685d68893","cl_type":"PublicKey"}],["id",{"bytes":"01addd020000000000","cl_type":{"Option":"U64"}}]]}},"approvals":[{"signer":"0109791772400ea911e2adcb7569d805da75654fc1360c06f93832f020e13aa0cf","signature":"01ddfc9ae220175a4a81527647b990dbceac97bb684916f5e8b6a40ba416d5174c3717629cd25d914805b7fd62fe0eaa04b943c66f6ad402b25ccca816c0911c03"}]}}'
+    );
+    const fromJson = casperClient.deployFromJson(json).unwrap();
+
+    expect(fromJson).to.be.an.instanceof(Deploy);
+    expect(fromJson!.header.ttl).to.be.eq(1800000);
+  });
+
+  it('Signatures in deploy signed using Secp256K1 key', function() {
+    const json = JSON.parse(
+      '{"deploy":{"hash":"72b6f3600eb2f7f6a6a28631e6de382d95b2772739439f2ae809386943620a26","header":{"account":"02032ecf3a29fda8bf82af344c586f277867ad870e7d7b56510e52b425bfb6318264","timestamp":"2022-04-03T16:40:40.258Z","ttl":"30m","gas_price":1,"body_hash":"ea0a6bc12489f4ccf0b7564bcacd2918b744b9e4b8cad71d52afd9159f33b108","dependencies":[],"chain_name":"casper-test"},"payment":{"ModuleBytes":{"module_bytes":"","args":[["amount",{"bytes":"0500e40b5402","cl_type":"U512"}]]}},"session":{"Transfer":{"args":[["amount",{"bytes":"0500ba1dd205","cl_type":"U512"}],["target",{"bytes":"01861759c3e71b1953f2be3a92c406a3423fd36ea6a8ff6fd0e71bb39685d68893","cl_type":"PublicKey"}],["id",{"bytes":"01addd020000000000","cl_type":{"Option":"U64"}}]]}},"approvals":[{"signer":"02032ecf3a29fda8bf82af344c586f277867ad870e7d7b56510e52b425bfb6318264","signature":"02be4710b855a25f0d979313178c82a50ebd434aa05dd9a4ce15f03d5dba83506d3e54fa05150b9e732328818c4dc74267e3e349c1213a8c58386658bf79149a69"}]}}'
+    );
     const fromJson = casperClient.deployFromJson(json).unwrap();
 
     expect(fromJson).to.be.an.instanceof(Deploy);

@@ -64,6 +64,24 @@ export function readBase64WithPEM(content: string): Uint8Array {
   return decodeBase64(base64);
 }
 
+export const validateSignature = (
+  msg: Uint8Array,
+  signature: Uint8Array,
+  pk: CLPublicKey
+): boolean => {
+  if (pk.isEd25519()) {
+    return nacl.sign_detached_verify(msg, signature, pk.value());
+  }
+  if (pk.isSecp256K1()) {
+    return secp256k1.ecdsaVerify(
+      signature,
+      sha256(Buffer.from(msg)),
+      pk.value()
+    );
+  }
+  throw Error('Unsupported PublicKey type');
+};
+
 export abstract class AsymmetricKey {
   public readonly publicKey: CLPublicKey;
   public readonly privateKey: Uint8Array;
