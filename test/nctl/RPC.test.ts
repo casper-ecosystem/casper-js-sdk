@@ -7,7 +7,8 @@ import {
 } from '../../src/services';
 import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
 
-let client = new CasperServiceByJsonRPC('http://3.139.47.90:7777/rpc');
+let client = new CasperServiceByJsonRPC('http://localhost:11101/rpc');
+// let client = new CasperServiceByJsonRPC('http://3.23.146.54:7777/rpc');
 
 describe('RPC', () => {
   xit('should return correct block by number', async () => {
@@ -34,7 +35,7 @@ describe('RPC', () => {
     }
   });
 
-  it('should not allow to send deploy larger then 1 megabyte.', async () => {
+  xit('should not allow to send deploy larger then 1 megabyte.', async () => {
     // moduleBytes need to have length of (1 megabyte - 169 bytes) to produce
     // a deploy with the size of (1 megabyte + 1 byte).
     const oneMegaByte = 1048576;
@@ -105,4 +106,5 @@ describe('RPC', () => {
       client.stop();
     }, 6 * 10000);
   });
+
 });

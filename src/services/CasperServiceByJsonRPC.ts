@@ -345,6 +345,23 @@ export class CasperServiceByJsonRPC {
       .then(res => BigNumber.from(res.balance_value));
   }
 
+  public async queryBalance(
+    purseIdentifier: string,
+    stateRootHash?: string
+  ): Promise<BigNumber> {
+    return await this.client
+      .request({
+        method: 'query_balance',
+        params: {
+          purse_identifier: {
+            main_purse_under_public_key: purseIdentifier
+          },
+          state_identifier: stateRootHash
+        }
+      })
+      .then(res => BigNumber.from(res.balance));
+  }
+
   public async getStateRootHash(
     blockHashBase16?: JsonBlockHash
   ): Promise<string> {
