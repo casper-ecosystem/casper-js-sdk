@@ -1,14 +1,12 @@
 import blake from 'blakejs';
-import * as fs from 'fs';
-import { CLPublicKey } from '../index';
+import { CLPublicKey, CLValue, CLValueBuilder, CLTypeBuilder } from '../index';
 import * as DeployUtil from './DeployUtil';
-import { DeployParams, ExecutableDeployItem } from './DeployUtil';
+import { CasperClient } from './CasperClient';
+import { Deploy } from './DeployUtil';
 import { RuntimeArgs } from './RuntimeArgs';
-import { CLAccountHash, CLValueBuilder, CLKey } from './CLValue';
 import { AsymmetricKey } from './Keys';
-
-// https://www.npmjs.com/package/tweetnacl-ts
-// https://github.com/dcposch/blakejs
+import { StoredValue } from './StoredValue';
+import { DEFAULT_DEPLOY_TTL } from '../constants';
 
 /**
  * Use blake2b to compute hash of ByteArray
@@ -19,112 +17,159 @@ export function byteHash(x: Uint8Array): Uint8Array {
   return blake.blake2b(x, null, 32);
 }
 
-export class Contract {
-  private sessionWasm: Uint8Array;
-  private paymentWasm: Uint8Array;
+export const contractHashToByteArray = (contractHash: string) =>
+  Uint8Array.from(Buffer.from(contractHash, 'hex'));
 
-  /**
-   *
-   * @param sessionPath
-   * @param paymentPath the path of payment contract file, set it undefined if you want use standard payment
-   */
-  constructor(sessionPath: string, paymentPath?: string) {
-    this.sessionWasm = fs.readFileSync(sessionPath);
-    if (!paymentPath) {
-      this.paymentWasm = Buffer.from('');
-    } else {
-      this.paymentWasm = fs.readFileSync(paymentPath);
+const NO_CLIENT_ERR =
+  'You need to either create Contract instance with casperClient or pass it as parameter to this function';
+
+export class Contract {
+  public contractHash?: string;
+  public contractPackageHash?: string;
+
+  constructor(public casperClient?: CasperClient) {}
+
+  public setContractHash(
+    contractHash: string,
+    contractPackageHash?: string
+  ): void {
+    if (
+      !contractHash.startsWith('hash-') ||
+      (contractPackageHash && !contractPackageHash.startsWith('hash-'))
+    ) {
+      throw new Error(
+        'Please provide contract hash in a format that contains hash- prefix.'
+      );
     }
+
+    this.contractHash = contractHash;
+    this.contractPackageHash = contractPackageHash;
   }
 
-  /**
-   * Generate the Deploy message for this contract
-   *
-   * @param args Arguments
-   * @param paymentAmount
-   * @param accountPublicKey
-   * @param signingKeyPair key pair to sign the deploy
-   * @param chainName
-   */
-  public deploy(
+  public install(
+    wasm: Uint8Array,
     args: RuntimeArgs,
-    paymentAmount: bigint,
-    accountPublicKey: CLPublicKey,
-    signingKeyPair: AsymmetricKey,
-    chainName: string
-  ): DeployUtil.Deploy {
-    const session = ExecutableDeployItem.newModuleBytes(this.sessionWasm, args);
-    const paymentArgs = RuntimeArgs.fromMap({
-      amount: CLValueBuilder.u512(paymentAmount.toString())
-    });
+    paymentAmount: string,
+    sender: CLPublicKey,
+    chainName: string,
+    signingKeys: AsymmetricKey[] = []
+  ): Deploy {
+    const deploy = DeployUtil.makeDeploy(
+      new DeployUtil.DeployParams(sender, chainName),
+      DeployUtil.ExecutableDeployItem.newModuleBytes(wasm, args),
+      DeployUtil.standardPayment(paymentAmount)
+    );
 
-    const payment = ExecutableDeployItem.newModuleBytes(
-      this.paymentWasm,
-      paymentArgs
+    const signedDeploy = deploy.sign(signingKeys);
+
+    return signedDeploy;
+  }
+
+  private checkSetup(): boolean {
+    if (this.contractHash) return true;
+    throw Error('You need to setContract before running this method.');
+  }
+
+  public callEntrypoint(
+    entryPoint: string,
+    args: RuntimeArgs,
+    sender: CLPublicKey,
+    chainName: string,
+    paymentAmount: string,
+    signingKeys: AsymmetricKey[] = [],
+    ttl: number = DEFAULT_DEPLOY_TTL
+  ): Deploy {
+    this.checkSetup();
+
+    const contractHashAsByteArray = contractHashToByteArray(
+      this.contractHash!.slice(5)
     );
 
     const deploy = DeployUtil.makeDeploy(
-      new DeployParams(accountPublicKey, chainName),
-      session,
-      payment
+      new DeployUtil.DeployParams(sender, chainName, 1, ttl),
+      DeployUtil.ExecutableDeployItem.newStoredContractByHash(
+        contractHashAsByteArray,
+        entryPoint,
+        args
+      ),
+      DeployUtil.standardPayment(paymentAmount)
     );
-    return DeployUtil.signDeploy(deploy, signingKeyPair);
+
+    const signedDeploy = deploy.sign(signingKeys);
+
+    return signedDeploy;
   }
-}
 
-/**
- * Always use the same account for deploying and signing.
- */
-export class BoundContract {
-  constructor(
-    private contract: Contract,
-    private contractKeyPair: AsymmetricKey
-  ) {}
+  public async queryContractData(
+    path: string[] = [],
+    casperClient?: CasperClient,
+    stateRootHash?: string
+  ): Promise<StoredValue> {
+    const client = casperClient || this.casperClient;
+    if (!client) throw Error(NO_CLIENT_ERR);
 
-  public deploy(
-    args: RuntimeArgs,
-    paymentAmount: bigint,
-    chainName: string
-  ): DeployUtil.Deploy {
-    return this.contract.deploy(
-      args,
-      paymentAmount,
-      this.contractKeyPair.publicKey,
-      this.contractKeyPair,
-      chainName
+    const stateRootHashToUse =
+      stateRootHash || (await client.nodeClient.getStateRootHash());
+
+    const contractData = await client.nodeClient.getBlockState(
+      stateRootHashToUse,
+      this.contractHash!,
+      path
     );
+
+    if (contractData && contractData.CLValue?.isCLValue) {
+      return contractData.CLValue.value();
+    } else {
+      throw Error('Invalid stored value');
+    }
+  }
+
+  public async queryContractDictionary(
+    dictionaryName: string,
+    dictionaryItemKey: string,
+    stateRootHash?: string,
+    casperClient?: CasperClient
+  ): Promise<CLValue> {
+    this.checkSetup();
+
+    const client = casperClient || this.casperClient;
+    if (!client) throw Error(NO_CLIENT_ERR);
+
+    const stateRootHashToUse =
+      stateRootHash || (await client.nodeClient.getStateRootHash());
+
+    const storedValue = await client.nodeClient.getDictionaryItemByName(
+      stateRootHashToUse,
+      this.contractHash!,
+      dictionaryName,
+      dictionaryItemKey
+    );
+
+    if (storedValue && storedValue.CLValue?.isCLValue) {
+      return storedValue.CLValue;
+    } else {
+      throw Error('Invalid stored value');
+    }
   }
 }
 
-export class Faucet {
-  /**
-   * Arguments for Faucet smart contract
-   *
-   * @param accountPublicKeyHash the public key hash that want to be funded
-   */
-  public static args(accountPublicKeyHash: Uint8Array): RuntimeArgs {
-    const accountKey = new CLKey(new CLAccountHash(accountPublicKeyHash));
-    return RuntimeArgs.fromMap({
-      account: accountKey
-    });
+export const toCLMap = (map: Map<string, string>) => {
+  const clMap = CLValueBuilder.map([
+    CLTypeBuilder.string(),
+    CLTypeBuilder.string()
+  ]);
+  for (const [key, value] of Array.from(map.entries())) {
+    clMap.set(CLValueBuilder.string(key), CLValueBuilder.string(value));
   }
-}
+  return clMap;
+};
 
-export class Transfer {
-  /**
-   * Arguments for Transfer smart contract
-   *
-   * @param accountPublicKeyHash the target account to transfer tokens
-   * @param amount the amount of tokens to transfer
-   */
-  public static args(
-    accountPublicKeyHash: Uint8Array,
-    amount: bigint
-  ): RuntimeArgs {
-    const account = CLValueBuilder.key(new CLAccountHash(accountPublicKeyHash));
-    return RuntimeArgs.fromMap({
-      account,
-      amount: CLValueBuilder.u512(amount.toString())
-    });
+export const fromCLMap = (map: [CLValue, CLValue][]) => {
+  const jsMap = new Map();
+
+  for (const [innerKey, value] of map) {
+    jsMap.set(innerKey.value(), value.value());
   }
-}
+
+  return jsMap;
+};

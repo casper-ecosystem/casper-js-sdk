@@ -11,7 +11,8 @@ import {
   ResultAndRemainder,
   ToBytesResult,
   ACCOUNT_HASH_LENGTH,
-  resultHelper
+  resultHelper,
+  ACCOUNT_HASH_ID
 } from './index';
 
 export class CLAccountHashType extends CLType {
@@ -19,7 +20,7 @@ export class CLAccountHashType extends CLType {
   tag = -1;
 
   toString(): string {
-    return 'AccountHash (Not Supported as CLValue)';
+    return ACCOUNT_HASH_ID;
   }
 
   toJSON(): string {

@@ -285,9 +285,7 @@ export class ContractPackageJson {
 
 @jsonObject
 export class StoredValue {
-  // StoredVale
   @jsonMember({
-    name: 'CLValue',
     deserializer: json => {
       if (!json) return;
       return CLValueParsers.fromJSON(json).unwrap();

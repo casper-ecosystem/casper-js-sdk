@@ -19,7 +19,12 @@ import {
   ToBytesResult,
   CLValueBytesParsers,
   CLValueParsers,
-  resultHelper
+  CLPublicKey,
+  resultHelper,
+  BYTE_ARRAY_ID,
+  PUBLIC_KEY_ID,
+  ACCOUNT_HASH_ID,
+  UREF_ID
 } from './index';
 import { KEY_ID, CLTypeTag } from './constants';
 
@@ -123,13 +128,24 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
   }
 }
 
-export type CLKeyParameters = CLByteArray | CLURef | CLAccountHash;
+export type CLKeyParameters =
+  | CLByteArray
+  | CLURef
+  | CLAccountHash
+  | CLPublicKey;
 
 export class CLKey extends CLValue {
   data: CLKeyParameters;
 
   constructor(v: CLKeyParameters) {
     super();
+    if (!v.isCLValue) {
+      throw Error('Provided parameter is not a valid CLValue');
+    }
+    if (v.clType().toString() === PUBLIC_KEY_ID) {
+      this.data = new CLAccountHash((v as CLPublicKey).toAccountHash());
+      return;
+    }
     this.data = v;
   }
 
@@ -142,14 +158,14 @@ export class CLKey extends CLValue {
   }
 
   isHash(): boolean {
-    return this.data instanceof CLByteArray;
+    return this.data.clType().toString() === BYTE_ARRAY_ID;
   }
 
   isURef(): boolean {
-    return this.data instanceof CLURef;
+    return this.data.clType().toString() === UREF_ID;
   }
 
   isAccount(): boolean {
-    return this.data instanceof CLAccountHash;
+    return this.data.clType().toString() === ACCOUNT_HASH_ID;
   }
 }
