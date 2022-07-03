@@ -157,7 +157,7 @@ export class CLKey extends CLValue {
     return this.data;
   }
 
-  toJSON(): any {
+  toJSON(): string {
     return Buffer.from(this.data.value() as Uint8Array).toString('hex');
   }
 
