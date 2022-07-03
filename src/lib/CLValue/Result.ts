@@ -155,7 +155,7 @@ export class CLResult<T extends CLType, E extends CLType> extends CLValue {
    * Returns JSON representation. If None null will be returned.
    */
   toJSON(): any {
-    return this.isError() ? this.data.err : this.data.unwrap().toJSON();
+    return this.data.unwrap().toJSON();
   }
 
   /**
