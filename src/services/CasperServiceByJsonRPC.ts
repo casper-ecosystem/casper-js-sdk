@@ -132,6 +132,12 @@ export interface ValidatorWeight {
   weight: string;
 }
 
+export enum PurseIdentifier {
+  MainPurseUnderPublicKey = 'main_purse_under_public_key',
+  MainPurseUnderAccountHash = 'main_purse_under_account_hash',
+  PurseUref = 'purse_uref'
+}
+
 @jsonObject
 export class EraSummary {
   @jsonMember({ constructor: String, name: 'block_hash' })
@@ -346,6 +352,7 @@ export class CasperServiceByJsonRPC {
   }
 
   public async queryBalance(
+    purseIdentifierType: PurseIdentifier,
     purseIdentifier: string,
     stateRootHash?: string
   ): Promise<BigNumber> {
@@ -354,7 +361,7 @@ export class CasperServiceByJsonRPC {
         method: 'query_balance',
         params: {
           purse_identifier: {
-            main_purse_under_public_key: purseIdentifier
+            [purseIdentifierType]: purseIdentifier
           },
           state_identifier: stateRootHash
         }
