@@ -145,7 +145,7 @@ export class CLOption<T extends CLValue> extends CLValue {
   }
 
   toJSON(): any {
-    return this.isNone() ? 'None' : this.data.unwrap().toJSON();
+    return this.isNone() ? null : this.data.unwrap().toJSON();
   }
 
   clType(): CLType {
