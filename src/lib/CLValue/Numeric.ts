@@ -70,7 +70,7 @@ abstract class Numeric extends CLValue {
     return this.data;
   }
 
-  toJSON(): any {
+  toJSON(): string {
     return this.data.toString();
   }
 }
