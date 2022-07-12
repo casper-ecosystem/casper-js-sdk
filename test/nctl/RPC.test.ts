@@ -7,7 +7,7 @@ import {
 } from '../../src/services';
 import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
 
-let client = new CasperServiceByJsonRPC('http://3.139.47.90:7777/rpc');
+let client = new CasperServiceByJsonRPC('http://localhost:11101/rpc');
 
 describe('RPC', () => {
   xit('should return correct block by number', async () => {
