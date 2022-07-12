@@ -360,9 +360,7 @@ export class CasperServiceByJsonRPC {
     return await this.client
       .request({
         method: 'chain_get_state_root_hash',
-        params: {
-          block_hash: blockHashBase16 || null
-        }
+        params: blockHashBase16 ? { block_identifier: blockHashBase16 } : []
       })
       .then((res: GetStateRootHashResult) => res.state_root_hash);
   }
