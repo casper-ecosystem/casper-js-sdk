@@ -10,7 +10,7 @@ on:
 jobs:
   publish:
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     strategy:
       matrix:
@@ -18,7 +18,7 @@ jobs:
         node-version: [14.x]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
       with:
         ref: ${{ github.event.release.target_commitish }}
     - name: Set release tag
@@ -29,11 +29,11 @@ jobs:
           echo "release_tag=latest" >> $GITHUB_ENV
         fi
     - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install
-    - uses: JS-DevTools/npm-publish@v1
+    - uses: JS-DevTools/npm-publish@0f451a94170d1699fd50710966d48fb26194d939 #v1.4.3
       with:
         token: ${{ secrets.NPM_TOKEN }}
         tag: ${{ env.release_tag }}
@@ -41,9 +41,9 @@ jobs:
         check-version: true
     - name: Get latest release version number
       id: get_version
-      uses: battila7/get-version-action@v2
+      uses: battila7/get-version-action@d97fbc34ceb64d1f5d95f4dfd6dce33521ccccf5 #v2.3.0
     - run: cp dist/lib.js casper-js-sdk.v${{ steps.get_version.outputs.version }}.js
-    - uses: meeDamian/github-release@2.0
+    - uses: meeDamian/github-release@7ae19492500104f636b3fee4d8103af0fed36c8e #v2.0.3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         files: casper-js-sdk.v${{ steps.get_version.outputs.version }}.js
