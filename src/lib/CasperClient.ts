@@ -9,13 +9,18 @@ import { BigNumber } from '@ethersproject/bignumber';
 export class CasperClient {
   public nodeClient: CasperServiceByJsonRPC;
 
+  /**
+   * Construct a CasperClient object
+   * @param nodeUrl The url of the node to be communicated with
+   */
   constructor(nodeUrl: string) {
     this.nodeClient = new CasperServiceByJsonRPC(nodeUrl);
   }
 
   /**
-   * Generate new key pair.
-   * @param algo Currently we support Ed25519 and Secp256K1.
+   * Generate a new key pair
+   * @param algo The signature algorithm of the account. Currently we support Ed25519 and Secp256K1
+   * @returns New key pair with the specified SignatureAlgorithm
    */
   public newKeyPair(algo: SignatureAlgorithm): AsymmetricKey {
     switch (algo) {
@@ -30,9 +35,9 @@ export class CasperClient {
 
   /**
    * Load private key from file
-   *
-   * @param path the path to the publicKey file
-   * @param algo the signature algorithm of the file
+   * @param path The path to the publicKey file
+   * @param algo The signature algorithm of the account. Currently we support Ed25519 and Secp256K1
+   * @returns New key pair with the specified SignatureAlgorithm
    */
   public loadPublicKeyFromFile(
     path: string,
@@ -49,8 +54,10 @@ export class CasperClient {
   }
 
   /**
-   * Load private key
-   * @param path the path to the private key file
+   * Load private key to buffer
+   * @param path The path to the private key file
+   * @param algo The signature algorithm of the account. Currently we support Ed25519 and Secp256K1
+   * @returns Uint8Array buffer of the private key
    */
   public loadPrivateKeyFromFile(
     path: string,
@@ -67,10 +74,10 @@ export class CasperClient {
   }
 
   /**
-   * Load private key file to restore keyPair
-   *
-   * @param path The path to the private key
-   * @param algo
+   * Load private key file to usable keypair
+   * @param path The path to the private key file
+   * @param algo The signature algorithm of the account
+   * @returns Usable keypair
    */
   public loadKeyPairFromPrivateFile(
     path: string,
@@ -88,16 +95,18 @@ export class CasperClient {
 
   /**
    * Create a new hierarchical deterministic wallet, supporting bip32 protocol
-   *
    * @param seed The seed buffer for parent key
+   * @returns A new bip32 compliant hierarchical deterministic wallet
    */
   public newHdWallet(seed: Uint8Array): CasperHDKey {
     return CasperHDKey.fromMasterSeed(seed);
   }
 
   /**
-   * Compute public key from private Key.
-   * @param privateKey
+   * Compute public key from private key
+   * @param privateKey Private key buffer
+   * @param algo The signature algorithm of the account. Currently we support Ed25519 and Secp256K1
+   * @returns Uint8Array buffer of the public key computed from the provided private key
    */
   public privateToPublicKey(
     privateKey: Uint8Array,
@@ -114,11 +123,12 @@ export class CasperClient {
   }
 
   /**
-   * Construct a unsigned Deploy object
-   *
-   * @param deployParams Parameters for deploy
-   * @param session
-   * @param payment
+   * Construct an unsigned Deploy object from the deploy parameters, session logic, and payment logic
+   * @param deployParams Deploy parameters
+   * @param session Session logic
+   * @param payment Payment logic
+   * @returns A deployable Deploy object
+   * @see [DeployUtil.makeDeploy](./DeployUtil.ts#L1059)
    */
   public makeDeploy(
     deployParams: DeployParams,
@@ -130,8 +140,10 @@ export class CasperClient {
 
   /**
    * Sign the deploy with the specified signKeyPair
-   * @param deploy unsigned Deploy object
-   * @param signKeyPair the keypair to sign the Deploy object
+   * @param deploy Unsigned Deploy object
+   * @param signKeyPair the keypair used to sign the Deploy object
+   * @returns A signed Deploy object
+   * @see [DeployUtil.signDeploy](./DeployUtil.ts#L1087)
    */
   public signDeploy(deploy: Deploy, signKeyPair: AsymmetricKey): Deploy {
     return DeployUtil.signDeploy(deploy, signKeyPair);
@@ -140,34 +152,37 @@ export class CasperClient {
   /**
    * Send deploy to network
    * @param signedDeploy Signed deploy object
+   * @returns The sent Deploy's transaction hash, as a string
    */
   public putDeploy(signedDeploy: Deploy): Promise<string> {
     return this.nodeClient.deploy(signedDeploy).then(it => it.deploy_hash);
   }
 
   /**
-   * convert the deploy object to json
-   * @param deploy
+   * Convert the Deploy object to a JSON representation
+   * @param deploy A Deploy object
+   * @returns A JSON representation of the Deploy
+   * @see [DeployUtil.deployToJson](./DeployUtil.ts#L1150)
    */
   public deployToJson(deploy: Deploy) {
     return DeployUtil.deployToJson(deploy);
   }
 
   /**
-   * Convert the json to deploy object
-   *
-   * @param json
+   * Convert a JSON Deploy representation to a Deploy object
+   * @param json A JSON respresentation of a deploy
+   * @returns A Deploy object
+   * @see [DeployUtil.deployToJson](./DeployUtil.ts#L1150)
    */
   public deployFromJson(json: any) {
     return DeployUtil.deployFromJson(json);
   }
 
   /**
-   * Construct the deploy for transfer purpose
-   *
-   * @param deployParams
-   * @param session
-   * @param payment
+   * Construct a Deploy consisting of a standard CSPR transfer. Fails if the Deploy is not a Transfer
+   * @param deployParams The parameters of the Deploy
+   * @param session Session logic
+   * @param payment Payment logic
    */
   public makeTransferDeploy(
     deployParams: DeployParams,
@@ -181,7 +196,9 @@ export class CasperClient {
   }
 
   /**
-   * Get the balance of public key
+   * Get the CSPR balance of an account using its public key
+   * @param publicKey CLPublicKey representation of an account's public key
+   * @returns Promise that resolves to the balance of the account
    */
   public async balanceOfByPublicKey(
     publicKey: CLPublicKey
@@ -190,7 +207,9 @@ export class CasperClient {
   }
 
   /**
-   * Get the balance by account hash
+   * Get the CSPR balance of an account using its account hash
+   * @param accountHashStr The account's account hash as a hexadecimal string
+   * @returns Promise that resolves to the balance of the account
    */
   public async balanceOfByAccountHash(
     accountHashStr: string
@@ -222,9 +241,9 @@ export class CasperClient {
   }
 
   /**
-   * Get deploy by hash from RPC.
-   * @param deployHash
-   * @returns Tuple of Deploy and raw RPC response.
+   * Get deploy details using a deploy's transaction hash
+   * @param deployHash The hexadecimal string representation of the deploy hash
+   * @returns Tuple of Deploy and raw RPC response
    */
   public async getDeploy(
     deployHash: string
@@ -238,7 +257,8 @@ export class CasperClient {
 
   /**
    * Get the main purse uref for the specified publicKey
-   * @param publicKey
+   * @param publicKey The public key of the account
+   * @returns A Promise resolving to a hexadecimal string representation of the account's main purse uref
    */
   public async getAccountMainPurseUref(
     publicKey: CLPublicKey
