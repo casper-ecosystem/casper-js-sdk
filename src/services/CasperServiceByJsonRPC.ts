@@ -385,15 +385,19 @@ export class CasperServiceByJsonRPC {
     }
   }
 
-  public async deploy(signedDeploy: DeployUtil.Deploy) {
+  public async checkDeploySize(deploy: DeployUtil.Deploy) {
     const oneMegaByte = 1048576;
-    const size = DeployUtil.deploySizeInBytes(signedDeploy);
+    const size = DeployUtil.deploySizeInBytes(deploy);
     if (size > oneMegaByte) {
       throw Error(
         `Deploy can not be send, because it's too large: ${size} bytes. ` +
           `Max size is 1 megabyte.`
       );
     }
+  }
+
+  public async deploy(signedDeploy: DeployUtil.Deploy) {
+    await this.checkDeploySize(signedDeploy);
 
     return await this.client.request({
       method: 'account_put_deploy',
@@ -401,6 +405,21 @@ export class CasperServiceByJsonRPC {
     });
   }
 
+  public async speculativeDeploy(
+    signedDeploy: DeployUtil.Deploy,
+    blockIdentifier?: string
+  ) {
+    await this.checkDeploySize(signedDeploy);
+
+    const deploy = deployToJson(signedDeploy);
+
+    return await this.client.request({
+      method: 'speculative_exec',
+      params: blockIdentifier
+        ? { ...deploy, block_identifier: { Hash: blockIdentifier } }
+        : { ...deploy }
+    });
+  }
   /**
    * Retrieves all transfers for a block from the network
    * @param blockIdentifier Hex-encoded block hash or height of the block. If not given, the last block added to the chain as known at the given node will be used. If not provided it will retrieve by latest block.
