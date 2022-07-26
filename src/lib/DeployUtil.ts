@@ -927,7 +927,7 @@ export class ExecutableDeployItem implements ToBytes {
 
   /**
    * Creates a new `Transfer` object
-   * @param amount The number of motes to transfer, where 1 mote = 10^-9 CSPR
+   * @param amount The number of motes to transfer, where 1 mote = 1 * 10^-9 CSPR
    * @param target URef of the target purse or the public key of target account, as a `CLUref` or `CLPublicKey` respectively
    * @param sourcePurse URef of the source purse. If this is omitted, the main purse of the account creating this transfer will be used as the source purse
    * @param id User-defined transfer id
@@ -967,7 +967,7 @@ export class ExecutableDeployItem implements ToBytes {
   // TODO: Abstract the logic of this and newTransfer so there won't be so much redundancy.
   /**
    * Creates a new `Transfer` object with an optional transfer id
-   * @param amount The number of motes to transfer, where 1 mote = 10^-9 CSPR
+   * @param amount The number of motes to transfer, where 1 mote = 1 * 10^-9 CSPR
    * @param target URef of the target purse or the public key of target account, as a `CLUref` or `CLPublicKey` respectively
    * @param sourcePurse URef of the source purse. If this is omitted, the main purse of the account creating this transfer will be used as the source purse
    * @param id User-defined transfer id, which if not provided will be created on the fly
@@ -1015,8 +1015,8 @@ export class ExecutableDeployItem implements ToBytes {
    * Constructor for Transfer deploy item using UniqAddress.
    * @param source `CLPublicKey` of source account
    * @param target `UniqAddress` of target account
-   * @param amount The amount of motes to transfer, where 1 mote = 10^-9 CSPR
-   * @param paymentAmount The number of motes paid to execution engine, where 1 mote = 10^-9 CSPR
+   * @param amount The amount of motes to transfer, where 1 mote = 1 * 10^-9 CSPR
+   * @param paymentAmount The number of motes paid to execution engine, where 1 mote = 1 * 10^-9 CSPR
    * @param chainName Name of the chain, to avoid the `Deploy` from being accidentally or maliciously included in a different chain.
    * @param gasPrice The gas price at which to execute the deploy
    * @param ttl Time that the `Deploy` will remain valid for, in milliseconds. The default value is 1800000, which is 30 minutes
@@ -1159,35 +1159,50 @@ export class ExecutableDeployItem implements ToBytes {
  */
 @jsonObject
 export class Deploy {
+  /**
+   * The deploy hash
+   */
   @jsonMember({
     serializer: byteArrayJsonSerializer,
     deserializer: byteArrayJsonDeserializer
   })
   public hash: Uint8Array;
 
+  /**
+   * The header of the deploy
+   */
   @jsonMember({ constructor: DeployHeader })
   public header: DeployHeader;
 
+  /**
+   * The payment logic of the deploy
+   */
   @jsonMember({
     constructor: ExecutableDeployItem
   })
   public payment: ExecutableDeployItem;
 
+  /**
+   * The session code of the deploy
+   */
   @jsonMember({
     constructor: ExecutableDeployItem
   })
   public session: ExecutableDeployItem;
 
+  /**
+   * An array of approvals in the form of signatures from an account or multiple accounts
+   */
   @jsonArrayMember(Approval)
   public approvals: Approval[];
 
   /**
-   *
+   * Constructs a `Deploy` object
    * @param hash The DeployHash identifying this Deploy
-   * @param header The deployHeader
-   * @param payment The ExecutableDeployItem for payment code.
-   * @param session the ExecutableDeployItem for session code.
-   * @param approvals  An array of signature and public key of the signers, who approve this deploy
+   * @param header The deploy header
+   * @param payment An ExecutableDeployItem representing the payment logic
+   * @param session An ExecutableDeployItem representing the session logic
+   * @param approvals An array of signatures and associated accounts who have approved this deploy
    */
   constructor(
     hash: Uint8Array,
@@ -1203,10 +1218,18 @@ export class Deploy {
     this.hash = hash;
   }
 
+  /**
+   * Identifies whether this `Deploy` represents a transfer of CSPR
+   * @returns `true` if the `Deploy` is a `Transfer`, and `false` otherwise
+   */
   public isTransfer(): boolean {
     return this.session.isTransfer();
   }
 
+  /**
+   * Identifies whether this `Deploy` represents a standard payment, like that of gas payment
+   * @returns `true` if the `Deploy` is a standard payment, and `false` otherwise
+   */
   public isStandardPayment(): boolean {
     if (this.payment.isModuleBytes()) {
       return this.payment.asModuleBytes()?.moduleBytes.length === 0;
@@ -1214,6 +1237,12 @@ export class Deploy {
     return false;
   }
 
+  /**
+   * Can be used to send the `Deploy` to an online Casper node
+   * @param nodeUrl The url of a live Casper node
+   * @returns The deploy hash of the `Deploy`
+   * @remarks Works by instantiating a `CasperClient` with the provided `nodeUrl` and calling [`putDeploy`](./CasperClient.ts#L157) on it
+   */
   public async send(nodeUrl: string): Promise<string> {
     const client = new CasperClient(nodeUrl);
 
@@ -1222,6 +1251,11 @@ export class Deploy {
     return deployHash;
   }
 
+  /**
+   * Signs the `Deploy` using the provided `AsymmetricKey`(s)
+   * @param keys An array consisting of one or many `AsymmetricKey`(s)
+   * @returns The original `Deploy` signed by the provided `AsymmetricKey`(s)
+   */
   public sign(keys: AsymmetricKey[]): Deploy {
     const signedDeploy = keys.reduce((acc: Deploy, key: AsymmetricKey) => {
       acc = signDeploy(acc, key);
@@ -1233,17 +1267,19 @@ export class Deploy {
 }
 
 /**
- * Serialize deployHeader into a array of bytes
+ * Serializes a `DeployHeader` into an array of bytes
  * @param deployHeader
+ * @returns A serialized representation of the provided `DeployHeader`
  */
 export const serializeHeader = (deployHeader: DeployHeader): ToBytesResult => {
   return deployHeader.toBytes();
 };
 
 /**
- * Serialize deployBody into a array of bytes
- * @param payment
- * @param session
+ * Serializes the body of a deploy into an array of bytes
+ * @param payment Payment logic for use in a deployment
+ * @param session Session logic of a deploy
+ * @returns `Uint8Array` typed byte array, containing the payment and session logic of a deploy
  */
 export const serializeBody = (
   payment: ExecutableDeployItem,
@@ -1252,6 +1288,11 @@ export const serializeBody = (
   return concat([payment.toBytes().unwrap(), session.toBytes().unwrap()]);
 };
 
+/**
+ * Serializes an array of `Approval`s into a `Uint8Array` typed byte array
+ * @param approvals An array of `Approval`s to be serialized
+ * @returns `Uint8Array` typed byte array that can be deserialized to an array of `Approval`s
+ */
 export const serializeApprovals = (approvals: Approval[]): Uint8Array => {
   const len = toBytesU32(approvals.length);
   const bytes = concat(
@@ -1266,20 +1307,25 @@ export const serializeApprovals = (approvals: Approval[]): Uint8Array => {
 };
 
 /**
- * Supported contract type
+ * enum of supported contract types
+ * @enum
  */
 export enum ContractType {
+  /** A pure WebAssembly representation of a smart contract */
   WASM = 'WASM',
+  /** A linked contract by hash */
   Hash = 'Hash',
+  /** A linked contract by name */
   Name = 'Name'
 }
 
+/** The parameters of a `Deploy` object */
 export class DeployParams {
   /**
    * Container for `Deploy` construction options.
-   * @param accountPublicKey
+   * @param accountPublicKey The public key of the deploying account as a `CLPublicKey`
    * @param chainName Name of the chain, to avoid the `Deploy` from being accidentally or maliciously included in a different chain.
-   * @param gasPrice Conversion rate between the cost of Wasm opcodes and the motes sent by the payment code.
+   * @param gasPrice Conversion rate between the cost of Wasm opcodes and the motes sent by the payment code, where 1 mote = 1 * 10^-9 CSPR
    * @param ttl Time that the `Deploy` will remain valid for, in milliseconds. The default value is 1800000, which is 30 minutes
    * @param dependencies Hex-encoded `Deploy` hashes of deploys which must be executed before this one.
    * @param timestamp  If `timestamp` is empty, the current time will be used. Note that timestamp is UTC, not local.
@@ -1303,7 +1349,11 @@ export class DeployParams {
 }
 
 /**
- * Makes Deploy message
+ * Builds a `Deploy` object from `DeployParams`, session logic, and payment logic
+ * @param deployParam The parameters of the deploy, see [DeployParams](#L1323)
+ * @param session The session logic of the deploy
+ * @param payment The payment logic of the deploy
+ * @returns A new `Deploy` object
  */
 export function makeDeploy(
   deployParam: DeployParams,
@@ -1329,9 +1379,8 @@ export function makeDeploy(
 
 /**
  * Uses the provided key pair to sign the Deploy message
- *
- * @param deploy
- * @param signingKey the keyPair to sign deploy
+ * @param deploy Either an unsigned `Deploy` object or one with other signatures
+ * @param signingKey The keypair used to sign the `Deploy`
  */
 export const signDeploy = (
   deploy: Deploy,
@@ -1354,11 +1403,11 @@ export const signDeploy = (
 };
 
 /**
- * Sets the already generated Ed25519 signature for the Deploy message
+ * Sets the algorithm of the already generated signature
  *
- * @param deploy
- * @param sig the Ed25519 signature
- * @param publicKey the public key used to generate the Ed25519 signature
+ * @param deploy A `Deploy` to be signed with `sig`
+ * @param sig the Ed25519 or Secp256K1 signature
+ * @param publicKey the public key used to generate the signature
  */
 export const setSignature = (
   deploy: Deploy,
@@ -1379,9 +1428,10 @@ export const setSignature = (
 };
 
 /**
- * Standard payment code.
+ * Creates an instance of standard payment logic
  *
- * @param paymentAmount the number of motes paying to execution engine
+ * @param paymentAmount The amount of motes to be used to pay for gas
+ * @returns A standard payment, as an `ExecutableDeployItem` to be attached to a `Deploy`
  */
 export const standardPayment = (paymentAmount: BigNumberish) => {
   const paymentArgs = RuntimeArgs.fromMap({
@@ -1392,9 +1442,10 @@ export const standardPayment = (paymentAmount: BigNumberish) => {
 };
 
 /**
- * Convert the deploy object to json
+ * Convert the deploy object to a JSON representation
  *
- * @param deploy
+ * @param deploy The `Deploy` object to convert to JSON
+ * @returns A JSON version of the `Deploy`, which can be converted back later
  */
 export const deployToJson = (deploy: Deploy) => {
   const serializer = new TypedJSON(Deploy);
@@ -1404,9 +1455,10 @@ export const deployToJson = (deploy: Deploy) => {
 };
 
 /**
- * Convert the json to deploy object
+ * Convert a JSON representation of a deploy to a `Deploy` object
  *
- * @param json
+ * @param json A JSON representation of a `Deploy`
+ * @returns A `Deploy` object from the JSON representation of a deploy
  */
 export const deployFromJson = (json: any): Result<Deploy, Error> => {
   if (json.deploy === undefined) {
@@ -1432,6 +1484,14 @@ export const deployFromJson = (json: any): Result<Deploy, Error> => {
   return new Ok(deploy);
 };
 
+/**
+ * Adds a runtime argument to a `Deploy` object
+ * @param deploy The `Deploy` object for which to add the runtime argument
+ * @param name The name of the runtime argument
+ * @param value The value of the runtime argument
+ * @returns The original `Deploy` with the additional runtime argument
+ * @remarks Will fail if the `Deploy` has already been signed
+ */
 export const addArgToDeploy = (
   deploy: Deploy,
   name: string,
@@ -1456,6 +1516,11 @@ export const addArgToDeploy = (
   return makeDeploy(deployParams, session, deploy.payment);
 };
 
+/**
+ * Gets the byte-size of a deploy
+ * @param deploy The `Deploy` for which to calculate the size
+ * @returns The size of the `Deploy` in its serialized representation
+ */
 export const deploySizeInBytes = (deploy: Deploy): number => {
   const hashSize = deploy.hash.length;
   const bodySize = serializeBody(deploy.payment, deploy.session).length;
@@ -1469,6 +1534,11 @@ export const deploySizeInBytes = (deploy: Deploy): number => {
   return hashSize + headerSize + bodySize + approvalsSize;
 };
 
+/**
+ * Validate a `Deploy` by calculating and comparing its stored blake2b hash
+ * @param deploy A `Deploy` to be validated
+ * @returns A `Result` that collapses to a `Deploy` or an error string
+ */
 export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
   if (!(deploy instanceof Deploy)) {
     return new Err("'deploy' is not an instance of Deploy class.");
@@ -1478,7 +1548,7 @@ export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
   const bodyHash = blake.blake2b(serializedBody, null, 32);
 
   if (!arrayEquals(deploy.header.bodyHash, bodyHash)) {
-    return Err(`Invalid deploy: bodyHash missmatch. Expected: ${bodyHash},
+    return Err(`Invalid deploy: bodyHash mismatch. Expected: ${bodyHash},
                   got: ${deploy.header.bodyHash}.`);
   }
 
@@ -1486,7 +1556,7 @@ export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
   const deployHash = blake.blake2b(serializedHeader, null, 32);
 
   if (!arrayEquals(deploy.hash, deployHash)) {
-    return Err(`Invalid deploy: hash missmatch. Expected: ${deployHash},
+    return Err(`Invalid deploy: hash mismatch. Expected: ${deployHash},
                   got: ${deploy.hash}.`);
   }
 
@@ -1495,10 +1565,21 @@ export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
   return Ok(deploy);
 };
 
+/**
+ * Compares two `Uint8Array`s
+ * @param a The first `Uint8Array`
+ * @param b The second `Uint8Array`
+ * @returns `true` if the two `Uint8Array`s match, and `false` otherwise
+ */
 export const arrayEquals = (a: Uint8Array, b: Uint8Array): boolean => {
   return a.length === b.length && a.every((val, index) => val === b[index]);
 };
 
+/**
+ * Serializes a `Deploy` to a `Uint8Array`
+ * @param deploy The `Deploy` to be serialized
+ * @returns A `Uint8Array` serialization of the provided `Deploy` 
+ */
 export const deployToBytes = (deploy: Deploy): Uint8Array => {
   return concat([
     serializeHeader(deploy.header).unwrap(),
