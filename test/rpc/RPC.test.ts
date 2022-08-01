@@ -2,6 +2,7 @@ import { assert, expect } from 'chai';
 import { CasperServiceByJsonRPC } from '../../src/services';
 import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
 import { getAccountInfo } from './utils';
+import { Transfers } from '../../src/lib/StoredValue';
 
 const { SignatureAlgorithm, getKeysFromHexPrivKey } = Keys;
 
@@ -11,6 +12,9 @@ const faucetKeys = getKeysFromHexPrivKey(
   process.env.FAUCET_PRIV_KEY!,
   SignatureAlgorithm.Ed25519
 );
+
+let faucetMainPurseUref = '';
+let exampleBlockHash = '';
 
 describe('RPC', () => {
   it('should return correct block by number', async () => {
@@ -28,6 +32,7 @@ describe('RPC', () => {
     let check = async (height: number) => {
       let block_by_height = await client.getBlockInfoByHeight(height);
       let block_hash = block_by_height.block?.hash!;
+      exampleBlockHash = block_hash;
       let block = await client.getBlockInfo(block_hash);
       assert.equal(block.block?.hash, block_hash);
     };
@@ -108,5 +113,55 @@ describe('RPC', () => {
     expect(status).to.have.property('build_version');
     expect(status).to.have.property('uptime');
   });
+
+  it('state_get_auction_info - newest one', async () => {
+    const validators = await client.getValidatorsInfo();
+    expect(validators).to.have.property('auction_state');
+  });
+
+  it('state_get_auction_info - by height', async () => {
+    const validators = await client.getValidatorsInfoByBlockHeight(1);
+    expect(validators).to.have.property('auction_state');
+    expect(validators.auction_state.block_height).to.be.eq(1);
+  });
+
+  it('state_get_item - account hash to main purse uref', async () => {
+    const stateRootHash = await client.getStateRootHash();
+    const uref = await client.getAccountBalanceUrefByPublicKeyHash(stateRootHash, faucetKeys.publicKey.toAccountRawHashStr()); 
+    faucetMainPurseUref = uref;
+    const [prefix, value, suffix] = uref.split('-');
+    expect(prefix).to.be.equal('uref');
+    expect(value.length).to.be.equal(64);
+    expect(suffix.length).to.be.equal(3);
+  });
+
+  it('state_get_item - CLPublicKey to main purse uref', async () => {
+    const stateRootHash = await client.getStateRootHash();
+    const uref = await client.getAccountBalanceUrefByPublicKey(stateRootHash, faucetKeys.publicKey); 
+    const [prefix, value, suffix] = uref.split('-');
+    expect(uref).to.be.equal(faucetMainPurseUref);
+    expect(prefix).to.be.equal('uref');
+    expect(value.length).to.be.equal(64);
+    expect(suffix.length).to.be.equal(3);
+  });
+
+  // TODO: Deploys required
+  it('chain_get_block_transfers - blockHash', async () => {
+    const transfers = await client.getBlockTransfers(exampleBlockHash);
+    expect(transfers).to.be.an.instanceof(Transfers);
+  });
+
+  // TODO: Deploys required
+  // it('chain_get_era_info_by_switch_block - blockHash', async () => {
+  //   const eraSummary = await client.getEraInfoBySwitchBlock(exampleBlockHash);
+  //   expect(eraSummary).to.be.equal(undefined);
+  // });
+
+  // TODO: Deploys required
+  // it('chain_get_era_info_by_switch_block - by height', async () => {
+  //   const eraSummary = await client.getEraInfoBySwitchBlockHeight(10);
+  //   expect(eraSummary).to.be.equal(undefined);
+  // });
+
 
 });
