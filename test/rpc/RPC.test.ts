@@ -6,7 +6,6 @@ import { Transfers } from '../../src/lib/StoredValue';
 
 const { SignatureAlgorithm, getKeysFromHexPrivKey } = Keys;
 
-// console.log(process.env.NODE_URL!, process.env.FAUCET_PRIV_KEY!);
 const client = new CasperServiceByJsonRPC(process.env.NODE_URL!);
 const faucetKeys = getKeysFromHexPrivKey(
   process.env.FAUCET_PRIV_KEY!,
