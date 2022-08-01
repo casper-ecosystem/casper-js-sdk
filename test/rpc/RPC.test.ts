@@ -91,4 +91,22 @@ describe('RPC', () => {
     expect(latestBlock).to.have.property('block');
   });
 
+  it('info_get_peers', async () => {
+    const peers = await client.getPeers();
+    expect(peers).to.have.property('peers');
+  });
+
+  it('info_get_status', async () => {
+    const status = await client.getStatus();
+    expect(status).to.have.property('peers');
+    expect(status).to.have.property('chainspec_name');
+    expect(status).to.have.property('starting_state_root_hash');
+    expect(status).to.have.property('last_added_block_info');
+    expect(status).to.have.property('our_public_signing_key');
+    expect(status).to.have.property('round_length');
+    expect(status).to.have.property('next_upgrade');
+    expect(status).to.have.property('build_version');
+    expect(status).to.have.property('uptime');
+  });
+
 });
