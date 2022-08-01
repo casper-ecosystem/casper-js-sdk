@@ -1,4 +1,4 @@
-import { assert } from 'chai';
+import { assert, expect } from 'chai';
 import { CasperServiceByJsonRPC } from '../../src/services';
 import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
 import { getAccountInfo } from './utils';
@@ -85,4 +85,10 @@ describe('RPC', () => {
     );
     assert.equal(balance.toString(), '1000000000000000000000000000000000');
   });
+
+  it('chain_get_block', async () => {
+    const latestBlock = await client.getLatestBlockInfo();
+    expect(latestBlock).to.have.property('block');
+  });
+
 });
