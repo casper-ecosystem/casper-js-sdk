@@ -1,10 +1,16 @@
 import { assert } from 'chai';
-import {
-  CasperServiceByJsonRPC,
-} from '../../src/services';
+import { CasperServiceByJsonRPC } from '../../src/services';
 import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
+import { getAccountInfo } from './utils';
 
+const { SignatureAlgorithm, getKeysFromHexPrivKey } = Keys;
+
+// console.log(process.env.NODE_URL!, process.env.FAUCET_PRIV_KEY!);
 const client = new CasperServiceByJsonRPC(process.env.NODE_URL!);
+const faucetKeys = getKeysFromHexPrivKey(
+  process.env.FAUCET_PRIV_KEY!,
+  SignatureAlgorithm.Ed25519
+);
 
 describe('RPC', () => {
   it('should return correct block by number', async () => {
@@ -69,8 +75,14 @@ describe('RPC', () => {
 
   it('state_get_balance', async () => {
     const stateRootHash = await client.getStateRootHash();
-    const balance = await client.getAccountBalance(stateRootHash, 'uref-83f6a8c4d585f867cb9f64fc6d1a6f5f05b888a8a0a94c7d5ad86a47435c9559-007');
-    // assert.equal(stateRootHash.length, 64);
+    const accountInfo = await getAccountInfo(
+      process.env.NODE_URL!,
+      faucetKeys.publicKey
+    );
+    const balance = await client.getAccountBalance(
+      stateRootHash,
+      accountInfo.mainPurse
+    );
+    assert.equal(balance.toString(), '1000000000000000000000000000000000');
   });
-
 });
