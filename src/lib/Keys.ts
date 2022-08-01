@@ -24,6 +24,30 @@ export enum SignatureAlgorithm {
   Secp256K1 = 'secp256k1'
 }
 
+export const getKeysFromHexPrivKey = (
+  key: string,
+  variant: SignatureAlgorithm
+): AsymmetricKey => {
+  const rawPrivKeyBytes = decodeBase64(key);
+  let keyPair: AsymmetricKey;
+
+  if (variant === SignatureAlgorithm.Secp256K1) {
+    const privKey = Secp256K1.parsePrivateKey(rawPrivKeyBytes);
+    const pubKey = Secp256K1.privateToPublicKey(privKey);
+    keyPair = new Secp256K1(pubKey, privKey);
+    return keyPair;
+  }
+
+  if (variant === SignatureAlgorithm.Ed25519) {
+    const privKey = Ed25519.parsePrivateKey(rawPrivKeyBytes);
+    const pubKey = Ed25519.privateToPublicKey(privKey);
+    keyPair = Ed25519.parseKeyPair(pubKey, privKey);
+    return keyPair;
+  }
+
+  throw Error('Unsupported key type');
+};
+
 function accountHashHelper(
   signatureAlgorithm: SignatureAlgorithm,
   publicKey: Uint8Array
