@@ -1,4 +1,4 @@
-# CasperLabs SDK for JavaScript
+# CasperLabs SDK for JavaScript.
 
 ## Installation
 
