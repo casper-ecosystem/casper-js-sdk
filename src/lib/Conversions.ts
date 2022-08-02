@@ -37,7 +37,7 @@ export function decodeBase16(base16String: string): Uint8Array {
  * @remarks 1 CSPR = 10^9 motes
  */
 export function csprToMotes(cspr: BigNumberish): BigNumber {
-  return BigNumber.from(cspr).mul("1000000000")
+  return BigNumber.from(cspr).mul('1000000000')
 }
 
 /**
@@ -49,5 +49,5 @@ export function csprToMotes(cspr: BigNumberish): BigNumber {
  * 1 mote = 10^-9 CSPR
  */
 export function motesToCSPR(motes: BigNumberish): BigNumber {
-  return BigNumber.from(motes).div("1000000000")
+  return BigNumber.from(motes).div('1000000000')
 }
