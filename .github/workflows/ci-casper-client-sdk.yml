@@ -28,15 +28,6 @@ jobs:
         node-version: [14.x]
 
     steps:
-      - name: Set release tag
-        run: |
-          echo ${{ github.ref }}
-          if [ ${{ github.ref }} == 'refs/heads/legacy' ]; then
-            echo "release_tag=legacy" >> $GITHUB_ENV
-          else
-            echo "release_tag=latest" >> $GITHUB_ENV
-          fi
-
       - name: Checkout
         uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
 
@@ -59,13 +50,3 @@ jobs:
 
       - name: Docs
         run: npm run docs
-
-      - name: Deploy Docs
-        if: ${{ github.event_name == 'push' }}
-        uses: JamesIves/github-pages-deploy-action@e6d003d0839927f5a4b998bfd92ed8e448fde37a #v4.3.4
-        with:
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: docs/ # The folder that the typedoc generates files.
-          TARGET_FOLDER: ${{ env.release_tag }}
-          CLEAN: true # Automatically remove deleted files from the deploy branch

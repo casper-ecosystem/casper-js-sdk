@@ -19,15 +19,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
-      with:
-        ref: ${{ github.event.release.target_commitish }}
-    - name: Set release tag
-      run: |
-        if [ ${{ github.event.release.target_commitish }} == 'next' ]; then
-          echo "release_tag=next" >> $GITHUB_ENV
-        else
-          echo "release_tag=latest" >> $GITHUB_ENV
-        fi
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
       with:
@@ -36,7 +27,7 @@ jobs:
     - uses: JS-DevTools/npm-publish@0f451a94170d1699fd50710966d48fb26194d939 #v1.4.3
       with:
         token: ${{ secrets.NPM_TOKEN }}
-        tag: ${{ env.release_tag }}
+        tag: ${{ github.event.release.tag_name }}
         access: "public"
         check-version: true
     - name: Get latest release version number
