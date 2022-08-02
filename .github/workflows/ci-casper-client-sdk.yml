@@ -6,7 +6,7 @@ on:
       - "dev"
       - "feat-*"
       - "release-*"
-      - "master" # delete after switching default branch
+      - "master" # delete after switching default branch.
     paths-ignore:
       - '**.md'
 
