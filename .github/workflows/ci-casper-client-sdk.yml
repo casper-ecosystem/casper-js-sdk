@@ -1,54 +1,52 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
 name: ci-casper-js-sdk
 
 on:
   push:
-    branches: [ master, next ]
+    branches:
+      - "dev"
+      - "feat-*"
+      - "release-*"
+      - "master" # delete after switching default branch
     paths-ignore:
       - '**.md'
 
   pull_request:
-    branches: [ master, next ]
+    branches:
+      - "dev"
+      - "feat-*"
+      - "release-*"
+      - "master" # delete after switching default branch
     paths-ignore:
       - '**.md'
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
         node-version: [14.x]
 
     steps:
-    - name: Set release tag
-      run: |
-        echo ${{ github.ref }}
-        if [ ${{ github.ref }} == 'refs/heads/legacy' ]; then
-          echo "release_tag=legacy" >> $GITHUB_ENV
+      - name: Checkout
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
 
-        else
-          echo "release_tag=latest" >> $GITHUB_ENV
-        fi
-    - name: Checkout 🛎️
-      uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Install Build & Test 🔧
-      run: | 
-        npm install
-        npm test
-        npm run docs
-    - name: Deploy Docs 🚀
-      if: ${{ github.event_name == 'push' }}
-      uses: JamesIves/github-pages-deploy-action@3.6.2
-      with:
-        TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        BRANCH: gh-pages # The branch the action should deploy to.
-        FOLDER: docs/ # The folder that the typedoc generates files.
-        TARGET_FOLDER: ${{ env.release_tag }}
-        CLEAN: true # Automatically remove deleted files from the deploy branch
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install
+        run: npm install
+
+      - name: Audits
+        run: npm audit
+
+      - name: Lints
+        run: npm run lint:ci
+
+      - name: Test
+        run: npm test
+
+      - name: Docs
+        run: npm run docs
