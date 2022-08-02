@@ -32,7 +32,7 @@ export function decodeBase16(base16String: string): Uint8Array {
 
 /**
  * Convert a CSPR amount to its mote equivalent
- * @param motes A `BigNumberish` amount of CSPR to convert to the mote equivalent
+ * @param cspr A `BigNumberish` amount of CSPR to convert to the mote equivalent
  * @returns A `BigNumber` containing the CSPR amount
  * @remarks 1 CSPR = 10^9 motes
  */
