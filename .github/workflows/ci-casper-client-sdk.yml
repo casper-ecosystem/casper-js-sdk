@@ -6,7 +6,6 @@ on:
       - "dev"
       - "feat-*"
       - "release-*"
-      - "master" # delete after switching default branch
     paths-ignore:
       - '**.md'
 
@@ -15,7 +14,6 @@ on:
       - "dev"
       - "feat-*"
       - "release-*"
-      - "master" # delete after switching default branch
     paths-ignore:
       - '**.md'
 
@@ -47,6 +45,13 @@ jobs:
 
       - name: Test
         run: npm test
+
+      - name: Test - RPC
+        run: ./ci/setup.sh && npm run test:rpc
+        env:
+          FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
+          NODE_URL: 'http://localhost:7777/rpc'
+          NETWORK_NAME: 'casper-example'
 
       - name: Docs
         run: npm run docs
