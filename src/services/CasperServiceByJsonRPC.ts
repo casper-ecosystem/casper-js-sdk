@@ -280,7 +280,9 @@ export class CasperServiceByJsonRPC {
     });
   }
 
-  public async getValidatorsInfo(blockHash?: string): Promise<ValidatorsInfoResult> {
+  public async getValidatorsInfo(
+    blockHash?: string
+  ): Promise<ValidatorsInfoResult> {
     return await this.client.request({
       method: 'state_get_auction_info',
       params: {
