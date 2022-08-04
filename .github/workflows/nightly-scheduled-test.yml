@@ -11,6 +11,7 @@ jobs:
   nightly-make-test:
     runs-on: ubuntu-20.04
     strategy:
+      fail-fast: false
       matrix:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
         node-version: [16.x, 18.x]
