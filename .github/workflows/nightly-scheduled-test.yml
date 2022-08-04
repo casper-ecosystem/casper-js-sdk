@@ -2,19 +2,21 @@
 name: nightly-scheduled-test
 
 on:
+  workflow_dispatch:
+
   schedule:
     # * is a special character in YAML so you have to quote this string
     # runs every day at midnight
     - cron: "0 0 * * *"
 
 jobs:
-  nightly-make-test:
+  nightly-npm-test:
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        node-version: [16.x, 18.x]
+        node-version: [16.x]
 
     steps:
       - name: Checkout
@@ -31,8 +33,22 @@ jobs:
       - name: Test
         run: npm test
 
-      - name: Test - RPC
+      - name: Test RPC - CN Dev
         run: ./ci/setup.sh && npm run test:rpc
+        env:
+          FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
+          NODE_URL: 'http://localhost:7777/rpc'
+          NETWORK_NAME: 'casper-example'
+          RUST_LOG: 'INFO'
+
+      - name: Get Latest Casper-Node Release Version
+        run: |
+          echo "CASPER_NODE_VERSION=$(curl -s ${{ env.GH_API_URL }} | jq -r '.[].name' | grep 'v*' | sort -r | head -n1)" >> $GITHUB_ENV
+        env:
+          GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
+
+      - name: Test RPC - CN ${{ env.CASPER_NODE_VERSION }} Release
+        run: ./ci/setup.sh branch=${{env.CASPER_NODE_VERSION }} && npm run test:rpc
         env:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://localhost:7777/rpc'
@@ -45,7 +61,7 @@ jobs:
         with:
           status: ${{ job.status }}
           notification_title: "*{repo}*"
-          message_format: "{emoji} *{workflow}* *{status_message}* in <{repo_url}|{repo}@{branch}> on <{commit_url}|{commit_sha}>"
+          message_format: "{emoji} *{workflow}* *{job}* *{status_message}* in <{repo_url}|{repo}@{branch}> on <{commit_url}|{commit_sha}>"
           footer: "<{run_url}|View Run>"
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
