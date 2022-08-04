@@ -26,12 +26,12 @@ function main() {
 
     # working dir
     if [ -d "$TMP_DIR" ]; then
-        echo "Temp Dir $TMP_DIR exists. Removing."
+        echo "... Temp Dir $TMP_DIR exists. Removing."
         rm -rf "$TMP_DIR"
-        echo "... recreating $TMP_DIR"
+        echo "... Recreating $TMP_DIR"
         mkdir -p "$TMP_DIR"
     else
-        echo "... creating $TMP_DIR"
+        echo "... Creating $TMP_DIR"
         mkdir -p "$TMP_DIR"
     fi
 
@@ -46,21 +46,23 @@ function main() {
     git clone -b "$GH_BRANCH" "$GH_REPO_URL" &> /dev/null
     pushd "$GH_REPO" > /dev/null
     # get the tomls
-    make resources/local/chainspec.toml
+    make resources/local/chainspec.toml > /dev/null
     cp './resources/local/chainspec.toml' "$CONFIG_DIR"
     cp './resources/local/config.toml' "$CONFIG_DIR"
     popd > /dev/null
 
     # pull down the node
     # note: this is driven by the branch=''
-    pushd "$BIN_DIR"
-    curl -LJO "$REMOTE_NODE_URL"
+    pushd "$BIN_DIR" > /dev/null
+    curl -s -LJO "$REMOTE_NODE_URL"
     chmod +x 'casper-node'
+    echo "... Casper Binary Version: $(./casper-node --version)"
     popd > /dev/null
 
     # don't need the git repo anymore
     rm -rf "$TMP_DIR/$GH_REPO"
     popd > /dev/null
+    echo "End of $(basename $0)"
 }
 
 # ----------------------------------------------------------------
