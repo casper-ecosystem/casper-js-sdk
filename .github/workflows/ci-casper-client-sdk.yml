@@ -23,7 +23,7 @@ jobs:
     strategy:
       matrix:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        node-version: [14.x]
+        node-version: [16.x]
 
     steps:
       - name: Checkout
@@ -52,6 +52,7 @@ jobs:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://localhost:7777/rpc'
           NETWORK_NAME: 'casper-example'
+          RUST_LOG: 'INFO'
 
       - name: Docs
         run: npm run docs

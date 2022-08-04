@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        node-version: [14.x]
+        node-version: [16.x]
 
     steps:
       - name: Checkout
@@ -29,6 +29,14 @@ jobs:
 
       - name: Test
         run: npm test
+
+      - name: Test - RPC
+        run: ./ci/setup.sh && npm run test:rpc
+        env:
+          FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
+          NODE_URL: 'http://localhost:7777/rpc'
+          NETWORK_NAME: 'casper-example'
+          RUST_LOG: 'INFO'
 
       - name: Slack Notification
         uses: ravsamhq/notify-slack-action@4ed28566c2bdcdaee6dca2b46b9666d01b4ed8a4 #v1.10.0

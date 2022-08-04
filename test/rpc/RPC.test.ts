@@ -4,8 +4,8 @@ import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
 import { getAccountInfo } from './utils';
 import { Transfers } from '../../src/lib/StoredValue';
 
-const tomsMOD = require('../../ci/start_node');
-let toms_proc_pid = tomsMOD.start_a_single_node();
+const localCasperNode = require('../../ci/start_node');
+let casperNodePid = localCasperNode.start_a_single_node();
 
 const { SignatureAlgorithm, getKeysFromHexPrivKey } = Keys;
 
@@ -169,5 +169,5 @@ describe('RPC', () => {
 });
 
 after(function () {
-  process.kill(toms_proc_pid);
+  process.kill(casperNodePid);
 })

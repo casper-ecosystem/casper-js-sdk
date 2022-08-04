@@ -41,18 +41,18 @@ function main() {
     # mv static assets
     cp -a "$TEST_ASSET_DIR/." "$CONFIG_DIR/"
 
-    # pull down casper-node to created dir and generate chainspec.toml
+    # pull down casper-node to created dir
     pushd "$TMP_DIR" > /dev/null
     git clone -b "$GH_BRANCH" "$GH_REPO_URL" &> /dev/null
     pushd "$GH_REPO" > /dev/null
+    # get the tomls
     make resources/local/chainspec.toml
     cp './resources/local/chainspec.toml' "$CONFIG_DIR"
     cp './resources/local/config.toml' "$CONFIG_DIR"
-    #sed -i 's/23_068_672/25165824/g' "$CONFIG_DIR/chainspec.toml"
-    #sed -i 's/validator_slots = 5/validator_slots = 1/g' "$CONFIG_DIR/chainspec.toml"
     popd > /dev/null
 
     # pull down the node
+    # note: this is driven by the branch=''
     pushd "$BIN_DIR"
     curl -LJO "$REMOTE_NODE_URL"
     chmod +x 'casper-node'

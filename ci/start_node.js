@@ -19,6 +19,7 @@ module.exports = {
       process.exitCode = 1;
     }
 
+    // setup the log files to write to
     const stdout_file = fs.createWriteStream(tmp_dir + '/stdout.log', {
       flags: 'a'
     });
@@ -26,19 +27,14 @@ module.exports = {
       flags: 'a'
     });
 
+    // start the casper-node process
     const casper_node = spawn(casper_bin, ['validator', config_toml]);
 
+    // log casper-node to temp dir for local use
     casper_node.stdout.pipe(stdout_file);
     casper_node.stderr.pipe(stderr_file);
 
-    //        casper_node.stdout.on("data", data => {
-    //            console.log(`stdout: ${data}`);
-    //        });
-    //
-    //        casper_node.stderr.on("data", data => {
-    //            console.log(`stderr: ${data}`);
-    //        });
-
+    // log the error & close to console
     casper_node.on('error', error => {
       console.log(`error: ${error.message}`);
     });
@@ -47,12 +43,14 @@ module.exports = {
       console.log(`child process exited with code ${code}`);
     });
 
+    // sleeps 60 seconds so genesis completes, update later to verify that
     console.log(`sleeping 60s to allow node to complete genesis...`);
     sleep(60000);
     return casper_node.pid;
   }
 };
 
+// sleep given ms, used above as a hack to allow node genesis to complete
 function sleep(milliseconds) {
   const date = Date.now();
   let currentDate = null;
