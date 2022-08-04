@@ -285,13 +285,13 @@ export class CasperServiceByJsonRPC {
   ): Promise<ValidatorsInfoResult> {
     return await this.client.request({
       method: 'state_get_auction_info',
-      params: {
-        block_identifier: blockHash
-          ? {
+      params: blockHash
+        ? {
+            block_identifier: {
               Hash: blockHash
             }
-          : null
-      }
+          }
+        : []
     });
   }
 
