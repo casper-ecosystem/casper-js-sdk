@@ -146,6 +146,21 @@ export class CasperClient {
   }
 
   /**
+   * Test deploy to network
+   * @param signedDeploy Signed deploy object
+   */
+  public speculativeDeploy(
+    signedDeploy: Deploy,
+    blockIdentifier?: string
+  ): Promise<string> {
+    return this.nodeClient
+      .speculativeDeploy(signedDeploy, blockIdentifier)
+      .then(res => {
+        return res;
+      });
+  }
+
+  /**
    * convert the deploy object to json
    * @param deploy
    */
