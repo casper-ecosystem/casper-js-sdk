@@ -99,7 +99,7 @@ export class CLList<T extends CLValue> extends CLValue {
 
   constructor(v: Array<T> | CLType) {
     super();
-    if (Array.isArray(v) && v[0].clType) {
+    if (Array.isArray(v) && v[0].clType && v[0].clType()) {
       const refType = v[0].clType();
       if (
         v.every(i => {

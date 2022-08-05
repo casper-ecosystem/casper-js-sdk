@@ -286,9 +286,16 @@ export class CasperServiceByJsonRPC {
     });
   }
 
-  public async getValidatorsInfo(): Promise<ValidatorsInfoResult> {
+  public async getValidatorsInfo(blockHash?: string): Promise<ValidatorsInfoResult> {
     return await this.client.request({
-      method: 'state_get_auction_info'
+      method: 'state_get_auction_info',
+      params: {
+        block_identifier: blockHash
+          ? {
+              Hash: blockHash
+            }
+          : null
+      }
     });
   }
 

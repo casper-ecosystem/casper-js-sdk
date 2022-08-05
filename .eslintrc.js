@@ -18,6 +18,9 @@ module.exports = {
     '@typescript-eslint'
   ],
   rules: {
-    '@typescript-eslint/ban-ts-comment': 'warn'
+    '@typescript-eslint/ban-ts-comment': 'off',
+    '@typescript-eslint/no-non-null-assertion': 'off',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    '@typescript-eslint/no-explicit-any': 'off'
   }
 };

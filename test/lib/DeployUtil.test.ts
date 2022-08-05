@@ -254,14 +254,14 @@ describe('DeployUtil', () => {
 
   it('Should not allow for to deserialize a deploy from JSON with a wrong deploy hash', function () {
     let deploy = testDeploy();
-    let json = DeployUtil.deployToJson(deploy);
+    let json = JSON.parse(JSON.stringify(DeployUtil.deployToJson(deploy)));
     Object.assign(json.deploy, { hash: "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff" });
     assert.isTrue(DeployUtil.deployFromJson(json).err);
   });
 
   it('Should not allow for to deserialize a deploy from JSON with a wrong body_hash', function () {
     let deploy = testDeploy();
-    let json = DeployUtil.deployToJson(deploy);
+    let json = JSON.parse(JSON.stringify(DeployUtil.deployToJson(deploy)));
     let header = Object(json.deploy)['header'];
     header['body_hash'] = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
     Object.assign(json.deploy, { header });
