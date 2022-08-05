@@ -4,6 +4,9 @@ import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
 import { getAccountInfo } from './utils';
 import { Transfers } from '../../src/lib/StoredValue';
 
+const localCasperNode = require('../../ci/start_node');
+let casperNodePid = localCasperNode.start_a_single_node();
+
 const { SignatureAlgorithm, getKeysFromHexPrivKey } = Keys;
 
 const client = new CasperServiceByJsonRPC(process.env.NODE_URL!);
@@ -164,3 +167,7 @@ describe('RPC', () => {
 
 
 });
+
+after(function () {
+  process.kill(casperNodePid);
+})
