@@ -145,6 +145,12 @@ export class CLPublicKey extends CLValue {
     return `account-hash-${hashHex}`;
   }
 
+  toAccountRawHashStr(): string {
+    const bytes = this.toAccountHash();
+    const hashHex = Buffer.from(bytes).toString('hex');
+    return hashHex;
+  }
+
   value(): Uint8Array {
     return this.data;
   }
