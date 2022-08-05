@@ -132,6 +132,12 @@ export interface ValidatorWeight {
   weight: string;
 }
 
+export enum PurseIdentifier {
+  MainPurseUnderPublicKey = 'main_purse_under_public_key',
+  MainPurseUnderAccountHash = 'main_purse_under_account_hash',
+  PurseUref = 'purse_uref'
+}
+
 @jsonObject
 export class EraSummary {
   @jsonMember({ constructor: String, name: 'block_hash' })
@@ -280,7 +286,9 @@ export class CasperServiceByJsonRPC {
     });
   }
 
-  public async getValidatorsInfo(blockHash?: string): Promise<ValidatorsInfoResult> {
+  public async getValidatorsInfo(
+    blockHash?: string
+  ): Promise<ValidatorsInfoResult> {
     return await this.client.request({
       method: 'state_get_auction_info',
       params: {
@@ -350,6 +358,24 @@ export class CasperServiceByJsonRPC {
         }
       })
       .then(res => BigNumber.from(res.balance_value));
+  }
+
+  public async queryBalance(
+    purseIdentifierType: PurseIdentifier,
+    purseIdentifier: string,
+    stateRootHash?: string
+  ): Promise<BigNumber> {
+    return await this.client
+      .request({
+        method: 'query_balance',
+        params: {
+          purse_identifier: {
+            [purseIdentifierType]: purseIdentifier
+          },
+          state_identifier: stateRootHash
+        }
+      })
+      .then(res => BigNumber.from(res.balance));
   }
 
   public async getStateRootHash(
