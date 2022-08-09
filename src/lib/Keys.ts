@@ -17,13 +17,19 @@ const ED25519_PEM_SECRET_KEY_TAG = 'PRIVATE KEY';
 const ED25519_PEM_PUBLIC_KEY_TAG = 'PUBLIC KEY';
 
 /**
- * Supported types of Asymmetric Key algorithm
+ * Supported Asymmetric Key algorithms
  */
 export enum SignatureAlgorithm {
   Ed25519 = 'ed25519',
   Secp256K1 = 'secp256k1'
 }
 
+/**
+ * Gets the blake2b hash of the provided public key
+ * @param signatureAlgorithm The signature algorithm of the key. Currently supported are Ed25519 and Secp256k1
+ * @param publicKey The public key as a byte array
+ * @returns A blake2b hash of the public key
+ */
 function accountHashHelper(
   signatureAlgorithm: SignatureAlgorithm,
   publicKey: Uint8Array
@@ -64,11 +70,18 @@ export function readBase64WithPEM(content: string): Uint8Array {
   return decodeBase64(base64);
 }
 
+/** Public/private keypair object for representing an account */
 export abstract class AsymmetricKey {
   public readonly publicKey: CLPublicKey;
   public readonly privateKey: Uint8Array;
   public readonly signatureAlgorithm: SignatureAlgorithm;
 
+  /**
+   * Constructs an `AsymmetricKey` inherited object
+   * @param publicKey An account's public key as a byte array
+   * @param privateKey An account's private key as a byte array
+   * @param signatureAlgorithm The signature algorithm of the key. Currently supported are Ed25519 and Secp256k1
+   */
   constructor(
     publicKey: Uint8Array,
     privateKey: Uint8Array,
@@ -80,19 +93,26 @@ export abstract class AsymmetricKey {
   }
 
   /**
-   * Compute a unique hash from the algorithm name(Ed25519 here) and a public key, used for accounts.
+   * Compute the account hash from the public key
+   * @returns The account hash as a byte array
    */
   public accountHash(): Uint8Array {
     return this.publicKey.toAccountHash();
   }
 
   /**
-   * Get the account hex
+   * Get the hexadecimal public key of the account
+   * @returns The public key of the `AsymmetricKey` as a hexadecimal string
    */
   public accountHex(): string {
     return this.publicKey.toHex();
   }
 
+  /**
+   * Inserts the provided `content` and `tag` into a .pem compliant string
+   * @param tag The tag inserted on the END line
+   * @param content The base-64 PEM compliant private key
+   */
   protected toPem(tag: string, content: string) {
     // prettier-ignore
     return `-----BEGIN ${tag}-----\n` +
@@ -101,25 +121,27 @@ export abstract class AsymmetricKey {
   }
 
   /**
-   * Export the public key encoded in pem
+   * Export the public key encoded as a .pem
    */
   public abstract exportPublicKeyInPem(): string;
 
   /**
-   * Expect the private key encoded in pem
+   * Export the private key encoded as a .pem
    */
   public abstract exportPrivateKeyInPem(): string;
 
   /**
-   * Sign the message by using the keyPair
-   * @param msg
+   * Sign a message using this `AsymmetricKey`'s private key
+   * @param msg The message to be signed, as a byte array
+   * @returns A byte array containing the signed message
    */
   public abstract sign(msg: Uint8Array): Uint8Array;
 
   /**
-   * Verify the signature along with the raw message
-   * @param signature
-   * @param msg
+   * Validate the signature by comparing it to the provided message
+   * @param signature The signature as a byte array
+   * @param msg The original message to be validated
+   * @returns `true` if the signature is valid, `false` otherwise
    */
   public abstract verify(signature: Uint8Array, msg: Uint8Array): boolean;
 }
