@@ -19,7 +19,7 @@ export class CasperClient {
 
   /**
    * Generate a new key pair
-   * @param algo The signature algorithm of the account. Currently we support Ed25519 and Secp256K1
+   * @param algo The signature algorithm of the account. The possible values are `SignatureAlgorithm.Ed25519` and SignatureAlgorithm.Secp256K1
    * @returns New key pair with the specified SignatureAlgorithm
    */
   public newKeyPair(algo: SignatureAlgorithm): AsymmetricKey {
@@ -36,7 +36,7 @@ export class CasperClient {
   /**
    * Load private key from file
    * @param path The path to the publicKey file
-   * @param algo The signature algorithm of the account. Currently we support Ed25519 and Secp256K1
+   * @param algo The signature algorithm of the account. The possible values are `SignatureAlgorithm.Ed25519` and SignatureAlgorithm.Secp256K1
    * @returns New key pair with the specified SignatureAlgorithm
    */
   public loadPublicKeyFromFile(
@@ -127,7 +127,7 @@ export class CasperClient {
    * @param deployParams Deploy parameters
    * @param session Session logic
    * @param payment Payment logic
-   * @returns A deployable Deploy object
+   * @returns An unsigned Deploy object
    * @see [DeployUtil.makeDeploy](./DeployUtil.ts#L1059)
    */
   public makeDeploy(
@@ -152,7 +152,7 @@ export class CasperClient {
   /**
    * Send deploy to network
    * @param signedDeploy Signed deploy object
-   * @returns The sent Deploy's transaction hash, as a string
+   * @returns The sent Deploy's transaction hash, as a hexadecimal string
    */
   public putDeploy(signedDeploy: Deploy): Promise<string> {
     return this.nodeClient.deploy(signedDeploy).then(it => it.deploy_hash);
