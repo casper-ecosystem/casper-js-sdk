@@ -1,3 +1,8 @@
+/**
+ * Used to represent account keypairs
+ * @packageDocumentation
+ */
+
 import * as fs from 'fs';
 import * as nacl from 'tweetnacl-ts';
 import { SignKeyPair, SignLength } from 'tweetnacl-ts';
@@ -18,6 +23,7 @@ const ED25519_PEM_PUBLIC_KEY_TAG = 'PUBLIC KEY';
 
 /**
  * Supported Asymmetric Key algorithms
+ * @enum
  */
 export enum SignatureAlgorithm {
   Ed25519 = 'ed25519',
@@ -45,9 +51,14 @@ function accountHashHelper(
 }
 
 /**
- * Get rid of PEM frames, skips header `-----BEGIN PUBLIC KEY-----`
- * and footer `-----END PUBLIC KEY-----`
- *
+ * Reads in a base64 private key, ignoring the header: `-----BEGIN PUBLIC KEY-----`
+ * and footer: `-----END PUBLIC KEY-----`
+ * @param {string} content A .pem private key string with a header and footer
+ * @returns A base64 private key as a `Uint8Array`
+ * @remarks
+ * If the provided base64 `content` string does not include a header/footer,
+ * it will pass through this function unaffected
+ * @example
  * Example PEM:
  *
  * ```
@@ -56,7 +67,6 @@ function accountHashHelper(
  * Nl74LvVAmXfpdzCWFKbdrnIlX3EFDxkd9qpk35F/kLcqV3rDn/u3dg==\r\n
  * -----END PUBLIC KEY-----\r\n
  * ```
- *
  */
 export function readBase64WithPEM(content: string): Uint8Array {
   const base64 = content
@@ -78,9 +88,9 @@ export abstract class AsymmetricKey {
 
   /**
    * Constructs an `AsymmetricKey` inherited object
-   * @param publicKey An account's public key as a byte array
-   * @param privateKey An account's private key as a byte array
-   * @param signatureAlgorithm The signature algorithm of the key. Currently supported are Ed25519 and Secp256k1
+   * @param {Uint8Array} publicKey An account's public key as a byte array
+   * @param {Uint8Array} privateKey An account's private key as a byte array
+   * @param {SignatureAlgorithm} signatureAlgorithm The signature algorithm of the key. Currently supported are Ed25519 and Secp256k1
    */
   constructor(
     publicKey: Uint8Array,
@@ -93,7 +103,7 @@ export abstract class AsymmetricKey {
   }
 
   /**
-   * Compute the account hash from the public key
+   * Computes the blake2b account hash of the public key
    * @returns The account hash as a byte array
    */
   public accountHash(): Uint8Array {
@@ -101,7 +111,7 @@ export abstract class AsymmetricKey {
   }
 
   /**
-   * Get the hexadecimal public key of the account
+   * Gets the hexadecimal public key of the account
    * @returns The public key of the `AsymmetricKey` as a hexadecimal string
    */
   public accountHex(): string {
@@ -132,28 +142,37 @@ export abstract class AsymmetricKey {
 
   /**
    * Sign a message using this `AsymmetricKey`'s private key
-   * @param msg The message to be signed, as a byte array
+   * @param {Uint8Array} msg The message to be signed, as a byte array
    * @returns A byte array containing the signed message
    */
   public abstract sign(msg: Uint8Array): Uint8Array;
 
   /**
    * Validate the signature by comparing it to the provided message
-   * @param signature The signature as a byte array
-   * @param msg The original message to be validated
+   * @param {Uint8Array} signature The signature as a byte array
+   * @param {Uint8Array} msg The original message to be validated
    * @returns `true` if the signature is valid, `false` otherwise
    */
   public abstract verify(signature: Uint8Array, msg: Uint8Array): boolean;
 }
 
-// Based on SignatureAlgorithm.scala
+/**
+ * Ed25519 variant of `AsymmetricKey`
+ * @remarks
+ * Based on SignatureAlgorithm.scala
+ */
 export class Ed25519 extends AsymmetricKey {
+  /**
+   * Constructs a new Ed25519 object from a `SignKeyPair`
+   * @param {SignKeyPair} keyPair An object containing the keys "publicKey" and "secretKey" with corresponding `ByteArray` values
+   * @see [SignKeyPair](https://www.npmjs.com/package/tweetnacl-ts#sign_keypair)
+   */
   constructor(keyPair: SignKeyPair) {
     super(keyPair.publicKey, keyPair.secretKey, SignatureAlgorithm.Ed25519);
   }
 
   /**
-   * Generating a new Ed25519 key pair
+   * Generates a new Ed25519 key pair
    */
   public static new() {
     return new Ed25519(nacl.sign_keyPair());
@@ -168,9 +187,10 @@ export class Ed25519 extends AsymmetricKey {
   }
 
   /**
-   * Parse the key pair from publicKey file and privateKey file
-   * @param publicKeyPath path of public key file
-   * @param privateKeyPath path of private key file
+   * Parse the key pair from a public key file and the corresponding private key file
+   * @param {string} publicKeyPath Path of public key file
+   * @param {string} privateKeyPath Path of private key file
+   * @returns A new `AsymmetricKey`
    */
   public static parseKeyFiles(
     publicKeyPath: string,
@@ -186,17 +206,19 @@ export class Ed25519 extends AsymmetricKey {
   }
 
   /**
-   * Generate the accountHash for the Ed25519 public key
-   * @param publicKey
+   * Generates the account hash of a Ed25519 public key
+   * @param {Uint8Array} publicKey An Ed25519 public key
+   * @returns The blake2b account hash of the public key
    */
   public static accountHash(publicKey: Uint8Array): Uint8Array {
     return accountHashHelper(SignatureAlgorithm.Ed25519, publicKey);
   }
 
   /**
-   * Construct keyPair from a public key and private key
-   * @param publicKey
-   * @param privateKey
+   * Construct a keypair from a public key and corresponding private key
+   * @param {Uint8Array} publicKey The public key of an Ed25519 account
+   * @param {Uint8Array} privateKey The private key of the same Ed25519 account
+   * @returns A new `AsymmetricKey` keypair
    */
   public static parseKeyPair(
     publicKey: Uint8Array,
@@ -214,36 +236,74 @@ export class Ed25519 extends AsymmetricKey {
     });
   }
 
+  /**
+   * Parses a file containing an Ed25519 private key
+   * @param {string} path The path to the private key file
+   * @returns A `Uint8Array` typed representation of the private key
+   * @see {@link Ed25519.parsePrivateKey}
+   */
   public static parsePrivateKeyFile(path: string): Uint8Array {
     return Ed25519.parsePrivateKey(Ed25519.readBase64File(path));
   }
 
+  /**
+   * Parses a file containing an Ed25519 public key
+   * @param {string} path The path to the public key file
+   * @returns A `Uint8Array` typed representation of the public key
+   * @see {@link Ed25519.parsePublicKey}
+   */
   public static parsePublicKeyFile(path: string): Uint8Array {
     return Ed25519.parsePublicKey(Ed25519.readBase64File(path));
   }
 
+  /**
+   * Parses a byte array containing an Ed25519 private key
+   * @param {Uint8Array} bytes A private key in bytes
+   * @returns A validated byte array containing the provided Ed25519 private key
+   * @see {@link Ed25519.parseKey}
+   */
   public static parsePrivateKey(bytes: Uint8Array) {
     return Ed25519.parseKey(bytes, 0, 32);
   }
 
+  /**
+   * Parses a byte array containing an Ed25519 public key
+   * @param {Uint8Array} bytes A public key in bytes
+   * @returns A validated byte array containing the provided Ed25519 public key
+   * @see {@link Ed25519.parseKey}
+   */
   public static parsePublicKey(bytes: Uint8Array) {
     return Ed25519.parseKey(bytes, 32, 64);
   }
 
+  /**
+   * Calls global {@link readBase64WithPEM} and returns the result
+   * @param {string} content A .pem private key string with a header and footer
+   * @returns The result of global `readBase64WithPEM`
+   * @see {@link readBase64WithPEM}
+   */
   public static readBase64WithPEM(content: string) {
     return readBase64WithPEM(content);
   }
 
   /**
-   * Read the Base64 content of a file, get rid of PEM frames.
-   *
-   * @param path the path of file to read from
+   * Read the Base64 content of a file, ignoring PEM frames
+   * @param {string} path The path to the PEM file
+   * @returns The result of {@link Ed25519.readBase64WithPEM} after reading in the content as a `string` with `fs`
    */
   private static readBase64File(path: string): Uint8Array {
     const content = fs.readFileSync(path).toString();
     return Ed25519.readBase64WithPEM(content);
   }
 
+  /**
+   * Parses and validates a key in a certain range "from" to "to"
+   * @param {Uint8Array} bytes The key to be parsed and validated
+   * @param {number} from The starting index from which to parse the key
+   * @param {number} to The ending index from which to parse the key
+   * @returns The parsed key
+   * @throws `Error` if the key is of an unexpected length
+   */
   private static parseKey(bytes: Uint8Array, from: number, to: number) {
     const len = bytes.length;
     // prettier-ignore
@@ -259,7 +319,9 @@ export class Ed25519 extends AsymmetricKey {
   }
 
   /**
-   * Export the private key encoded in pem
+   * Convert this instance's private key to PEM format
+   * @returns A PEM compliant string containing this instance's private key
+   * @see {@link AsymmetricKey.toPem}
    */
   public exportPrivateKeyInPem() {
     // prettier-ignore
@@ -274,7 +336,9 @@ export class Ed25519 extends AsymmetricKey {
   }
 
   /**
-   * Expect the public key encoded in pem
+   * Convert this instance's public key to PEM format
+   * @returns A PEM compliant string containing this instance's public key
+   * @see {@link AsymmetricKey.toPem}
    */
   public exportPublicKeyInPem() {
     // prettier-ignore
@@ -286,8 +350,10 @@ export class Ed25519 extends AsymmetricKey {
   }
 
   /**
-   * Sign the message by using the keyPair
-   * @param msg
+   * Sign a message by using this instance's keypair
+   * @param {Uint8Array} msg The message to be signed, as a byte array
+   * @returns `Uint8Array` typed signature of the provided `msg`
+   * @see [sign_detached](https://www.npmjs.com/package/tweetnacl-ts#sign_detachedmessage-secretkey)
    */
   public sign(msg: Uint8Array): Uint8Array {
     return nacl.sign_detached(msg, this.privateKey);
