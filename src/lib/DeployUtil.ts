@@ -123,12 +123,10 @@ export const dehumanizerTTL = (ttl: string): number => {
     .reduce((acc, val) => (acc += val));
 };
 
-
 /**
  * An object containing a unique address constructed from the `transferId` of a `Deploy`
  */
 export class UniqAddress {
-
   /** The `CLPublicKey` representation of the transacting account */
   publicKey: CLPublicKey;
 
@@ -342,7 +340,6 @@ const serRA = (ra: RuntimeArgs) => {
   return Object.values(json as any)[0];
 };
 
-
 /**
  * An object which can be passed along in a deploy, including session code and runtime arguments.
  */
@@ -399,7 +396,6 @@ export class ModuleBytes extends ExecutableDeployItemInternal {
 /** The `StoredContractByHash` class, when instantiated, represents a stored smart contract referenced by it's hash */
 @jsonObject
 export class StoredContractByHash extends ExecutableDeployItemInternal {
-
   /** An identifier that other functions use to recognize that `StoredContractByHash` objects are indeed stored contracts by hash during deserialization */
   public tag = 1;
 
@@ -457,7 +453,6 @@ export class StoredContractByHash extends ExecutableDeployItemInternal {
 /** The `StoredContractByName` class, when instantiated, represents a stored smart contract referenced by it's name */
 @jsonObject
 export class StoredContractByName extends ExecutableDeployItemInternal {
-
   /** An identifier that other functions use to recognize that `StoredContractByName` objects are indeed stored contracts by name during deserialization */
   public tag = 2;
 
@@ -512,7 +507,6 @@ export class StoredContractByName extends ExecutableDeployItemInternal {
 /** The `StoredVersionedContractByName` class, when instantiated, represents a stored smart contract referenced by it's name */
 @jsonObject
 export class StoredVersionedContractByName extends ExecutableDeployItemInternal {
-
   /** An identifier that other functions use to recognize that `StoredVersionedContractByName` objects are indeed stored versioned contracts by name during deserialization */
   public tag = 4;
 
@@ -581,7 +575,6 @@ export class StoredVersionedContractByName extends ExecutableDeployItemInternal 
 /** The `StoredVersionedContractByHash` class, when instantiated, represents a stored versioned smart contract referenced by it's hash */
 @jsonObject
 export class StoredVersionedContractByHash extends ExecutableDeployItemInternal {
-
   /** An identifier that other functions use to recognize that `StoredVersionedContractByHash` objects are indeed stored versioned contracts by hash during deserialization */
   public tag = 3;
 
@@ -660,7 +653,6 @@ export class StoredVersionedContractByHash extends ExecutableDeployItemInternal 
 /** Represents a transferral deploy. Construct and deploy to execute a standard CSPR transfer */
 @jsonObject
 export class Transfer extends ExecutableDeployItemInternal {
-
   /** An identifier that other functions use to recognize that `Transfer` objects are indeed transfers during deserialization */
   public tag = 5;
 
@@ -698,7 +690,6 @@ export class Transfer extends ExecutableDeployItemInternal {
 /** Represents an executable deploy object that can be deployed on-chain. `ModuleBytes`, `StoredContractByHash`, `StoredContractByName`, `StoredVersionedContractByHash`, `StoredVersionedContractByName`, and `Transfer` objects can all be casted as `ExecutableDeployItem`s. */
 @jsonObject
 export class ExecutableDeployItem implements ToBytes {
-
   /** Optional `ModuleBytes` object representing the `ExecutableDeployItem` if applicable. */
   @jsonMember({
     name: 'ModuleBytes',
@@ -1586,7 +1577,7 @@ export const arrayEquals = (a: Uint8Array, b: Uint8Array): boolean => {
 /**
  * Serializes a `Deploy` to a `Uint8Array`
  * @param deploy The `Deploy` to be serialized
- * @returns A `Uint8Array` serialization of the provided `Deploy` 
+ * @returns A `Uint8Array` serialization of the provided `Deploy`
  */
 export const deployToBytes = (deploy: Deploy): Uint8Array => {
   return concat([

@@ -28,7 +28,6 @@ export const contractHashToByteArray = (contractHash: string) =>
 const NO_CLIENT_ERR =
   'You need to either create Contract instance with casperClient or pass it as parameter to this function';
 
-
 /** Smart contract object for interacting with contracts on the Casper Network */
 export class Contract {
   public contractHash?: string;

@@ -122,7 +122,6 @@ export const validateSignature = (
   throw Error('Unsupported PublicKey type');
 };
 
-
 /** Public/private keypair object for representing an account */
 export abstract class AsymmetricKey {
   public readonly publicKey: CLPublicKey;

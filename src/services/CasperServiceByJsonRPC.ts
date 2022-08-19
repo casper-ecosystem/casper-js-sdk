@@ -96,8 +96,8 @@ interface JsonDeployHeader {
 }
 
 // TODO: Empty interface
-// eslint-disable-next-line
 /** @hidden */
+// eslint-disable-next-line
 interface JsonExecutableDeployItem {}
 
 /** Interface for JSON represented approvals */
@@ -443,7 +443,7 @@ export class CasperServiceByJsonRPC {
       .then(res => BigNumber.from(res.balance_value));
   }
 
-// TODO: Add docs
+  // TODO: Add docs
   public async queryBalance(
     purseIdentifierType: PurseIdentifier,
     purseIdentifier: string,
@@ -519,7 +519,7 @@ export class CasperServiceByJsonRPC {
     }
   }
 
-/**
+  /**
    * Deploys a provided signed deploy
    * @param signedDeploy A signed `Deploy` object to be sent to a node
    * @remarks A deploy must not exceed 1 megabyte
