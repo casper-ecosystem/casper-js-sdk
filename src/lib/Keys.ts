@@ -30,6 +30,30 @@ export enum SignatureAlgorithm {
   Secp256K1 = 'secp256k1'
 }
 
+export const getKeysFromHexPrivKey = (
+  key: string,
+  variant: SignatureAlgorithm
+): AsymmetricKey => {
+  const rawPrivKeyBytes = decodeBase64(key);
+  let keyPair: AsymmetricKey;
+
+  if (variant === SignatureAlgorithm.Secp256K1) {
+    const privKey = Secp256K1.parsePrivateKey(rawPrivKeyBytes);
+    const pubKey = Secp256K1.privateToPublicKey(privKey);
+    keyPair = new Secp256K1(pubKey, privKey);
+    return keyPair;
+  }
+
+  if (variant === SignatureAlgorithm.Ed25519) {
+    const privKey = Ed25519.parsePrivateKey(rawPrivKeyBytes);
+    const pubKey = Ed25519.privateToPublicKey(privKey);
+    keyPair = Ed25519.parseKeyPair(pubKey, privKey);
+    return keyPair;
+  }
+
+  throw Error('Unsupported key type');
+};
+
 /**
  * Gets the blake2b hash of the provided public key
  * @param signatureAlgorithm The signature algorithm of the key. Currently supported are Ed25519 and Secp256k1
@@ -79,6 +103,25 @@ export function readBase64WithPEM(content: string): Uint8Array {
     .trim();
   return decodeBase64(base64);
 }
+
+export const validateSignature = (
+  msg: Uint8Array,
+  signature: Uint8Array,
+  pk: CLPublicKey
+): boolean => {
+  if (pk.isEd25519()) {
+    return nacl.sign_detached_verify(msg, signature, pk.value());
+  }
+  if (pk.isSecp256K1()) {
+    return secp256k1.ecdsaVerify(
+      signature,
+      sha256(Buffer.from(msg)),
+      pk.value()
+    );
+  }
+  throw Error('Unsupported PublicKey type');
+};
+
 
 /** Public/private keypair object for representing an account */
 export abstract class AsymmetricKey {

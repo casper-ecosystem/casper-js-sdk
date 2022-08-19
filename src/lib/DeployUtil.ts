@@ -35,7 +35,7 @@ import {
 import { RuntimeArgs } from './RuntimeArgs';
 // import JSBI from 'jsbi';
 import { DeployUtil, Keys } from './index';
-import { AsymmetricKey, SignatureAlgorithm } from './Keys';
+import { AsymmetricKey, SignatureAlgorithm, validateSignature } from './Keys';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { CasperClient } from './CasperClient';
 import { jsonArrayMember, jsonMember, jsonObject, TypedJSON } from 'typedjson';
@@ -1560,9 +1560,17 @@ export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
                   got: ${deploy.hash}.`);
   }
 
-  // TODO: Verify included signatures.
+  const isProperlySigned = deploy.approvals.every(({ signer, signature }) => {
+    const pk = CLPublicKey.fromHex(signer);
+    const signatureRaw = decodeBase16(signature.slice(2));
+    return validateSignature(deploy.hash, signatureRaw, pk);
+  });
 
-  return Ok(deploy);
+  if (!isProperlySigned) {
+    return Err('Invalid signature.');
+  } else {
+    return Ok(deploy);
+  }
 };
 
 /**

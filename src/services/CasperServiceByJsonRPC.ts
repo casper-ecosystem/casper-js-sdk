@@ -152,6 +152,12 @@ export interface ValidatorWeight {
   weight: string;
 }
 
+export enum PurseIdentifier {
+  MainPurseUnderPublicKey = 'main_purse_under_public_key',
+  MainPurseUnderAccountHash = 'main_purse_under_account_hash',
+  PurseUref = 'purse_uref'
+}
+
 /** Object to represent era specific information */
 @jsonObject
 export class EraSummary {
@@ -342,11 +348,21 @@ export class CasperServiceByJsonRPC {
 
   /**
    * Get information on the current validators
+   * @param blockHash (optional) blockHash that you want to check
    * @returns A `Promise` that resolves to a `ValidatorsInfoResult`
    */
-  public async getValidatorsInfo(): Promise<ValidatorsInfoResult> {
+  public async getValidatorsInfo(
+    blockHash?: string
+  ): Promise<ValidatorsInfoResult> {
     return await this.client.request({
-      method: 'state_get_auction_info'
+      method: 'state_get_auction_info',
+      params: blockHash
+        ? {
+            block_identifier: {
+              Hash: blockHash
+            }
+          }
+        : []
     });
   }
 
@@ -427,6 +443,25 @@ export class CasperServiceByJsonRPC {
       .then(res => BigNumber.from(res.balance_value));
   }
 
+// TODO: Add docs
+  public async queryBalance(
+    purseIdentifierType: PurseIdentifier,
+    purseIdentifier: string,
+    stateRootHash?: string
+  ): Promise<BigNumber> {
+    return await this.client
+      .request({
+        method: 'query_balance',
+        params: {
+          purse_identifier: {
+            [purseIdentifierType]: purseIdentifier
+          },
+          state_identifier: stateRootHash
+        }
+      })
+      .then(res => BigNumber.from(res.balance));
+  }
+
   /**
    * Get the state root hash at a specific block hash
    * @param blockHashBase16 The hexadecimal string representation of a block hash
@@ -438,9 +473,7 @@ export class CasperServiceByJsonRPC {
     return await this.client
       .request({
         method: 'chain_get_state_root_hash',
-        params: {
-          block_hash: blockHashBase16 || null
-        }
+        params: blockHashBase16 ? { block_identifier: blockHashBase16 } : []
       })
       .then((res: GetStateRootHashResult) => res.state_root_hash);
   }
@@ -475,20 +508,24 @@ export class CasperServiceByJsonRPC {
     }
   }
 
-  /**
-   * Deploys a provided signed deploy
-   * @param signedDeploy A signed `Deploy` object to be sent to a node
-   * @remarks A deploy must not exceed 1 megabyte
-   */
-  public async deploy(signedDeploy: DeployUtil.Deploy) {
+  public async checkDeploySize(deploy: DeployUtil.Deploy) {
     const oneMegaByte = 1048576;
-    const size = DeployUtil.deploySizeInBytes(signedDeploy);
+    const size = DeployUtil.deploySizeInBytes(deploy);
     if (size > oneMegaByte) {
       throw Error(
         `Deploy can not be send, because it's too large: ${size} bytes. ` +
           `Max size is 1 megabyte.`
       );
     }
+  }
+
+/**
+   * Deploys a provided signed deploy
+   * @param signedDeploy A signed `Deploy` object to be sent to a node
+   * @remarks A deploy must not exceed 1 megabyte
+   */
+  public async deploy(signedDeploy: DeployUtil.Deploy) {
+    await this.checkDeploySize(signedDeploy);
 
     return await this.client.request({
       method: 'account_put_deploy',
@@ -496,6 +533,21 @@ export class CasperServiceByJsonRPC {
     });
   }
 
+  public async speculativeDeploy(
+    signedDeploy: DeployUtil.Deploy,
+    blockIdentifier?: string
+  ) {
+    await this.checkDeploySize(signedDeploy);
+
+    const deploy = deployToJson(signedDeploy);
+
+    return await this.client.request({
+      method: 'speculative_exec',
+      params: blockIdentifier
+        ? { ...deploy, block_identifier: { Hash: blockIdentifier } }
+        : { ...deploy }
+    });
+  }
   /**
    * Retrieves all transfers for a block from the network
    * @param blockHash Hexadecimal block hash. If not provided, the last block added to the chain, known as the given node, will be used
