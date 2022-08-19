@@ -10,6 +10,9 @@ import { CLValue, CLValueParsers, ToBytes } from './CLValue';
 
 /**
  * Convert number to bytes
+ * @param bitSize The bit size of the integer
+ * @param signed `true` if the integer is signed, `false` if not
+ * @returns `Uint8Array` buffer representation of the integer
  */
 export const toBytesNumber = (bitSize: number, signed: boolean) => (
   value: BigNumberish
@@ -96,25 +99,36 @@ export const toBytesU256 = toBytesNumber(256, false);
  */
 export const toBytesU512 = toBytesNumber(512, false);
 
-// This probably might be removed
+/**
+ * @deprecated
+ */
 export const toBytesDeployHash = (deployHash: Uint8Array) => {
   return deployHash;
 };
 
 /**
- * Serializes a string into an array of bytes.
+ * Serializes a string into an array of bytes
+ * @param str The string to be converted
+ * @returns A `Uint8Array` representation of the string
  */
 export function toBytesString(str: string): Uint8Array {
   const arr = Uint8Array.from(Buffer.from(str));
   return concat([toBytesU32(arr.byteLength), arr]);
 }
 
+/**
+ * Deserializes an array of bytes into a string
+ * @param byte `Uint8Array` buffer of bytes to be deserialized
+ * @returns The serialized string
+ */
 export const fromBytesString = (byte: Uint8Array): string => {
   return Buffer.from(byte).toString();
 };
 
 /**
  * Serializes an array of u8, equal to Vec<u8> in rust.
+ * @param arr `Uint8Array` buffer of u8 integers
+ * @returns Serialized `Uint8Array` buffer
  */
 export function toBytesArrayU8(arr: Uint8Array): Uint8Array {
   return concat([toBytesU32(arr.length), arr]);
@@ -122,6 +136,8 @@ export function toBytesArrayU8(arr: Uint8Array): Uint8Array {
 
 /**
  * Serializes a vector of values of type `T` into an array of bytes.
+ * @param vec A vector of objects of generic type `T` which extends `ToBytes`
+ * @returns `Uint8Array` buffer serialized from `vec`
  */
 export const toBytesVector = <T extends ToBytes>(vec: T[]): Uint8Array => {
   const valueByteList = vec.map(e => e.toBytes()).map(e => e.unwrap());
@@ -130,6 +146,12 @@ export const toBytesVector = <T extends ToBytes>(vec: T[]): Uint8Array => {
 };
 
 // TODO: Get rid after refactoring the whole
+/**
+ * @experimental
+ * Serializes a vector of values of type `T` into an array of bytes.
+ * @param vec A vector of objects of generic type `T` which extends `ToBytes`
+ * @returns `Uint8Array` buffer serialized from `vec`
+ */
 export const toBytesVectorNew = <T extends CLValue>(vec: T[]): Uint8Array => {
   const valueByteList = vec.map(e => CLValueParsers.toBytes(e).unwrap());
   valueByteList.splice(0, 0, toBytesU32(vec.length));
@@ -138,7 +160,7 @@ export const toBytesVectorNew = <T extends CLValue>(vec: T[]): Uint8Array => {
 
 // TODO: Legacy code
 /**
- * Serializes an byteArray, equal to [u8;n] in rust.
+ * @deprecated
  */
 export function toBytesBytesArray(arr: Uint8Array): Uint8Array {
   return arr;

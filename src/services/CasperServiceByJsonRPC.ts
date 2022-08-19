@@ -8,19 +8,23 @@ import ProviderTransport, {
   SafeEventEmitterProvider
 } from './ProviderTransport';
 
+/** RPC result interface */
 interface RpcResult {
   api_version: string;
 }
 
+/** Node peer interface */
 interface Peer {
   node_id: string;
   address: string;
 }
 
+/** A peers result interface defining `peers` as an array of `Peer`s */
 export interface GetPeersResult extends RpcResult {
   peers: Peer[];
 }
 
+/** Interface for information on the most recently appended block on the network */
 interface LastAddedBlockInfo {
   hash: string;
   timestamp: string;
@@ -30,36 +34,43 @@ interface LastAddedBlockInfo {
   creator: string;
 }
 
+/** Result interface for a get-status call */
 export interface GetStatusResult extends GetPeersResult {
   last_added_block_info: LastAddedBlockInfo;
   build_version: string;
 }
 
+/** Result interface for a get-state-root-hash call */
 export interface GetStateRootHashResult extends RpcResult {
   state_root_hash: string;
 }
 
+/** Result interface for an execution result body */
 interface ExecutionResultBody {
   cost: number;
   error_message?: string | null;
   transfers: string[];
 }
 
+/** Result interface for an execution result */
 export interface ExecutionResult {
   Success?: ExecutionResultBody;
   Failure?: ExecutionResultBody;
 }
 
+/** Result interface for a JSON execution result */
 export interface JsonExecutionResult {
   block_hash: JsonBlockHash;
   result: ExecutionResult;
 }
 
+/** Result interface for a get-deploy call */
 export interface GetDeployResult extends RpcResult {
   deploy: JsonDeploy;
   execution_results: JsonExecutionResult[];
 }
 
+/** Result interface for a get-block call */
 export interface GetBlockResult extends RpcResult {
   block: JsonBlock | null;
 }
@@ -67,11 +78,13 @@ export interface GetBlockResult extends RpcResult {
 type JsonBlockHash = string;
 type JsonDeployHash = string;
 
+/** JSON system transaction interface */
 export interface JsonSystemTransaction {
   Slash?: string;
   Reward?: Record<string, number>;
 }
 
+/** JSON deploy header interface that acts as a schema for JSON deploy headers */
 interface JsonDeployHeader {
   account: string;
   timestamp: number;
@@ -83,14 +96,17 @@ interface JsonDeployHeader {
 }
 
 // TODO: Empty interface
+/** @hidden */
 // eslint-disable-next-line
 interface JsonExecutableDeployItem {}
 
+/** Interface for JSON represented approvals */
 interface JsonApproval {
   signer: string;
   signature: string;
 }
 
+/** Interface describing a JSON represented deploy */
 export interface JsonDeploy {
   hash: JsonDeployHash;
   header: JsonDeployHeader;
@@ -99,6 +115,7 @@ export interface JsonDeploy {
   approvals: JsonApproval[];
 }
 
+/** Interface describing a JSON represented deploy header */
 export interface JsonHeader {
   parent_hash: string;
   state_root_hash: string;
@@ -114,12 +131,14 @@ export interface JsonHeader {
   protocol_version: string;
 }
 
+/** Interface describing JSON represented block related information */
 export interface JsonBlock {
   hash: JsonBlockHash;
   header: JsonHeader;
   proofs: string[];
 }
 
+/** Interface describing auction bidding information */
 export interface BidInfo {
   bonding_purse: string;
   staked_amount: string;
@@ -127,6 +146,7 @@ export interface BidInfo {
   funds_locked: null | string;
 }
 
+/** Interface describing the weight of a validator by its public key */
 export interface ValidatorWeight {
   public_key: string;
   weight: string;
@@ -138,26 +158,33 @@ export enum PurseIdentifier {
   PurseUref = 'purse_uref'
 }
 
+/** Object to represent era specific information */
 @jsonObject
 export class EraSummary {
+  /** The hash of the block when the era was encountered */
   @jsonMember({ constructor: String, name: 'block_hash' })
   blockHash: string;
 
+  /** The id of the era */
   @jsonMember({ constructor: Number, name: 'era_id' })
   eraId: number;
 
+  /** A `StoredValue` */
   @jsonMember({ constructor: StoredValue, name: 'stored_value' })
   StoredValue: StoredValue;
 
+  /** The state root hash when the era was encountered */
   @jsonMember({ constructor: String, name: 'state_root_hash' })
   stateRootHash: string;
 }
 
+/** Interface describing the validators at a certain era */
 export interface EraValidators {
   era_id: number;
   validator_weights: ValidatorWeight[];
 }
 
+/** Interface describing a validator auction bid */
 export interface Bid {
   bonding_purse: string;
   staked_amount: string;
@@ -166,6 +193,7 @@ export interface Bid {
   delegators: Delegators[];
 }
 
+/** Interface describing a delegator */
 export interface Delegators {
   bonding_purse: string;
   delegatee: string;
@@ -173,6 +201,7 @@ export interface Delegators {
   public_key: string;
 }
 
+/** Interface describing a delegator's information */
 export interface DelegatorInfo {
   bonding_purse: string;
   delegatee: string;
@@ -180,11 +209,13 @@ export interface DelegatorInfo {
   staked_amount: string;
 }
 
+/** Interface describing a validator's auction bid */
 export interface ValidatorBid {
   public_key: string;
   bid: Bid;
 }
 
+/** Interface describing the state of a validator auction */
 export interface AuctionState {
   state_root_hash: string;
   block_height: number;
@@ -192,14 +223,21 @@ export interface AuctionState {
   bids: ValidatorBid[];
 }
 
+/** Result interface describing validator information */
 export interface ValidatorsInfoResult extends RpcResult {
   api_version: string;
   auction_state: AuctionState;
 }
 
+/** JSON RPC service for interacting with Casper nodes */
 export class CasperServiceByJsonRPC {
+  /** JSON RPC client */
   protected client: Client;
 
+  /**
+   * Constructor for building a `CasperServiceByJsonRPC`
+   * @param provider A provider uri
+   */
   constructor(provider: string | SafeEventEmitterProvider) {
     let transport: HTTPTransport | ProviderTransport;
     if (typeof provider === 'string') {
@@ -212,9 +250,9 @@ export class CasperServiceByJsonRPC {
   }
 
   /**
-   * Get information about a single deploy by hash.
-   *
-   * @param deployHashBase16
+   * Get information about a deploy using its hexadecimal hash
+   * @param deployHashBase16 The base-16 hash of the deploy
+   * @returns A `Promise` that resolves to a `GetDeployResult`
    */
   public async getDeployInfo(
     deployHashBase16: string
@@ -227,6 +265,11 @@ export class CasperServiceByJsonRPC {
     });
   }
 
+  /**
+   * Get block information
+   * @param blockHashBase16 A hexadecimal string representing the hash of a block
+   * @returns A `Promise` resolving to a `GetBlockResult`
+   */
   public async getBlockInfo(
     blockHashBase16: JsonBlockHash
   ): Promise<GetBlockResult> {
@@ -250,6 +293,11 @@ export class CasperServiceByJsonRPC {
       });
   }
 
+  /**
+   * Get block info at a provided block height
+   * @param height The block height at which to gather the block info
+   * @returns A `Promise` resolving to a `GetBlockResult`
+   */
   public async getBlockInfoByHeight(height: number): Promise<GetBlockResult> {
     return await this.client
       .request({
@@ -268,24 +316,41 @@ export class CasperServiceByJsonRPC {
       });
   }
 
+  /**
+   * Get the block info of the latest block added
+   * @returns A `Promise` that resolves to a `GetBlockResult`
+   */
   public async getLatestBlockInfo(): Promise<GetBlockResult> {
     return await this.client.request({
       method: 'chain_get_block'
     });
   }
 
+  /**
+   * Get the attached node's current peers
+   * @returns A `Promise` that resolves to a `GetPeersResult`
+   */
   public async getPeers(): Promise<GetPeersResult> {
     return await this.client.request({
       method: 'info_get_peers'
     });
   }
 
+  /**
+   * Get the status of a node
+   * @returns A `Promise` that resolves to a `GetStatusResult`
+   */
   public async getStatus(): Promise<GetStatusResult> {
     return await this.client.request({
       method: 'info_get_status'
     });
   }
 
+  /**
+   * Get information on the current validators
+   * @param blockHash (optional) blockHash that you want to check
+   * @returns A `Promise` that resolves to a `ValidatorsInfoResult`
+   */
   public async getValidatorsInfo(
     blockHash?: string
   ): Promise<ValidatorsInfoResult> {
@@ -301,6 +366,11 @@ export class CasperServiceByJsonRPC {
     });
   }
 
+  /**
+   * Get information on the network validators of at a certain block height
+   * @param blockHeight The block height at which to query the validators' info
+   * @returns A `Promise` that resolves to a `ValidatorsInfoResult`
+   */
   public async getValidatorsInfoByBlockHeight(
     blockHeight: number
   ): Promise<ValidatorsInfoResult> {
@@ -318,7 +388,10 @@ export class CasperServiceByJsonRPC {
   }
 
   /**
-   * Get the reference to the balance so we can cache it.
+   * Get the reference to an account balance uref by an account's account hash, so it may be cached
+   * @param stateRootHash The state root hash at which the main purse URef will be queried
+   * @param accountHash The account hash of the account
+   * @returns The account's main purse URef
    */
   public async getAccountBalanceUrefByPublicKeyHash(
     stateRootHash: string,
@@ -333,7 +406,11 @@ export class CasperServiceByJsonRPC {
   }
 
   /**
-   * Get the reference to the balance so we can cache it.
+   * Get the reference to an account balance uref by an account's public key, so it may be cached
+   * @param stateRootHash The state root hash at which the main purse URef will be queried
+   * @param publicKey The public key of the account
+   * @returns The account's main purse URef
+   * @see [getAccountBalanceUrefByPublicKeyHash](#L380)
    */
   public async getAccountBalanceUrefByPublicKey(
     stateRootHash: string,
@@ -345,6 +422,12 @@ export class CasperServiceByJsonRPC {
     );
   }
 
+  /**
+   * Get the balance of an account using its main purse URef
+   * @param stateRootHash The state root hash at which the account balance will be queried
+   * @param balanceUref The URef of an account's main purse URef
+   * @returns An account's balance
+   */
   public async getAccountBalance(
     stateRootHash: string,
     balanceUref: string
@@ -360,6 +443,7 @@ export class CasperServiceByJsonRPC {
       .then(res => BigNumber.from(res.balance_value));
   }
 
+  // TODO: Add docs
   public async queryBalance(
     purseIdentifierType: PurseIdentifier,
     purseIdentifier: string,
@@ -378,6 +462,11 @@ export class CasperServiceByJsonRPC {
       .then(res => BigNumber.from(res.balance));
   }
 
+  /**
+   * Get the state root hash at a specific block hash
+   * @param blockHashBase16 The hexadecimal string representation of a block hash
+   * @returns A `Promise` resolving to a state root hash hexadecimal string
+   */
   public async getStateRootHash(
     blockHashBase16?: JsonBlockHash
   ): Promise<string> {
@@ -390,10 +479,11 @@ export class CasperServiceByJsonRPC {
   }
 
   /**
-   * get global state item
-   * @param stateRootHash
-   * @param key
-   * @param path
+   * Get the global block state at a certain state root hash, path, and key
+   * @param stateRootHash The state root hash at which the block state will be queried
+   * @param key The key at which to query the state
+   * @param path An array of a path / paths at which to query the state
+   * @returns The block state at the state root hash, path, and key provided, as a `StoredValue`
    */
   public async getBlockState(
     stateRootHash: string,
@@ -429,6 +519,11 @@ export class CasperServiceByJsonRPC {
     }
   }
 
+  /**
+   * Deploys a provided signed deploy
+   * @param signedDeploy A signed `Deploy` object to be sent to a node
+   * @remarks A deploy must not exceed 1 megabyte
+   */
   public async deploy(signedDeploy: DeployUtil.Deploy) {
     await this.checkDeploySize(signedDeploy);
 
@@ -455,7 +550,8 @@ export class CasperServiceByJsonRPC {
   }
   /**
    * Retrieves all transfers for a block from the network
-   * @param blockIdentifier Hex-encoded block hash or height of the block. If not given, the last block added to the chain as known at the given node will be used. If not provided it will retrieve by latest block.
+   * @param blockHash Hexadecimal block hash. If not provided, the last block added to the chain, known as the given node, will be used
+   * @returns A `Promise` resolving to a `Transfers` containing block transfers
    */
   public async getBlockTransfers(blockHash?: string): Promise<Transfers> {
     const res = await this.client.request({
@@ -478,8 +574,9 @@ export class CasperServiceByJsonRPC {
   }
 
   /**
-   * Retrieve era information by block hash.
-   * @param blockIdentifier Hex-encoded block hash or height of the block. If not given, the last block added to the chain as known at the given node will be used. If not provided it will retrieve by latest block.
+   * Retrieve era information at the block hash of a [switch block](https://docs.casperlabs.io/economics/consensus/#entry)
+   * @param blockHash Hexadecimal block hash. If not provided, the last block added to the chain, known as the given node, will be used
+   * @returns A `Promise` resolving to an `EraSummary` containing the era information
    */
   public async getEraInfoBySwitchBlock(
     blockHash?: string
@@ -504,8 +601,9 @@ export class CasperServiceByJsonRPC {
   }
 
   /**
-   * Retrieve era information by block height
-   * @param blockHeight
+   * Retrieve era information by [switch block](https://docs.casperlabs.io/economics/consensus/#entry) height
+   * @param height The height of the switch block
+   * @returns A `Promise` resolving to an `EraSummary` containing the era information
    */
   public async getEraInfoBySwitchBlockHeight(
     height: number
@@ -528,10 +626,11 @@ export class CasperServiceByJsonRPC {
   }
 
   /**
-   * get dictionary item by URef
-   * @param stateRootHash
-   * @param dictionaryItemKey
-   * @param seedUref
+   * Get a dictionary item by its URef
+   * @param stateRootHash The state root hash at which the item will be queried
+   * @param dictionaryItemKey The key at which the item is stored
+   * @param seedUref The seed URef of the dictionary
+   * @returns A `Promise` resolving to a `StoredValue` containing the item
    */
   public async getDictionaryItemByURef(
     stateRootHash: string,
@@ -564,9 +663,12 @@ export class CasperServiceByJsonRPC {
   }
 
   /**
-   * get dictionary item by name
-   * @param stateRootHash
-   * @param dictionaryItemKey
+   * Get a dictionary item by its name from within a contract
+   * @param stateRootHash The state root hash at which the item will be queried
+   * @param contractHash The contract hash of the contract that stores the queried dictionary
+   * @param dictionaryName The name of the dictionary
+   * @param dictionaryItemKey The key at which the item is stored
+   * @returns A `Promise` resolving to a `StoredValue` containing the item
    */
   public async getDictionaryItemByName(
     stateRootHash: string,
