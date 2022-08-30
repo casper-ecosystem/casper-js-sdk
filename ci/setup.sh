@@ -4,6 +4,7 @@ function main() {
     echo "Starting $(basename $0)"
     # arg vars
     local GH_BRANCH=${1:-'dev'}
+    local GH_COMMIT=${2}
     # non-arg vars
     local ROOT_DIR
     local TEST_ASSET_DIR
@@ -45,6 +46,12 @@ function main() {
     pushd "$TMP_DIR" > /dev/null
     git clone -b "$GH_BRANCH" "$GH_REPO_URL" &> /dev/null
     pushd "$GH_REPO" > /dev/null
+    # used for debug testing
+    if [ ! -z "$GH_COMMIT" ]; then
+        git checkout "$GH_COMMIT"
+        cargo build --release --package casper-node
+        cp './target/release/casper-node' "$BIN_DIR/casper-node"
+    fi
     # get the tomls
     make resources/local/chainspec.toml > /dev/null
     cp './resources/local/chainspec.toml' "$CONFIG_DIR"
@@ -54,8 +61,10 @@ function main() {
     # pull down the node
     # note: this is driven by the branch=''
     pushd "$BIN_DIR" > /dev/null
-    curl -s -LJO "$REMOTE_NODE_URL"
-    chmod +x 'casper-node'
+    if [ -z "$GH_COMMIT" ]; then
+        curl -s -LJO "$REMOTE_NODE_URL"
+        chmod +x 'casper-node'
+    fi
     echo "... Casper Binary Version: $(./casper-node --version)"
     popd > /dev/null
 
@@ -70,6 +79,7 @@ function main() {
 # ----------------------------------------------------------------
 
 unset GH_BRANCH
+unset GH_COMMIT
 
 for ARGUMENT in "$@"
 do
@@ -77,8 +87,9 @@ do
     VALUE=$(echo "$ARGUMENT" | cut -f2 -d=)
     case "$KEY" in
         branch) GH_BRANCH=${VALUE} ;;
+        commit) GH_COMMIT=${VALUE} ;;
         *)
     esac
 done
 
-main "$GH_BRANCH"
+main "$GH_BRANCH" "$GH_COMMIT"
