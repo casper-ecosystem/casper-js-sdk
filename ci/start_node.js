@@ -43,9 +43,9 @@ module.exports = {
       console.log(`child process exited with code ${code}`);
     });
 
-    // sleeps 60 seconds so genesis completes, update later to verify that
-    console.log(`sleeping 60s to allow node to complete genesis...`);
-    sleep(60000);
+    // sleeps 180 seconds so genesis completes, update later to verify that
+    console.log(`sleeping 180s to allow node to complete genesis...`);
+    sleep(180000);
     return casper_node.pid;
   }
 };
