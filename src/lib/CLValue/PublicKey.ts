@@ -179,4 +179,27 @@ export class CLPublicKey extends CLValue {
 
     return new CLPublicKey(publicKeyHexBytes.subarray(1), publicKeyHexBytes[0]);
   }
+
+  getTag(): CLPublicKeyTag {
+    return this.tag;
+  }
+
+  getSignatureAlgorithm(): SignatureAlgorithm {
+    const mapTagToSignatureAlgorithm = (
+      tag: CLPublicKeyTag
+    ): SignatureAlgorithm => {
+      const signatureAlgorithm = {
+        [CLPublicKeyTag.ED25519]: SignatureAlgorithm.Ed25519,
+        [CLPublicKeyTag.SECP256K1]: SignatureAlgorithm.Secp256K1
+      }[tag];
+
+      if (signatureAlgorithm === undefined) {
+        throw Error('Unknown tag to signature algo mapping.');
+      }
+
+      return signatureAlgorithm;
+    };
+
+    return mapTagToSignatureAlgorithm(this.tag);
+  }
 }

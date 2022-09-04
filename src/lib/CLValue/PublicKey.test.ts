@@ -6,6 +6,7 @@ import {
   CLValueParsers
 } from './index';
 import { Keys } from '../index';
+import { SignatureAlgorithm } from '../Keys';
 
 // prettier-ignore
 const rawEd25519Account = Uint8Array.from([
@@ -149,5 +150,13 @@ describe('CLPublicKey', () => {
     expect(CLValueParsers.fromJSON(expectedJson).unwrap()).to.be.deep.eq(
       publicKey
     );
+  });
+
+  it('getTag() / getSignatureAlgorithm()', () => {
+    const tag = publicKeyEd25519.getTag();
+    const signatureAlgorithm = publicKeyEd25519.getSignatureAlgorithm();
+
+    expect(tag).to.be.eq(CLPublicKeyTag.ED25519);
+    expect(signatureAlgorithm).to.be.eq(SignatureAlgorithm.Ed25519);
   });
 });
