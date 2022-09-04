@@ -184,6 +184,7 @@ export class CLPublicKey extends CLValue {
     return this.tag;
   }
 
+  // TODO: mapping tag to signature algo because of the legacy indentifiers in ./Keys
   getSignatureAlgorithm(): SignatureAlgorithm {
     const mapTagToSignatureAlgorithm = (
       tag: CLPublicKeyTag
