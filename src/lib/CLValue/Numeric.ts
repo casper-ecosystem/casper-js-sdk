@@ -69,6 +69,10 @@ abstract class Numeric extends CLValue {
   value(): BigNumber {
     return this.data;
   }
+
+  toJSON(): string {
+    return this.data.toString();
+  }
 }
 
 // CLI32

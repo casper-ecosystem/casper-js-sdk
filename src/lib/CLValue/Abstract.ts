@@ -53,6 +53,10 @@ export abstract class CLValue {
   abstract clType(): CLType;
   abstract value(): any;
   abstract data: any;
+
+  toJSON(): any {
+    return this.data;
+  }
 }
 
 export class CLValueParsers {

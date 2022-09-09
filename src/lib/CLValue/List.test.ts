@@ -21,6 +21,22 @@ describe('CLValue List implementation', () => {
     expect(myList.clType().toString()).to.be.eq('List (Bool)');
   });
 
+  it('List should return proper toJSON value', () => {
+    const myBool = new CLBool(false);
+    const myList = new CLList([myBool]);
+
+    const myList2 = new CLList([
+      new CLList([new CLBool(true), new CLBool(false)]),
+      new CLList([new CLBool(true), new CLBool(true)])
+    ]);
+
+    expect(myList.toJSON()).to.be.deep.eq([false]);
+    expect(myList2.toJSON()).to.be.deep.eq([
+      [true, false],
+      [true, true]
+    ]);
+  });
+
   it('Should be able to create List with proper values - correct by construction', () => {
     const myList = new CLList([new CLBool(true), new CLBool(false)]);
 

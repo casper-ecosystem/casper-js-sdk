@@ -170,6 +170,12 @@ export class CLMap<K extends CLValue, V extends CLValue> extends CLValue {
     return new CLMapType(this.refType);
   }
 
+  toJSON(): any {
+    const map = new Map();
+    this.data.forEach(([k, v]) => map.set(k, v));
+    return map;
+  }
+
   value(): [K, V][] {
     return this.data;
   }

@@ -143,11 +143,19 @@ export class CLResult<T extends CLType, E extends CLType> extends CLValue {
     this.innerOk = ok;
     this.innerErr = err;
   }
+
   /**
    * Returns Result from ts-result based on stored value
    */
   value(): Result<CLValue, CLValue> {
     return this.data;
+  }
+
+  /**
+   * Returns JSON representation. If None null will be returned.
+   */
+  toJSON(): any {
+    return this.data.unwrap().toJSON();
   }
 
   /**

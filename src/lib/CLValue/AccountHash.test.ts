@@ -8,13 +8,4 @@ describe('CLAccountHash', () => {
 
     expect(myHash.value()).to.be.deep.eq(arr8);
   });
-
-  // it('toBytes() / fromBytes() do proper bytes serialization', () => {
-  //   const expectedBytes = Uint8Array.from(Array(32).fill(42));
-  //   const hash = new CLAccountHash(expectedBytes);
-  //   const fromBytes= CLAccountHash.fromBytesWithRemainder(expectedBytes).result.unwrap();
-
-  //   expect(hash.toBytes().unwrap()).to.deep.eq(expectedBytes);
-  //   expect(fromBytes).to.deep.eq(hash);
-  // });
 });

@@ -127,6 +127,10 @@ export class CLList<T extends CLValue> extends CLValue {
     return new CLListType(this.vectorType);
   }
 
+  toJSON(): any {
+    return this.data.map(d => d.toJSON());
+  }
+
   get(index: number): T {
     if (index >= this.data.length) {
       throw new Error('List index out of bounds.');
