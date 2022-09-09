@@ -20,3 +20,4 @@ npm run test
 ## Examples
 
 Basic examples of library usage are stored inside `/test` directory.
+
