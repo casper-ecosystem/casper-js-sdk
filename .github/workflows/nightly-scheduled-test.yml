@@ -1,0 +1,81 @@
+---
+name: nightly-scheduled-test
+
+on:
+  workflow_dispatch:
+
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    # runs every day at midnight
+    - cron: "0 0 * * *"
+
+jobs:
+  nightly-npm-test:
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [16.x]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Install
+        run: npm install
+
+      - name: Test
+        run: npm test
+
+      - name: Test RPC - CN Dev
+        run: ./ci/setup.sh && npm run test:rpc
+        env:
+          FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
+          NODE_URL: 'http://localhost:7777/rpc'
+          NETWORK_NAME: 'casper-example'
+          RUST_LOG: 'INFO'
+
+      - name: Get Latest Casper-Node Tag Version
+        run: |
+          echo "CASPER_TAG_VERSION=$(curl -s ${{ env.GH_API_URL }} | jq -r '.[].name' | grep 'v*' | sort -r | head -n1)" >> $GITHUB_ENV
+        env:
+          GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
+
+      - name: Test RPC - CN Release - ${{ env.CASPER_TAG_VERSION }}
+        run: ./ci/setup.sh branch=${{env.CASPER_TAG_VERSION }} && npm run test:rpc
+        env:
+          FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
+          NODE_URL: 'http://localhost:7777/rpc'
+          NETWORK_NAME: 'casper-example'
+          RUST_LOG: 'INFO'
+
+      - name: Get Latest Casper-Node RC Version
+        run: |
+          echo "CASPER_RC_VERSION=$(curl -s -G -d 'per_page=100' https://api.github.com/repos/casper-network/casper-node/branches | jq -r '.[].name' | grep '^release' | awk -F'-' '{print $2}'| sort -r | head -n1)" >> $GITHUB_ENV
+        env:
+          GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/branches'
+
+      - name: Test RPC - CN RC - ${{ env.CASPER_RC_VERSION }}
+        run: ./ci/setup.sh branch=release-${{env.CASPER_RC_VERSION }} && npm run test:rpc
+        env:
+          FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
+          NODE_URL: 'http://localhost:7777/rpc'
+          NETWORK_NAME: 'casper-example'
+          RUST_LOG: 'INFO'
+
+      - name: Slack Notification
+        uses: ravsamhq/notify-slack-action@4ed28566c2bdcdaee6dca2b46b9666d01b4ed8a4 #v1.10.0
+        if: always()
+        with:
+          status: ${{ job.status }}
+          notification_title: "*{repo}*"
+          message_format: "{emoji} *{workflow}* *{job}* *{status_message}* in <{repo_url}|{repo}@{branch}> on <{commit_url}|{commit_sha}>"
+          footer: "<{run_url}|View Run>"
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}

@@ -1,0 +1,8 @@
+# FAUCET.
+[[accounts]]
+public_key = "01ceaf071dee2a1cfe13a3f38752b3760e7027d3318dfe7e3f4ce18fcce0e6f67d"
+balance = "1000000000000000000000000000000000"
+
+[accounts.validator]
+bonded_amount = "100000000000000"
+delegation_rate = 0
