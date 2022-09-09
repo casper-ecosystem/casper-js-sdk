@@ -4,6 +4,21 @@ All notable changes to casper-js-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.10.0
+
+### Added
+
+- Added signatures verification in `validateDeploy` method.
+- Added `queryBalance` (will be supported in casper-node 1.5 - RPC name `query_balance`) method in `CasperServiceByJsonRPC`.
+- Added `speculativeDeploy` (will be supported in casper-node 1.5 - RPC name `speculative_exec`) method in `CasperServiceByJsonRPC`.
+- Better documented RPC methods .
+- Added `csprToMotes` - motes/cspr converter in `Conversions`.
+- Extended PublicKey class API with two new methods, allowing to get publicKey tag type or its corresponding signature algo type.
+
+### Fixed
+
+- `getStateRootHash` (RPC name `chain_get_state_root_hash`) can now correctly support `block_hash` argument.
+
 ## 2.9.1
 
 ### Fixed
