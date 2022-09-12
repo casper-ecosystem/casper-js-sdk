@@ -8,9 +8,6 @@
     "type": "git",
     "url": "https://github.com/casper-ecosystem/casper-js-sdk.git"
   },
-  "publishConfig": {
-    "registry": "https://registry.npmjs.org/"
-  },
   "main": "dist/lib.node.js",
   "browser": "dist/lib.js",
   "types": "dist/index.d.ts",
