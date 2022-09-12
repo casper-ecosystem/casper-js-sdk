@@ -24,12 +24,10 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
     - run: npm install
-    - uses: JS-DevTools/npm-publish@0f451a94170d1699fd50710966d48fb26194d939 #v1.4.3
-      with:
-        token: ${{ secrets.NPM_TOKEN }}
-        tag: ${{ github.event.release.tag_name }}
-        access: "public"
-        check-version: true
+    - name: Publish to NPM
+      run: npm publish --access public
+      env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     - name: Get latest release version number
       id: get_version
       uses: battila7/get-version-action@d97fbc34ceb64d1f5d95f4dfd6dce33521ccccf5 #v2.3.0
