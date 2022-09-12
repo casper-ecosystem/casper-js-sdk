@@ -23,6 +23,7 @@ jobs:
       uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
       with:
         node-version: ${{ matrix.node-version }}
+        registry-url: 'https://registry.npmjs.org'
     - run: npm install
     - name: Publish to NPM
       run: npm publish --access public
