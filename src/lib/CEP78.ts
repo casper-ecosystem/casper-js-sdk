@@ -71,7 +71,7 @@ export class CEP78 {
       collection_symbol: CLValueBuilder.string(collectionSymbol),
       total_token_supply: CLValueBuilder.u64(totalTokenSupply),
       ownership_mode: CLValueBuilder.u8(ownershipMode),
-      nft_kind: CLValueBuilder.u8(nftKind), // Digital
+      nft_kind: CLValueBuilder.u8(nftKind),
       nft_metadata_kind: CLValueBuilder.u8(metadataKind),
       json_schema: CLValueBuilder.string(JSON.stringify(jsonSchema)),
       identifier_mode: CLValueBuilder.u8(identifierMode),
@@ -94,7 +94,7 @@ export class CEP78 {
   }
 
   /**
-   * Installs a CEP78 contract on the Casper Network
+   * Installs a CEP-78 contract on the Casper Network
    *
    * @param {Uint8Array} wasm The compiled WebAssembly contract formatted as a `Uint8Array`
    * @param {RuntimeArgs} args The runtime arguments needed to deploy the contract
@@ -448,9 +448,10 @@ export class CEP78 {
   }
 
   /**
-   * Gets the owner of a CEP-78 NFT
+   * Gets the total number of NFTs minted
    *
-   * @returns {Promise<CLValue>} A `Promise` that resolves to a `CLValue` containing the owner of the NFT
+   * @returns {Promise<CLValue>} A `Promise` that resolves to a `StoredValue`
+   * containing the total number of NFTs that have been minted
    */
   totalMinted(): Promise<StoredValue> {
     if (this.contract == null) {
