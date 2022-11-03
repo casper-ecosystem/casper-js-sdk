@@ -7,10 +7,12 @@
 import { CasperClient } from './CasperClient';
 import { Contract } from './Contracts';
 import { RuntimeArgs } from './RuntimeArgs';
-import { CLPublicKey, CLValueBuilder, CLValue } from '../index';
-import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
+import { CLPublicKey, CLValueBuilder, CLValue, CLString, CLU64 } from '../index';
+import { BigNumberish } from '@ethersproject/bignumber';
 import { AsymmetricKey } from './Keys';
 import { CLKey } from './CLValue/Key';
+import { Deploy } from './DeployUtil';
+import { StoredValue } from './StoredValue';
 
 export class CEP78 {
     client?: CasperClient;
@@ -57,8 +59,7 @@ export class CEP78 {
         holderMode?: number,
         whitelistMode?: number,
         burnMode?: number,
-
-        ) {
+        ): RuntimeArgs {
         let map: Record<string, CLValue> = {
             "collection_name": CLValueBuilder.string(collectionName),
             "collection_symbol": CLValueBuilder.string(collectionSymbol),
@@ -106,7 +107,7 @@ export class CEP78 {
         gas: BigNumberish,
         network: string,
         signers: AsymmetricKey[]
-    ) {
+    ): Deploy {
         if (this.contract == null) {
             throw new Error("Please connect a contract instance with `CEP78.createContract`")
         }
@@ -140,7 +141,7 @@ export class CEP78 {
         network: string,
         gas: BigNumberish,
         signers?: AsymmetricKey[]
-    ) {
+    ): Deploy {
         if (this.contract == null) {
             throw new Error("Please connect a contract instance with `CEP78.createContract`")
         }
@@ -153,13 +154,7 @@ export class CEP78 {
             "token_meta_data": CLValueBuilder.string(JSON.stringify(metadata))
         }
 
-        if (tokenOwner instanceof CLKey) {
-            args["token_owner"] = tokenOwner
-        } else if (tokenOwner instanceof CLPublicKey) {
-            args["token_owner"] = CLValueBuilder.key(tokenOwner)
-        } else if (tokenOwner instanceof String) {
-            args["token_owner"] = CLValueBuilder.key(CLPublicKey.fromHex(tokenOwner))
-        }
+        args["token_owner"] = CEP78.castMultitypeKey(tokenOwner)
 
         let runtimeArgs: RuntimeArgs
         try {
@@ -178,12 +173,27 @@ export class CEP78 {
         )
     }
   
-  
+    /**
+     * Transfers an NFT
+     *  
+     * @param {number | string} tokenId The tokenId, either ordinal or hash
+     * @param {CLKey | CLPublicKey | String} source The source of the NFT, either the owner or an approved caller
+     * @param {CLKey | CLPublicKey | String} destination The destination of the NFT, an account or an address or either depending on the HolderMode
+     * @param {CLPublicKey} deployer The public key of the deployer of the contract
+     * @param {string} network The network to deploy to
+     * @param {BigNumber} gas The gas payment in motes
+     * @param {AsymmetricKey[]=} signers A list of signers of the deployment. This value is optional and may be signed after creation
+     * @returns {Deploy} Deploy object to be sent to the Network
+     */
     transfer(
-      tokenId: number,
-      recipient: CLKey | CLPublicKey | String,
-      source?: CLKey | CLPublicKey | String
-      ) {
+      tokenId: number | string,
+      source: CLKey | CLPublicKey | String,
+      destination: CLKey | CLPublicKey | String,
+      deployer: CLPublicKey,
+      network: string,
+      gas: BigNumberish,
+      signers?: AsymmetricKey[]
+      ): Deploy {
       if (this.contract == null) {
         throw new Error("Please connect a contract instance with `CEP78.createContract`")
       }
@@ -193,151 +203,126 @@ export class CEP78 {
       }
 
 
-      return new Promise((resolve, reject) => {
-        if (this.contract.contractHash == null) {
-          reject("No contract hash")
-        }
-  
-        const args = RuntimeArgs.fromMap({
-          "token_id": CLValueBuilder.u64(tokenId),
-          "target_key": CLValueBuilder.key(CLPublicKey.fromHex(recipient)),
-          "source_key": CLValueBuilder.key(this.keys.publicKey),
-        })
-  
-        const deploy = this.contract.callEntrypoint(
-          "transfer",
-          args,
-          this.keys.publicKey,
-          this.network,
-          "1000000000", // 1 CSPR
-          [this.keys]
-        )
-  
-        this.putAndGetDeploy(deploy).then((result) => {
-          resolve(result)
-        }).catch((error) => {
-          reject(error)
-        })
-      })
-    }
-  
-    receiveAndSendDeploy(deploy) {
-      return new Promise((resolve, reject) => {
-        if (this.contract.contractHash == null) {
-          reject("No contract hash")
-        }
-        this.putAndGetDeploy(deploy).then((result) => {
-          resolve(result)
-        }).catch((error) => {
-          reject(error)
-        })
-      })
-    }
-  
-    async balanceOf(account) {
-      return new Promise((resolve, reject) => {
-        if (this.contract.contractHash == null) {
-          reject("No contract hash")
-        }
-  
-        this.contract.queryContractDictionary(
-          "balances",
-          CLPublicKey.fromHex(account).toAccountHashStr().substring(13),
-        ).then((response) => {
-          resolve(parseInt(response.data._hex, 16))
-        }).catch((error) => {
-          reject(error)
-        })
-      })
-    }
-  
-    async ownerOf(tokenId) {
-      return new Promise((resolve, reject) => {
-        if (this.contract.contractHash == null) {
-          reject("No contract hash")
-        }
-        this.contract.queryContractDictionary(
-          "token_owners",
-          tokenId.toString(),
-        ).then((response) => {
-          resolve(Buffer.from(response.data.data).toString('hex'))
-        }).catch((error) => {
-          reject(error)
-        })
-      })
-    }
-  
-    async totalMinted() {
-      return new Promise((resolve, reject) => {
-        if (this.contract.contractHash == null) {
-          reject("No contract hash")
-        }
-  
-        this.contract.queryContractData(
-          ["number_of_minted_tokens"],
-        ).then((response) => {
-          resolve(parseInt(response._hex, 16))
-        }).catch((error) => {
-          reject(error)
-        })
-      })
-    }
-  
-    static getWasm(file) {
-      try {
-        return new Uint8Array(fs.readFileSync(file).buffer)
-      } catch (err) {
-        console.error(err)
+      source = CEP78.castMultitypeKey(source)
+      destination = CEP78.castMultitypeKey(destination)
+
+      let map: Record<string, CLValue> = {
+        "target_key": destination,
+        "source_key": source
       }
-    }
-  
-    getKeys() {
-      return Keys.Ed25519.loadKeyPairFromPrivateFile(this.keyPairFilePath)
-    }
-  
-    putAndGetDeploy(deploy) {
-      return new Promise((resolve, reject) => {
-        this.client.putDeploy(deploy).then((deployHash) => {
-          this.pollDeployment(deployHash).then((response) => {
-            resolve(response)
-          }).catch((error) => {
-            reject(error)
-          })
-        }).catch((error) => {
-          reject(error)
-        })
-      })
-    }
-  
-    pollDeployment(deployHash) {
-      const client = this.client
-      return new Promise((resolve, reject) => {
-        var poll = setInterval(async function(deployHash) {
-          try {
-            const response = await client.getDeploy(deployHash)
-              if (response[1].execution_results.length != 0) {
-               //Deploy executed
-               if (response[1].execution_results[0].result.Failure != null) {
-                 clearInterval(poll)
-                 reject("Deployment failed")
-                 return
-               }
-               clearInterval(poll)
-               resolve(response[1].execution_results[0].result.Success)
-             }
-            } catch(error) {
-            console.error(error)
-            }
-        }, 2000, deployHash)
-      })
-    }
-  
-    static iterateTransforms(result) {
-      const transforms = result.effect.transforms
-      for (var i = 0; i < transforms.length; i++) {
-        if (transforms[i].transform == "WriteContract") {
-          return transforms[i].key
-        }
+
+      if ((tokenId as any) instanceof Number) {
+        map["token_id"] = CLValueBuilder.u64(tokenId)
+      } else if ((tokenId as any) instanceof String) {
+        map["token_id"] = CLValueBuilder.string(String(tokenId))
       }
+
+      return this.contract.callEntrypoint(
+        "transfer",
+        RuntimeArgs.fromMap(map),
+        deployer,
+        network,
+        gas,
+        signers
+      )
+    }
+    /**
+     * Gets the CEP-78 NFT balance of an account
+     * 
+     * @param {CLKey | CLPublicKey | String} account The account with which to check the NFT balance
+     * @returns {Promise<CLValue>} A `Promise` that resolves to a `CLValue` containing the balance of the account
+     */
+    balanceOf(
+      account: CLKey | CLPublicKey | String
+      ): Promise<CLValue> {
+      if (this.contract == null) {
+        throw new Error("Please connect a contract instance with `CEP78.createContract`")
+      }
+
+      if (this.contract.contractHash == null) {
+        throw new Error("Please connect your Contract instance to a smart contract by running `CEP78.contract.setContractHash(contractHash)`")
+      }
+
+      let accountHash: string = CEP78.castMultitypePublicKey(account).toAccountHashStr()
+
+      if (accountHash.search(/^account-hash-/)) {
+        accountHash = accountHash.replace("account-hash-", "")
+      }
+
+      return this.contract.queryContractDictionary(
+        "balances",
+        accountHash,
+      )
+    }
+
+    /**
+     * Gets the owner of a CEP-78 NFT
+     * 
+     * @param {number | string} tokenId The tokenId, either ordinal or hash, to retrieve the owner of
+     * @returns {Promise<CLValue>} A `Promise` that resolves to a `CLValue` containing the owner of the NFT
+     */
+    ownerOf(
+      tokenId: number | string
+      ): Promise<CLValue> {
+      if (this.contract == null) {
+        throw new Error("Please connect a contract instance with `CEP78.createContract`")
+      }
+
+      if (this.contract.contractHash == null) {
+        throw new Error("Please connect your Contract instance to a smart contract by running `CEP78.contract.setContractHash(contractHash)`")
+      }
+
+      return this.contract.queryContractDictionary(
+        "token_owners",
+        String(CEP78.castTokenID(tokenId)),
+      )
+    }
+
+    /**
+     * Gets the owner of a CEP-78 NFT
+     * 
+     * @returns {Promise<CLValue>} A `Promise` that resolves to a `CLValue` containing the owner of the NFT
+     */
+     totalMinted(): Promise<StoredValue> {
+      if (this.contract == null) {
+        throw new Error("Please connect a contract instance with `CEP78.createContract`")
+      }
+
+      if (this.contract.contractHash == null) {
+        throw new Error("Please connect your Contract instance to a smart contract by running `CEP78.contract.setContractHash(contractHash)`")
+      }
+
+      return this.contract.queryContractData(
+        ["number_of_minted_tokens"],
+      )
+    }
+
+    private static castMultitypeKey(key: CLKey | CLPublicKey | String): CLKey {
+      if (key instanceof CLKey) {
+        return key
+      } else if (key instanceof CLPublicKey) {
+        return CLValueBuilder.key(key)
+      } else if (key instanceof String) {
+        return CLValueBuilder.key(CLPublicKey.fromHex(String(key)))
+      }
+      throw new Error("Could not cast key")
+    }
+
+    private static castMultitypePublicKey(key: CLKey | CLPublicKey | String): CLPublicKey {
+      if (key instanceof CLPublicKey) {
+        return key
+      } else if (key instanceof String) {
+        return CLPublicKey.fromHex(String(key))
+      }
+      throw new Error("Could not cast key")
+    }
+
+    private static castTokenID(tokenId: string | number): CLU64 | CLString {
+      if ((tokenId as any) instanceof Number) {
+        return CLValueBuilder.u64(tokenId)
+      } else if ((tokenId as any) instanceof String) {
+        return CLValueBuilder.string(String(tokenId))
+      }
+      throw new Error("Could not cast tokenId")
     }
   }
