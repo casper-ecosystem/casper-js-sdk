@@ -6,7 +6,7 @@ import { Keys } from '../../src/index'
 import { csprToMotes } from '../../src/lib/Conversions'
 import fs from 'fs'
 import { Deploy } from '../../src/lib/DeployUtil';
-import { step } from 'mocha-steps'
+import { step } from 'mocha-steps';
 
 /**
  * @packageDocumentation

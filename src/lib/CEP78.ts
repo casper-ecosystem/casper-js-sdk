@@ -188,8 +188,8 @@ export class CEP78 {
    * Transfers an NFT
    *
    * @param {number | string} tokenId The tokenId, either ordinal or hash
-   * @param {CLKey | CLPublicKey | String} source The source of the NFT, either the owner or an approved caller
-   * @param {CLKey | CLPublicKey | String} destination The destination of the NFT, an account or an address or either depending on the HolderMode
+   * @param {CLKey | CLPublicKey | string} source The source of the NFT, either the owner or an approved caller
+   * @param {CLKey | CLPublicKey | string} destination The destination of the NFT, an account or an address or either depending on the HolderMode
    * @param {CLPublicKey} deployer The public key of the deployer of the contract
    * @param {string} network The network to deploy to
    * @param {BigNumber} gas The gas payment in motes
@@ -225,10 +225,10 @@ export class CEP78 {
       source_key: source
     };
 
-    if ((tokenId as any) instanceof Number) {
+    if (typeof tokenId == 'number') {
       map['token_id'] = CLValueBuilder.u64(tokenId);
-    } else if ((tokenId as any) instanceof String) {
-      map['token_id'] = CLValueBuilder.string(String(tokenId));
+    } else if (typeof tokenId == 'string') {
+      map['token_id'] = CLValueBuilder.string(tokenId);
     }
 
     return this.contract.callEntrypoint(
@@ -240,6 +240,158 @@ export class CEP78 {
       signers
     );
   }
+
+  /**
+   * Burns an NFT
+   *
+   * @param {number | string} tokenId The tokenId, either ordinal or hash
+   * @param {CLPublicKey} deployer The public key of the deployer of the contract
+   * @param {string} network The network to deploy to
+   * @param {BigNumber} gas The gas payment in motes
+   * @param {AsymmetricKey[]=} signers A list of signers of the deployment. This value is optional and may be signed after creation
+   * @returns {Deploy} Deploy object to be sent to the Network
+   */
+  burn(
+    tokenId: number | string,
+    deployer: CLPublicKey,
+    network: string,
+    gas: BigNumberish,
+    signers?: AsymmetricKey[]
+  ): Deploy {
+    if (this.contract == null) {
+      throw new Error(
+        'Please connect a contract instance with `CEP78.createContract`'
+      );
+    }
+
+    if (this.contract.contractHash == null) {
+      throw new Error(
+        'Please connect your Contract instance to a smart contract by running `CEP78.contract.setContractHash(contractHash)`'
+      );
+    }
+
+    const map: Record<string, CLValue> = {};
+
+    if (typeof tokenId == 'number') {
+      map['token_id'] = CLValueBuilder.u64(tokenId);
+    } else if (typeof tokenId == 'string') {
+      map['token_hash'] = CLValueBuilder.string(tokenId);
+    }
+
+    return this.contract.callEntrypoint(
+      'burn',
+      RuntimeArgs.fromMap(map),
+      deployer,
+      network,
+      gas.toString(),
+      signers
+    );
+  }
+
+  /**  * Approve a caller on an NFT
+   *
+   * @param {number | string} tokenId The tokenId, either ordinal or has
+   * @param {CLKey | CLPublicKey | String} operator The caller to approve
+   * @param {CLPublicKey} deployer The public key of the deployer of the contract
+   * @param {string} network The network to deploy to
+   * @param {BigNumber} gas The gas payment in motes
+   * @param {AsymmetricKey[]=} signers A list of signers of the deployment. This value is optional and may be signed after creation
+   * @returns {Deploy} Deploy object to be sent to the Network
+   */
+  approve(
+    tokenId: number | string,
+    operator: CLKey | CLPublicKey | string,
+    deployer: CLPublicKey,
+    network: string,
+    gas: BigNumberish,
+    signers?: AsymmetricKey[]
+  ): Deploy {
+    if (this.contract == null) {
+      throw new Error(
+        'Please connect a contract instance with `CEP78.createContract`'
+      );
+    }
+
+    if (this.contract.contractHash == null) {
+      throw new Error(
+        'Please connect your Contract instance to a smart contract by running `CEP78.contract.setContractHash(contractHash)`'
+      );
+    }
+
+    const map: Record<string, CLValue> = {
+      operator: CEP78.castMultitypeKey(operator)
+    };
+
+    if (typeof tokenId == 'number') {
+      map['token_id'] = CLValueBuilder.u64(tokenId);
+    } else if (typeof tokenId == 'string') {
+      map['token_hash'] = CLValueBuilder.string(tokenId);
+    }
+
+    return this.contract.callEntrypoint(
+      'approve',
+      RuntimeArgs.fromMap(map),
+      deployer,
+      network,
+      gas.toString(),
+      signers
+    );
+  }
+
+  /**
+   * Set approval for all
+   *
+   * @param {number | string} tokenId The tokenId, either ordinal or has
+   * @param {CLKey | CLPublicKey | String} operator The caller to approve
+   * sets operator to None and disapproves all existing operators. Defaults to true.
+   * @param {CLPublicKey} deployer The public key of the deployer of the contract
+   * @param {string} network The network to deploy to
+   * @param {BigNumber} gas The gas payment in motes
+   * @param {AsymmetricKey[]=} signers A list of signers of the deployment. This value is optional and may be signed after creation
+   * @param {boolean=} approveAll If true, approves all NFTs on the provided operator. If false,
+   * @returns {Deploy} Deploy object to be sent to the Network
+   */
+  setApprovalForAll(
+    operator: CLKey | CLPublicKey | string,
+    deployer: CLPublicKey,
+    network: string,
+    gas: BigNumberish,
+    signers?: AsymmetricKey[],
+    approveAll?: boolean
+  ): Deploy {
+    if (this.contract == null) {
+      throw new Error(
+        'Please connect a contract instance with `CEP78.createContract`'
+      );
+    }
+
+    if (this.contract.contractHash == null) {
+      throw new Error(
+        'Please connect your Contract instance to a smart contract by running `CEP78.contract.setContractHash(contractHash)`'
+      );
+    }
+
+    if (approveAll == null) {
+      approveAll = true;
+    }
+
+    const map: Record<string, CLValue> = {
+      operator: CEP78.castMultitypeKey(operator),
+      approve_all: CLValueBuilder.bool(approveAll)
+    };
+
+    return this.contract.callEntrypoint(
+      'set_approval_for_all',
+      RuntimeArgs.fromMap(map),
+      deployer,
+      network,
+      gas.toString(),
+      signers
+    );
+  }
+
+  /* GETTERS */
+
   /**
    * Gets the CEP-78 NFT balance of an account
    *
@@ -291,7 +443,7 @@ export class CEP78 {
 
     return this.contract.queryContractDictionary(
       'token_owners',
-      String(CEP78.castTokenID(tokenId))
+      CEP78.castTokenID(tokenId).toString()
     );
   }
 
@@ -316,13 +468,15 @@ export class CEP78 {
     return this.contract.queryContractData(['number_of_minted_tokens']);
   }
 
+  /* HELPERS */
+
   private static castMultitypeKey(key: CLKey | CLPublicKey | string): CLKey {
     if (key instanceof CLKey) {
       return key;
     } else if (key instanceof CLPublicKey) {
       return CLValueBuilder.key(key);
-    } else if (key instanceof String) {
-      return CLValueBuilder.key(CLPublicKey.fromHex(String(key)));
+    } else if (typeof key === 'string') {
+      return CLValueBuilder.key(CLPublicKey.fromHex(key));
     }
     throw new Error('Could not cast key');
   }
@@ -332,16 +486,16 @@ export class CEP78 {
   ): CLPublicKey {
     if (key instanceof CLPublicKey) {
       return key;
-    } else if (key instanceof String) {
-      return CLPublicKey.fromHex(String(key));
+    } else if (typeof key === 'string') {
+      return CLPublicKey.fromHex(key);
     }
     throw new Error('Could not cast key');
   }
 
   private static castTokenID(tokenId: string | number): CLU64 | CLString {
-    if ((tokenId as any) instanceof Number) {
+    if (typeof tokenId === 'number') {
       return CLValueBuilder.u64(tokenId);
-    } else if ((tokenId as any) instanceof String) {
+    } else if (typeof tokenId === 'string') {
       return CLValueBuilder.string(String(tokenId));
     }
     throw new Error('Could not cast tokenId');
