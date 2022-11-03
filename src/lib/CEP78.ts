@@ -124,13 +124,13 @@ export class CEP78 {
     /**
      * Mints a CEP78 NFT on the Casper Network
      * 
-     * @param {} metadata 
-     * @param {} tokenOwner 
-     * @param {} deployer 
-     * @param {} network 
-     * @param {} gas 
-     * @param {} signers 
-     * @returns {}
+     * @param {JSON} metadata The metadata of the newly minted NFT
+     * @param {CLKey | CLPublicKey | String} tokenOwner The address to mint the NFT to
+     * @param {CLPublicKey} deployer The public key of the deployer of the contract
+     * @param {string} network The network to deploy to
+     * @param {BigNumber} gas The gas payment in motes
+     * @param {AsymmetricKey[]=} signers A list of signers of the deployment. This value is optional and may be signed after creation
+     * @returns {Deploy} Deploy object to be sent to the Network
      */
 
     mint(
@@ -176,11 +176,23 @@ export class CEP78 {
             gas,
             signers
         )
-        
     }
   
   
-    async transfer(tokenId, recipient) {
+    transfer(
+      tokenId: number,
+      recipient: CLKey | CLPublicKey | String,
+      source?: CLKey | CLPublicKey | String
+      ) {
+      if (this.contract == null) {
+        throw new Error("Please connect a contract instance with `CEP78.createContract`")
+      }
+
+      if (this.contract.contractHash == null) {
+        throw new Error("Please connect your Contract instance to a smart contract by running `CEP78.contract.setContractHash(contractHash)`")
+      }
+
+
       return new Promise((resolve, reject) => {
         if (this.contract.contractHash == null) {
           reject("No contract hash")
