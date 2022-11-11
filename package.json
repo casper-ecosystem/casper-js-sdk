@@ -68,7 +68,7 @@
     "lint-staged": "^10.5.4",
     "lodash.omit": "^4.5.0",
     "minimist": ">=1.2.3",
-    "mocha": "^6.2.3",
+    "mocha": "^10.1.0",
     "nodemon": "^2.0.2",
     "nyc": "^15.1.0",
     "prettier": "^1.18.2",
