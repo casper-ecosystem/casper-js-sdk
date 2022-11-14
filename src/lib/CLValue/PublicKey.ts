@@ -47,7 +47,9 @@ export class CLPublicKeyBytesParser extends CLValueBytesParsers {
     rawBytes: Uint8Array
   ): ResultAndRemainder<CLPublicKey, CLErrorCodes> {
     if (rawBytes.length < 1) {
-      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+      return resultHelper<CLPublicKey, CLErrorCodes>(
+        Err(CLErrorCodes.EarlyEndOfStream)
+      );
     }
 
     const variant = rawBytes[0];
@@ -58,7 +60,9 @@ export class CLPublicKeyBytesParser extends CLValueBytesParsers {
     } else if (variant === CLPublicKeyTag.SECP256K1) {
       expectedPublicKeySize = SECP256K1_LENGTH;
     } else {
-      return resultHelper(Err(CLErrorCodes.Formatting));
+      return resultHelper<CLPublicKey, CLErrorCodes>(
+        Err(CLErrorCodes.Formatting)
+      );
     }
 
     const bytes = rawBytes.subarray(1, expectedPublicKeySize + 1);
@@ -81,7 +85,7 @@ export class CLPublicKey extends CLValue {
     tag: CLPublicKeyTag | SignatureAlgorithm
   ) {
     super();
-    // TODO: Two ifs because of the legacy indentifiers in ./Keys
+    // NOTE Two ifs because of the legacy indentifiers in ./Keys
     if (tag === CLPublicKeyTag.ED25519 || tag === SignatureAlgorithm.Ed25519) {
       if (rawPublicKey.length !== ED25519_LENGTH) {
         throw new Error(
