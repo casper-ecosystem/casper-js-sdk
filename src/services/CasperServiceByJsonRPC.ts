@@ -1,6 +1,6 @@
 import { RequestManager, HTTPTransport, Client } from '@open-rpc/client-js';
 import { TypedJSON, jsonMember, jsonObject } from 'typedjson';
-import { DeployUtil, encodeBase16, CLPublicKey } from '..';
+import { DeployUtil, encodeBase16, CLPublicKey, CLValue } from '..';
 import { deployToJson } from '../lib/DeployUtil';
 import { StoredValue, Transfers } from '../lib/StoredValue';
 import { BigNumber } from '@ethersproject/bignumber';
@@ -95,10 +95,43 @@ interface JsonDeployHeader {
   chain_name: string;
 }
 
-// TODO: Empty interface
-/** @hidden */
-// eslint-disable-next-line
-interface JsonExecutableDeployItem {}
+interface JsonBasicExecutionDeployItemInternal {
+  args: Map<string, CLValue>;
+}
+
+interface JsonModuleBytes extends JsonBasicExecutionDeployItemInternal {
+  module_bytes: string;
+}
+
+interface JsonStoredContract extends JsonBasicExecutionDeployItemInternal {
+  entry_point: string;
+}
+
+interface JsonStoredContractByHash extends JsonStoredContract {
+  hash: string;
+}
+
+interface JsonStoredContractByName extends JsonStoredContract {
+  name: string;
+}
+
+interface JsonStoredVersionedContractByName extends JsonStoredContractByName {
+  version: number | null;
+}
+
+interface JsonStoredVersionedContractByHash extends JsonStoredContractByHash {
+  version: number | null;
+}
+
+/** Interface describing a JSON ExecutableDeployItem */
+interface JsonExecutableDeployItem {
+  ModuleBytes?: JsonModuleBytes;
+  StoredContractByHash?: JsonStoredContractByHash;
+  StoredContractByName?: JsonStoredContractByName;
+  StoredVersionedContractByName?: JsonStoredVersionedContractByName;
+  StoredVersionedContractByHash?: JsonStoredVersionedContractByHash;
+  Transfer?: JsonBasicExecutionDeployItemInternal;
+}
 
 /** Interface for JSON represented approvals */
 interface JsonApproval {
