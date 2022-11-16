@@ -16,6 +16,7 @@ import { byteHash } from '../ByteConverters';
 
 // TODO: Tidy up almost the same enum in Keys.
 import { SignatureAlgorithm } from '../Keys';
+import { encode, isChecksummed } from '../ChecksummedHex';
 
 const ED25519_LENGTH = 32;
 const SECP256K1_LENGTH = 33;
@@ -124,8 +125,11 @@ export class CLPublicKey extends CLValue {
     return this.tag === CLPublicKeyTag.SECP256K1;
   }
 
-  toHex(): string {
-    return `0${this.tag}${encodeBase16(this.data)}`;
+  toHex(checksummed = false): string {
+    // Updated: Returns checksummed hex string
+    const rawHex = `0${this.tag}${encodeBase16(this.data)}`;
+    if (checksummed) return encode(decodeBase16(rawHex));
+    return rawHex;
   }
 
   toAccountHash(): Uint8Array {
@@ -169,7 +173,7 @@ export class CLPublicKey extends CLValue {
 
   /**
    * Tries to decode PublicKey from its hex-representation.
-   * The hex format should be as produced by PublicKey.toAccountHex
+   * The hex format should be as produced by CLPublicKey.toHex
    * @param publicKeyHex
    */
   static fromHex(publicKeyHex: string): CLPublicKey {
@@ -178,6 +182,11 @@ export class CLPublicKey extends CLValue {
     }
     if (!/^0(1[0-9a-fA-F]{64}|2[0-9a-fA-F]{66})$/.test(publicKeyHex)) {
       throw new Error('Invalid public key');
+    }
+    if (!isChecksummed(publicKeyHex)) {
+      console.warn(
+        'Provided public key is not checksummed. Please check if you provide valid public key. You can generate checksummed public key from CLPublicKey.toHex(true).'
+      );
     }
     const publicKeyHexBytes = decodeBase16(publicKeyHex);
 

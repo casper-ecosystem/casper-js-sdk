@@ -1,46 +1,50 @@
 import { assert } from 'chai';
-import { decodeBase16 } from '../../src';
-import { encode, decode, isSamecase, SMALL_BYTES_COUNT } from '../../src/lib/ChecksummedHex';
+import {
+  encode,
+  isChecksummed,
+  isSamecase,
+  SMALL_BYTES_COUNT
+} from '../../src/lib/ChecksummedHex';
 
 describe('ChecksumedHex', () => {
-  it('should_decode_empty_input', () => {
-    const empty = "";
-    assert.isTrue(decode(empty))
+  it('should decode empty input', () => {
+    const empty = '';
+    assert.isTrue(isChecksummed(empty));
   });
 
-  it('string_is_same_case_true_when_same_case', () => {
-    let input = "aaaaaaaaaaa";
+  it('string is same case true when same case', () => {
+    let input = 'aaaaaaaaaaa';
     assert.isTrue(isSamecase(input));
 
-    input = "AAAAAAAAAAA";
+    input = 'AAAAAAAAAAA';
     assert.isTrue(isSamecase(input));
   });
 
-  it('string_is_same_case_false_when_mixed_case', () => {
-    let input = "aAaAaAaAaAa";
+  it('string is same case false when mixed case', () => {
+    const input = 'aAaAaAaAaAa';
     assert.isFalse(isSamecase(input));
   });
 
-  xit('string_is_same_case_no_alphabetic_chars_in_string', () => {
-    let input = "424242424242";
-    assert.isTrue(isSamecase(input));
-  });
-
-  it('should_checksum_decode_only_if_small', () => {
+  it('should checksum decode only if small', () => {
     const input = new Uint8Array(SMALL_BYTES_COUNT).fill(255);
 
-    const smallEncode = encode(input);
+    const smallEncoded = encode(input);
 
+    assert.isTrue(isChecksummed(smallEncoded));
+    assert.isFalse(isChecksummed('A1a2'));
 
-    const key = decodeBase16("A1a2");
-    const ee = encode(key);
-    console.log("heeelo", ee, key, decodeBase16(ee))
-
-    assert.isTrue(decode(smallEncode));
-    assert.isFalse(decode("A1a2"));
-
-
-    const largeEncoded = "A1" + smallEncode;
-    assert.isTrue(decode(largeEncoded));
+    const largeEncoded = 'A1' + smallEncoded;
+    assert.isTrue(isChecksummed(largeEncoded));
   });
-})
+
+  it('should verify on valid and invalid hex strings', () => {
+    const validInput =
+      '01b35a345E031FBCFBcF017f70476249aFE7FBB07aB84a774601010213d121a37D';
+
+    assert.isTrue(isChecksummed(validInput));
+
+    const invalidInput =
+      '01b35a345E031FBCFBcF017f70476249aFE7FBB07aB84a774601010213d121a37d';
+    assert.isFalse(isChecksummed(invalidInput));
+  });
+});

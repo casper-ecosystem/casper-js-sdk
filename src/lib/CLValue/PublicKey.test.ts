@@ -89,12 +89,17 @@ describe('CLPublicKey', () => {
 
   it('fromHex() should serializes to the same hex value by using toHex()', () => {
     const accountKey =
-      '01f9235ff9c46c990e1e2eee0d531e488101fab48c05b75b8ea9983658e228f06b';
+      '01f9235ff9C46c990e1e2eeE0D531e488101FaB48C05b75b8eA9983658e228f06b';
 
     const publicKey = CLPublicKey.fromHex(accountKey);
     const accountHex = publicKey.toHex();
 
-    expect(accountHex).to.be.eq(accountKey);
+    expect(accountHex).to.be.eq(accountKey.toLowerCase());
+
+    const checksummedAccountHex = publicKey.toHex(true);
+
+    expect(checksummedAccountHex).to.be.eq(accountKey);
+
     expect(publicKey.isEd25519()).to.be.eq(true);
   });
 
