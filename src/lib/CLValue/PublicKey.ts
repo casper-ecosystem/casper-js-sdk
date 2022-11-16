@@ -12,7 +12,7 @@ import {
 } from './index';
 import { PUBLIC_KEY_ID, CLTypeTag } from './constants';
 import { decodeBase16, encodeBase16 } from '../Conversions';
-import { byteHash } from '../Contracts';
+import { byteHash } from '../ByteConverters';
 
 // TODO: Tidy up almost the same enum in Keys.
 import { SignatureAlgorithm } from '../Keys';

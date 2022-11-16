@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import 'mocha';
 import { decodeBase64 } from 'tweetnacl-ts';
 import * as nacl from 'tweetnacl-ts';
-import { byteHash } from '../../src/lib/Contracts';
+import { byteHash } from '../../src/lib/ByteConverters';
 import { Ed25519 } from '../../src/lib/Keys';
 
 describe('byteHash', () => {
