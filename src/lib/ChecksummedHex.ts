@@ -5,7 +5,7 @@
 //! Migrate from https://github.com/casper-network/casper-node/blob/9609a616439de334d89917a14240940615a49f81/types/src/checksummed_hex.rs
 
 import { concat } from '@ethersproject/bytes';
-import { bits, byteHash } from './ByteConverters';
+import { byteHash } from './ByteConverters';
 import { decodeBase16 } from './Conversions';
 
 // The number of input bytes, at or below which [`decode`] will checksum-decode the output.
@@ -21,17 +21,18 @@ const bytesToNibbles = (bytes: Uint8Array): Uint8Array => {
   bytes.forEach(byte => {
     outputNibbles = concat([
       outputNibbles,
-      Uint8Array.of(byte >> 4, byte & 0x0f)
+      Uint8Array.of(byte >>> 4, byte & 0x0f)
     ]);
   });
   return outputNibbles;
 };
 
 const bytesToBitsCycle = (bytes: Uint8Array) => {
-  let output: boolean[] = [];
-  bytes.forEach(byte => {
-    output = output.concat(bits(byte, 8).map(bit => (bit & 0x01) === 0x01));
-  });
+  const output: boolean[] = [];
+  for (let i = 0, k = 0; i < bytes.length; i++)
+    for (let j = 0; j < 8; j++)
+      output[k++] = ((bytes[i] >>> j) & 0x01) === 0x01;
+
   return output;
 };
 
@@ -54,12 +55,12 @@ const HEX_CHARS = [
  */
 export const encode = (input: Uint8Array): string => {
   const inputNibbles = bytesToNibbles(input);
-  const hashBits = bytesToBitsCycle(byteHash(input));
+  const hashBits = bytesToBitsCycle(byteHash(input)).values();
   let hexOutputString = '';
-  inputNibbles.forEach((nibble, i) => {
+  inputNibbles.forEach(nibble => {
     const c = HEX_CHARS[nibble];
-    const hashBit = hashBits[i] ?? true;
-    if (/^[a-zA-Z()]+$/.test(c) && hashBit) {
+
+    if (/^[a-zA-Z()]+$/.test(c) && hashBits.next().value) {
       hexOutputString += c.toUpperCase();
     } else {
       hexOutputString += c.toLowerCase();
@@ -79,14 +80,19 @@ export const isSamecase = (value: string) => /^[a-z]+$|^[A-Z]+$/.test(value);
  * - Uses hash bits rather than nibbles
  * For backward compatibility: if the hex string is all uppercase or all lowercase, the check is
  * skipped.
- * @param input string to check if
- * @returns
+ * @param input string to check if it is checksummed
+ * @returns true if input is checksummed
  */
 export const isChecksummed = (input: string): boolean => {
   const bytes = decodeBase16(input);
 
   // If the string was not small or not mixed case, don't verify the checksum.
   if (bytes.length > SMALL_BYTES_COUNT || isSamecase(input)) return true;
+
+  // Checks if input is public key
+  if (/^0(1[0-9a-fA-F]{64}|2[0-9a-fA-F]{66})$/.test(input)) {
+    return input === encode(bytes.slice(0, 1)) + encode(bytes.slice(1));
+  }
 
   return input === encode(bytes);
 };

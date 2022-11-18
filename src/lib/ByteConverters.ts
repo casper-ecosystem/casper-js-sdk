@@ -156,15 +156,6 @@ export function byteHash(x: Uint8Array): Uint8Array {
   return blake.blake2b(x, null, 32);
 }
 
-/**
- * Convert number to array of bits
- * @param n number to convert
- * @param b base
- * @returns array of bits
- */
-export const bits = (n: number, b = 32) =>
-  [...Array(b)].map((_x, i) => (n >> i) & 1);
-
 // TODO: Get rid after refactoring the whole
 /**
  * @experimental
