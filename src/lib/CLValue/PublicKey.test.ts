@@ -89,7 +89,7 @@ describe('CLPublicKey', () => {
 
   it('fromHex() should serializes to the same hex value by using toHex()', () => {
     const accountKey =
-      '01f9235ff9C46c990e1e2eeE0D531e488101FaB48C05b75b8eA9983658e228f06b';
+      '01F9235FF9c46C990e1E2eEE0d531e488101faB48c05B75B8EA9983658E228F06b';
 
     const publicKey = CLPublicKey.fromHex(accountKey);
     const accountHex = publicKey.toHex();

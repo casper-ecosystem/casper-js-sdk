@@ -128,7 +128,10 @@ export class CLPublicKey extends CLValue {
   toHex(checksummed = false): string {
     // Updated: Returns checksummed hex string
     const rawHex = `0${this.tag}${encodeBase16(this.data)}`;
-    if (checksummed) return encode(decodeBase16(rawHex));
+    if (checksummed) {
+      const bytes = decodeBase16(rawHex);
+      return encode(bytes.slice(0, 1)) + encode(bytes.slice(1));
+    }
     return rawHex;
   }
 
