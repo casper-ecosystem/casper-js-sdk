@@ -3,17 +3,17 @@ name: ci-casper-js-sdk
 on:
   push:
     branches:
-      - "dev"
-      - "feat-*"
-      - "release-*"
+      - 'dev'
+      - 'feat-*'
+      - 'release-*'
     paths-ignore:
       - '**.md'
 
   pull_request:
     branches:
-      - "dev"
-      - "feat-*"
-      - "release-*"
+      - 'dev'
+      - 'feat-*'
+      - 'release-*'
     paths-ignore:
       - '**.md'
 
@@ -46,6 +46,9 @@ jobs:
 
       - name: Test
         run: npm test
+        if: ${{ matrix.node-version == '18.x' }}
+        env:
+          NODE_OPTIONS: '--openssl-legacy-provider'
 
       - name: Test - RPC
         run: ./ci/setup.sh && npm run test:rpc
