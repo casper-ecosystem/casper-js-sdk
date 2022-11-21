@@ -17,13 +17,9 @@ export const SMALL_BYTES_COUNT = 75;
  * @returns double sized of Unit8Array
  */
 const bytesToNibbles = (bytes: Uint8Array): Uint8Array => {
-  let outputNibbles = new Uint8Array();
-  bytes.forEach(byte => {
-    outputNibbles = concat([
-      outputNibbles,
-      Uint8Array.of(byte >>> 4, byte & 0x0f)
-    ]);
-  });
+  const outputNibbles = bytes.reduce((accum, byte) => {
+    return concat([accum, Uint8Array.of(byte >>> 4, byte & 0x0f)]);
+  }, new Uint8Array());
   return outputNibbles;
 };
 
@@ -56,16 +52,15 @@ const HEX_CHARS = [
 export const encode = (input: Uint8Array): string => {
   const inputNibbles = bytesToNibbles(input);
   const hashBits = bytesToBitsCycle(byteHash(input)).values();
-  let hexOutputString = '';
-  inputNibbles.forEach(nibble => {
+  const hexOutputString = inputNibbles.reduce((accum, nibble) => {
     const c = HEX_CHARS[nibble];
 
     if (/^[a-zA-Z()]+$/.test(c) && hashBits.next().value) {
-      hexOutputString += c.toUpperCase();
+      return accum + c.toUpperCase();
     } else {
-      hexOutputString += c.toLowerCase();
+      return accum + c.toLowerCase();
     }
-  });
+  }, '');
   return hexOutputString;
 };
 

@@ -125,7 +125,7 @@ export class CLPublicKey extends CLValue {
     return this.tag === CLPublicKeyTag.SECP256K1;
   }
 
-  toHex(checksummed = false): string {
+  toHex(checksummed = true): string {
     // Updated: Returns checksummed hex string
     const rawHex = `0${this.tag}${encodeBase16(this.data)}`;
     if (checksummed) {
@@ -177,9 +177,10 @@ export class CLPublicKey extends CLValue {
   /**
    * Tries to decode PublicKey from its hex-representation.
    * The hex format should be as produced by CLPublicKey.toHex
-   * @param publicKeyHex
+   * @param publicKeyHex public key hex string contains key tag
+   * @param checksummed throws an Error if true and given string is not checksummed
    */
-  static fromHex(publicKeyHex: string): CLPublicKey {
+  static fromHex(publicKeyHex: string, checksummed = false): CLPublicKey {
     if (publicKeyHex.length < 2) {
       throw new Error('Asymmetric key error: too short');
     }
@@ -190,6 +191,7 @@ export class CLPublicKey extends CLValue {
       console.warn(
         'Provided public key is not checksummed. Please check if you provide valid public key. You can generate checksummed public key from CLPublicKey.toHex(true).'
       );
+      if (checksummed) throw Error('Provided public key is not checksummed.');
     }
     const publicKeyHexBytes = decodeBase16(publicKeyHex);
 

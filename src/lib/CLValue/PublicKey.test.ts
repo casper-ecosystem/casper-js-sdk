@@ -71,7 +71,7 @@ describe('CLPublicKey', () => {
     // Check mixed case pubkeys
     const goodFn = () =>
       CLPublicKey.fromHex(
-        '0115C9b40c06fF99B0cBadf1140B061B5dBF92103E66a6330fbCc7768f5219C1ce'
+        '02025853315DB0e4757cC616bfA97800e2FEa61b7cE37D4376D1719148cd0EA5Fc1C'
       );
 
     expect(goodFn).to.not.throw();
@@ -89,10 +89,10 @@ describe('CLPublicKey', () => {
 
   it('fromHex() should serializes to the same hex value by using toHex()', () => {
     const accountKey =
-      '01F9235FF9c46C990e1E2eEE0d531e488101faB48c05B75B8EA9983658E228F06b';
+      '019E130bF86201a701cB0DAb4Aae1D6E558781d6fB6195Fc291685777A36cdb388';
 
     const publicKey = CLPublicKey.fromHex(accountKey);
-    const accountHex = publicKey.toHex();
+    const accountHex = publicKey.toHex(false);
 
     expect(accountHex).to.be.eq(accountKey.toLowerCase());
 
@@ -107,7 +107,7 @@ describe('CLPublicKey', () => {
     const accountKey =
       '01f9235ff9c46c990e1e2eee0d531e488101fab48c05b75b8ea9983658e228f06b';
 
-    const publicKey = CLPublicKey.fromHex(accountKey);
+    const publicKey = CLPublicKey.fromHex(accountKey, false);
     const accountHash = publicKey.toAccountHash();
     // prettier-ignore
     const validResult = Uint8Array.from([
