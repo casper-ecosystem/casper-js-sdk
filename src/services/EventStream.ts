@@ -1,5 +1,5 @@
+import { fetch } from 'fetch-h2';
 import { Result, Ok, Err } from 'ts-results';
-import http from 'http';
 
 interface DeploySubscription {
   deployHash: string;
@@ -74,11 +74,11 @@ export class EventStream {
   subscribedTo: EventSubscription[] = [];
   pendingDeploysParts: EventParseResult[] = [];
   pendingDeployString = '';
-  stream: any;
+  stream?: NodeJS.ReadableStream;
 
   constructor(public eventStreamUrl: string) {}
 
-  subscribe(
+  public subscribe(
     eventName: EventName,
     eventHandlerFn: EventHandlerFn
   ): Result<boolean, string> {
@@ -89,7 +89,7 @@ export class EventStream {
     return Ok(true);
   }
 
-  unsubscribe(eventName: EventName): Result<boolean, string> {
+  public unsubscribe(eventName: EventName): Result<boolean, string> {
     if (!this.subscribedTo.some(e => e.eventName === eventName)) {
       return Err('Cannot find provided subscription');
     }
@@ -99,7 +99,7 @@ export class EventStream {
     return Ok(true);
   }
 
-  runEventsLoop(result: EventParseResult) {
+  private runEventsLoop(result: EventParseResult) {
     this.subscribedTo.forEach((sub: EventSubscription) => {
       if (result.body && result.body.hasOwnProperty(sub.eventName)) {
         sub.eventHandlerFn(result);
@@ -107,36 +107,49 @@ export class EventStream {
     });
   }
 
-  start(eventId = 0): void {
-    http.get(`${this.eventStreamUrl}?start_from=${eventId}`, res => {
-      this.stream = res;
-      this.stream.on('data', (buf: Uint8Array) => {
-        const result = parseEvent(Buffer.from(buf).toString());
-        if (result && !result.err) {
-          this.runEventsLoop(result);
-        }
-        if (result.err === StreamErrors.EarlyEndOfStream) {
-          this.pendingDeployString = result.body;
-        }
-        if (result.err === StreamErrors.MissingDataHeaderAndId) {
-          this.pendingDeployString += result.body;
-        }
-        if (result.err === StreamErrors.MissingDataHeader) {
-          this.pendingDeployString += result.body;
-          this.pendingDeployString += `\nid:${result.id}`;
+  public async start(eventId = 0) {
+    const requestUrl = `${this.eventStreamUrl}?start_from=${eventId}`;
+    const response = await fetch(requestUrl);
+    const body = await response.readable();
 
-          const newResult = parseEvent(this.pendingDeployString);
-          if (newResult.err === null) {
-            this.pendingDeployString = '';
-          }
-          this.runEventsLoop(newResult);
+    body.on('data', (buf: Uint8Array) => {
+      const result = parseEvent(Buffer.from(buf).toString());
+      if (result && !result.err) {
+        this.runEventsLoop(result);
+      }
+      if (result.err === StreamErrors.EarlyEndOfStream) {
+        this.pendingDeployString = result.body;
+      }
+      if (result.err === StreamErrors.MissingDataHeaderAndId) {
+        this.pendingDeployString += result.body;
+      }
+      if (result.err === StreamErrors.MissingDataHeader) {
+        this.pendingDeployString += result.body;
+        this.pendingDeployString += `\nid:${result.id}`;
+
+        const newResult = parseEvent(this.pendingDeployString);
+        if (newResult.err === null) {
+          this.pendingDeployString = '';
         }
-      });
+        this.runEventsLoop(newResult);
+      }
+    });
+    body.once('readable', () => {
+      console.info('Connected successfully to event stream endpoint.');
+    });
+    body.on('error', (error: Error) => {
+      throw error;
+    });
+    body.on('timeout', () => {
+      throw Error('EventStream: Timeout error');
+    });
+    body.on('close', () => {
+      throw Error('EventStream: Connection closed');
     });
   }
 
-  stop(): void {
-    this.stream.destroy();
+  public stop(): void {
+    if (this.stream) this.stream.pause();
   }
 }
 
