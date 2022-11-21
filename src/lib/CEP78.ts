@@ -341,14 +341,13 @@ export class CEP78 {
   /**
    * Set approval for all
    *
-   * @param {number | string} tokenId The tokenId, either ordinal or has
    * @param {CLKey | CLPublicKey | String} operator The caller to approve
-   * sets operator to None and disapproves all existing operators. Defaults to true.
    * @param {CLPublicKey} deployer The public key of the deployer of the contract
    * @param {string} network The network to deploy to
    * @param {BigNumber} gas The gas payment in motes
    * @param {AsymmetricKey[]=} signers A list of signers of the deployment. This value is optional and may be signed after creation
    * @param {boolean=} approveAll If true, approves all NFTs on the provided operator. If false,
+   * sets operator to None and disapproves all existing operators. Defaults to true.
    * @returns {Deploy} Deploy object to be sent to the Network
    */
   setApprovalForAll(
