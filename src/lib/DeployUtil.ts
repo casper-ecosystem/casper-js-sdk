@@ -5,7 +5,6 @@
  */
 import { Result, Ok, Err, Some, None } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
-import blake from 'blakejs';
 import { decodeBase16, encodeBase16 } from './Conversions';
 import humanizeDuration from 'humanize-duration';
 import {
@@ -30,7 +29,8 @@ import {
   toBytesString,
   toBytesU64,
   toBytesU32,
-  toBytesVector
+  toBytesVector,
+  byteHash
 } from './ByteConverters';
 import { RuntimeArgs } from './RuntimeArgs';
 // import JSBI from 'jsbi';
@@ -178,7 +178,7 @@ export class DeployHeader implements ToBytes {
       return account.toHex();
     },
     deserializer: (hexStr: string) => {
-      return CLPublicKey.fromHex(hexStr);
+      return CLPublicKey.fromHex(hexStr, false);
     }
   })
   public account: CLPublicKey;
@@ -1352,7 +1352,7 @@ export function makeDeploy(
   payment: ExecutableDeployItem
 ): Deploy {
   const serializedBody = serializeBody(payment, session);
-  const bodyHash = blake.blake2b(serializedBody, null, 32);
+  const bodyHash = byteHash(serializedBody);
 
   const header: DeployHeader = new DeployHeader(
     deployParam.accountPublicKey,
@@ -1364,7 +1364,7 @@ export function makeDeploy(
     deployParam.chainName
   );
   const serializedHeader = serializeHeader(header);
-  const deployHash = blake.blake2b(serializedHeader.unwrap(), null, 32);
+  const deployHash = byteHash(serializedHeader.unwrap());
   return new Deploy(deployHash, header, payment, session, []);
 }
 
@@ -1536,7 +1536,7 @@ export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
   }
 
   const serializedBody = serializeBody(deploy.payment, deploy.session);
-  const bodyHash = blake.blake2b(serializedBody, null, 32);
+  const bodyHash = byteHash(serializedBody);
 
   if (!arrayEquals(deploy.header.bodyHash, bodyHash)) {
     return Err(`Invalid deploy: bodyHash mismatch. Expected: ${bodyHash},
@@ -1544,7 +1544,7 @@ export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
   }
 
   const serializedHeader = serializeHeader(deploy.header).unwrap();
-  const deployHash = blake.blake2b(serializedHeader, null, 32);
+  const deployHash = byteHash(serializedHeader);
 
   if (!arrayEquals(deploy.hash, deployHash)) {
     return Err(`Invalid deploy: hash mismatch. Expected: ${deployHash},
@@ -1552,7 +1552,7 @@ export const validateDeploy = (deploy: Deploy): Result<Deploy, string> => {
   }
 
   const isProperlySigned = deploy.approvals.every(({ signer, signature }) => {
-    const pk = CLPublicKey.fromHex(signer);
+    const pk = CLPublicKey.fromHex(signer, false);
     const signatureRaw = decodeBase16(signature.slice(2));
     return validateSignature(deploy.hash, signatureRaw, pk);
   });

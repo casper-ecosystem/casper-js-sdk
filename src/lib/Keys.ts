@@ -9,7 +9,7 @@ import { SignKeyPair, SignLength } from 'tweetnacl-ts';
 import { decodeBase64 } from 'tweetnacl-util';
 import { encodeBase16, encodeBase64 } from '../index';
 import { CLPublicKey } from './CLValue';
-import { byteHash } from './Contracts';
+import { byteHash } from './ByteConverters';
 import eccrypto from 'eccrypto';
 import * as secp256k1 from 'ethereum-cryptography/secp256k1';
 import KeyEncoder from 'key-encoder';

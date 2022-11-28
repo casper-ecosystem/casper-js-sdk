@@ -12,10 +12,11 @@ import {
 } from './index';
 import { PUBLIC_KEY_ID, CLTypeTag } from './constants';
 import { decodeBase16, encodeBase16 } from '../Conversions';
-import { byteHash } from '../Contracts';
+import { byteHash } from '../ByteConverters';
 
 // TODO: Tidy up almost the same enum in Keys.
 import { SignatureAlgorithm } from '../Keys';
+import { encode, isChecksummed } from '../ChecksummedHex';
 
 const ED25519_LENGTH = 32;
 const SECP256K1_LENGTH = 33;
@@ -47,7 +48,9 @@ export class CLPublicKeyBytesParser extends CLValueBytesParsers {
     rawBytes: Uint8Array
   ): ResultAndRemainder<CLPublicKey, CLErrorCodes> {
     if (rawBytes.length < 1) {
-      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+      return resultHelper<CLPublicKey, CLErrorCodes>(
+        Err(CLErrorCodes.EarlyEndOfStream)
+      );
     }
 
     const variant = rawBytes[0];
@@ -58,7 +61,9 @@ export class CLPublicKeyBytesParser extends CLValueBytesParsers {
     } else if (variant === CLPublicKeyTag.SECP256K1) {
       expectedPublicKeySize = SECP256K1_LENGTH;
     } else {
-      return resultHelper(Err(CLErrorCodes.Formatting));
+      return resultHelper<CLPublicKey, CLErrorCodes>(
+        Err(CLErrorCodes.Formatting)
+      );
     }
 
     const bytes = rawBytes.subarray(1, expectedPublicKeySize + 1);
@@ -81,7 +86,7 @@ export class CLPublicKey extends CLValue {
     tag: CLPublicKeyTag | SignatureAlgorithm
   ) {
     super();
-    // TODO: Two ifs because of the legacy indentifiers in ./Keys
+    // NOTE Two ifs because of the legacy indentifiers in ./Keys
     if (tag === CLPublicKeyTag.ED25519 || tag === SignatureAlgorithm.Ed25519) {
       if (rawPublicKey.length !== ED25519_LENGTH) {
         throw new Error(
@@ -120,8 +125,14 @@ export class CLPublicKey extends CLValue {
     return this.tag === CLPublicKeyTag.SECP256K1;
   }
 
-  toHex(): string {
-    return `0${this.tag}${encodeBase16(this.data)}`;
+  toHex(checksummed = true): string {
+    // Updated: Returns checksummed hex string
+    const rawHex = `0${this.tag}${encodeBase16(this.data)}`;
+    if (checksummed) {
+      const bytes = decodeBase16(rawHex);
+      return encode(bytes.slice(0, 1)) + encode(bytes.slice(1));
+    }
+    return rawHex;
   }
 
   toAccountHash(): Uint8Array {
@@ -165,15 +176,22 @@ export class CLPublicKey extends CLValue {
 
   /**
    * Tries to decode PublicKey from its hex-representation.
-   * The hex format should be as produced by PublicKey.toAccountHex
-   * @param publicKeyHex
+   * The hex format should be as produced by CLPublicKey.toHex
+   * @param publicKeyHex public key hex string contains key tag
+   * @param checksummed throws an Error if true and given string is not checksummed
    */
-  static fromHex(publicKeyHex: string): CLPublicKey {
+  static fromHex(publicKeyHex: string, checksummed = false): CLPublicKey {
     if (publicKeyHex.length < 2) {
       throw new Error('Asymmetric key error: too short');
     }
     if (!/^0(1[0-9a-fA-F]{64}|2[0-9a-fA-F]{66})$/.test(publicKeyHex)) {
       throw new Error('Invalid public key');
+    }
+    if (!isChecksummed(publicKeyHex)) {
+      console.warn(
+        'Provided public key is not checksummed. Please check if you provide valid public key. You can generate checksummed public key from CLPublicKey.toHex(true).'
+      );
+      if (checksummed) throw Error('Provided public key is not checksummed.');
     }
     const publicKeyHexBytes = decodeBase16(publicKeyHex);
 
