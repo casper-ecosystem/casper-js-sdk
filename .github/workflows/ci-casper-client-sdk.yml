@@ -3,17 +3,17 @@ name: ci-casper-js-sdk
 on:
   push:
     branches:
-      - 'dev'
-      - 'feat-*'
-      - 'release-*'
+      - "dev"
+      - "feat-*"
+      - "release-*"
     paths-ignore:
       - '**.md'
 
   pull_request:
     branches:
-      - 'dev'
-      - 'feat-*'
-      - 'release-*'
+      - "dev"
+      - "feat-*"
+      - "release-*"
     paths-ignore:
       - '**.md'
 
@@ -46,13 +46,9 @@ jobs:
 
       - name: Test
         run: npm test
-        if: ${{ matrix.node-version == '18.x' }}
-        env:
-          NODE_OPTIONS: '--openssl-legacy-provider'
 
       - name: Test - RPC
         run: ./ci/setup.sh && npm run test:rpc
-        if: ${{ matrix.node-version == '18.x' }}
         env:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://localhost:7777/rpc'
