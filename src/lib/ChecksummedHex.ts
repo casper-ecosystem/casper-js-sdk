@@ -64,7 +64,8 @@ export const encode = (input: Uint8Array): string => {
   return hexOutputString;
 };
 
-export const isSamecase = (value: string) => /^[a-z]+$|^[A-Z]+$/.test(value);
+export const isSamecase = (value: string) =>
+  /^[a-z0-9]+$|^[A-Z0-9]+$/.test(value);
 
 /**
  * Verify a mixed-case hexadecimal string that it conforms to the checksum scheme

@@ -23,10 +23,19 @@ describe('ChecksumedHex', () => {
 
     input = 'AAAAAAAAAAA';
     assert.isTrue(isSamecase(input));
+
+    input = '0a1b2c3d4e5f';
+    assert.isTrue(isSamecase(input));
+
+    input = '0A1B2C3D4E5F';
+    assert.isTrue(isSamecase(input));
   });
 
   it('string is same case false when mixed case', () => {
-    const input = 'aAaAaAaAaAa';
+    let input = 'aAaAaAaAaAa';
+    assert.isFalse(isSamecase(input));
+
+    input = '0aAaAaAaAaAa';
     assert.isFalse(isSamecase(input));
   });
 
@@ -67,7 +76,7 @@ describe('ChecksumedHex', () => {
     ];
 
     validInputs.map(isChecksummed).should.not.include(false);
-    const invalidInputs = validInputs.map(i => i.toLowerCase());
+    const invalidInputs = validInputs.map(i => i.replace('A', 'a'));
     invalidInputs.map(isChecksummed).should.not.include(true);
   });
 });
