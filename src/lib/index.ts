@@ -7,5 +7,6 @@ export * from './CLValue';
 export * from './RuntimeArgs';
 export * from './CasperClient';
 export * from './SignedMessage';
+export * from './Conversions';
 
 export { Contracts, Keys, Serialization, DeployUtil, Signer };
