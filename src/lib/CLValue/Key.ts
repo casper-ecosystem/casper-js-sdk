@@ -81,7 +81,9 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
     bytes: Uint8Array
   ): ResultAndRemainder<CLKey, CLErrorCodes> {
     if (bytes.length < 1) {
-      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+      return resultHelper<CLKey, CLErrorCodes>(
+        Err(CLErrorCodes.EarlyEndOfStream)
+      );
     }
 
     const tag = bytes[0];
@@ -107,7 +109,7 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
         const key = new CLKey(urefResult.val);
         return resultHelper(Ok(key), urefRemainder);
       } else {
-        return resultHelper(Err(urefResult.val));
+        return resultHelper<CLKey, CLErrorCodes>(Err(urefResult.val));
       }
     } else if (tag === KeyVariant.Account) {
       const {
@@ -120,10 +122,10 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
         const key = new CLKey(accountHashResult.val);
         return resultHelper(Ok(key), accountHashRemainder);
       } else {
-        return resultHelper(Err(accountHashResult.val));
+        return resultHelper<CLKey, CLErrorCodes>(Err(accountHashResult.val));
       }
     } else {
-      return resultHelper(Err(CLErrorCodes.Formatting));
+      return resultHelper<CLKey, CLErrorCodes>(Err(CLErrorCodes.Formatting));
     }
   }
 }

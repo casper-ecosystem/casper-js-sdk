@@ -20,7 +20,8 @@ import {
   CLU64Type,
   CLOption,
   CLURef,
-  ToBytesResult
+  ToBytesResult,
+  CLErrorCodes
 } from './CLValue';
 import {
   toBytesArrayU8,
@@ -337,6 +338,7 @@ const desRA = (arr: any) => {
 const serRA = (ra: RuntimeArgs) => {
   const raSerializer = new TypedJSON(RuntimeArgs);
   const json = raSerializer.toPlainJson(ra);
+
   return Object.values(json as any)[0];
 };
 
@@ -383,6 +385,8 @@ export class ModuleBytes extends ExecutableDeployItemInternal {
    * @returns `Ok` result, consisting of the `ModuleBytes` as a byte array
    */
   public toBytes(): ToBytesResult {
+    if (!this.args) return Err(CLErrorCodes.Formatting);
+
     return Ok(
       concat([
         Uint8Array.from([this.tag]),
