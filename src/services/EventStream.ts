@@ -108,7 +108,8 @@ export class EventStream {
   }
 
   public async start(eventId = 0) {
-    const requestUrl = `${this.eventStreamUrl}?start_from=${eventId}`;
+    const separator = this.eventStreamUrl.indexOf('?') > -1 ? '&' : '?';
+    const requestUrl = `${this.eventStreamUrl}${separator}start_from=${eventId}`;
     const response = await fetch(requestUrl);
     const body = await response.readable();
 
