@@ -553,7 +553,7 @@ describe('DeployUtil', () => {
     assert.deepEqual(secondDeploy.header.dependencies, [firstDeploy.hash]);
   });
 
-  xit('should deserialize StoredContractByHash', () => {
+  it('should deserialize StoredContractByHash', () => {
     const json = {
       StoredContractByHash: {
         hash:
