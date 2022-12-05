@@ -316,11 +316,11 @@ describe('DeployUtil', () => {
     const transferAmount = 10;
 
     const badFn = () =>
+    // @ts-ignore
       DeployUtil.ExecutableDeployItem.newTransfer(
         transferAmount,
         recipientKey.publicKey,
         undefined,
-        Date.now()
       );
 
     expect(badFn).to.throw('transfer-id missing in new transfer.');
@@ -597,5 +597,7 @@ describe('DeployUtil', () => {
     const serializer = new TypedJSON(StoredContractByHash);
 
     const parsed = serializer.parse(json.StoredContractByHash);
+
+    assert.exists(parsed)
   });
 });
