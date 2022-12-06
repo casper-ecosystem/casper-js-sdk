@@ -3,17 +3,17 @@ name: ci-casper-js-sdk
 on:
   push:
     branches:
-      - "dev"
-      - "feat-*"
-      - "release-*"
+      - 'dev'
+      - 'feat-*'
+      - 'release-*'
     paths-ignore:
       - '**.md'
 
   pull_request:
     branches:
-      - "dev"
-      - "feat-*"
-      - "release-*"
+      - 'dev'
+      - 'feat-*'
+      - 'release-*'
     paths-ignore:
       - '**.md'
 
@@ -47,13 +47,8 @@ jobs:
       - name: Test
         run: npm test
 
-      - name: Test - RPC
-        run: ./ci/setup.sh && npm run test:rpc
-        env:
-          FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
-          NODE_URL: 'http://localhost:7777/rpc'
-          NETWORK_NAME: 'casper-example'
-          RUST_LOG: 'INFO'
+      - name: Test - NCTL
+        run: npm run test:nctl
 
       - name: Docs
         run: npm run docs

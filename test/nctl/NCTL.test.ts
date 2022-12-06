@@ -1,44 +1,67 @@
 import { assert, expect } from 'chai';
-import { CasperServiceByJsonRPC } from '../../src/services';
-import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
-import { getAccountInfo } from './utils';
-import { Transfers } from '../../src/lib/StoredValue';
+import {
+  CasperServiceByJsonRPC,
+  DeployWatcher,
+  Keys,
+  DeployUtil,
+  RuntimeArgs
+} from '../../src';
+import { getKeysFromHexPrivKey, SignatureAlgorithm } from '../../src/lib/Keys';
+import { getAccountInfo } from '../utils';
+import { sleep, start_nctl_docker, waitForFirstBlock } from './setup';
 
-const localCasperNode = require('../../ci/start_node');
-let casperNodePid = localCasperNode.start_a_single_node();
+before(async () => {
+  await start_nctl_docker();
+  await waitForFirstBlock();
+});
 
-const { SignatureAlgorithm, getKeysFromHexPrivKey } = Keys;
+describe('NCTL', () => {
+  const nodeUrl = 'http://localhost:11101/rpc';
+  const client = new CasperServiceByJsonRPC(nodeUrl);
+  const faucetKeys = getKeysFromHexPrivKey(
+    'MC4CAQAwBQYDK2VwBCIEIFPhcforANWls15bVRyIU8KHnehhclpn5+4ow4hq7B6q',
+    SignatureAlgorithm.Ed25519
+  );
+  let faucetMainPurseUref = '';
 
-const client = new CasperServiceByJsonRPC(process.env.NODE_URL!);
-const faucetKeys = getKeysFromHexPrivKey(
-  process.env.FAUCET_PRIV_KEY!,
-  SignatureAlgorithm.Ed25519
-);
-
-let faucetMainPurseUref = '';
-let exampleBlockHash = '';
-
-describe('RPC', () => {
   it('should return correct block by number', async () => {
-    let check = async (height: number) => {
-      let result = await client.getBlockInfoByHeight(height);
-      assert.equal(result.block?.header.height, height);
+    const check = async (height: number) => {
+      while (true) {
+        try {
+          const result = await client.getBlockInfoByHeight(height);
+          assert.equal(result.block?.header.height, height);
+          break;
+        } catch (error) {
+          if (error.message === 'block not known') {
+            await sleep(300);
+          } else console.error(error);
+        }
+      }
     };
-    let blocks_to_check = 3;
+    const blocks_to_check = 3;
     for (let i = 0; i < blocks_to_check; i++) {
       await check(i);
     }
   });
 
   it('should return correct block by hash', async () => {
-    let check = async (height: number) => {
-      let block_by_height = await client.getBlockInfoByHeight(height);
-      let block_hash = block_by_height.block?.hash!;
-      exampleBlockHash = block_hash;
-      let block = await client.getBlockInfo(block_hash);
-      assert.equal(block.block?.hash, block_hash);
+    const check = async (height: number) => {
+      while (true) {
+        try {
+          const block_by_height = await client.getBlockInfoByHeight(height);
+          const block_hash = block_by_height.block?.hash;
+          assert.exists(block_hash);
+          const block = await client.getBlockInfo(block_hash!);
+          assert.equal(block.block?.hash, block_hash);
+          break;
+        } catch (error) {
+          if (error.message === 'block not known') {
+            await sleep(300);
+          } else console.error(error);
+        }
+      }
     };
-    let blocks_to_check = 3;
+    const blocks_to_check = 3;
     for (let i = 0; i < blocks_to_check; i++) {
       await check(i);
     }
@@ -50,16 +73,16 @@ describe('RPC', () => {
     const oneMegaByte = 1048576;
     const moduleBytes = Uint8Array.from(Array(oneMegaByte - 169).fill(0));
 
-    let deployParams = new DeployUtil.DeployParams(
+    const deployParams = new DeployUtil.DeployParams(
       Keys.Ed25519.new().publicKey,
       'test'
     );
-    let session = DeployUtil.ExecutableDeployItem.newModuleBytes(
+    const session = DeployUtil.ExecutableDeployItem.newModuleBytes(
       moduleBytes,
       RuntimeArgs.fromMap({})
     );
-    let payment = DeployUtil.standardPayment(100000);
-    let deploy = DeployUtil.makeDeploy(deployParams, session, payment);
+    const payment = DeployUtil.standardPayment(100000);
+    const deploy = DeployUtil.makeDeploy(deployParams, session, payment);
 
     assert.equal(DeployUtil.deploySizeInBytes(deploy), oneMegaByte + 1);
     await client
@@ -68,11 +91,32 @@ describe('RPC', () => {
         assert.fail("client.deploy should't throw an error.");
       })
       .catch(err => {
-        let expectedMessage =
+        const expectedMessage =
           `Deploy can not be send, because it's too large: ${oneMegaByte +
             1} bytes. ` + `Max size is 1 megabyte.`;
         assert.equal(err.message, expectedMessage);
       });
+  });
+
+  it('DeployWatcher', () => {
+    const client = new DeployWatcher('http://localhost:18101/events/main');
+    client.subscribe([
+      {
+        deployHash:
+          '418bd905f86cad3bc3c46340ddf5119da4c51d2da24cf07cfe7c79a7f14f50aa',
+        eventHandlerFn: value => console.log('SUBSCRIBED VALUE', value)
+      }
+    ]);
+    client.start();
+    setTimeout(() => {
+      client.subscribe([
+        {
+          deployHash:
+            '7a28f822a89b7dd65c0d29765e28d949a343d0b2c9cbee02abc89eaba542a7e5',
+          eventHandlerFn: value => console.log('SUBSCRIBED VALUE 2', value)
+        }
+      ]);
+    }, 3 * 10000);
   });
 
   it('chain_get_state_root_hash', async () => {
@@ -82,10 +126,8 @@ describe('RPC', () => {
 
   it('state_get_balance', async () => {
     const stateRootHash = await client.getStateRootHash();
-    const accountInfo = await getAccountInfo(
-      process.env.NODE_URL!,
-      faucetKeys.publicKey
-    );
+    const accountInfo = await getAccountInfo(nodeUrl, faucetKeys.publicKey);
+
     const balance = await client.getAccountBalance(
       stateRootHash,
       accountInfo.mainPurse
@@ -129,7 +171,10 @@ describe('RPC', () => {
 
   it('state_get_item - account hash to main purse uref', async () => {
     const stateRootHash = await client.getStateRootHash();
-    const uref = await client.getAccountBalanceUrefByPublicKeyHash(stateRootHash, faucetKeys.publicKey.toAccountRawHashStr()); 
+    const uref = await client.getAccountBalanceUrefByPublicKeyHash(
+      stateRootHash,
+      faucetKeys.publicKey.toAccountRawHashStr()
+    );
     faucetMainPurseUref = uref;
     const [prefix, value, suffix] = uref.split('-');
     expect(prefix).to.be.equal('uref');
@@ -139,7 +184,10 @@ describe('RPC', () => {
 
   it('state_get_item - CLPublicKey to main purse uref', async () => {
     const stateRootHash = await client.getStateRootHash();
-    const uref = await client.getAccountBalanceUrefByPublicKey(stateRootHash, faucetKeys.publicKey); 
+    const uref = await client.getAccountBalanceUrefByPublicKey(
+      stateRootHash,
+      faucetKeys.publicKey
+    );
     const [prefix, value, suffix] = uref.split('-');
     expect(uref).to.be.equal(faucetMainPurseUref);
     expect(prefix).to.be.equal('uref');
@@ -148,10 +196,10 @@ describe('RPC', () => {
   });
 
   // TODO: Deploys required
-  it('chain_get_block_transfers - blockHash', async () => {
-    const transfers = await client.getBlockTransfers(exampleBlockHash);
-    expect(transfers).to.be.an.instanceof(Transfers);
-  });
+  // it('chain_get_block_transfers - blockHash', async () => {
+  //   const transfers = await client.getBlockTransfers(exampleBlockHash);
+  //   expect(transfers).to.be.an.instanceof(Transfers);
+  // });
 
   // TODO: Deploys required
   // it('chain_get_era_info_by_switch_block - blockHash', async () => {
@@ -164,10 +212,4 @@ describe('RPC', () => {
   //   const eraSummary = await client.getEraInfoBySwitchBlockHeight(10);
   //   expect(eraSummary).to.be.equal(undefined);
   // });
-
-
 });
-
-after(function () {
-  process.kill(casperNodePid);
-})
