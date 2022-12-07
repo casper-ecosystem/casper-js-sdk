@@ -1,16 +1,21 @@
 import { assert, expect } from 'chai';
+import { config } from 'dotenv';
 import { CasperServiceByJsonRPC } from '../../src/services';
 import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
 import { getAccountInfo } from './utils';
 import { Transfers } from '../../src/lib/StoredValue';
 
+config();
+
 const localCasperNode = require('../../ci/start_node');
-let casperNodePid = localCasperNode.start_a_single_node();
+const casperNodePid = localCasperNode.start_a_single_node();
 
 const { SignatureAlgorithm, getKeysFromHexPrivKey } = Keys;
 
-const client = new CasperServiceByJsonRPC(process.env.NODE_URL!);
-const faucetKeys = getKeysFromHexPrivKey(
+const nodeUrl = process.env.NODE_URL!;
+const networkName = process.env.NETWORK_NAME!;
+const client = new CasperServiceByJsonRPC(nodeUrl);
+const faucetKey = getKeysFromHexPrivKey(
   process.env.FAUCET_PRIV_KEY!,
   SignatureAlgorithm.Ed25519
 );
@@ -80,12 +85,9 @@ describe('RPC', () => {
     assert.equal(stateRootHash.length, 64);
   });
 
-  it('state_get_balance', async () => {
+  xit('state_get_balance', async () => {
     const stateRootHash = await client.getStateRootHash();
-    const accountInfo = await getAccountInfo(
-      process.env.NODE_URL!,
-      faucetKeys.publicKey
-    );
+    const accountInfo = await getAccountInfo(nodeUrl, faucetKey.publicKey);
     const balance = await client.getAccountBalance(
       stateRootHash,
       accountInfo.mainPurse
@@ -129,7 +131,10 @@ describe('RPC', () => {
 
   it('state_get_item - account hash to main purse uref', async () => {
     const stateRootHash = await client.getStateRootHash();
-    const uref = await client.getAccountBalanceUrefByPublicKeyHash(stateRootHash, faucetKeys.publicKey.toAccountRawHashStr()); 
+    const uref = await client.getAccountBalanceUrefByPublicKeyHash(
+      stateRootHash,
+      faucetKey.publicKey.toAccountRawHashStr()
+    );
     faucetMainPurseUref = uref;
     const [prefix, value, suffix] = uref.split('-');
     expect(prefix).to.be.equal('uref');
@@ -139,12 +144,54 @@ describe('RPC', () => {
 
   it('state_get_item - CLPublicKey to main purse uref', async () => {
     const stateRootHash = await client.getStateRootHash();
-    const uref = await client.getAccountBalanceUrefByPublicKey(stateRootHash, faucetKeys.publicKey); 
+    const uref = await client.getAccountBalanceUrefByPublicKey(
+      stateRootHash,
+      faucetKey.publicKey
+    );
     const [prefix, value, suffix] = uref.split('-');
     expect(uref).to.be.equal(faucetMainPurseUref);
     expect(prefix).to.be.equal('uref');
     expect(value.length).to.be.equal(64);
     expect(suffix.length).to.be.equal(3);
+  });
+
+  it('should transfer native token by session', async () => {
+    // for native-transfers payment price is fixed
+    const paymentAmount = 10000000000;
+    const id = Date.now();
+
+    const amount = '25000000000';
+
+    const deployParams = new DeployUtil.DeployParams(
+      faucetKey.publicKey,
+      networkName
+    );
+
+    const toPublicKey = Keys.Ed25519.new().publicKey;
+
+    const session = DeployUtil.ExecutableDeployItem.newTransfer(
+      amount,
+      toPublicKey,
+      null,
+      id
+    );
+
+    const payment = DeployUtil.standardPayment(paymentAmount);
+    const deploy = DeployUtil.makeDeploy(deployParams, session, payment);
+    const signedDeploy = DeployUtil.signDeploy(deploy, faucetKey);
+
+    await client.deploy(signedDeploy);
+    const result = await client.waitForDeploy(signedDeploy, 100000);
+    expect(result.deploy.session).to.have.property('Transfer');
+    expect(result.execution_results[0].result).to.have.property('Success');
+
+    const stateRootHash = await client.getStateRootHash();
+    const uref = await client.getAccountBalanceUrefByPublicKey(
+      stateRootHash,
+      toPublicKey
+    );
+    const balance = await client.getAccountBalance(stateRootHash, uref);
+    expect(amount).to.be.equal(balance.toString());
   });
 
   // TODO: Deploys required
@@ -164,10 +211,8 @@ describe('RPC', () => {
   //   const eraSummary = await client.getEraInfoBySwitchBlockHeight(10);
   //   expect(eraSummary).to.be.equal(undefined);
   // });
-
-
 });
 
-after(function () {
+after(function() {
   process.kill(casperNodePid);
-})
+});
