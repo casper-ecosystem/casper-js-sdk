@@ -1,7 +1,7 @@
 import { fetch } from 'fetch-h2';
 import { Result, Ok, Err } from 'ts-results';
 
-interface DeploySubscription {
+export interface DeploySubscription {
   deployHash: string;
   eventHandlerFn: EventHandlerFn;
 }
@@ -64,7 +64,7 @@ interface EventSubscription {
   eventHandlerFn: EventHandlerFn;
 }
 
-interface EventParseResult {
+export interface EventParseResult {
   id: string | null;
   err: StreamErrors | null;
   body: any | null;
@@ -108,7 +108,8 @@ export class EventStream {
   }
 
   public async start(eventId = 0) {
-    const requestUrl = `${this.eventStreamUrl}?start_from=${eventId}`;
+    const separator = this.eventStreamUrl.indexOf('?') > -1 ? '&' : '?';
+    const requestUrl = `${this.eventStreamUrl}${separator}start_from=${eventId}`;
     const response = await fetch(requestUrl);
     const body = await response.readable();
 
