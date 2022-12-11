@@ -15,17 +15,17 @@ const testDeploy = () => {
   const transferAmount = 10;
   const transferId = 34;
 
-  let deployParams = new DeployUtil.DeployParams(
+  const deployParams = new DeployUtil.DeployParams(
     senderKey.publicKey,
     networkName
   );
-  let session = DeployUtil.ExecutableDeployItem.newTransfer(
+  const session = DeployUtil.ExecutableDeployItem.newTransfer(
     transferAmount,
     recipientKey.publicKey,
     undefined,
     transferId
   );
-  let payment = DeployUtil.standardPayment(paymentAmount);
+  const payment = DeployUtil.standardPayment(paymentAmount);
   let deploy = DeployUtil.makeDeploy(deployParams, session, payment);
   deploy = DeployUtil.signDeploy(deploy, senderKey);
   return deploy;
@@ -57,23 +57,23 @@ describe('DeployUtil', () => {
     const transferAmount = 10;
     const id = 34;
 
-    let deployParams = new DeployUtil.DeployParams(
+    const deployParams = new DeployUtil.DeployParams(
       senderKey.publicKey,
       networkName
     );
-    let session = DeployUtil.ExecutableDeployItem.newTransfer(
+    const session = DeployUtil.ExecutableDeployItem.newTransfer(
       transferAmount,
       recipientKey.publicKey,
       undefined,
       id
     );
-    let payment = DeployUtil.standardPayment(paymentAmount);
+    const payment = DeployUtil.standardPayment(paymentAmount);
     let deploy = DeployUtil.makeDeploy(deployParams, session, payment);
     deploy = DeployUtil.signDeploy(deploy, senderKey);
     deploy = DeployUtil.signDeploy(deploy, recipientKey);
 
     // Serialize deploy to JSON.
-    let json = DeployUtil.deployToJson(deploy);
+    const json = DeployUtil.deployToJson(deploy);
 
     // Deserialize deploy from JSON.
     deploy = DeployUtil.deployFromJson(json).unwrap();
@@ -121,18 +121,18 @@ describe('DeployUtil', () => {
     const id = 34;
     const customId = 60;
 
-    let deployParams = new DeployUtil.DeployParams(
+    const deployParams = new DeployUtil.DeployParams(
       senderKey.publicKey,
       networkName
     );
-    let session = DeployUtil.ExecutableDeployItem.newTransfer(
+    const session = DeployUtil.ExecutableDeployItem.newTransfer(
       transferAmount,
       recipientKey.publicKey,
       undefined,
       id
     );
-    let payment = DeployUtil.standardPayment(paymentAmount);
-    let oldDeploy = DeployUtil.makeDeploy(deployParams, session, payment);
+    const payment = DeployUtil.standardPayment(paymentAmount);
+    const oldDeploy = DeployUtil.makeDeploy(deployParams, session, payment);
 
     // Add new argument.
     let deploy = DeployUtil.addArgToDeploy(
@@ -142,7 +142,7 @@ describe('DeployUtil', () => {
     );
 
     // Serialize and deserialize deploy.
-    let json = DeployUtil.deployToJson(deploy);
+    const json = DeployUtil.deployToJson(deploy);
     deploy = DeployUtil.deployFromJson(json).unwrap();
 
     assert.deepEqual(
@@ -196,17 +196,17 @@ describe('DeployUtil', () => {
     const id = 34;
     const customId = 60;
 
-    let deployParams = new DeployUtil.DeployParams(
+    const deployParams = new DeployUtil.DeployParams(
       senderKey.publicKey,
       networkName
     );
-    let session = DeployUtil.ExecutableDeployItem.newTransfer(
+    const session = DeployUtil.ExecutableDeployItem.newTransfer(
       transferAmount,
       recipientKey.publicKey,
       undefined,
       id
     );
-    let payment = DeployUtil.standardPayment(paymentAmount);
+    const payment = DeployUtil.standardPayment(paymentAmount);
     let deploy = DeployUtil.makeDeploy(deployParams, session, payment);
     deploy = DeployUtil.signDeploy(deploy, senderKey);
 
@@ -229,17 +229,20 @@ describe('DeployUtil', () => {
     const transferAmount = 10;
     const id = 34;
 
-    let deployParams = new DeployUtil.DeployParams(from.publicKey, networkName);
-    let session = DeployUtil.ExecutableDeployItem.newTransfer(
+    const deployParams = new DeployUtil.DeployParams(
+      from.publicKey,
+      networkName
+    );
+    const session = DeployUtil.ExecutableDeployItem.newTransfer(
       transferAmount,
       to.publicKey,
       undefined,
       id
     );
-    let payment = DeployUtil.standardPayment(paymentAmount);
-    let deploy = DeployUtil.makeDeploy(deployParams, session, payment);
+    const payment = DeployUtil.standardPayment(paymentAmount);
+    const deploy = DeployUtil.makeDeploy(deployParams, session, payment);
 
-    let transferDeploy = DeployUtil.addArgToDeploy(
+    const transferDeploy = DeployUtil.addArgToDeploy(
       deploy,
       'fromPublicKey',
       from.publicKey
@@ -250,7 +253,7 @@ describe('DeployUtil', () => {
       from.publicKey
     );
 
-    let newTransferDeploy = DeployUtil.deployFromJson(
+    const newTransferDeploy = DeployUtil.deployFromJson(
       DeployUtil.deployToJson(transferDeploy)
     ).unwrap();
 
@@ -261,8 +264,8 @@ describe('DeployUtil', () => {
   });
 
   it('Should not allow for to deserialize a deploy from JSON with a wrong deploy hash', function() {
-    let deploy = testDeploy();
-    let json = JSON.parse(JSON.stringify(DeployUtil.deployToJson(deploy)));
+    const deploy = testDeploy();
+    const json = JSON.parse(JSON.stringify(DeployUtil.deployToJson(deploy)));
     Object.assign(json.deploy, {
       hash: 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff'
     });
@@ -270,9 +273,9 @@ describe('DeployUtil', () => {
   });
 
   it('Should not allow for to deserialize a deploy from JSON with a wrong body_hash', function() {
-    let deploy = testDeploy();
-    let json = JSON.parse(JSON.stringify(DeployUtil.deployToJson(deploy)));
-    let header = Object(json.deploy)['header'];
+    const deploy = testDeploy();
+    const json = JSON.parse(JSON.stringify(DeployUtil.deployToJson(deploy)));
+    const header = Object(json.deploy)['header'];
     header['body_hash'] =
       'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
     Object.assign(json.deploy, { header });
@@ -316,11 +319,11 @@ describe('DeployUtil', () => {
     const transferAmount = 10;
 
     const badFn = () =>
-    // @ts-ignore
+      // @ts-ignore
       DeployUtil.ExecutableDeployItem.newTransfer(
         transferAmount,
         recipientKey.publicKey,
-        undefined,
+        undefined
       );
 
     expect(badFn).to.throw('transfer-id missing in new transfer.');
@@ -410,7 +413,7 @@ describe('DeployUtil', () => {
   });
 
   it('DeployUtil.deployToBytes should produce correct byte representation.', () => {
-    let deploy = DeployUtil.deployFromJson({
+    const deploy = DeployUtil.deployFromJson({
       deploy: {
         hash:
           'd7a68bbe656a883d04bba9f26aa340dbe3f8ec99b2adb63b628f2bc920431998',
@@ -498,10 +501,12 @@ describe('DeployUtil', () => {
       }
     }).unwrap();
 
-    let expected =
+    const expected =
       '017f747b67bd3fe63c2a736739dfe40156d622347346e70f68f51c178a75ce5537a087c0377901000040771b00000000000200000000000000f2e0782bba4a0a9663cafc7d707fd4a74421bc5bfef4e368b7e8f38dfab87db8020000000f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f0f1010101010101010101010101010101010101010101010101010101010101010070000006d61696e6e6574d7a68bbe656a883d04bba9f26aa340dbe3f8ec99b2adb63b628f2bc92043199800000000000100000006000000616d6f756e74050000000400ca9a3b08050400000006000000616d6f756e740600000005005550b40508060000007461726765742000000001010101010101010101010101010101010101010101010101010101010101010f200000000200000069640900000001e7030000000000000d050f0000006164646974696f6e616c5f696e666f140000001000000074686973206973207472616e736665720a01000000017f747b67bd3fe63c2a736739dfe40156d622347346e70f68f51c178a75ce55370195a68b1a05731b7014e580b4c67a506e0339a7fffeaded9f24eb2e7f78b96bdd900b9be8ca33e4552a9a619dc4fc5e4e3a9f74a4b0537c14a5a8007d62a5dc06';
 
-    let result = Buffer.from(DeployUtil.deployToBytes(deploy)).toString('hex');
+    const result = Buffer.from(DeployUtil.deployToBytes(deploy)).toString(
+      'hex'
+    );
 
     assert.equal(result, expected);
   });
@@ -513,8 +518,8 @@ describe('DeployUtil', () => {
     const paymentAmount = 10000000000000;
     const transferAmount = 10;
     const transferId = 35;
-    let payment = DeployUtil.standardPayment(paymentAmount);
-    let session = DeployUtil.ExecutableDeployItem.newTransfer(
+    const payment = DeployUtil.standardPayment(paymentAmount);
+    const session = DeployUtil.ExecutableDeployItem.newTransfer(
       transferAmount,
       recipientKey.publicKey,
       undefined,
@@ -522,21 +527,21 @@ describe('DeployUtil', () => {
     );
 
     // Build first deploy.
-    let firstDeployParams = new DeployUtil.DeployParams(
+    const firstDeployParams = new DeployUtil.DeployParams(
       senderKey.publicKey,
       networkName
     );
-    let firstDeploy = DeployUtil.makeDeploy(
+    const firstDeploy = DeployUtil.makeDeploy(
       firstDeployParams,
       session,
       payment
     );
 
     // Build second deploy with the first one as a dependency.
-    let gasPrice = 1;
-    let ttl = 1800000;
-    let dependencies = [firstDeploy.hash];
-    let secondDeployParams = new DeployUtil.DeployParams(
+    const gasPrice = 1;
+    const ttl = 1800000;
+    const dependencies = [firstDeploy.hash];
+    const secondDeployParams = new DeployUtil.DeployParams(
       senderKey.publicKey,
       networkName,
       gasPrice,
@@ -544,7 +549,7 @@ describe('DeployUtil', () => {
       dependencies
     );
 
-    let secondDeploy = DeployUtil.makeDeploy(
+    const secondDeploy = DeployUtil.makeDeploy(
       secondDeployParams,
       session,
       payment
@@ -598,6 +603,6 @@ describe('DeployUtil', () => {
 
     const parsed = serializer.parse(json.StoredContractByHash);
 
-    assert.exists(parsed)
+    assert.exists(parsed);
   });
 });
