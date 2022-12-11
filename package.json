@@ -22,7 +22,6 @@
     "~build": "tsc --watch",
     "test:rpc": "TS_NODE_FILES=true mocha -r ts-node/register test/rpc/*.test.ts --timeout 5000000",
     "test": "TS_NODE_FILES=true mocha -r ts-node/register test/lib/*.test.ts src/lib/CLValue/*.test.ts",
-    "test2": "TS_NODE_FILES=true mocha -r ts-node/register test/lib/CasperClient.test.ts",
     "test:coverage": "nyc npm run test",
     "docs": "typedoc --out docs/ src",
     "publish-doc": "yarn run docs && gh-pages -d docs -r https://github.com/casper-ecosystem/casper-client-sdk-docs"
