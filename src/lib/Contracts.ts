@@ -4,7 +4,6 @@ import { CasperClient } from './CasperClient';
 import { Deploy } from './DeployUtil';
 import { RuntimeArgs } from './RuntimeArgs';
 import { AsymmetricKey } from './Keys';
-import { StoredValue } from './StoredValue';
 import { DEFAULT_DEPLOY_TTL } from '../constants';
 
 /**
@@ -138,7 +137,7 @@ export class Contract {
     path: string[] = [],
     casperClient?: CasperClient,
     stateRootHash?: string
-  ): Promise<StoredValue> {
+  ): Promise<any> {
     const client = casperClient || this.casperClient;
     if (!client) throw Error(NO_CLIENT_ERR);
 
