@@ -232,7 +232,7 @@ describe('RPC', () => {
     );
 
     await client.deploy(signedDeploy);
-    const result = await client.waitForDeploy(signedDeploy, 100000);
+    await client.waitForDeploy(signedDeploy, 100000);
 
     const stateRootHash = await client.getStateRootHash();
     const { Account } = await client.getBlockState(
@@ -241,14 +241,13 @@ describe('RPC', () => {
       []
     );
 
-    let contractHash = Account!.namedKeys.find(
+    const contractHash = Account!.namedKeys.find(
       (i: any) => i.name === 'erc20_token_contract'
     )?.key;
 
-    contractHash =
-      'hash-a489ee3f05555edabff440930964b1e0da04e1cb74ec2a2117e06b2f8caa6bc5';
+    assert.exists(contractHash);
 
-    erc20.setContractHash(contractHash);
+    erc20.setContractHash(contractHash!);
 
     const fetchedTokenName = await erc20.queryContractData(['name']);
     const fetchedTokenSymbol = await erc20.queryContractData(['symbol']);
