@@ -96,7 +96,7 @@ describe('RPC', () => {
     assert.equal(stateRootHash.length, 64);
   });
 
-  xit('state_get_balance', async () => {
+  it('state_get_balance', async () => {
     const stateRootHash = await client.getStateRootHash();
     const accountInfo = await getAccountInfo(nodeUrl, faucetKey.publicKey);
     const balance = await client.getAccountBalance(
@@ -166,7 +166,7 @@ describe('RPC', () => {
     expect(suffix.length).to.be.equal(3);
   });
 
-  xit('should transfer native token by session', async () => {
+  it('should transfer native token by session', async () => {
     // for native-transfers payment price is fixed
     const paymentAmount = 10000000000;
     const id = Date.now();
@@ -279,16 +279,16 @@ describe('RPC', () => {
   });
 
   // TODO: Deploys required
-  // it('chain_get_era_info_by_switch_block - blockHash', async () => {
-  //   const eraSummary = await client.getEraInfoBySwitchBlock(exampleBlockHash);
-  //   expect(eraSummary).to.be.equal(undefined);
-  // });
+  it('chain_get_era_info_by_switch_block - blockHash', async () => {
+    const eraSummary = await client.getEraInfoBySwitchBlock(exampleBlockHash);
+    expect(eraSummary).to.be.equal(undefined);
+  });
 
   // TODO: Deploys required
-  // it('chain_get_era_info_by_switch_block - by height', async () => {
-  //   const eraSummary = await client.getEraInfoBySwitchBlockHeight(10);
-  //   expect(eraSummary).to.be.equal(undefined);
-  // });
+  it('chain_get_era_info_by_switch_block - by height', async () => {
+    const eraSummary = await client.getEraInfoBySwitchBlockHeight(10);
+    expect(eraSummary).to.be.equal(undefined);
+  });
 });
 
 after(function() {
