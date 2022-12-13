@@ -8,7 +8,8 @@ import {
   RuntimeArgs,
   CasperClient,
   CLValueBuilder,
-  CLValueParsers
+  CLValueParsers,
+  CLKeyParameters
 } from '../../src/index';
 import { getAccountInfo } from './utils';
 import { Transfers } from '../../src/lib/StoredValue';
@@ -21,7 +22,7 @@ config();
 const localCasperNode = require('../../ci/start_node');
 const casperNodePid = localCasperNode.start_a_single_node();
 
-const { SignatureAlgorithm, getKeysFromHexPrivKey } = Keys;
+const { SignatureAlgorithm, getKeysFromHexPrivKey, Ed25519 } = Keys;
 
 const nodeUrl = process.env.NODE_URL!;
 const networkName = process.env.NETWORK_NAME!;
@@ -258,18 +259,47 @@ describe('RPC', () => {
       'total_supply'
     ]);
 
-    const balanceKeyOfFaucet = Buffer.from(
-      CLValueParsers.toBytes(CLValueBuilder.key(faucetKey.publicKey)).unwrap()
-    ).toString('base64');
-    const balanceOfFaucet: BigNumber = (
-      await erc20.queryContractDictionary('balances', balanceKeyOfFaucet)
-    ).value();
+    const balanceOf = async (erc20: Contract, owner: CLKeyParameters) => {
+      const balanceKey = Buffer.from(
+        CLValueParsers.toBytes(CLValueBuilder.key(owner)).unwrap()
+      ).toString('base64');
+      const balance: BigNumber = (
+        await erc20.queryContractDictionary('balances', balanceKey)
+      ).value();
+      return balance;
+    };
+
+    const balanceOfFaucet = await balanceOf(erc20, faucetKey.publicKey);
 
     assert.equal(tokenName, fetchedTokenName);
     assert.equal(tokenSymbol, fetchedTokenSymbol);
     assert.equal(tokenDecimals, fetchedTokenDecimals.toNumber());
     assert.equal(tokenTotlaSupply, fetchedTokenTotalSupply.toNumber());
     assert.equal(balanceOfFaucet.toNumber(), tokenTotlaSupply);
+
+    // Test `callEntrypoint` method: Transfter token
+    const recipient = Ed25519.new().publicKey;
+    const transferAmount = 2_000;
+
+    const transferArgs = RuntimeArgs.fromMap({
+      recipient: CLValueBuilder.key(recipient),
+      amount: CLValueBuilder.u256(2_000)
+    });
+
+    const transferDeploy = erc20.callEntrypoint(
+      'transfter',
+      transferArgs,
+      faucetKey.publicKey,
+      networkName,
+      '2500000000',
+      [faucetKey]
+    );
+
+    await client.deploy(transferDeploy);
+    await client.waitForDeploy(transferDeploy, 100000);
+
+    const balanceOfRecipient = await balanceOf(erc20, recipient);
+    assert.equal(balanceOfRecipient.toNumber(), transferAmount);
   });
 
   // TODO: Deploys required
