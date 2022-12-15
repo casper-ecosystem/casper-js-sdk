@@ -33,7 +33,8 @@ const faucetKey = getKeysFromHexPrivKey(
 );
 
 let faucetMainPurseUref = '';
-let exampleBlockHash = '';
+let transferBlockHash = '';
+let wasmDeployBlockHash = '';
 
 describe('RPC', () => {
   it('should return correct block by number', async () => {
@@ -51,7 +52,6 @@ describe('RPC', () => {
     let check = async (height: number) => {
       let block_by_height = await client.getBlockInfoByHeight(height);
       let block_hash = block_by_height.block?.hash!;
-      exampleBlockHash = block_hash;
       let block = await client.getBlockInfo(block_hash);
       assert.equal(block.block?.hash, block_hash);
     };
@@ -196,10 +196,16 @@ describe('RPC', () => {
     const result = await client.waitForDeploy(signedDeploy, 100000);
 
     expect(deploy_hash).to.be.equal(result.deploy.hash);
+    expect(deploy.payment.moduleBytes).to.be.deep.eq(
+      result.deploy.payment.Transfer
+    );
+    expect(deploy.session.transfer).to.be.deep.eq(
+      result.deploy.session.Transfer
+    );
     expect(result.deploy.session).to.have.property('Transfer');
     expect(result.execution_results[0].result).to.have.property('Success');
-    const fetchedArgs = result.deploy.session.Transfer?.args;
-    expect(fetchedArgs).to.be.deep.eq(payment.asTransfer()?.args);
+
+    transferBlockHash = result.execution_results[0].block_hash;
 
     const stateRootHash = await client.getStateRootHash();
     const uref = await client.getAccountBalanceUrefByPublicKey(
@@ -237,7 +243,9 @@ describe('RPC', () => {
     );
 
     await client.deploy(signedDeploy);
-    await client.waitForDeploy(signedDeploy, 100000);
+    let result = await client.waitForDeploy(signedDeploy, 100000);
+
+    wasmDeployBlockHash = result.execution_results[0].block_hash;
 
     const stateRootHash = await client.getStateRootHash();
     const { Account } = await client.getBlockState(
@@ -300,34 +308,38 @@ describe('RPC', () => {
     );
 
     const { deploy_hash } = await client.deploy(transferDeploy);
-    const result = await client.waitForDeploy(transferDeploy, 100000);
+    result = await client.waitForDeploy(transferDeploy, 100000);
 
     assert.equal(result.deploy.hash, deploy_hash);
+    expect(transferDeploy.payment.moduleBytes).to.be.deep.eq(
+      result.deploy.payment.Transfer
+    );
+    expect(transferDeploy.session.transfer).to.be.deep.eq(
+      result.deploy.session.Transfer
+    );
     expect(result.deploy.session).to.have.property('StoredContractByHash');
     expect(result.execution_results[0].result).to.have.property('Success');
-    const fetchedArgs = result.deploy.session.StoredContractByHash?.args;
-    expect(fetchedArgs).to.be.deep.eq(transferArgs.args);
 
     const balanceOfRecipient = await balanceOf(erc20, recipient);
     assert.equal(balanceOfRecipient.toNumber(), transferAmount);
   });
 
-  // TODO: Deploys required
   it('chain_get_block_transfers - blockHash', async () => {
-    const transfers = await client.getBlockTransfers(exampleBlockHash);
+    const transfers = await client.getBlockTransfers(transferBlockHash);
     expect(transfers).to.be.an.instanceof(Transfers);
   });
 
-  // TODO: Deploys required
   it('chain_get_era_info_by_switch_block - blockHash', async () => {
-    const eraSummary = await client.getEraInfoBySwitchBlock(exampleBlockHash);
-    expect(eraSummary).to.be.equal(undefined);
+    const eraSummary = await client.getEraInfoBySwitchBlock(
+      wasmDeployBlockHash
+    );
+    expect(eraSummary.blockHash).to.be.equal(wasmDeployBlockHash);
   });
 
-  // TODO: Deploys required
   it('chain_get_era_info_by_switch_block - by height', async () => {
     const eraSummary = await client.getEraInfoBySwitchBlockHeight(10);
-    expect(eraSummary).to.be.equal(undefined);
+    const blockInfo = await client.getBlockInfoByHeight(10);
+    expect(eraSummary.blockHash).to.be.equal(blockInfo.block?.hash);
   });
 });
 
