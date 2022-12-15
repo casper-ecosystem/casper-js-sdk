@@ -192,10 +192,14 @@ describe('RPC', () => {
     const deploy = DeployUtil.makeDeploy(deployParams, session, payment);
     const signedDeploy = DeployUtil.signDeploy(deploy, faucetKey);
 
-    await client.deploy(signedDeploy);
+    const { deploy_hash } = await client.deploy(signedDeploy);
     const result = await client.waitForDeploy(signedDeploy, 100000);
+
+    expect(deploy_hash).to.be.equal(result.deploy.hash);
     expect(result.deploy.session).to.have.property('Transfer');
     expect(result.execution_results[0].result).to.have.property('Success');
+    const fetchedArgs = result.deploy.session.Transfer?.args;
+    expect(fetchedArgs).to.be.deep.eq(payment.asTransfer()?.args);
 
     const stateRootHash = await client.getStateRootHash();
     const uref = await client.getAccountBalanceUrefByPublicKey(
@@ -295,8 +299,14 @@ describe('RPC', () => {
       [faucetKey]
     );
 
-    await client.deploy(transferDeploy);
-    await client.waitForDeploy(transferDeploy, 100000);
+    const { deploy_hash } = await client.deploy(transferDeploy);
+    const result = await client.waitForDeploy(transferDeploy, 100000);
+
+    assert.equal(result.deploy.hash, deploy_hash);
+    expect(result.deploy.session).to.have.property('StoredContractByHash');
+    expect(result.execution_results[0].result).to.have.property('Success');
+    const fetchedArgs = result.deploy.session.StoredContractByHash?.args;
+    expect(fetchedArgs).to.be.deep.eq(transferArgs.args);
 
     const balanceOfRecipient = await balanceOf(erc20, recipient);
     assert.equal(balanceOfRecipient.toNumber(), transferAmount);
