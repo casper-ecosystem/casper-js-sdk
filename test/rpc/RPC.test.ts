@@ -34,28 +34,28 @@ const faucetKey = getKeysFromHexPrivKey(
 
 let faucetMainPurseUref = '';
 let transferBlockHash = '';
-let wasmDeployBlockHash = '';
 
 describe('RPC', () => {
   it('should return correct block by number', async () => {
-    let check = async (height: number) => {
-      let result = await client.getBlockInfoByHeight(height);
+    const check = async (height: number) => {
+      const result = await client.getBlockInfoByHeight(height);
       assert.equal(result.block?.header.height, height);
     };
-    let blocks_to_check = 3;
+    const blocks_to_check = 3;
     for (let i = 0; i < blocks_to_check; i++) {
       await check(i);
     }
   });
 
   it('should return correct block by hash', async () => {
-    let check = async (height: number) => {
-      let block_by_height = await client.getBlockInfoByHeight(height);
-      let block_hash = block_by_height.block?.hash!;
-      let block = await client.getBlockInfo(block_hash);
+    const check = async (height: number) => {
+      const block_by_height = await client.getBlockInfoByHeight(height);
+      const block_hash = block_by_height.block?.hash;
+      assert.exists(block_hash);
+      const block = await client.getBlockInfo(block_hash!);
       assert.equal(block.block?.hash, block_hash);
     };
-    let blocks_to_check = 3;
+    const blocks_to_check = 3;
     for (let i = 0; i < blocks_to_check; i++) {
       await check(i);
     }
@@ -67,16 +67,16 @@ describe('RPC', () => {
     const oneMegaByte = 1048576;
     const moduleBytes = Uint8Array.from(Array(oneMegaByte - 169).fill(0));
 
-    let deployParams = new DeployUtil.DeployParams(
+    const deployParams = new DeployUtil.DeployParams(
       Keys.Ed25519.new().publicKey,
       'test'
     );
-    let session = DeployUtil.ExecutableDeployItem.newModuleBytes(
+    const session = DeployUtil.ExecutableDeployItem.newModuleBytes(
       moduleBytes,
       RuntimeArgs.fromMap({})
     );
-    let payment = DeployUtil.standardPayment(100000);
-    let deploy = DeployUtil.makeDeploy(deployParams, session, payment);
+    const payment = DeployUtil.standardPayment(100000);
+    const deploy = DeployUtil.makeDeploy(deployParams, session, payment);
 
     assert.equal(DeployUtil.deploySizeInBytes(deploy), oneMegaByte + 1);
     await client
@@ -85,7 +85,7 @@ describe('RPC', () => {
         assert.fail("client.deploy should't throw an error.");
       })
       .catch(err => {
-        let expectedMessage =
+        const expectedMessage =
           `Deploy can not be send, because it's too large: ${oneMegaByte +
             1} bytes. ` + `Max size is 1 megabyte.`;
         assert.equal(err.message, expectedMessage);
@@ -238,9 +238,6 @@ describe('RPC', () => {
 
     await client.deploy(signedDeploy);
     let result = await client.waitForDeploy(signedDeploy, 100000);
-    // console.dir(result.execution_results[0], { depth: null });
-
-    wasmDeployBlockHash = result.execution_results[0].block_hash;
 
     const stateRootHash = await client.getStateRootHash();
     const { Account } = await client.getBlockState(
@@ -316,13 +313,6 @@ describe('RPC', () => {
   it('chain_get_block_transfers - blockHash', async () => {
     const transfers = await client.getBlockTransfers(transferBlockHash);
     expect(transfers).to.be.an.instanceof(Transfers);
-  });
-
-  it('chain_get_era_info_by_switch_block - blockHash', async () => {
-    const eraSummary = await client.getEraInfoBySwitchBlock(
-      wasmDeployBlockHash
-    );
-    expect(eraSummary.blockHash).to.be.equal(wasmDeployBlockHash);
   });
 
   it('chain_get_era_info_by_switch_block - by height', async () => {
