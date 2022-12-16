@@ -196,12 +196,6 @@ describe('RPC', () => {
     const result = await client.waitForDeploy(signedDeploy, 100000);
 
     expect(deploy_hash).to.be.equal(result.deploy.hash);
-    expect(deploy.payment.moduleBytes).to.be.deep.eq(
-      result.deploy.payment.Transfer
-    );
-    expect(deploy.session.transfer).to.be.deep.eq(
-      result.deploy.session.Transfer
-    );
     expect(result.deploy.session).to.have.property('Transfer');
     expect(result.execution_results[0].result).to.have.property('Success');
 
@@ -244,6 +238,7 @@ describe('RPC', () => {
 
     await client.deploy(signedDeploy);
     let result = await client.waitForDeploy(signedDeploy, 100000);
+    // console.dir(result.execution_results[0], { depth: null });
 
     wasmDeployBlockHash = result.execution_results[0].block_hash;
 
@@ -299,7 +294,7 @@ describe('RPC', () => {
     });
 
     const transferDeploy = erc20.callEntrypoint(
-      'transfter',
+      'transfer',
       transferArgs,
       faucetKey.publicKey,
       networkName,
@@ -311,12 +306,6 @@ describe('RPC', () => {
     result = await client.waitForDeploy(transferDeploy, 100000);
 
     assert.equal(result.deploy.hash, deploy_hash);
-    expect(transferDeploy.payment.moduleBytes).to.be.deep.eq(
-      result.deploy.payment.Transfer
-    );
-    expect(transferDeploy.session.transfer).to.be.deep.eq(
-      result.deploy.session.Transfer
-    );
     expect(result.deploy.session).to.have.property('StoredContractByHash');
     expect(result.execution_results[0].result).to.have.property('Success');
 
