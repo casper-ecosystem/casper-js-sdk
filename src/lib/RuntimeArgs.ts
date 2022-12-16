@@ -34,7 +34,9 @@ export class NamedArg implements ToBytes {
     } = new CLStringBytesParser().fromBytesWithRemainder(bytes);
     const name = nameRes.unwrap();
     if (!nameRem) {
-      return resultHelper(Err('Missing data for value of named arg'));
+      return resultHelper<NamedArg, string>(
+        Err('Missing data for value of named arg')
+      );
     }
     const value = CLValueParsers.fromBytesWithType(nameRem).unwrap();
     return resultHelper(Ok(new NamedArg(name.value(), value)));
@@ -111,7 +113,10 @@ export class RuntimeArgs implements ToBytes {
     let remainBytes = sizeRem;
     const res: NamedArg[] = [];
     for (let i = 0; i < size; i++) {
-      if (!remainBytes) return resultHelper(Err('Error while parsing bytes'));
+      if (!remainBytes)
+        return resultHelper<RuntimeArgs, string>(
+          Err('Error while parsing bytes')
+        );
       const {
         result: namedArgRes,
         remainder: namedArgRem

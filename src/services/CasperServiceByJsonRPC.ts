@@ -75,6 +75,11 @@ export interface GetBlockResult extends RpcResult {
   block: JsonBlock | null;
 }
 
+/** Result interface for a account_put_deploy call */
+export interface DeployResult extends RpcResult {
+  deploy_hash: string;
+}
+
 type JsonBlockHash = string;
 type JsonDeployHash = string;
 
@@ -557,13 +562,37 @@ export class CasperServiceByJsonRPC {
    * @param signedDeploy A signed `Deploy` object to be sent to a node
    * @remarks A deploy must not exceed 1 megabyte
    */
-  public async deploy(signedDeploy: DeployUtil.Deploy) {
+  public async deploy(signedDeploy: DeployUtil.Deploy): Promise<DeployResult> {
     await this.checkDeploySize(signedDeploy);
 
     return await this.client.request({
       method: 'account_put_deploy',
       params: deployToJson(signedDeploy)
     });
+  }
+
+  /**
+   * Wait for deploy to be confirmed on-chain
+   * @param signedDeploy deploy signed by the deployer
+   * @param timeout optional parameter for timeout
+   * @returns GetDepoyResult
+   */
+  public async waitForDeploy(signedDeploy: DeployUtil.Deploy, timeout = 60000) {
+    const sleep = (ms: number) => {
+      return new Promise(resolve => setTimeout(resolve, ms));
+    };
+    const timer = setTimeout(() => {
+      throw new Error('Timeout');
+    }, timeout);
+    while (true) {
+      const deploy = await this.getDeployInfo(encodeBase16(signedDeploy.hash));
+      if (deploy.execution_results.length > 0) {
+        clearTimeout(timer);
+        return deploy;
+      } else {
+        await sleep(400);
+      }
+    }
   }
 
   public async speculativeDeploy(
