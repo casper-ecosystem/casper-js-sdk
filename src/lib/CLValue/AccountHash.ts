@@ -37,12 +37,14 @@ export class CLAccountHashBytesParser extends CLValueBytesParsers {
     bytes: Uint8Array
   ): ResultAndRemainder<CLAccountHash, CLErrorCodes> {
     if (bytes.length < ACCOUNT_HASH_LENGTH) {
-      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+      return resultHelper<CLAccountHash, CLErrorCodes>(
+        Err(CLErrorCodes.EarlyEndOfStream)
+      );
     }
 
     const accountHashBytes = bytes.subarray(0, ACCOUNT_HASH_LENGTH);
     const accountHash = new CLAccountHash(accountHashBytes);
-    return resultHelper(Ok(accountHash));
+    return resultHelper(Ok(accountHash), bytes.subarray(ACCOUNT_HASH_LENGTH));
   }
 }
 

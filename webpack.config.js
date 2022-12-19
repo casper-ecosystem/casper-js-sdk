@@ -1,7 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
-const copyPlugin = require("copy-webpack-plugin");
+const copyPlugin = require('copy-webpack-plugin');
 
 const common = {
   entry: './src/index.ts',
@@ -25,10 +25,8 @@ const serverConfig = {
   target: 'node',
   plugins: [
     new copyPlugin({
-      patterns: [
-        { from: "src/@types", to: "@types" },
-      ],
-    }),
+      patterns: [{ from: 'src/@types', to: '@types' }]
+    })
   ],
   output: {
     path: path.resolve(__dirname, 'dist'),

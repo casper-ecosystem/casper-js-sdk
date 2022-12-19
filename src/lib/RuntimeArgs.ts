@@ -44,12 +44,17 @@ export class NamedArg implements ToBytes {
 }
 
 const desRA = (_arr: any) => {
-  return new Map(
+  const parsed = new Map(
     Array.from(_arr, ([key, value]) => {
       const val = CLValueParsers.fromJSON(value);
       return [key, val.unwrap()];
     })
   );
+
+  if (parsed.size !== Array.from(_arr).length)
+    throw Error(`Duplicate key exists.`);
+
+  return parsed;
 };
 
 const serRA = (map: Map<string, CLValue>) => {

@@ -68,16 +68,16 @@ export class CLTupleBytesParser extends CLValueBytesParsers {
       return vRes.unwrap();
     });
 
-    if (val.length === 1) {
+    if (val.length === 1 && type.tag === CLTypeTag.Tuple1) {
       return resultHelper(Ok(new CLTuple1(val)), rem);
     }
-    if (val.length === 2) {
+    if (val.length === 2 && type.tag === CLTypeTag.Tuple2) {
       return resultHelper(Ok(new CLTuple2(val)), rem);
     }
-    if (val.length === 3) {
+    if (val.length === 3 && type.tag === CLTypeTag.Tuple3) {
       return resultHelper(Ok(new CLTuple3(val)), rem);
     }
-    return resultHelper(Err(CLErrorCodes.Formatting));
+    return resultHelper<CLTuple, CLErrorCodes>(Err(CLErrorCodes.Formatting));
   }
 }
 
