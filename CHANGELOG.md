@@ -11,7 +11,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Updated exports so more conversion fuctions are now public
 - Added typings to `JsonExecutableDeployItem`
 - Fixed how the `EventStream` URL is build
-- Replaced `ts-results` dependency for our own forked because of the conflicting config
+- Replaced `ts-results` dependency for our [own fork](https://github.com/CasperLabs/ts-results) because of the conflicting config
 
 ## 2.10.0
 
