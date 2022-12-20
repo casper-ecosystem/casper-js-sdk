@@ -57,8 +57,9 @@ export class CLListBytesParser extends CLValueBytesParsers {
       result: u32Res,
       remainder: u32Rem
     } = new CLU32BytesParser().fromBytesWithRemainder(bytes);
+
     if (!u32Res.ok) {
-      return resultHelper(Err(u32Res.val));
+      return resultHelper<CLList<CLValue>, CLErrorCodes>(Err(u32Res.val));
     }
 
     const size = u32Res.val.value().toNumber();
@@ -70,7 +71,10 @@ export class CLListBytesParser extends CLValueBytesParsers {
     const parser = matchByteParserByCLType(listType.inner).unwrap();
 
     for (let i = 0; i < size; i++) {
-      if (!remainder) return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+      if (!remainder)
+        return resultHelper<CLList<CLValue>, CLErrorCodes>(
+          Err(CLErrorCodes.EarlyEndOfStream)
+        );
 
       const { result: vRes, remainder: vRem } = parser.fromBytesWithRemainder(
         remainder,
@@ -78,7 +82,7 @@ export class CLListBytesParser extends CLValueBytesParsers {
       );
 
       if (!vRes.ok) {
-        return resultHelper(Err(vRes.val));
+        return resultHelper<CLList<CLValue>, CLErrorCodes>(Err(vRes.val));
       }
       vec.push(vRes.val);
       remainder = vRem;
