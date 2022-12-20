@@ -4,6 +4,15 @@ All notable changes to casper-js-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.10.1
+
+### Fixed
+
+- Updated exports so more conversion fuctions are now public
+- Added typings to `JsonExecutableDeployItem`
+- Fixed how the `EventStream` URL is build
+- Replaced `ts-results` dependency for our [own fork](https://github.com/CasperLabs/ts-results) because of the conflicting config
+
 ## 2.10.0
 
 ### Added
