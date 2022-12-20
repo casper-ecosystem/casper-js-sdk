@@ -1,12 +1,12 @@
 import { Result, Ok, Err } from 'ts-results';
 import http from 'http';
 
-interface DeploySubscription {
+export interface DeploySubscription {
   deployHash: string;
   eventHandlerFn: EventHandlerFn;
 }
 
-enum StreamErrors {
+export enum StreamErrors {
   NotAnEvent,
   EarlyEndOfStream,
   MissingDataHeader,
@@ -59,12 +59,12 @@ export enum EventName {
   DeployProcessed = 'DeployProcessed'
 }
 
-interface EventSubscription {
+export interface EventSubscription {
   eventName: EventName;
   eventHandlerFn: EventHandlerFn;
 }
 
-interface EventParseResult {
+export interface EventParseResult {
   id: string | null;
   err: StreamErrors | null;
   body: any | null;
@@ -108,7 +108,9 @@ export class EventStream {
   }
 
   start(eventId = 0): void {
-    http.get(`${this.eventStreamUrl}?start_from=${eventId}`, res => {
+    const separator = this.eventStreamUrl.indexOf('?') > -1 ? '&' : '?';
+    const requestUrl = `${this.eventStreamUrl}${separator}start_from=${eventId}`;
+    http.get(requestUrl, res => {
       this.stream = res;
       this.stream.on('data', (buf: Uint8Array) => {
         const result = parseEvent(Buffer.from(buf).toString());
