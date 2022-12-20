@@ -102,7 +102,7 @@
     "humanize-duration": "^3.24.0",
     "key-encoder": "^2.0.3",
     "reflect-metadata": "^0.1.13",
-    "ts-results": "^3.2.1",
+    "ts-results": "npm:@casperlabs/ts-results@^3.3.4",
     "tweetnacl-ts": "^1.0.3",
     "tweetnacl-util": "^0.15.0",
     "typedjson": "^1.6.0-rc2",
