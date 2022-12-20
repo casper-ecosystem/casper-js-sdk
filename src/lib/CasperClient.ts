@@ -34,7 +34,7 @@ export class CasperClient {
   }
 
   /**
-   * Load private key from file
+   * Load public key from file
    * @param path The path to the publicKey file
    * @param algo The signature algorithm of the account. The possible values are `SignatureAlgorithm.Ed25519` and SignatureAlgorithm.Secp256K1
    * @returns New key pair with the specified SignatureAlgorithm

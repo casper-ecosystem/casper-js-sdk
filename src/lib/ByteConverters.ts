@@ -6,6 +6,8 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { MaxUint256, NegativeOne, One, Zero } from '@ethersproject/constants';
 import { arrayify, concat } from '@ethersproject/bytes';
+import blake from 'blakejs';
+
 import { CLValue, CLValueParsers, ToBytes } from './CLValue';
 
 /**
@@ -144,6 +146,15 @@ export const toBytesVector = <T extends ToBytes>(vec: T[]): Uint8Array => {
   valueByteList.splice(0, 0, toBytesU32(vec.length));
   return concat(valueByteList);
 };
+
+/**
+ * Use blake2b to compute hash of ByteArray
+ * @param x Byte array of type `Uint8Array` to compute the blake2b hash on
+ * @returns `Uint8Array` buffer of the blake2b hash
+ */
+export function byteHash(x: Uint8Array): Uint8Array {
+  return blake.blake2b(x, null, 32);
+}
 
 // TODO: Get rid after refactoring the whole
 /**

@@ -34,7 +34,9 @@ export class NamedArg implements ToBytes {
     } = new CLStringBytesParser().fromBytesWithRemainder(bytes);
     const name = nameRes.unwrap();
     if (!nameRem) {
-      return resultHelper(Err('Missing data for value of named arg'));
+      return resultHelper<NamedArg, string>(
+        Err('Missing data for value of named arg')
+      );
     }
     const value = CLValueParsers.fromBytesWithType(nameRem).unwrap();
     return resultHelper(Ok(new NamedArg(name.value(), value)));
@@ -42,12 +44,17 @@ export class NamedArg implements ToBytes {
 }
 
 const desRA = (_arr: any) => {
-  return new Map(
+  const parsed = new Map(
     Array.from(_arr, ([key, value]) => {
       const val = CLValueParsers.fromJSON(value);
       return [key, val.unwrap()];
     })
   );
+
+  if (parsed.size !== Array.from(_arr).length)
+    throw Error(`Duplicate key exists.`);
+
+  return parsed;
 };
 
 const serRA = (map: Map<string, CLValue>) => {
@@ -111,7 +118,10 @@ export class RuntimeArgs implements ToBytes {
     let remainBytes = sizeRem;
     const res: NamedArg[] = [];
     for (let i = 0; i < size; i++) {
-      if (!remainBytes) return resultHelper(Err('Error while parsing bytes'));
+      if (!remainBytes)
+        return resultHelper<RuntimeArgs, string>(
+          Err('Error while parsing bytes')
+        );
       const {
         result: namedArgRes,
         remainder: namedArgRem

@@ -1,21 +1,10 @@
-import blake from 'blakejs';
 import { CLPublicKey, CLValue, CLValueBuilder, CLTypeBuilder } from '../index';
 import * as DeployUtil from './DeployUtil';
 import { CasperClient } from './CasperClient';
 import { Deploy } from './DeployUtil';
 import { RuntimeArgs } from './RuntimeArgs';
 import { AsymmetricKey } from './Keys';
-import { StoredValue } from './StoredValue';
 import { DEFAULT_DEPLOY_TTL } from '../constants';
-
-/**
- * Use blake2b to compute hash of ByteArray
- * @param x Byte array of type `Uint8Array` to compute the blake2b hash on
- * @returns `Uint8Array` buffer of the blake2b hash
- */
-export function byteHash(x: Uint8Array): Uint8Array {
-  return blake.blake2b(x, null, 32);
-}
 
 /**
  * Convert a contract hash hexadecimal string to a byte array
@@ -148,7 +137,7 @@ export class Contract {
     path: string[] = [],
     casperClient?: CasperClient,
     stateRootHash?: string
-  ): Promise<StoredValue> {
+  ): Promise<any> {
     const client = casperClient || this.casperClient;
     if (!client) throw Error(NO_CLIENT_ERR);
 

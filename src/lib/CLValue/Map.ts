@@ -105,7 +105,10 @@ export class CLMapBytesParser extends CLValueBytesParsers {
     }
 
     for (let i = 0; i < size; i++) {
-      if (!remainder) return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+      if (!remainder)
+        return resultHelper<CLMap<KeyVal, KeyVal>, CLErrorCodes>(
+          Err(CLErrorCodes.EarlyEndOfStream)
+        );
 
       const keyParser = matchByteParserByCLType(mapType.innerKey).unwrap();
       const {
@@ -116,7 +119,10 @@ export class CLMapBytesParser extends CLValueBytesParsers {
       const finalKey = kRes.unwrap();
       remainder = kRem;
 
-      if (!remainder) return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+      if (!remainder)
+        return resultHelper<CLMap<KeyVal, KeyVal>, CLErrorCodes>(
+          Err(CLErrorCodes.EarlyEndOfStream)
+        );
 
       const valParser = matchByteParserByCLType(mapType.innerValue).unwrap();
       const {
@@ -129,6 +135,11 @@ export class CLMapBytesParser extends CLValueBytesParsers {
 
       vec.push([finalKey, finalValue]);
     }
+
+    if (size !== vec.length)
+      return resultHelper<CLMap<KeyVal, KeyVal>, CLErrorCodes>(
+        Err(CLErrorCodes.Formatting)
+      );
 
     return resultHelper(Ok(new CLMap(vec)), remainder);
   }
@@ -180,6 +191,10 @@ export class CLMap<K extends CLValue, V extends CLValue> extends CLValue {
     return this.data;
   }
 
+  has(k: K): boolean {
+    return this.get(k) !== undefined;
+  }
+
   get(k: K): V | undefined {
     const result = this.data.find(d => d[0].value() === k.value());
     return result ? result[1] : undefined;
@@ -192,6 +207,7 @@ export class CLMap<K extends CLValue, V extends CLValue> extends CLValue {
       );
       return;
     }
+
     this.data = [...this.data, [k, val]];
   }
 

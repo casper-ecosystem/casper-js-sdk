@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { decodeBase16, decodeBase64, encodeBase16 } from '../../src';
 import { Ed25519, Secp256K1 } from '../../src/lib/Keys';
-import { byteHash } from '../../src/lib/Contracts';
+import { byteHash } from '../../src/lib/ByteConverters';
 import * as nacl from 'tweetnacl-ts';
 import { encodeBase64 } from 'tweetnacl-ts';
 

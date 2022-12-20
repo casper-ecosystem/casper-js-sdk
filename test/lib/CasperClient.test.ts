@@ -1,18 +1,17 @@
-import { expect } from 'chai';
-
-import { CasperClient } from '../../src/lib/CasperClient';
-import { Deploy } from '../../src/lib/DeployUtil';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
-import { Keys } from '../../src/lib';
+import { expect } from 'chai';
+
 import { Secp256K1, SignatureAlgorithm } from '../../src/lib/Keys';
-import { decodeBase16 } from '../../src';
+import { decodeBase16, Keys, DeployUtil, CasperClient } from '../../src';
+
+const { Deploy } = DeployUtil;
 
 let casperClient: CasperClient;
 describe('CasperClient', () => {
   before(() => {
-    casperClient = new CasperClient('http://192.168.2.166:40101/rpc');
+    casperClient = new CasperClient('https://rpc.testnet.casperlabs.io/rpc');
   });
 
   it('should generate new Ed25519 key pair, and compute public key from private key', () => {
@@ -150,6 +149,8 @@ describe('CasperClient', () => {
       expect(validDeploy).to.be.an.instanceof(Deploy);
     });
 
-    expect(casperClient.deployFromJson(json).unwrap().header.ttl).to.be.eq(1800000);
+    expect(casperClient.deployFromJson(json).unwrap().header.ttl).to.be.eq(
+      1800000
+    );
   });
 });
