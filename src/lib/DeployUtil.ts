@@ -1453,7 +1453,7 @@ export const deployToJson = (deploy: Deploy) => {
  * Convert a JSON representation of a deploy to a `Deploy` object
  *
  * @param json A JSON representation of a `Deploy`
- * @returns A `Deploy` object from the JSON representation of a deploy
+ * @returns A `Result` that collapses to a `Deploy` or an error string
  */
 export const deployFromJson = (json: any): Result<Deploy, Error> => {
   if (json.deploy === undefined) {
