@@ -1,9 +1,9 @@
+import { Result } from 'ts-results';
 import * as Contracts from './Contracts';
 import * as DeployUtil from './DeployUtil';
 import * as Keys from './Keys';
 import * as Serialization from './Serialization';
 import * as Signer from './Signer';
-import { Result } from 'ts-results';
 export * from './CLValue';
 export * from './StoredValue';
 export * from './RuntimeArgs';
