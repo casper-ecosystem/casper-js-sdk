@@ -1,3 +1,4 @@
+import { Result } from 'ts-results';
 import * as Contracts from './Contracts';
 import * as DeployUtil from './DeployUtil';
 import * as Keys from './Keys';
@@ -10,4 +11,4 @@ export * from './CasperClient';
 export * from './SignedMessage';
 export * from './Conversions';
 
-export { Contracts, Keys, Serialization, DeployUtil, Signer };
+export { Contracts, Keys, Serialization, DeployUtil, Signer, Result };
