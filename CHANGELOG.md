@@ -9,14 +9,37 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 ### Added
 
 - Support for checksumed mixed-case publickeys
+- Support for HTTPS EventStream
 
 ### Changed
+
+<<<<<<< HEAD
 
 - `CLPublicKey.toHex()` now by default returns checksummed value. You can use it in legacy mode by calling it `CLPublicKey.toHex(false)` that way.
 - `CLPublicKey.fromHex()` now can get two arguments. The first one is string containing hex encoded public key, and the second one is a boolean value that indicates if you want to run checksum validation. When `true` is passed it will throw an error. Otherwise it will log warn to the console. We added this because we want to support users who store the non-checksumed publickeys and need time to adapt.
 - Added better typings to `JsonExecutableDeployItem`
 - Updated exports so more conversion fuctions are now public
 
+||||||| a13b8cfe
+
+- `CLPublicKey.toHex()` now by default returns checksummed value. You can use it in legacy mode by calling it `CLPublicKey.toHex(false)` that way.
+- # `CLPublicKey.fromHex()` now can get two arguments. The first one is string containing hex encoded public key, and the second one is a boolean value that indicates if you want to run checksum validation. When `true` is passed it will throw an error. Otherwise it will log warn to the console. We added this because we want to support users who store the non-checksumed publickeys and need time to adapt.
+- `CLPublicKey.toHex()` now by default returns checksummed value. You can use it in legacy mode by calling it `CLPublicKey.toHex(false)` that way
+- `CLPublicKey.fromHex()` now can get two arguments. The first one is string containing hex encoded public key, and the second one is a boolean value that indicates if you want to run checksum validation. When `true` is passed it will throw an error. Otherwise it will log warn to the console. We added this because we want to support users who store the non-checksumed publickeys and need time to adapt
+
+### Fixed
+
+- Issues with parsing broken deploys
+
+## 2.10.1
+
+### Fixed
+
+- Updated exports so more conversion fuctions are now public
+- Added typings to `JsonExecutableDeployItem`
+- Fixed how the `EventStream` URL is build
+- Replaced `ts-results` dependency for our [own fork](https://github.com/CasperLabs/ts-results) because of the conflicting config
+  > > > > > > > aadc44e2123403d6f89251040bf35cb859a34b61
 
 ## 2.10.0
 
