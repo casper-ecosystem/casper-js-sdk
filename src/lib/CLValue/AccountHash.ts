@@ -1,3 +1,4 @@
+// TODO: In v3 we need better way of dealing with Alias types
 import { Ok, Err } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
 import { toBytesU32 } from '../ByteConverters';
@@ -17,16 +18,15 @@ import {
 
 export class CLAccountHashType extends CLType {
   linksTo = CLAccountHash;
-  // The tag is same as ByteArray as AccountHash is just an alias type.
-  // This might be considered unclear, so in next version we should found more transparent way of declaring aliases.
-  tag = CLTypeTag.ByteArray;
+  tag = -1;
 
   toString(): string {
     return ACCOUNT_HASH_ID;
   }
 
+  // AccountHash is an alias, not a fully functional CLType so uses the same CLTypeTag as ByteArray
   toBytes(): Uint8Array {
-    return concat([Uint8Array.from([this.tag]), toBytesU32(32)]);
+    return concat([Uint8Array.from([CLTypeTag.ByteArray]), toBytesU32(32)]);
   }
 
   toJSON(): string {
@@ -50,7 +50,6 @@ export class CLAccountHashBytesParser extends CLValueBytesParsers {
 
     const accountHashBytes = bytes.subarray(0, ACCOUNT_HASH_LENGTH);
     const accountHash = new CLAccountHash(accountHashBytes);
-
     return resultHelper(Ok(accountHash), bytes.subarray(ACCOUNT_HASH_LENGTH));
   }
 }

@@ -27,6 +27,7 @@ import {
 } from './constants';
 import {
   CLValueBytesParsers,
+  CLAccountHashBytesParser,
   CLType,
   ResultAndRemainder,
   resultHelper,
@@ -156,6 +157,9 @@ export const matchTypeToCLType = (type: any): CLType => {
 export const matchByteParserByCLType = (
   val: CLType
 ): Result<CLValueBytesParsers, string> => {
+  if (val.tag === -1) {
+    return Ok(new CLAccountHashBytesParser());
+  }
   if (val.tag === CLTypeTag.Bool) {
     return Ok(new CLBoolBytesParser());
   }
