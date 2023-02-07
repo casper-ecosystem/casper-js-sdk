@@ -77,7 +77,7 @@ abstract class Numeric extends CLValue {
 
 // CLI32
 export class CLI32Type extends CLType {
-  linksTo = CLI32;
+  linksTo = I32_ID;
   tag = CLTypeTag.I32;
 
   toString(): string {
@@ -116,7 +116,7 @@ export class CLI32 extends Numeric {
 
 // CLI64
 export class CLI64Type extends CLType {
-  linksTo = CLI64;
+  linksTo = I64_ID;
   tag = CLTypeTag.I64;
 
   toString(): string {
@@ -155,7 +155,7 @@ export class CLI64 extends Numeric {
 
 // CLU8
 export class CLU8Type extends CLType {
-  linksTo = CLU8;
+  linksTo = U8_ID;
   tag = CLTypeTag.U8;
 
   toString(): string {
@@ -190,7 +190,7 @@ export class CLU8 extends Numeric {
 
 // CLU32
 export class CLU32Type extends CLType {
-  linksTo = CLU32;
+  linksTo = U32_ID;
   tag = CLTypeTag.U32;
 
   toString(): string {
@@ -228,7 +228,7 @@ export class CLU32 extends Numeric {
 
 // CLU64
 export class CLU64Type extends CLType {
-  linksTo = CLU64;
+  linksTo = U64_ID;
   tag = CLTypeTag.U64;
 
   toString(): string {
@@ -266,7 +266,7 @@ export class CLU64 extends Numeric {
 
 // CLU128
 export class CLU128Type extends CLType {
-  linksTo = CLU128;
+  linksTo = U128_ID;
   tag = CLTypeTag.U128;
 
   toString(): string {
@@ -298,7 +298,7 @@ export class CLU128 extends Numeric {
 
 // CLU256
 export class CLU256Type extends CLType {
-  linksTo = CLU256;
+  linksTo = U256_ID;
   tag = CLTypeTag.U256;
 
   toString(): string {
@@ -330,7 +330,7 @@ export class CLU256 extends Numeric {
 
 // CLU512
 export class CLU512Type extends CLType {
-  linksTo = CLU512;
+  linksTo = U512_ID;
   tag = CLTypeTag.U512;
 
   toString(): string {

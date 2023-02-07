@@ -34,7 +34,7 @@ export enum AccessRights {
 }
 
 export class CLURefType extends CLType {
-  linksTo = CLURef;
+  linksTo = UREF_ID;
   tag = CLTypeTag.URef;
 
   toString(): string {

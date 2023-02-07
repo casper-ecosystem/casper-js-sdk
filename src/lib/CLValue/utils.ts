@@ -1,6 +1,7 @@
 import { Result, Ok, Err } from 'ts-results';
 
 import {
+  ACCOUNT_HASH_ID,
   BOOL_ID,
   LIST_ID,
   BYTE_ARRAY_ID,
@@ -23,8 +24,7 @@ import {
   TUPLE2_ID,
   TUPLE3_ID,
   OPTION_ID,
-  CLTypeTag,
-  ALIAS_ACCOUNT_HASH_TO_BYTE_ARRAY
+  CLTypeTag
 } from './constants';
 import {
   CLValueBytesParsers,
@@ -158,71 +158,71 @@ export const matchTypeToCLType = (type: any): CLType => {
 export const matchByteParserByCLType = (
   val: CLType
 ): Result<CLValueBytesParsers, string> => {
-  if (val.tag === ALIAS_ACCOUNT_HASH_TO_BYTE_ARRAY) {
+  if (val.linksTo === ACCOUNT_HASH_ID) {
     return Ok(new CLAccountHashBytesParser());
   }
-  if (val.tag === CLTypeTag.Bool) {
+  if (val.linksTo === BOOL_ID) {
     return Ok(new CLBoolBytesParser());
   }
-  if (val.tag === CLTypeTag.I32) {
+  if (val.linksTo === I32_ID) {
     return Ok(new CLI32BytesParser());
   }
-  if (val.tag === CLTypeTag.I64) {
+  if (val.linksTo === I64_ID) {
     return Ok(new CLI64BytesParser());
   }
-  if (val.tag === CLTypeTag.U8) {
+  if (val.linksTo === U8_ID) {
     return Ok(new CLU8BytesParser());
   }
-  if (val.tag === CLTypeTag.U32) {
+  if (val.linksTo === U32_ID) {
     return Ok(new CLU32BytesParser());
   }
-  if (val.tag === CLTypeTag.U64) {
+  if (val.linksTo === U64_ID) {
     return Ok(new CLU64BytesParser());
   }
-  if (val.tag === CLTypeTag.U128) {
+  if (val.linksTo === U128_ID) {
     return Ok(new CLU128BytesParser());
   }
-  if (val.tag === CLTypeTag.U256) {
+  if (val.linksTo === U256_ID) {
     return Ok(new CLU256BytesParser());
   }
-  if (val.tag === CLTypeTag.U512) {
+  if (val.linksTo === U512_ID) {
     return Ok(new CLU512BytesParser());
   }
-  if (val.tag === CLTypeTag.ByteArray) {
+  if (val.linksTo === BYTE_ARRAY_ID) {
     return Ok(new CLByteArrayBytesParser());
   }
-  if (val.tag === CLTypeTag.URef) {
+  if (val.linksTo === UREF_ID) {
     return Ok(new CLURefBytesParser());
   }
-  if (val.tag === CLTypeTag.Key) {
+  if (val.linksTo === KEY_ID) {
     return Ok(new CLKeyBytesParser());
   }
-  if (val.tag === CLTypeTag.PublicKey) {
+  if (val.linksTo === PUBLIC_KEY_ID) {
     return Ok(new CLPublicKeyBytesParser());
   }
-  if (val.tag === CLTypeTag.List) {
+  if (val.linksTo === LIST_ID) {
     return Ok(new CLListBytesParser());
   }
-  if (val.tag === CLTypeTag.Map) {
+  if (val.linksTo === MAP_ID) {
     return Ok(new CLMapBytesParser());
   }
   if (
-    val.tag === CLTypeTag.Tuple1 ||
-    val.tag === CLTypeTag.Tuple2 ||
-    val.tag === CLTypeTag.Tuple3
+    val.linksTo === TUPLE1_ID ||
+    val.linksTo === TUPLE2_ID ||
+    val.linksTo === TUPLE3_ID
   ) {
     return Ok(new CLTupleBytesParser());
   }
-  if (val.tag === CLTypeTag.Option) {
+  if (val.linksTo === OPTION_ID) {
     return Ok(new CLOptionBytesParser());
   }
-  if (val.tag === CLTypeTag.Result) {
+  if (val.linksTo === RESULT_ID) {
     return Ok(new CLResultBytesParser());
   }
-  if (val.tag === CLTypeTag.String) {
+  if (val.linksTo === STRING_ID) {
     return Ok(new CLStringBytesParser());
   }
-  if (val.tag === CLTypeTag.Unit) {
+  if (val.linksTo === UNIT_ID) {
     return Ok(new CLUnitBytesParser());
   }
   return Err('Unknown type');

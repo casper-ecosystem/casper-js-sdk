@@ -37,7 +37,7 @@ type KeyVal = CLValue;
 
 export class CLMapType<K extends CLType, V extends CLType> extends CLType {
   tag = CLTypeTag.Map;
-  linksTo = CLMap;
+  linksTo = MAP_ID;
 
   innerKey: K;
   innerValue: V;

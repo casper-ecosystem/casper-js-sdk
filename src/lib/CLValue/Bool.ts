@@ -12,7 +12,7 @@ import {
 import { BOOL_ID, CLTypeTag } from './constants';
 
 export class CLBoolType extends CLType {
-  linksTo = CLBool;
+  linksTo = BOOL_ID;
   tag = CLTypeTag.Bool;
 
   toString(): string {

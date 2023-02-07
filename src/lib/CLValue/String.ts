@@ -13,7 +13,7 @@ import { STRING_ID, CLTypeTag } from './constants';
 import { toBytesString, fromBytesString } from '../ByteConverters';
 
 export class CLStringType extends CLType {
-  linksTo = CLString;
+  linksTo = STRING_ID;
   tag = CLTypeTag.String;
 
   toString(): string {

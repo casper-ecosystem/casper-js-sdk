@@ -21,7 +21,7 @@ const OPTION_TAG_SOME = 1;
 
 export class CLOptionType<T extends CLType> extends CLType {
   tag = CLTypeTag.Option;
-  linksTo = CLOption;
+  linksTo = OPTION_ID;
   inner: T;
 
   constructor(inner: T) {

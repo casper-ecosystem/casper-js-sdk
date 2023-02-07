@@ -14,21 +14,20 @@ import {
   ACCOUNT_HASH_LENGTH,
   resultHelper,
   ACCOUNT_HASH_ID,
-  BYTE_ARRAY_ID,
-  ALIAS_ACCOUNT_HASH_TO_BYTE_ARRAY
+  BYTE_ARRAY_ID
 } from './index';
 
 export class CLAccountHashType extends CLType {
-  linksTo = CLAccountHash;
-  tag = ALIAS_ACCOUNT_HASH_TO_BYTE_ARRAY;
+  linksTo = ACCOUNT_HASH_ID;
+  // AccountHash is an alias, not a fully functional CLType so uses the same CLTypeTag as ByteArray
+  tag = CLTypeTag.ByteArray;
 
   toString(): string {
     return ACCOUNT_HASH_ID;
   }
 
-  // AccountHash is an alias, not a fully functional CLType so uses the same CLTypeTag as ByteArray
   toBytes(): Uint8Array {
-    return concat([Uint8Array.from([CLTypeTag.ByteArray]), toBytesU32(32)]);
+    return concat([Uint8Array.from([this.tag]), toBytesU32(32)]);
   }
 
   toJSON(): { [BYTE_ARRAY_ID]: 32 } {

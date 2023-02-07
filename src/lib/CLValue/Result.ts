@@ -19,7 +19,7 @@ const RESULT_TAG_ERROR = 0;
 const RESULT_TAG_OK = 1;
 
 export class CLResultType<T extends CLType, E extends CLType> extends CLType {
-  linksTo = CLResult;
+  linksTo = RESULT_ID;
   tag = CLTypeTag.Result;
 
   innerOk: T;

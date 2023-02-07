@@ -13,16 +13,14 @@ import {
   CLErrorCodes
 } from './index';
 import { TUPLE_MATCH_LEN_TO_ID } from './utils';
-import { CLTypeTag } from './constants';
-
-type TupleTypes = typeof CLTuple1 | typeof CLTuple2 | typeof CLTuple3;
+import { CLTypeTag, TUPLE1_ID, TUPLE2_ID, TUPLE3_ID } from './constants';
 
 export abstract class CLTupleType extends CLType {
   tag: CLTypeTag;
-  linksTo: TupleTypes;
+  linksTo: string;
   inner: Array<CLType>;
 
-  constructor(inner: Array<CLType>, linksTo: TupleTypes, tag: CLTypeTag) {
+  constructor(inner: Array<CLType>, linksTo: string, tag: CLTypeTag) {
     super();
     this.inner = inner;
     this.linksTo = linksTo;
@@ -128,7 +126,7 @@ abstract class CLTuple extends CLValue {
 
 export class CLTuple1Type extends CLTupleType {
   constructor(inner: Array<CLType>) {
-    super(inner, CLTuple1, CLTypeTag.Tuple1);
+    super(inner, TUPLE1_ID, CLTypeTag.Tuple1);
   }
 }
 
@@ -144,7 +142,7 @@ export class CLTuple1 extends CLTuple {
 
 export class CLTuple2Type extends CLTupleType {
   constructor(inner: Array<CLType>) {
-    super(inner, CLTuple2, CLTypeTag.Tuple2);
+    super(inner, TUPLE2_ID, CLTypeTag.Tuple2);
   }
 }
 
@@ -160,7 +158,7 @@ export class CLTuple2 extends CLTuple {
 
 export class CLTuple3Type extends CLTupleType {
   constructor(inner: Array<CLType>) {
-    super(inner, CLTuple3, CLTypeTag.Tuple3);
+    super(inner, TUPLE3_ID, CLTypeTag.Tuple3);
   }
 }
 

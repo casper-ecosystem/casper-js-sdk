@@ -27,7 +27,7 @@ export enum CLPublicKeyTag {
 }
 
 export class CLPublicKeyType extends CLType {
-  linksTo = CLPublicKey;
+  linksTo = PUBLIC_KEY_ID;
   tag = CLTypeTag.PublicKey;
 
   toString(): string {

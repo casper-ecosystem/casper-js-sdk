@@ -13,7 +13,7 @@ import { UNIT_ID, CLTypeTag } from './constants';
 
 export class CLUnitType extends CLType {
   tag = CLTypeTag.Unit;
-  linksTo = CLUnit;
+  linksTo = UNIT_ID;
 
   toString(): string {
     return UNIT_ID;
