@@ -15,14 +15,6 @@ import { toBytesString, fromBytesString } from '../ByteConverters';
 export class CLStringType extends CLType {
   linksTo = STRING_ID;
   tag = CLTypeTag.String;
-
-  toString(): string {
-    return STRING_ID;
-  }
-
-  toJSON(): string {
-    return this.toString();
-  }
 }
 
 export class CLStringBytesParser extends CLValueBytesParsers {

@@ -34,7 +34,6 @@ export const resultHelper = <T, E>(
 };
 
 export abstract class CLType {
-  abstract toJSON(): any;
   abstract linksTo: string;
   abstract tag: CLTypeTag;
   toBytes(): Uint8Array {
@@ -42,6 +41,9 @@ export abstract class CLType {
   }
   toString(): string {
     return this.linksTo;
+  }
+  toJSON(): unknown {
+    return this.toString();
   }
 }
 

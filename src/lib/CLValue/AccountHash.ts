@@ -1,4 +1,3 @@
-// TODO: In v3 we need better way of dealing with Alias types
 import { Ok, Err } from 'ts-results';
 
 import {

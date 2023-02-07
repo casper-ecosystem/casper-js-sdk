@@ -29,14 +29,6 @@ export enum CLPublicKeyTag {
 export class CLPublicKeyType extends CLType {
   linksTo = PUBLIC_KEY_ID;
   tag = CLTypeTag.PublicKey;
-
-  toString(): string {
-    return PUBLIC_KEY_ID;
-  }
-
-  toJSON(): string {
-    return this.toString();
-  }
 }
 
 export class CLPublicKeyBytesParser extends CLValueBytesParsers {

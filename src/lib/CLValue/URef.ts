@@ -36,14 +36,6 @@ export enum AccessRights {
 export class CLURefType extends CLType {
   linksTo = UREF_ID;
   tag = CLTypeTag.URef;
-
-  toString(): string {
-    return UREF_ID;
-  }
-
-  toJSON(): string {
-    return this.toString();
-  }
 }
 
 const FORMATTED_STRING_PREFIX = 'uref';

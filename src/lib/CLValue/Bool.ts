@@ -14,14 +14,6 @@ import { BOOL_ID, CLTypeTag } from './constants';
 export class CLBoolType extends CLType {
   linksTo = BOOL_ID;
   tag = CLTypeTag.Bool;
-
-  toString(): string {
-    return BOOL_ID;
-  }
-
-  toJSON(): string {
-    return this.toString();
-  }
 }
 
 export class CLBoolBytesParser extends CLValueBytesParsers {

@@ -32,14 +32,6 @@ const HASH_LENGTH = 32;
 export class CLKeyType extends CLType {
   linksTo = KEY_ID;
   tag = CLTypeTag.Key;
-
-  toString(): string {
-    return KEY_ID;
-  }
-
-  toJSON(): string {
-    return this.toString();
-  }
 }
 
 export class CLKeyBytesParser extends CLValueBytesParsers {
