@@ -1,12 +1,12 @@
-// NOTE: Currently this isn't supported CLValue
-// Don't export it outside internal code!
-
 import { Ok, Err } from 'ts-results';
+import { concat } from '@ethersproject/bytes';
+import { toBytesU32 } from '../ByteConverters';
 
 import {
   CLValue,
   CLValueBytesParsers,
   CLType,
+  CLTypeTag,
   CLErrorCodes,
   ResultAndRemainder,
   ToBytesResult,
@@ -17,10 +17,16 @@ import {
 
 export class CLAccountHashType extends CLType {
   linksTo = CLAccountHash;
-  tag = -1;
+  // The tag is same as ByteArray as AccountHash is just an alias type.
+  // This might be considered unclear, so in next version we should found more transparent way of declaring aliases.
+  tag = CLTypeTag.ByteArray;
 
   toString(): string {
     return ACCOUNT_HASH_ID;
+  }
+
+  toBytes(): Uint8Array {
+    return concat([Uint8Array.from([this.tag]), toBytesU32(32)]);
   }
 
   toJSON(): string {
@@ -42,8 +48,7 @@ export class CLAccountHashBytesParser extends CLValueBytesParsers {
       );
     }
 
-    const accountHashBytes = bytes.subarray(0, ACCOUNT_HASH_LENGTH);
-    const accountHash = new CLAccountHash(accountHashBytes);
+    const accountHash = new CLAccountHash(bytes);
     return resultHelper(Ok(accountHash), bytes.subarray(ACCOUNT_HASH_LENGTH));
   }
 }
