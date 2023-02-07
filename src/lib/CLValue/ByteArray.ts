@@ -26,10 +26,6 @@ export class CLByteArrayType extends CLType {
     this.size = size;
   }
 
-  toString(): string {
-    return BYTE_ARRAY_ID;
-  }
-
   toBytes(): Uint8Array {
     return concat([Uint8Array.from([this.tag]), toBytesU32(this.size)]);
   }

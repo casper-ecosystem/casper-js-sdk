@@ -34,13 +34,14 @@ export const resultHelper = <T, E>(
 };
 
 export abstract class CLType {
-  abstract toString(): string;
   abstract toJSON(): any;
-  abstract linksTo: any;
+  abstract linksTo: string;
   abstract tag: CLTypeTag;
-
   toBytes(): Uint8Array {
     return Uint8Array.from([this.tag]);
+  }
+  toString(): string {
+    return this.linksTo;
   }
 }
 
