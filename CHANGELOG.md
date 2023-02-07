@@ -13,10 +13,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Changed
 
-- `CLPublicKey.toHex()` now by default returns checksummed value. You can use it in legacy mode by calling it `CLPublicKey.toHex(false)` that way.
-- # `CLPublicKey.fromHex()` now can get two arguments. The first one is string containing hex encoded public key, and the second one is a boolean value that indicates if you want to run checksum validation. When `true` is passed it will throw an error. Otherwise it will log warn to the console. We added this because we want to support users who store the non-checksumed publickeys and need time to adapt.
 - `CLPublicKey.toHex()` now by default returns checksummed value. You can use it in legacy mode by calling it `CLPublicKey.toHex(false)` that way
 - `CLPublicKey.fromHex()` now can get two arguments. The first one is string containing hex encoded public key, and the second one is a boolean value that indicates if you want to run checksum validation. When `true` is passed it will throw an error. Otherwise it will log warn to the console. We added this because we want to support users who store the non-checksumed publickeys and need time to adapt
+- `AccountHash` now can be serialized to bytes
 
 ### Fixed
 

@@ -23,7 +23,8 @@ import {
   TUPLE2_ID,
   TUPLE3_ID,
   OPTION_ID,
-  CLTypeTag
+  CLTypeTag,
+  ALIAS_ACCOUNT_HASH_TO_BYTE_ARRAY
 } from './constants';
 import {
   CLValueBytesParsers,
@@ -157,7 +158,7 @@ export const matchTypeToCLType = (type: any): CLType => {
 export const matchByteParserByCLType = (
   val: CLType
 ): Result<CLValueBytesParsers, string> => {
-  if (val.tag === -1) {
+  if (val.tag === ALIAS_ACCOUNT_HASH_TO_BYTE_ARRAY) {
     return Ok(new CLAccountHashBytesParser());
   }
   if (val.tag === CLTypeTag.Bool) {

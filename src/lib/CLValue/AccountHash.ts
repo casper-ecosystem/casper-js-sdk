@@ -13,12 +13,15 @@ import {
   ToBytesResult,
   ACCOUNT_HASH_LENGTH,
   resultHelper,
-  ACCOUNT_HASH_ID
+  ACCOUNT_HASH_ID,
+  BYTE_ARRAY_ID,
+  ALIAS_ACCOUNT_HASH_TO_BYTE_ARRAY
 } from './index';
 
 export class CLAccountHashType extends CLType {
   linksTo = CLAccountHash;
-  tag = -1;
+  tag = ALIAS_ACCOUNT_HASH_TO_BYTE_ARRAY;
+  size: 32;
 
   toString(): string {
     return ACCOUNT_HASH_ID;
@@ -29,8 +32,10 @@ export class CLAccountHashType extends CLType {
     return concat([Uint8Array.from([CLTypeTag.ByteArray]), toBytesU32(32)]);
   }
 
-  toJSON(): string {
-    return this.toString();
+  toJSON(): { [BYTE_ARRAY_ID]: 32 } {
+    return {
+      [BYTE_ARRAY_ID]: this.size
+    };
   }
 }
 
