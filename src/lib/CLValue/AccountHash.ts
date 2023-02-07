@@ -21,7 +21,6 @@ import {
 export class CLAccountHashType extends CLType {
   linksTo = CLAccountHash;
   tag = ALIAS_ACCOUNT_HASH_TO_BYTE_ARRAY;
-  size: 32;
 
   toString(): string {
     return ACCOUNT_HASH_ID;
@@ -34,7 +33,7 @@ export class CLAccountHashType extends CLType {
 
   toJSON(): { [BYTE_ARRAY_ID]: 32 } {
     return {
-      [BYTE_ARRAY_ID]: this.size
+      [BYTE_ARRAY_ID]: 32
     };
   }
 }
