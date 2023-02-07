@@ -48,7 +48,9 @@ export class CLAccountHashBytesParser extends CLValueBytesParsers {
       );
     }
 
-    const accountHash = new CLAccountHash(bytes);
+    const accountHashBytes = bytes.subarray(0, ACCOUNT_HASH_LENGTH);
+    const accountHash = new CLAccountHash(accountHashBytes);
+
     return resultHelper(Ok(accountHash), bytes.subarray(ACCOUNT_HASH_LENGTH));
   }
 }
