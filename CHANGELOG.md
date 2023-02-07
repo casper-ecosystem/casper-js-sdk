@@ -29,7 +29,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Added typings to `JsonExecutableDeployItem`
 - Fixed how the `EventStream` URL is build
 - Replaced `ts-results` dependency for our [own fork](https://github.com/CasperLabs/ts-results) because of the conflicting config
-  > > > > > > > aadc44e2123403d6f89251040bf35cb859a34b61
 
 ## 2.10.0
 
