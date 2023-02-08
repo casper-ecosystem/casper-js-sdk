@@ -9,11 +9,11 @@ import {
   CLErrorCodes,
   CLValueBytesParsers
 } from './index';
-import { STRING_ID, CLTypeTag } from './constants';
+import { STRING_TYPE, CLTypeTag } from './constants';
 import { toBytesString, fromBytesString } from '../ByteConverters';
 
 export class CLStringType extends CLType {
-  linksTo = STRING_ID;
+  linksTo = STRING_TYPE;
   tag = CLTypeTag.String;
 }
 

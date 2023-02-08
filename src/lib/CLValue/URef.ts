@@ -11,7 +11,7 @@ import {
   resultHelper,
   padNum
 } from './index';
-import { UREF_ID, CLTypeTag } from './constants';
+import { UREF_TYPE, CLTypeTag } from './constants';
 import { decodeBase16, encodeBase16 } from '../Conversions';
 
 export enum AccessRights {
@@ -34,7 +34,7 @@ export enum AccessRights {
 }
 
 export class CLURefType extends CLType {
-  linksTo = UREF_ID;
+  linksTo = UREF_TYPE;
   tag = CLTypeTag.URef;
 }
 

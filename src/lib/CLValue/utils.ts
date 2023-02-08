@@ -1,29 +1,29 @@
 import { Result, Ok, Err } from 'ts-results';
 
 import {
-  ACCOUNT_HASH_ID,
-  BOOL_ID,
-  LIST_ID,
-  BYTE_ARRAY_ID,
-  KEY_ID,
-  PUBLIC_KEY_ID,
-  MAP_ID,
-  STRING_ID,
-  UREF_ID,
-  UNIT_ID,
-  RESULT_ID,
-  I32_ID,
-  I64_ID,
-  U8_ID,
-  U32_ID,
-  U64_ID,
-  U128_ID,
-  U256_ID,
-  U512_ID,
-  TUPLE1_ID,
-  TUPLE2_ID,
-  TUPLE3_ID,
-  OPTION_ID,
+  ACCOUNT_HASH_TYPE,
+  BOOL_TYPE,
+  LIST_TYPE,
+  BYTE_ARRAY_TYPE,
+  KEY_TYPE,
+  PUBLIC_KEY_TYPE,
+  MAP_TYPE,
+  STRING_TYPE,
+  UREF_TYPE,
+  UNIT_TYPE,
+  RESULT_TYPE,
+  I32_TYPE,
+  I64_TYPE,
+  U8_TYPE,
+  U32_TYPE,
+  U64_TYPE,
+  U128_TYPE,
+  U256_TYPE,
+  U512_TYPE,
+  TUPLE1_TYPE,
+  TUPLE2_TYPE,
+  TUPLE3_TYPE,
+  OPTION_TYPE,
   CLTypeTag
 } from './constants';
 import {
@@ -76,38 +76,38 @@ import {
   CLUnitBytesParser
 } from './index';
 
-export const TUPLE_MATCH_LEN_TO_ID = [TUPLE1_ID, TUPLE2_ID, TUPLE3_ID];
+export const TUPLE_MATCH_LEN_TO_TYPE = [TUPLE1_TYPE, TUPLE2_TYPE, TUPLE3_TYPE];
 
 export const matchTypeToCLType = (type: any): CLType => {
   if (typeof type === typeof 'string') {
     switch (type) {
-      case BOOL_ID:
+      case BOOL_TYPE:
         return new CLBoolType();
-      case KEY_ID:
+      case KEY_TYPE:
         return new CLKeyType();
-      case PUBLIC_KEY_ID:
+      case PUBLIC_KEY_TYPE:
         return new CLPublicKeyType();
-      case STRING_ID:
+      case STRING_TYPE:
         return new CLStringType();
-      case UREF_ID:
+      case UREF_TYPE:
         return new CLURefType();
-      case UNIT_ID:
+      case UNIT_TYPE:
         return new CLUnitType();
-      case I32_ID:
+      case I32_TYPE:
         return new CLI32Type();
-      case I64_ID:
+      case I64_TYPE:
         return new CLI64Type();
-      case U8_ID:
+      case U8_TYPE:
         return new CLU8Type();
-      case U32_ID:
+      case U32_TYPE:
         return new CLU32Type();
-      case U64_ID:
+      case U64_TYPE:
         return new CLU64Type();
-      case U128_ID:
+      case U128_TYPE:
         return new CLU128Type();
-      case U256_ID:
+      case U256_TYPE:
         return new CLU256Type();
-      case U512_ID:
+      case U512_TYPE:
         return new CLU512Type();
       default:
         throw new Error(`The simple type ${type} is not supported`);
@@ -115,38 +115,38 @@ export const matchTypeToCLType = (type: any): CLType => {
   }
 
   if (typeof type === typeof {}) {
-    if (LIST_ID in type) {
-      const inner = matchTypeToCLType(type[LIST_ID]);
+    if (LIST_TYPE in type) {
+      const inner = matchTypeToCLType(type[LIST_TYPE]);
       return new CLListType(inner);
     }
-    if (BYTE_ARRAY_ID in type) {
-      const size = type[BYTE_ARRAY_ID];
+    if (BYTE_ARRAY_TYPE in type) {
+      const size = type[BYTE_ARRAY_TYPE];
       return new CLByteArrayType(size);
     }
-    if (MAP_ID in type) {
-      const keyType = matchTypeToCLType(type[MAP_ID].key);
-      const valType = matchTypeToCLType(type[MAP_ID].value);
+    if (MAP_TYPE in type) {
+      const keyType = matchTypeToCLType(type[MAP_TYPE].key);
+      const valType = matchTypeToCLType(type[MAP_TYPE].value);
       return new CLMapType([keyType, valType]);
     }
-    if (TUPLE1_ID in type) {
-      const vals = type[TUPLE1_ID].map((t: any) => matchTypeToCLType(t));
+    if (TUPLE1_TYPE in type) {
+      const vals = type[TUPLE1_TYPE].map((t: any) => matchTypeToCLType(t));
       return new CLTuple1Type(vals);
     }
-    if (TUPLE2_ID in type) {
-      const vals = type[TUPLE2_ID].map((t: any) => matchTypeToCLType(t));
+    if (TUPLE2_TYPE in type) {
+      const vals = type[TUPLE2_TYPE].map((t: any) => matchTypeToCLType(t));
       return new CLTuple2Type(vals);
     }
-    if (TUPLE3_ID in type) {
-      const vals = type[TUPLE3_ID].map((t: any) => matchTypeToCLType(t));
+    if (TUPLE3_TYPE in type) {
+      const vals = type[TUPLE3_TYPE].map((t: any) => matchTypeToCLType(t));
       return new CLTuple3Type(vals);
     }
-    if (OPTION_ID in type) {
-      const inner = matchTypeToCLType(type[OPTION_ID]);
+    if (OPTION_TYPE in type) {
+      const inner = matchTypeToCLType(type[OPTION_TYPE]);
       return new CLOptionType(inner);
     }
-    if (RESULT_ID in type) {
-      const innerOk = matchTypeToCLType(type[RESULT_ID].ok);
-      const innerErr = matchTypeToCLType(type[RESULT_ID].err);
+    if (RESULT_TYPE in type) {
+      const innerOk = matchTypeToCLType(type[RESULT_TYPE].ok);
+      const innerErr = matchTypeToCLType(type[RESULT_TYPE].err);
       return new CLResultType({ ok: innerOk, err: innerErr });
     }
     throw new Error(`The complex type ${type} is not supported`);
@@ -158,71 +158,71 @@ export const matchTypeToCLType = (type: any): CLType => {
 export const matchByteParserByCLType = (
   val: CLType
 ): Result<CLValueBytesParsers, string> => {
-  if (val.linksTo === ACCOUNT_HASH_ID) {
+  if (val.linksTo === ACCOUNT_HASH_TYPE) {
     return Ok(new CLAccountHashBytesParser());
   }
-  if (val.linksTo === BOOL_ID) {
+  if (val.linksTo === BOOL_TYPE) {
     return Ok(new CLBoolBytesParser());
   }
-  if (val.linksTo === I32_ID) {
+  if (val.linksTo === I32_TYPE) {
     return Ok(new CLI32BytesParser());
   }
-  if (val.linksTo === I64_ID) {
+  if (val.linksTo === I64_TYPE) {
     return Ok(new CLI64BytesParser());
   }
-  if (val.linksTo === U8_ID) {
+  if (val.linksTo === U8_TYPE) {
     return Ok(new CLU8BytesParser());
   }
-  if (val.linksTo === U32_ID) {
+  if (val.linksTo === U32_TYPE) {
     return Ok(new CLU32BytesParser());
   }
-  if (val.linksTo === U64_ID) {
+  if (val.linksTo === U64_TYPE) {
     return Ok(new CLU64BytesParser());
   }
-  if (val.linksTo === U128_ID) {
+  if (val.linksTo === U128_TYPE) {
     return Ok(new CLU128BytesParser());
   }
-  if (val.linksTo === U256_ID) {
+  if (val.linksTo === U256_TYPE) {
     return Ok(new CLU256BytesParser());
   }
-  if (val.linksTo === U512_ID) {
+  if (val.linksTo === U512_TYPE) {
     return Ok(new CLU512BytesParser());
   }
-  if (val.linksTo === BYTE_ARRAY_ID) {
+  if (val.linksTo === BYTE_ARRAY_TYPE) {
     return Ok(new CLByteArrayBytesParser());
   }
-  if (val.linksTo === UREF_ID) {
+  if (val.linksTo === UREF_TYPE) {
     return Ok(new CLURefBytesParser());
   }
-  if (val.linksTo === KEY_ID) {
+  if (val.linksTo === KEY_TYPE) {
     return Ok(new CLKeyBytesParser());
   }
-  if (val.linksTo === PUBLIC_KEY_ID) {
+  if (val.linksTo === PUBLIC_KEY_TYPE) {
     return Ok(new CLPublicKeyBytesParser());
   }
-  if (val.linksTo === LIST_ID) {
+  if (val.linksTo === LIST_TYPE) {
     return Ok(new CLListBytesParser());
   }
-  if (val.linksTo === MAP_ID) {
+  if (val.linksTo === MAP_TYPE) {
     return Ok(new CLMapBytesParser());
   }
   if (
-    val.linksTo === TUPLE1_ID ||
-    val.linksTo === TUPLE2_ID ||
-    val.linksTo === TUPLE3_ID
+    val.linksTo === TUPLE1_TYPE ||
+    val.linksTo === TUPLE2_TYPE ||
+    val.linksTo === TUPLE3_TYPE
   ) {
     return Ok(new CLTupleBytesParser());
   }
-  if (val.linksTo === OPTION_ID) {
+  if (val.linksTo === OPTION_TYPE) {
     return Ok(new CLOptionBytesParser());
   }
-  if (val.linksTo === RESULT_ID) {
+  if (val.linksTo === RESULT_TYPE) {
     return Ok(new CLResultBytesParser());
   }
-  if (val.linksTo === STRING_ID) {
+  if (val.linksTo === STRING_TYPE) {
     return Ok(new CLStringBytesParser());
   }
-  if (val.linksTo === UNIT_ID) {
+  if (val.linksTo === UNIT_TYPE) {
     return Ok(new CLUnitBytesParser());
   }
   return Err('Unknown type');

@@ -8,14 +8,14 @@ import {
   ResultAndRemainder,
   ToBytesResult,
   resultHelper,
-  ACCOUNT_HASH_ID,
+  ACCOUNT_HASH_TYPE,
   CLByteArrayType,
   ACCOUNT_HASH_LENGTH
 } from './index';
 
 // AccountHash is an alias, not a fully functional CLType so uses the same CLTypeTag as ByteArray
 export class CLAccountHashType extends CLByteArrayType {
-  linksTo = ACCOUNT_HASH_ID;
+  linksTo = ACCOUNT_HASH_TYPE;
 
   constructor() {
     super(ACCOUNT_HASH_LENGTH);

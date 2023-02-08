@@ -21,16 +21,16 @@ import {
   CLValueParsers,
   CLPublicKey,
   resultHelper,
-  ACCOUNT_HASH_ID,
-  BYTE_ARRAY_ID,
-  UREF_ID
+  ACCOUNT_HASH_TYPE,
+  BYTE_ARRAY_TYPE,
+  UREF_TYPE
 } from './index';
-import { KEY_ID, CLTypeTag } from './constants';
+import { KEY_TYPE, CLTypeTag } from './constants';
 
 const HASH_LENGTH = 32;
 
 export class CLKeyType extends CLType {
-  linksTo = KEY_ID;
+  linksTo = KEY_TYPE;
   tag = CLTypeTag.Key;
 }
 
@@ -155,14 +155,14 @@ export class CLKey extends CLValue {
   }
 
   isHash(): boolean {
-    return this.data.clType().linksTo === BYTE_ARRAY_ID;
+    return this.data.clType().linksTo === BYTE_ARRAY_TYPE;
   }
 
   isURef(): boolean {
-    return this.data.clType().linksTo === UREF_ID;
+    return this.data.clType().linksTo === UREF_TYPE;
   }
 
   isAccount(): boolean {
-    return this.data.clType().linksTo === ACCOUNT_HASH_ID;
+    return this.data.clType().linksTo === ACCOUNT_HASH_TYPE;
   }
 }

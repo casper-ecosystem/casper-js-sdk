@@ -14,14 +14,14 @@ import {
   matchByteParserByCLType
 } from './index';
 
-import { CLTypeTag, OPTION_ID } from './constants';
+import { CLTypeTag, OPTION_TYPE } from './constants';
 
 const OPTION_TAG_NONE = 0;
 const OPTION_TAG_SOME = 1;
 
 export class CLOptionType<T extends CLType> extends CLType {
   tag = CLTypeTag.Option;
-  linksTo = OPTION_ID;
+  linksTo = OPTION_TYPE;
   inner: T;
 
   constructor(inner: T) {
@@ -31,10 +31,10 @@ export class CLOptionType<T extends CLType> extends CLType {
 
   toString(): string {
     if (this.inner === null) {
-      return `${OPTION_ID} (None)`;
+      return `${OPTION_TYPE} (None)`;
     }
 
-    return `${OPTION_ID} (${this.inner.toString()})`;
+    return `${OPTION_TYPE} (${this.inner.toString()})`;
   }
 
   toBytes(): Uint8Array {
@@ -43,7 +43,7 @@ export class CLOptionType<T extends CLType> extends CLType {
 
   toJSON(): any {
     return {
-      [OPTION_ID]: this.inner.toJSON()
+      [OPTION_TYPE]: this.inner.toJSON()
     };
   }
 }

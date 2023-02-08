@@ -9,10 +9,10 @@ import {
   resultHelper,
   CLValueBytesParsers
 } from './index';
-import { BOOL_ID, CLTypeTag } from './constants';
+import { BOOL_TYPE, CLTypeTag } from './constants';
 
 export class CLBoolType extends CLType {
-  linksTo = BOOL_ID;
+  linksTo = BOOL_TYPE;
   tag = CLTypeTag.Bool;
 }
 

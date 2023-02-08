@@ -13,7 +13,7 @@ import {
   CLValueBytesParsers,
   matchByteParserByCLType
 } from './index';
-import { MAP_ID, CLTypeTag } from './constants';
+import { MAP_TYPE, CLTypeTag } from './constants';
 import { toBytesU32 } from '../ByteConverters';
 
 export interface MapEntryType {
@@ -37,7 +37,7 @@ type KeyVal = CLValue;
 
 export class CLMapType<K extends CLType, V extends CLType> extends CLType {
   tag = CLTypeTag.Map;
-  linksTo = MAP_ID;
+  linksTo = MAP_TYPE;
 
   innerKey: K;
   innerValue: V;
@@ -49,7 +49,7 @@ export class CLMapType<K extends CLType, V extends CLType> extends CLType {
   }
 
   toString(): string {
-    return `${MAP_ID} (${this.innerKey.toString()}: ${this.innerValue.toString()})`;
+    return `${MAP_TYPE} (${this.innerKey.toString()}: ${this.innerValue.toString()})`;
   }
 
   toBytes(): Uint8Array {
@@ -62,7 +62,7 @@ export class CLMapType<K extends CLType, V extends CLType> extends CLType {
 
   toJSON(): any {
     return {
-      [MAP_ID]: {
+      [MAP_TYPE]: {
         key: this.innerKey.toJSON(),
         value: this.innerValue.toJSON()
       }
