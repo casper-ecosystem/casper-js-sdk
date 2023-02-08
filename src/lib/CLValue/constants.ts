@@ -71,8 +71,6 @@ export enum CLTypeTag {
   PublicKey = 22
 }
 
-export const ALIAS_ACCOUNT_HASH_TO_BYTE_ARRAY = -1;
-
 export const BOOL_TYPE = 'Bool';
 export const KEY_TYPE = 'Key';
 export const PUBLIC_KEY_TYPE = 'PublicKey';
