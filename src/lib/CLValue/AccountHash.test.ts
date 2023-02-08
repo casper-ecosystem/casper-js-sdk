@@ -14,7 +14,7 @@ describe('CLAccountHash', () => {
     const expectedBytes = Uint8Array.from(Array(32).fill(42));
     const expectedHash = new CLAccountHash(expectedBytes);
 
-    const bytes = CLValueParsers.toBytes(hash).unwrap();
+    const bytes = CLValueParsers.toBytes(expectedHash).unwrap();
     const hash = CLValueParsers.fromBytes(
       bytes,
       new CLAccountHashType()
