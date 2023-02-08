@@ -158,74 +158,54 @@ export const matchTypeToCLType = (type: any): CLType => {
 export const matchByteParserByCLType = (
   val: CLType
 ): Result<CLValueBytesParsers, string> => {
-  if (val.linksTo === ACCOUNT_HASH_TYPE) {
-    return Ok(new CLAccountHashBytesParser());
+  switch (val.linksTo) {
+    case ACCOUNT_HASH_TYPE:
+      return Ok(new CLAccountHashBytesParser());
+    case BOOL_TYPE:
+      return Ok(new CLBoolBytesParser());
+    case I32_TYPE:
+      return Ok(new CLI32BytesParser());
+    case I64_TYPE:
+      return Ok(new CLI64BytesParser());
+    case U8_TYPE:
+      return Ok(new CLU8BytesParser());
+    case U32_TYPE:
+      return Ok(new CLU32BytesParser());
+    case U64_TYPE:
+      return Ok(new CLU64BytesParser());
+    case U128_TYPE:
+      return Ok(new CLU128BytesParser());
+    case U256_TYPE:
+      return Ok(new CLU256BytesParser());
+    case U512_TYPE:
+      return Ok(new CLU512BytesParser());
+    case BYTE_ARRAY_TYPE:
+      return Ok(new CLByteArrayBytesParser());
+    case UREF_TYPE:
+      return Ok(new CLURefBytesParser());
+    case KEY_TYPE:
+      return Ok(new CLKeyBytesParser());
+    case PUBLIC_KEY_TYPE:
+      return Ok(new CLPublicKeyBytesParser());
+    case LIST_TYPE:
+      return Ok(new CLListBytesParser());
+    case MAP_TYPE:
+      return Ok(new CLMapBytesParser());
+    case TUPLE1_TYPE:
+    case TUPLE2_TYPE:
+    case TUPLE3_TYPE:
+      return Ok(new CLTupleBytesParser());
+    case OPTION_TYPE:
+      return Ok(new CLOptionBytesParser());
+    case RESULT_TYPE:
+      return Ok(new CLResultBytesParser());
+    case STRING_TYPE:
+      return Ok(new CLStringBytesParser());
+    case UNIT_TYPE:
+      return Ok(new CLUnitBytesParser());
+    default:
+      return Err('Unknown type');
   }
-  if (val.linksTo === BOOL_TYPE) {
-    return Ok(new CLBoolBytesParser());
-  }
-  if (val.linksTo === I32_TYPE) {
-    return Ok(new CLI32BytesParser());
-  }
-  if (val.linksTo === I64_TYPE) {
-    return Ok(new CLI64BytesParser());
-  }
-  if (val.linksTo === U8_TYPE) {
-    return Ok(new CLU8BytesParser());
-  }
-  if (val.linksTo === U32_TYPE) {
-    return Ok(new CLU32BytesParser());
-  }
-  if (val.linksTo === U64_TYPE) {
-    return Ok(new CLU64BytesParser());
-  }
-  if (val.linksTo === U128_TYPE) {
-    return Ok(new CLU128BytesParser());
-  }
-  if (val.linksTo === U256_TYPE) {
-    return Ok(new CLU256BytesParser());
-  }
-  if (val.linksTo === U512_TYPE) {
-    return Ok(new CLU512BytesParser());
-  }
-  if (val.linksTo === BYTE_ARRAY_TYPE) {
-    return Ok(new CLByteArrayBytesParser());
-  }
-  if (val.linksTo === UREF_TYPE) {
-    return Ok(new CLURefBytesParser());
-  }
-  if (val.linksTo === KEY_TYPE) {
-    return Ok(new CLKeyBytesParser());
-  }
-  if (val.linksTo === PUBLIC_KEY_TYPE) {
-    return Ok(new CLPublicKeyBytesParser());
-  }
-  if (val.linksTo === LIST_TYPE) {
-    return Ok(new CLListBytesParser());
-  }
-  if (val.linksTo === MAP_TYPE) {
-    return Ok(new CLMapBytesParser());
-  }
-  if (
-    val.linksTo === TUPLE1_TYPE ||
-    val.linksTo === TUPLE2_TYPE ||
-    val.linksTo === TUPLE3_TYPE
-  ) {
-    return Ok(new CLTupleBytesParser());
-  }
-  if (val.linksTo === OPTION_TYPE) {
-    return Ok(new CLOptionBytesParser());
-  }
-  if (val.linksTo === RESULT_TYPE) {
-    return Ok(new CLResultBytesParser());
-  }
-  if (val.linksTo === STRING_TYPE) {
-    return Ok(new CLStringBytesParser());
-  }
-  if (val.linksTo === UNIT_TYPE) {
-    return Ok(new CLUnitBytesParser());
-  }
-  return Err('Unknown type');
 };
 
 export const matchBytesToCLType = (
