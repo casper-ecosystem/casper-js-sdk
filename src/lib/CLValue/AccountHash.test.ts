@@ -13,7 +13,7 @@ describe('CLAccountHash', () => {
   it('toBytes() / fromBytes() do proper bytes serialization', () => {
     const expectedBytes = Uint8Array.from(Array(32).fill(42));
     const expectedHash = new CLAccountHash(expectedBytes);
-    
+
     const bytes = CLValueParsers.toBytes(hash).unwrap();
     const hash = CLValueParsers.fromBytes(
       bytes,

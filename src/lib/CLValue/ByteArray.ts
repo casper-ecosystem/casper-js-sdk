@@ -13,8 +13,6 @@ import {
 import { BYTE_ARRAY_ID, CLTypeTag } from './constants';
 import { toBytesU32 } from '../ByteConverters';
 
-export const CL_BYTE_ARRAY_MAX_LENGTH = 32;
-
 export class CLByteArrayType extends CLType {
   linksTo = BYTE_ARRAY_ID;
   tag = CLTypeTag.ByteArray;
