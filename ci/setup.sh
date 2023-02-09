@@ -76,6 +76,10 @@ function main() {
     echo "... overriding 'min_peers_for_initialization'"
     sed -i 's/min_peers_for_initialization = 3/min_peers_for_initialization = 0/g' "$CONFIG_DIR/config.toml"
 
+    # override config.toml for min peers
+    echo "... overriding 'max_ttl'"
+    sed -i "s/max_ttl = '5minutes'/max_ttl = '30minutes'/g" "$CONFIG_DIR/chainspec.toml"
+
     echo "End of $(basename $0)"
 }
 
