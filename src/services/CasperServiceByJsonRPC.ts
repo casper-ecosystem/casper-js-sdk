@@ -565,10 +565,15 @@ export class CasperServiceByJsonRPC {
   public async deploy(signedDeploy: DeployUtil.Deploy): Promise<DeployResult> {
     await this.checkDeploySize(signedDeploy);
 
-    return await this.client.request({
-      method: 'account_put_deploy',
-      params: deployToJson(signedDeploy)
-    });
+    try {
+      return await this.client.request({
+        method: 'account_put_deploy',
+        params: deployToJson(signedDeploy)
+      });
+    } catch (e) {
+      console.log(e);
+      return e;
+    }
   }
 
   /**
