@@ -71,6 +71,15 @@ function main() {
     # don't need the git repo anymore
     rm -rf "$TMP_DIR/$GH_REPO"
     popd > /dev/null
+
+    # override config.toml for min peers
+    echo "... overriding 'min_peers_for_initialization'"
+    sed -i 's/min_peers_for_initialization = 3/min_peers_for_initialization = 0/g' "$CONFIG_DIR/config.toml"
+
+    # override chainspec.toml for max_ttl
+    echo "... overriding 'max_ttl'"
+    sed -i "s/max_ttl = '5minutes'/max_ttl = '30minutes'/g" "$CONFIG_DIR/chainspec.toml"
+
     echo "End of $(basename $0)"
 }
 
