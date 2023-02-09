@@ -318,6 +318,10 @@ describe('RPC', () => {
   it('chain_get_era_info_by_switch_block - by height', async () => {
     const eraSummary = await client.getEraInfoBySwitchBlockHeight(10);
     const blockInfo = await client.getBlockInfoByHeight(10);
+    console.log('***** eraSummary *****');
+    console.log(eraSummary);
+    console.log('***** blockInfo *****');
+    console.log(blockInfo);
     expect(eraSummary.blockHash).to.be.equal(blockInfo.block?.hash);
   });
 });
