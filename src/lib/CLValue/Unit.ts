@@ -9,19 +9,11 @@ import {
   ToBytesResult,
   resultHelper
 } from './index';
-import { UNIT_ID, CLTypeTag } from './constants';
+import { UNIT_TYPE, CLTypeTag } from './constants';
 
 export class CLUnitType extends CLType {
   tag = CLTypeTag.Unit;
-  linksTo = CLUnit;
-
-  toString(): string {
-    return UNIT_ID;
-  }
-
-  toJSON(): string {
-    return this.toString();
-  }
+  linksTo = UNIT_TYPE;
 }
 
 export class CLUnitBytesParser extends CLValueBytesParsers {

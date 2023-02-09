@@ -1,6 +1,3 @@
-// NOTE: Currently this isn't supported CLValue
-// Don't export it outside internal code!
-
 import { Ok, Err } from 'ts-results';
 
 import {
@@ -10,21 +7,18 @@ import {
   CLErrorCodes,
   ResultAndRemainder,
   ToBytesResult,
-  ACCOUNT_HASH_LENGTH,
   resultHelper,
-  ACCOUNT_HASH_ID
+  ACCOUNT_HASH_TYPE,
+  CLByteArrayType,
+  ACCOUNT_HASH_LENGTH
 } from './index';
 
-export class CLAccountHashType extends CLType {
-  linksTo = CLAccountHash;
-  tag = -1;
+// AccountHash is an alias, not a fully functional CLType so uses the same CLTypeTag as ByteArray
+export class CLAccountHashType extends CLByteArrayType {
+  linksTo = ACCOUNT_HASH_TYPE;
 
-  toString(): string {
-    return ACCOUNT_HASH_ID;
-  }
-
-  toJSON(): string {
-    return this.toString();
+  constructor() {
+    super(ACCOUNT_HASH_LENGTH);
   }
 }
 

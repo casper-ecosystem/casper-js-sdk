@@ -15,11 +15,11 @@ import {
 } from './index';
 import { toBytesVectorNew } from '../ByteConverters';
 
-import { LIST_ID, CLTypeTag } from './constants';
+import { LIST_TYPE, CLTypeTag } from './constants';
 
 export class CLListType<T extends CLType> extends CLType {
   inner: T;
-  linksTo = CLList;
+  linksTo = LIST_TYPE;
   tag = CLTypeTag.List;
 
   constructor(inner: T) {
@@ -28,7 +28,7 @@ export class CLListType<T extends CLType> extends CLType {
   }
 
   toString(): string {
-    return `${LIST_ID} (${this.inner.toString()})`;
+    return `${LIST_TYPE} (${this.inner.toString()})`;
   }
 
   toBytes(): Uint8Array {
@@ -38,7 +38,7 @@ export class CLListType<T extends CLType> extends CLType {
   toJSON(): any {
     const inner = this.inner.toJSON();
     return {
-      [LIST_ID]: inner
+      [LIST_TYPE]: inner
     };
   }
 }

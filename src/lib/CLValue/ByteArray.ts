@@ -10,13 +10,11 @@ import {
   ResultAndRemainder,
   resultHelper
 } from './index';
-import { BYTE_ARRAY_ID, CLTypeTag } from './constants';
+import { BYTE_ARRAY_TYPE, CLTypeTag } from './constants';
 import { toBytesU32 } from '../ByteConverters';
 
-export const CL_BYTE_ARRAY_MAX_LENGTH = 32;
-
 export class CLByteArrayType extends CLType {
-  linksTo = CLByteArray;
+  linksTo = BYTE_ARRAY_TYPE;
   tag = CLTypeTag.ByteArray;
 
   size: number;
@@ -26,17 +24,13 @@ export class CLByteArrayType extends CLType {
     this.size = size;
   }
 
-  toString(): string {
-    return BYTE_ARRAY_ID;
-  }
-
   toBytes(): Uint8Array {
     return concat([Uint8Array.from([this.tag]), toBytesU32(this.size)]);
   }
 
-  toJSON(): { [BYTE_ARRAY_ID]: number } {
+  toJSON(): { [BYTE_ARRAY_TYPE]: number } {
     return {
-      [BYTE_ARRAY_ID]: this.size
+      [BYTE_ARRAY_TYPE]: this.size
     };
   }
 }

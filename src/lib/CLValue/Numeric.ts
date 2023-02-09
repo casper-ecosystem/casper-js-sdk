@@ -12,14 +12,14 @@ import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { toBytesNumber } from '../ByteConverters';
 import {
   CLTypeTag,
-  I32_ID,
-  I64_ID,
-  U8_ID,
-  U32_ID,
-  U64_ID,
-  U128_ID,
-  U256_ID,
-  U512_ID
+  I32_TYPE,
+  I64_TYPE,
+  U8_TYPE,
+  U32_TYPE,
+  U64_TYPE,
+  U128_TYPE,
+  U256_TYPE,
+  U512_TYPE
 } from './constants';
 import { arrayEquals } from '../DeployUtil';
 
@@ -77,16 +77,8 @@ abstract class Numeric extends CLValue {
 
 // CLI32
 export class CLI32Type extends CLType {
-  linksTo = CLI32;
+  linksTo = I32_TYPE;
   tag = CLTypeTag.I32;
-
-  toString(): string {
-    return I32_ID;
-  }
-
-  toJSON(): string {
-    return this.toString();
-  }
 }
 
 export class CLI32BytesParser extends NumericBytesParser {
@@ -116,16 +108,8 @@ export class CLI32 extends Numeric {
 
 // CLI64
 export class CLI64Type extends CLType {
-  linksTo = CLI64;
+  linksTo = I64_TYPE;
   tag = CLTypeTag.I64;
-
-  toString(): string {
-    return I64_ID;
-  }
-
-  toJSON(): string {
-    return this.toString();
-  }
 }
 
 export class CLI64BytesParser extends NumericBytesParser {
@@ -155,16 +139,8 @@ export class CLI64 extends Numeric {
 
 // CLU8
 export class CLU8Type extends CLType {
-  linksTo = CLU8;
+  linksTo = U8_TYPE;
   tag = CLTypeTag.U8;
-
-  toString(): string {
-    return U8_ID;
-  }
-
-  toJSON(): string {
-    return this.toString();
-  }
 }
 
 export class CLU8BytesParser extends NumericBytesParser {
@@ -190,16 +166,8 @@ export class CLU8 extends Numeric {
 
 // CLU32
 export class CLU32Type extends CLType {
-  linksTo = CLU32;
+  linksTo = U32_TYPE;
   tag = CLTypeTag.U32;
-
-  toString(): string {
-    return U32_ID;
-  }
-
-  toJSON(): string {
-    return this.toString();
-  }
 }
 
 export class CLU32BytesParser extends NumericBytesParser {
@@ -228,16 +196,8 @@ export class CLU32 extends Numeric {
 
 // CLU64
 export class CLU64Type extends CLType {
-  linksTo = CLU64;
+  linksTo = U64_TYPE;
   tag = CLTypeTag.U64;
-
-  toString(): string {
-    return U64_ID;
-  }
-
-  toJSON(): string {
-    return this.toString();
-  }
 }
 
 export class CLU64BytesParser extends NumericBytesParser {
@@ -266,16 +226,8 @@ export class CLU64 extends Numeric {
 
 // CLU128
 export class CLU128Type extends CLType {
-  linksTo = CLU128;
+  linksTo = U128_TYPE;
   tag = CLTypeTag.U128;
-
-  toString(): string {
-    return U128_ID;
-  }
-
-  toJSON(): string {
-    return this.toString();
-  }
 }
 
 export class CLU128BytesParser extends NumericBytesParser {
@@ -298,16 +250,8 @@ export class CLU128 extends Numeric {
 
 // CLU256
 export class CLU256Type extends CLType {
-  linksTo = CLU256;
+  linksTo = U256_TYPE;
   tag = CLTypeTag.U256;
-
-  toString(): string {
-    return U256_ID;
-  }
-
-  toJSON(): string {
-    return this.toString();
-  }
 }
 
 export class CLU256BytesParser extends NumericBytesParser {
@@ -330,16 +274,8 @@ export class CLU256 extends Numeric {
 
 // CLU512
 export class CLU512Type extends CLType {
-  linksTo = CLU512;
+  linksTo = U512_TYPE;
   tag = CLTypeTag.U512;
-
-  toString(): string {
-    return U512_ID;
-  }
-
-  toJSON(): string {
-    return this.toString();
-  }
 }
 
 export class CLU512BytesParser extends NumericBytesParser {

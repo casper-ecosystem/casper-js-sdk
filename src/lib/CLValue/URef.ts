@@ -11,7 +11,7 @@ import {
   resultHelper,
   padNum
 } from './index';
-import { UREF_ID, CLTypeTag } from './constants';
+import { UREF_TYPE, CLTypeTag } from './constants';
 import { decodeBase16, encodeBase16 } from '../Conversions';
 
 export enum AccessRights {
@@ -34,16 +34,8 @@ export enum AccessRights {
 }
 
 export class CLURefType extends CLType {
-  linksTo = CLURef;
+  linksTo = UREF_TYPE;
   tag = CLTypeTag.URef;
-
-  toString(): string {
-    return UREF_ID;
-  }
-
-  toJSON(): string {
-    return this.toString();
-  }
 }
 
 const FORMATTED_STRING_PREFIX = 'uref';

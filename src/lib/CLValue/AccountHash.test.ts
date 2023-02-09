@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { CLAccountHash } from './AccountHash';
+import { CLValueParsers, CLAccountHashType } from './index';
 
 describe('CLAccountHash', () => {
   it('Should be able to return proper value by calling .value()', () => {
@@ -7,5 +8,19 @@ describe('CLAccountHash', () => {
     const myHash = new CLAccountHash(arr8);
 
     expect(myHash.value()).to.be.deep.eq(arr8);
+  });
+
+  it('toBytes() / fromBytes() do proper bytes serialization', () => {
+    const expectedBytes = Uint8Array.from(Array(32).fill(42));
+    const expectedHash = new CLAccountHash(expectedBytes);
+
+    const bytes = CLValueParsers.toBytes(expectedHash).unwrap();
+    const hash = CLValueParsers.fromBytes(
+      bytes,
+      new CLAccountHashType()
+    ).unwrap();
+
+    expect(bytes).to.deep.eq(expectedBytes);
+    expect(hash).to.deep.eq(expectedHash);
   });
 });

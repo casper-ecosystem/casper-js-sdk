@@ -12,17 +12,15 @@ import {
   matchByteParserByCLType,
   CLErrorCodes
 } from './index';
-import { TUPLE_MATCH_LEN_TO_ID } from './utils';
-import { CLTypeTag } from './constants';
-
-type TupleTypes = typeof CLTuple1 | typeof CLTuple2 | typeof CLTuple3;
+import { TUPLE_MATCH_LEN_TO_TYPE } from './utils';
+import { CLTypeTag, TUPLE1_TYPE, TUPLE2_TYPE, TUPLE3_TYPE } from './constants';
 
 export abstract class CLTupleType extends CLType {
   tag: CLTypeTag;
-  linksTo: TupleTypes;
+  linksTo: string;
   inner: Array<CLType>;
 
-  constructor(inner: Array<CLType>, linksTo: TupleTypes, tag: CLTypeTag) {
+  constructor(inner: Array<CLType>, linksTo: string, tag: CLTypeTag) {
     super();
     this.inner = inner;
     this.linksTo = linksTo;
@@ -35,7 +33,7 @@ export abstract class CLTupleType extends CLType {
   }
 
   toJSON(): any {
-    const id = TUPLE_MATCH_LEN_TO_ID[this.inner.length - 1];
+    const id = TUPLE_MATCH_LEN_TO_TYPE[this.inner.length - 1];
     return {
       [id]: this.inner.map(t => t.toJSON())
     };
@@ -128,7 +126,7 @@ abstract class CLTuple extends CLValue {
 
 export class CLTuple1Type extends CLTupleType {
   constructor(inner: Array<CLType>) {
-    super(inner, CLTuple1, CLTypeTag.Tuple1);
+    super(inner, TUPLE1_TYPE, CLTypeTag.Tuple1);
   }
 }
 
@@ -144,7 +142,7 @@ export class CLTuple1 extends CLTuple {
 
 export class CLTuple2Type extends CLTupleType {
   constructor(inner: Array<CLType>) {
-    super(inner, CLTuple2, CLTypeTag.Tuple2);
+    super(inner, TUPLE2_TYPE, CLTypeTag.Tuple2);
   }
 }
 
@@ -160,7 +158,7 @@ export class CLTuple2 extends CLTuple {
 
 export class CLTuple3Type extends CLTupleType {
   constructor(inner: Array<CLType>) {
-    super(inner, CLTuple3, CLTypeTag.Tuple3);
+    super(inner, TUPLE3_TYPE, CLTypeTag.Tuple3);
   }
 }
 

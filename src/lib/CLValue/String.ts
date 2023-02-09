@@ -9,20 +9,12 @@ import {
   CLErrorCodes,
   CLValueBytesParsers
 } from './index';
-import { STRING_ID, CLTypeTag } from './constants';
+import { STRING_TYPE, CLTypeTag } from './constants';
 import { toBytesString, fromBytesString } from '../ByteConverters';
 
 export class CLStringType extends CLType {
-  linksTo = CLString;
+  linksTo = STRING_TYPE;
   tag = CLTypeTag.String;
-
-  toString(): string {
-    return STRING_ID;
-  }
-
-  toJSON(): string {
-    return this.toString();
-  }
 }
 
 export class CLStringBytesParser extends CLValueBytesParsers {

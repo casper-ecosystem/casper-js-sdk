@@ -71,28 +71,28 @@ export enum CLTypeTag {
   PublicKey = 22
 }
 
-export const BOOL_ID = 'Bool';
-export const KEY_ID = 'Key';
-export const PUBLIC_KEY_ID = 'PublicKey';
-export const STRING_ID = 'String';
-export const UREF_ID = 'URef';
-export const UNIT_ID = 'Unit';
-export const I32_ID = 'I32';
-export const I64_ID = 'I64';
-export const U8_ID = 'U8';
-export const U32_ID = 'U32';
-export const U64_ID = 'U64';
-export const U128_ID = 'U128';
-export const U256_ID = 'U256';
-export const U512_ID = 'U512';
+export const BOOL_TYPE = 'Bool';
+export const KEY_TYPE = 'Key';
+export const PUBLIC_KEY_TYPE = 'PublicKey';
+export const STRING_TYPE = 'String';
+export const UREF_TYPE = 'URef';
+export const UNIT_TYPE = 'Unit';
+export const I32_TYPE = 'I32';
+export const I64_TYPE = 'I64';
+export const U8_TYPE = 'U8';
+export const U32_TYPE = 'U32';
+export const U64_TYPE = 'U64';
+export const U128_TYPE = 'U128';
+export const U256_TYPE = 'U256';
+export const U512_TYPE = 'U512';
 
-export const BYTE_ARRAY_ID = 'ByteArray';
-export const LIST_ID = 'List';
-export const MAP_ID = 'Map';
-export const OPTION_ID = 'Option';
-export const RESULT_ID = 'Result';
-export const TUPLE1_ID = 'Tuple1';
-export const TUPLE2_ID = 'Tuple2';
-export const TUPLE3_ID = 'Tuple3';
+export const BYTE_ARRAY_TYPE = 'ByteArray';
+export const LIST_TYPE = 'List';
+export const MAP_TYPE = 'Map';
+export const OPTION_TYPE = 'Option';
+export const RESULT_TYPE = 'Result';
+export const TUPLE1_TYPE = 'Tuple1';
+export const TUPLE2_TYPE = 'Tuple2';
+export const TUPLE3_TYPE = 'Tuple3';
 
-export const ACCOUNT_HASH_ID = 'AccountHash';
+export const ACCOUNT_HASH_TYPE = 'AccountHash';
