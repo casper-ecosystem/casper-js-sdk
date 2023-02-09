@@ -571,7 +571,6 @@ export class CasperServiceByJsonRPC {
         params: deployToJson(signedDeploy)
       });
     } catch (e) {
-      console.log(e);
       return e;
     }
   }
