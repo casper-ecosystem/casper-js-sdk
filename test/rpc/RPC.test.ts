@@ -316,8 +316,8 @@ describe('RPC', () => {
   });
 
   it('chain_get_era_info_by_switch_block - by height', async () => {
-    const eraSummary = await client.getEraInfoBySwitchBlockHeight(10);
-    const blockInfo = await client.getBlockInfoByHeight(10);
+    const eraSummary = await client.getEraInfoBySwitchBlockHeight(2);
+    const blockInfo = await client.getBlockInfoByHeight(2);
     console.log('***** eraSummary *****');
     console.log(eraSummary);
     console.log('***** blockInfo *****');
