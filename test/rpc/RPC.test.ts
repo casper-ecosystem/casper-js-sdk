@@ -1,7 +1,7 @@
 import fs from 'fs';
 import { assert, expect } from 'chai';
 import { config } from 'dotenv';
-import { CasperServiceByJsonRPC } from '../../src/services';
+import { CasperServiceByJsonRPC, EraSummary } from '../../src/services';
 import {
   Keys,
   DeployUtil,
@@ -316,12 +316,30 @@ describe('RPC', () => {
   });
 
   it('chain_get_era_info_by_switch_block - by height', async () => {
-    const eraSummary = await client.getEraInfoBySwitchBlockHeight(10);
-    const blockInfo = await client.getBlockInfoByHeight(10);
+    const getEarliestSwitchBlock = async (): Promise<[number, EraSummary]> => {
+      return new Promise(async resolve => {
+        let height = 0;
+        let summary;
+        while (!summary) {
+          const era = await client.getEraInfoBySwitchBlockHeight(height);
+          if (era) {
+            height = height;
+            summary = era;
+            return resolve([height, summary]);
+          } else {
+            height += 1;
+          }
+        }
+      });
+    };
+
+    const [height, eraSummary] = await getEarliestSwitchBlock();
+    const blockInfo = await client.getBlockInfoByHeight(height);
     expect(eraSummary.blockHash).to.be.equal(blockInfo.block?.hash);
   });
+
 });
 
-after(function() {
+after(() => {
   process.kill(casperNodePid);
 });
