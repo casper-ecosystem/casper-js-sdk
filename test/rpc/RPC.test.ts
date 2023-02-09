@@ -19,8 +19,8 @@ import { BigNumber } from '@ethersproject/bignumber';
 
 config();
 
-// const localCasperNode = require('../../ci/start_node');
-// const casperNodePid = localCasperNode.start_a_single_node();
+const localCasperNode = require('../../ci/start_node');
+const casperNodePid = localCasperNode.start_a_single_node();
 
 const { SignatureAlgorithm, getKeysFromHexPrivKey, Ed25519 } = Keys;
 
@@ -340,6 +340,6 @@ describe('RPC', () => {
 
 });
 
-// after(function() {
-//   process.kill(casperNodePid);
-// });
+after(() => {
+  process.kill(casperNodePid);
+});
