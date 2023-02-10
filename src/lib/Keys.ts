@@ -406,7 +406,8 @@ export class Ed25519 extends AsymmetricKey {
 /**
  * Secp256k1 variant of `AsymmetricKey`
  * @privateRemarks
- * Needs origin notation
+ * Orignated from [Secp256k1](https://en.bitcoin.it/wiki/Secp256k1) to support Ethereum keys on the Casper.
+ * @see [Accounts Documentation](https://docs.casperlabs.io/design/casper-design/#accounts-head)
  */
 export class Secp256K1 extends AsymmetricKey {
   /**
