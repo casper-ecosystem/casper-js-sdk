@@ -261,8 +261,8 @@ export class GroupsJson {
   @jsonMember({ name: 'group', constructor: String })
   public group: string;
 
-  @jsonMember({ name: 'keys', constructor: String })
-  public keys: string;
+  @jsonArrayMember(String, { name: 'keys' })
+  public keys: string[];
 }
 
 /**

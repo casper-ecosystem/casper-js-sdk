@@ -2,16 +2,9 @@ module.exports = {
   env: {
     node: true
   },
-  extends: [
-    'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended'
-  ],
+  extends: ['plugin:@typescript-eslint/recommended', 'prettier'],
   parser: '@typescript-eslint/parser',
-  plugins: [
-    'eslint-plugin-jsdoc',
-    'eslint-plugin-prefer-arrow',
-    '@typescript-eslint'
-  ],
+  plugins: ['eslint-plugin-jsdoc', 'eslint-plugin-prefer-arrow'],
   overrides: [
     {
       files: ['*.ts'], // Your TypeScript files extension
