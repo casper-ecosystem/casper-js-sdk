@@ -47,7 +47,12 @@ const clientConfig = {
       asert: require.resolve('assert'),
       http: require.resolve('stream-http'),
       url: require.resolve('url/'),
-      fs: false
+      zlib: require.resolve('browserify-zlib'),
+      fs: false,
+      tls: false,
+      https: false,
+      http2: false,
+      net: false
     }
   },
   plugins: [
