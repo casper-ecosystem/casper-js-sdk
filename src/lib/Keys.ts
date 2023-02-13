@@ -215,6 +215,8 @@ export class Ed25519 extends AsymmetricKey {
 
   /**
    * Generates a new Ed25519 key pair
+   * @returns A new `Ed25519` object
+   * @see [nacl.sign_keyPair](https://www.npmjs.com/package/tweetnacl-ts#sign_keypair)
    */
   public static new() {
     return new Ed25519(nacl.sign_keyPair());
@@ -300,7 +302,7 @@ export class Ed25519 extends AsymmetricKey {
 
   /**
    * Parses a byte array containing an Ed25519 private key
-   * @param {Uint8Array} bytes A private key in bytes
+   * @param {Uint8Array} bytes A private key as a byte array
    * @returns A validated byte array containing the provided Ed25519 private key
    * @see {@link Ed25519.parseKey}
    */
@@ -402,17 +404,23 @@ export class Ed25519 extends AsymmetricKey {
   }
 
   /**
-   * Verify the signature along with the raw message
-   * @param signature
-   * @param msg
+   * Verifies a signature given the signature and the original message
+   * @param {Uint8Array} signature The signed message as a byte array
+   * @param {Uint8Array} msg The original message as a byte array
+   * @returns 'true' if the message if valid, `false` otherwise
+   * @see [sign_detached_verify](https://www.npmjs.com/package/tweetnacl-ts#sign_detached_verifymessage-signature-publickey)
    */
   public verify(signature: Uint8Array, msg: Uint8Array) {
     return nacl.sign_detached_verify(msg, signature, this.publicKey.value());
   }
 
   /**
-   * Derive public key from private key
-   * @param privateKey
+   * Derive a public key from private key or seed phrase
+   * @param {Uint8Array} privateKey The private key or seed phrase from which to derive the public key
+   * @returns A `Uint8Array` public key generated deterministically from the provided private key or seed phrase
+   * @see [sign_keyPair_fromSecretKey](https://www.npmjs.com/package/tweetnacl-ts#sign_keypair_fromsecretkeysecretkey)
+   * @see [sign_keyPair_fromSeed](https://www.npmjs.com/package/tweetnacl-ts#sign_keypair_fromseedseed)
+   * @remarks Both secret keys and seed phrases may be used to derive the public key
    */
   public static privateToPublicKey(privateKey: Uint8Array) {
     if (privateKey.length === SignLength.SecretKey) {
@@ -424,7 +432,11 @@ export class Ed25519 extends AsymmetricKey {
 
   /**
    * Restore Ed25519 keyPair from private key file
-   * @param privateKeyPath
+   * @param {string} privateKeyPath The path to the private key file
+   * @returns An Ed25519 `AsymmetricKey`
+   * @see {@link Ed25519.parsePrivateKeyFile}
+   * @see {@link Ed25519.privateToPublicKey}
+   * @see {@link Ed25519.parseKeyPair}
    */
   public static loadKeyPairFromPrivateFile(privateKeyPath: string) {
     const privateKey = Ed25519.parsePrivateKeyFile(privateKeyPath);
@@ -433,13 +445,26 @@ export class Ed25519 extends AsymmetricKey {
   }
 }
 
+/**
+ * Secp256k1 variant of `AsymmetricKey`
+ * @privateRemarks
+ * Orignated from [Secp256k1](https://en.bitcoin.it/wiki/Secp256k1) to support Ethereum keys on the Casper.
+ * @see [Accounts Documentation](https://docs.casperlabs.io/design/casper-design/#accounts-head)
+ */
 export class Secp256K1 extends AsymmetricKey {
+  /**
+   * Constructs a new Secp256K1 object from a public key and a private key
+   * @param {Uint8Array} publicKey A secp256k1 public key
+   * @param {Uint8Array} privateKey A secp256k1 private key
+   */
   constructor(publicKey: Uint8Array, privateKey: Uint8Array) {
     super(publicKey, privateKey, SignatureAlgorithm.Secp256K1);
   }
 
   /**
-   * Generating a new Secp256K1 key pair
+   * Generate a new pseudorandom Secp256k1 key pair
+   * @returns A new `Secp256K1` object
+   * @see [eccrypto.getPublicCompressed](https://github.com/bitchan/eccrypto/blob/master/index.js#L123)
    */
   public static new() {
     const privateKey = eccrypto.generatePrivate();
@@ -448,9 +473,10 @@ export class Secp256K1 extends AsymmetricKey {
   }
 
   /**
-   * Parse the key pair from publicKey file and privateKey file
-   * @param publicKeyPath path of public key file
-   * @param privateKeyPath path of private key file
+   * Parse the key pair from a public key file and the corresponding private key file
+   * @param {string} publicKeyPath Path of public key file
+   * @param {string} privateKeyPath Path of private key file
+   * @returns A new `Secp256K1` object
    */
   public static parseKeyFiles(
     publicKeyPath: string,
@@ -462,26 +488,29 @@ export class Secp256K1 extends AsymmetricKey {
   }
 
   /**
-   * Generate the accountHash for the Secp256K1 public key
-   * @param publicKey
+   * Generates the account hash of a secp256k1 public key
+   * @param {Uint8Array} publicKey A secp256k1 public key
+   * @returns The blake2b account hash of the public key
    */
   public static accountHash(publicKey: Uint8Array): Uint8Array {
     return accountHashHelper(SignatureAlgorithm.Secp256K1, publicKey);
   }
 
   /**
-   * Generate the accountHex for the Secp256K1 public key
+   * Converts a `Uint8Array` public key to hexadecimal format
    * @param publicKey
+   * @remarks
+   * The returned public key hex will be prefixed with a "02" to indicate that it is of the secp256k1 variety
    */
   public static accountHex(publicKey: Uint8Array): string {
     return '02' + encodeBase16(publicKey);
   }
 
   /**
-   * Construct keyPair from public key and private key
-   * @param publicKey
-   * @param privateKey
-   * @param originalFormat the format of the public/private key
+   * Construct a keypair from a public key and corresponding private key
+   * @param {Uint8Array} publicKey The public key of a secp256k1 account
+   * @param {Uint8Array} privateKey The private key of the same secp256k1 account
+   * @returns A new `AsymmetricKey` keypair
    */
   public static parseKeyPair(
     publicKey: Uint8Array,
@@ -494,14 +523,35 @@ export class Secp256K1 extends AsymmetricKey {
     return new Secp256K1(publ, priv);
   }
 
+  /**
+   * Parses a file containing a secp256k1 private key
+   * @param {string} path The path to the private key file
+   * @returns A `Uint8Array` typed representation of the private key
+   * @see {@link Secp256K1.parsePrivateKey}
+   */
   public static parsePrivateKeyFile(path: string): Uint8Array {
     return Secp256K1.parsePrivateKey(Secp256K1.readBase64File(path));
   }
 
+  /**
+   * Parses a file containing a secp256k1 public key
+   * @param {string} path The path to the public key file
+   * @returns A `Uint8Array` typed representation of the private key
+   * @see {@link Secp256K1.parsePublicKey}
+   */
   public static parsePublicKeyFile(path: string): Uint8Array {
     return Secp256K1.parsePublicKey(Secp256K1.readBase64File(path));
   }
 
+  /**
+   * Parses a byte array containing a secp256k1 private key
+   * @param {Uint8Array} bytes A private key as a byte array
+   * @param {string} [originalFormat=der] The original format of the private key.
+   * Options are "der" or "raw", meaning "derived" or "raw", indicating a seed phrase and
+   * a raw private key respectively.
+   * @returns A validated byte array containing the provided secp256k1 private key
+   * @privateRemarks Validate that "der" means derived and "raw" means a raw private key
+   */
   public static parsePrivateKey(
     bytes: Uint8Array,
     originalFormat: 'der' | 'raw' = 'der'
@@ -517,6 +567,15 @@ export class Secp256K1 extends AsymmetricKey {
     return privateKey;
   }
 
+  /**
+   * Parses a byte array containing an Ed25519 public key
+   * @param {Uint8Array} bytes A public key in bytes
+   * @param {string} [originalFormat=der] The original format of the private key.
+   * Options are "der" or "raw", meaning "derived" or "raw", indicating a seed phrase and
+   * a raw private key respectively.
+   * @returns A validated byte array containing the provided Ed25519 public key
+   * @privateRemarks Validate that "der" means derived and "raw" means a raw public key
+   */
   public static parsePublicKey(
     bytes: Uint8Array,
     originalFormat: 'der' | 'raw' = 'der'
@@ -532,14 +591,20 @@ export class Secp256K1 extends AsymmetricKey {
     return publicKey;
   }
 
+  /**
+   * Calls global {@link readBase64WithPEM} and returns the result
+   * @param {string} content A .pem private key string with a header and footer
+   * @returns The result of global `readBase64WithPEM`
+   * @see {@link readBase64WithPEM}
+   */
   public static readBase64WithPEM(content: string) {
     return readBase64WithPEM(content);
   }
 
   /**
-   * Read the Base64 content of a file, get rid of PEM frames.
-   *
-   * @param path the path of file to read from
+   * Read the Base64 content of a file, ignoring PEM frames
+   * @param {string} path The path to the PEM file
+   * @returns The result of {@link Secp256K1.readBase64WithPEM} after reading in the content as a `string` with `fs`
    */
   private static readBase64File(path: string): Uint8Array {
     const content = fs.readFileSync(path).toString();
@@ -547,7 +612,8 @@ export class Secp256K1 extends AsymmetricKey {
   }
 
   /**
-   * Export the private key encoded in pem
+   * Convert this instance's private key to PEM format
+   * @returns A PEM compliant string containing this instance's private key
    */
   public exportPrivateKeyInPem(): string {
     return keyEncoder.encodePrivate(
@@ -558,7 +624,8 @@ export class Secp256K1 extends AsymmetricKey {
   }
 
   /**
-   * Expect the public key encoded in pem
+   * Convert this instance's public key to PEM format
+   * @returns A PEM compliant string containing this instance's public key
    */
   public exportPublicKeyInPem(): string {
     return keyEncoder.encodePublic(
@@ -569,8 +636,10 @@ export class Secp256K1 extends AsymmetricKey {
   }
 
   /**
-   * Sign the message by using the keyPair
-   * @param msg
+   * Sign a message by using this instance's keypair
+   * @param {Uint8Array} msg The message to be signed, as a byte array
+   * @returns `Uint8Array` typed signature of the provided `msg`
+   * @see [secp256k1.ecdsaSign](https://github.com/cryptocoinjs/secp256k1-node/blob/HEAD/API.md#ecdsasignmessage-uint8array-privatekey-uint8array--data-noncefn---data-uint8array-noncefn-message-uint8array-privatekey-uint8array-algo-null-data-uint8array-counter-number--uint8array----output-uint8array--len-number--uint8array--signature-uint8array-recid-number-)
    */
   public sign(msg: Uint8Array): Uint8Array {
     const res = secp256k1.ecdsaSign(sha256(Buffer.from(msg)), this.privateKey);
@@ -578,9 +647,12 @@ export class Secp256K1 extends AsymmetricKey {
   }
 
   /**
-   * Verify the signature along with the raw message
-   * @param signature
-   * @param msg
+   * Verifies a signature given the signature and the original message
+   * @param {Uint8Array} signature The signed message as a byte array
+   * @param {Uint8Array} msg The original message as a byte array
+   * @see [secp256k1.ecdsaVerify](https://github.com/cryptocoinjs/secp256k1-node/blob/HEAD/API.md#ecdsaverifysignature-uint8array-message-uint8array-publickey-uint8array-boolean)
+   * @returns 'true' if the message if valid, `false` otherwise
+   * @privateRemarks Need to document return and return type
    */
   public verify(signature: Uint8Array, msg: Uint8Array) {
     return secp256k1.ecdsaVerify(
@@ -591,16 +663,22 @@ export class Secp256K1 extends AsymmetricKey {
   }
 
   /**
-   * Derive public key from private key
-   * @param privateKey
+   * Derive a public key from private key
+   * @param {Uint8Array} privateKey The private key from which to derive the public key
+   * @returns A `Uint8Array` public key generated deterministically from the provided private key
+   * @see [secp256k1.publicKeyCreate](https://github.com/cryptocoinjs/secp256k1-node/blob/HEAD/API.md#publickeycreateprivatekey-uint8array-compressed-boolean--true-output-uint8array--len-number--uint8array--len--new-uint8arraylen-uint8array)
    */
   public static privateToPublicKey(privateKey: Uint8Array): Uint8Array {
     return secp256k1.publicKeyCreate(privateKey, true);
   }
 
   /**
-   * Restore Secp256K1 keyPair from private key file
-   * @param privateKeyPath a path to file of the private key
+   * Restore secp256k1 keyPair from private key file
+   * @param {string} privateKeyPath The path to the private key file
+   * @returns A secp256k1 `AsymmetricKey`
+   * @see {@link Secp256K1.parsePrivateKeyFile}
+   * @see {@link Secp256K1.privateToPublicKey}
+   * @see {@link Secp256K1.parseKeyPair}
    */
   public static loadKeyPairFromPrivateFile(privateKeyPath: string) {
     const privateKey = Secp256K1.parsePrivateKeyFile(privateKeyPath);
@@ -609,9 +687,11 @@ export class Secp256K1 extends AsymmetricKey {
   }
 
   /**
-   * From hdKey derive a child Secp256K1 key
-   * @param hdKey
-   * @param index
+   * Derive a secp256k1 key from a heirarchical deterministic wallet and an index
+   * @param hdKey A heirarchical deterministic wallet
+   * @param index The index at which to derive the key
+   * @see {@link CasperHDKey.deriveIndex}
+   * @see [BIP44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki)
    */
   public static deriveIndex(hdKey: CasperHDKey, index: number) {
     return hdKey.deriveIndex(index);
