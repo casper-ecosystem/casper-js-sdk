@@ -23,6 +23,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Issues with parsing broken deploys
 
+## 2.10.2
+
+### Fixed
+
+- Updated ts-results dependency of our own fork to fix some compiling issues
+
 ## 2.10.1
 
 ### Fixed
