@@ -58,7 +58,7 @@
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
     "chai": "^4.2.0",
-    "concat-md": "^0.5.0",
+    "concat-md": "^0.5.1",
     "concurrently": "^6.0.0",
     "copy-webpack-plugin": "^9.0.1",
     "crypto-browserify": "^3.12.0",
