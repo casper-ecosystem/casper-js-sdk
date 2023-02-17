@@ -5,8 +5,11 @@
  */
 import { Result, Ok, Err, Some, None } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
-import { decodeBase16, encodeBase16 } from './Conversions';
+import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
+import { jsonArrayMember, jsonMember, jsonObject, TypedJSON } from 'typedjson';
 import humanizeDuration from 'humanize-duration';
+
+import { decodeBase16, encodeBase16 } from './Conversions';
 import {
   CLValue,
   CLValueBuilder,
@@ -34,13 +37,9 @@ import {
   byteHash
 } from './ByteConverters';
 import { RuntimeArgs } from './RuntimeArgs';
-// import JSBI from 'jsbi';
 import { DeployUtil, Keys } from './index';
 import { AsymmetricKey, SignatureAlgorithm, validateSignature } from './Keys';
-import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { CasperClient } from './CasperClient';
-import { jsonArrayMember, jsonMember, jsonObject, TypedJSON } from 'typedjson';
-import { ByteArray } from 'tweetnacl-ts';
 
 const shortEnglishHumanizer = humanizeDuration.humanizer({
   spacer: '',
@@ -206,7 +205,7 @@ export class DeployHeader implements ToBytes {
   })
   public bodyHash: Uint8Array;
 
-  @jsonArrayMember(ByteArray, {
+  @jsonArrayMember(Uint8Array, {
     serializer: (value: Uint8Array[]) =>
       value.map(it => byteArrayJsonSerializer(it)),
     deserializer: (json: any) =>

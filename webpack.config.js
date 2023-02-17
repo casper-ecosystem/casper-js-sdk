@@ -1,7 +1,9 @@
-const webpack = require('webpack');
 const path = require('path');
-const nodeExternals = require('webpack-node-externals');
 const copyPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
+const nodeExternals = require('webpack-node-externals');
 
 const common = {
   entry: './src/index.ts',
@@ -17,7 +19,9 @@ const common = {
   },
   resolve: {
     extensions: ['.ts', '.js']
-  }
+  },
+  plugins: [new BundleAnalyzerPlugin()],
+  devtool: 'source-map'
 };
 
 const serverConfig = {

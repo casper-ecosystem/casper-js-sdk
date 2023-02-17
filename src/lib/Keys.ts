@@ -4,17 +4,19 @@
  */
 
 import * as fs from 'fs';
-import * as nacl from 'tweetnacl-ts';
-import { SignKeyPair, SignLength } from 'tweetnacl-ts';
-import { decodeBase64 } from 'tweetnacl-util';
-import { encodeBase16, encodeBase64 } from '../index';
+
+import * as ed25519 from '@noble/ed25519';
+import * as secp256k1 from '@noble/secp256k1';
+import { sha256 } from '@noble/hashes/sha256';
+import { sha512 } from '@noble/hashes/sha512';
+import KeyEncoder from 'key-encoder';
+
+import { decodeBase64, encodeBase16, encodeBase64 } from '../index';
 import { CLPublicKey } from './CLValue';
 import { byteHash } from './ByteConverters';
-import eccrypto from 'eccrypto';
-import * as secp256k1 from 'ethereum-cryptography/secp256k1';
-import KeyEncoder from 'key-encoder';
-import { sha256 } from 'ethereum-cryptography/sha256';
 import { CasperHDKey } from './CasperHDKey';
+
+ed25519.utils.sha512Sync = (...m) => sha512(ed25519.utils.concatBytes(...m));
 
 const keyEncoder = new KeyEncoder('secp256k1');
 
@@ -28,6 +30,11 @@ const ED25519_PEM_PUBLIC_KEY_TAG = 'PUBLIC KEY';
 export enum SignatureAlgorithm {
   Ed25519 = 'ed25519',
   Secp256K1 = 'secp256k1'
+}
+
+export interface SignKeyPair {
+  publicKey: Uint8Array; // Array with 32-byte public key
+  secretKey: Uint8Array; // Array with 64-byte secret key
 }
 
 export const getKeysFromHexPrivKey = (
@@ -110,14 +117,10 @@ export const validateSignature = (
   pk: CLPublicKey
 ): boolean => {
   if (pk.isEd25519()) {
-    return nacl.sign_detached_verify(msg, signature, pk.value());
+    return ed25519.sync.verify(signature, msg, pk.value());
   }
   if (pk.isSecp256K1()) {
-    return secp256k1.ecdsaVerify(
-      signature,
-      sha256(Buffer.from(msg)),
-      pk.value()
-    );
+    return secp256k1.verify(signature, sha256(Buffer.from(msg)), pk.value());
   }
   throw Error('Unsupported PublicKey type');
 };
@@ -219,7 +222,12 @@ export class Ed25519 extends AsymmetricKey {
    * @see [nacl.sign_keyPair](https://www.npmjs.com/package/tweetnacl-ts#sign_keypair)
    */
   public static new() {
-    return new Ed25519(nacl.sign_keyPair());
+    const privateKey = ed25519.utils.randomPrivateKey();
+    const publicKey = ed25519.sync.getPublicKey(privateKey);
+    return new Ed25519({
+      secretKey: privateKey,
+      publicKey
+    });
   }
 
   /**
@@ -242,10 +250,9 @@ export class Ed25519 extends AsymmetricKey {
   ): AsymmetricKey {
     const publicKey = Ed25519.parsePublicKeyFile(publicKeyPath);
     const privateKey = Ed25519.parsePrivateKeyFile(privateKeyPath);
-    // nacl expects that the private key will contain both.
     return new Ed25519({
       publicKey,
-      secretKey: Buffer.concat([privateKey, publicKey])
+      secretKey: privateKey
     });
   }
 
@@ -268,24 +275,21 @@ export class Ed25519 extends AsymmetricKey {
     publicKey: Uint8Array,
     privateKey: Uint8Array
   ): AsymmetricKey {
-    const publ = Ed25519.parsePublicKey(publicKey);
-    const priv = Ed25519.parsePrivateKey(privateKey);
-    // nacl expects that the private key will contain both.
-    const secr = new Uint8Array(publ.length + priv.length);
-    secr.set(priv);
-    secr.set(publ, priv.length);
-    return new Ed25519({
-      publicKey: publ,
-      secretKey: secr
+    const keyPair = new Ed25519({
+      publicKey: Ed25519.parsePublicKey(publicKey),
+      secretKey: Ed25519.parsePrivateKey(privateKey)
     });
+
+    if (
+      encodeBase64(Ed25519.privateToPublicKey(keyPair.privateKey)) !==
+      encodeBase64(keyPair.publicKey.value())
+    ) {
+      throw Error('Invalid key pairs');
+    }
+
+    return keyPair;
   }
 
-  /**
-   * Parses a file containing an Ed25519 private key
-   * @param {string} path The path to the private key file
-   * @returns A `Uint8Array` typed representation of the private key
-   * @see {@link Ed25519.parsePrivateKey}
-   */
   public static parsePrivateKeyFile(path: string): Uint8Array {
     return Ed25519.parsePrivateKey(Ed25519.readBase64File(path));
   }
@@ -352,10 +356,10 @@ export class Ed25519 extends AsymmetricKey {
     const len = bytes.length;
     // prettier-ignore
     const key =
-      (len === 32) ? bytes :
-        (len === 64) ? Buffer.from(bytes).slice(from, to) :
-          (len > 32 && len < 64) ? Buffer.from(bytes).slice(len % 32) :
-            null;
+        (len === 32) ? bytes :
+          (len === 64) ? Buffer.from(bytes).slice(from, to) :
+            (len > 32 && len < 64) ? Buffer.from(bytes).slice(len % 32) :
+              null;
     if (key == null || key.length !== 32) {
       throw Error(`Unexpected key length: ${len}`);
     }
@@ -371,11 +375,9 @@ export class Ed25519 extends AsymmetricKey {
     // prettier-ignore
     const derPrefix = Buffer.from([48, 46, 2, 1, 0, 48, 5, 6, 3, 43, 101, 112, 4, 34, 4, 32]);
     const encoded = encodeBase64(
-      Buffer.concat([
-        derPrefix,
-        Buffer.from(Ed25519.parsePrivateKey(this.privateKey))
-      ])
+      Buffer.concat([derPrefix, Buffer.from(this.privateKey)])
     );
+
     return this.toPem(ED25519_PEM_SECRET_KEY_TAG, encoded);
   }
 
@@ -400,7 +402,7 @@ export class Ed25519 extends AsymmetricKey {
    * @see [sign_detached](https://www.npmjs.com/package/tweetnacl-ts#sign_detachedmessage-secretkey)
    */
   public sign(msg: Uint8Array): Uint8Array {
-    return nacl.sign_detached(msg, this.privateKey);
+    return ed25519.sync.sign(msg, this.privateKey);
   }
 
   /**
@@ -411,23 +413,17 @@ export class Ed25519 extends AsymmetricKey {
    * @see [sign_detached_verify](https://www.npmjs.com/package/tweetnacl-ts#sign_detached_verifymessage-signature-publickey)
    */
   public verify(signature: Uint8Array, msg: Uint8Array) {
-    return nacl.sign_detached_verify(msg, signature, this.publicKey.value());
+    return ed25519.sync.verify(signature, msg, this.publicKey.value());
   }
 
   /**
    * Derive a public key from private key or seed phrase
    * @param {Uint8Array} privateKey The private key or seed phrase from which to derive the public key
    * @returns A `Uint8Array` public key generated deterministically from the provided private key or seed phrase
-   * @see [sign_keyPair_fromSecretKey](https://www.npmjs.com/package/tweetnacl-ts#sign_keypair_fromsecretkeysecretkey)
-   * @see [sign_keyPair_fromSeed](https://www.npmjs.com/package/tweetnacl-ts#sign_keypair_fromseedseed)
    * @remarks Both secret keys and seed phrases may be used to derive the public key
    */
-  public static privateToPublicKey(privateKey: Uint8Array) {
-    if (privateKey.length === SignLength.SecretKey) {
-      return nacl.sign_keyPair_fromSecretKey(privateKey).publicKey;
-    } else {
-      return nacl.sign_keyPair_fromSeed(privateKey).publicKey;
-    }
+  public static privateToPublicKey(privateKey: Uint8Array): Uint8Array {
+    return ed25519.sync.getPublicKey(privateKey);
   }
 
   /**
@@ -467,8 +463,8 @@ export class Secp256K1 extends AsymmetricKey {
    * @see [eccrypto.getPublicCompressed](https://github.com/bitchan/eccrypto/blob/master/index.js#L123)
    */
   public static new() {
-    const privateKey = eccrypto.generatePrivate();
-    const publicKey = Uint8Array.from(eccrypto.getPublicCompressed(privateKey));
+    const privateKey = secp256k1.utils.randomPrivateKey();
+    const publicKey = secp256k1.getPublicKey(privateKey, true);
     return new Secp256K1(publicKey, privateKey);
   }
 
@@ -642,8 +638,11 @@ export class Secp256K1 extends AsymmetricKey {
    * @see [secp256k1.ecdsaSign](https://github.com/cryptocoinjs/secp256k1-node/blob/HEAD/API.md#ecdsasignmessage-uint8array-privatekey-uint8array--data-noncefn---data-uint8array-noncefn-message-uint8array-privatekey-uint8array-algo-null-data-uint8array-counter-number--uint8array----output-uint8array--len-number--uint8array--signature-uint8array-recid-number-)
    */
   public sign(msg: Uint8Array): Uint8Array {
-    const res = secp256k1.ecdsaSign(sha256(Buffer.from(msg)), this.privateKey);
-    return res.signature;
+    const signature = secp256k1.signSync(
+      sha256(Buffer.from(msg)),
+      this.privateKey
+    );
+    return signature;
   }
 
   /**
@@ -655,7 +654,7 @@ export class Secp256K1 extends AsymmetricKey {
    * @privateRemarks Need to document return and return type
    */
   public verify(signature: Uint8Array, msg: Uint8Array) {
-    return secp256k1.ecdsaVerify(
+    return secp256k1.verify(
       signature,
       sha256(Buffer.from(msg)),
       this.publicKey.value()
@@ -669,7 +668,7 @@ export class Secp256K1 extends AsymmetricKey {
    * @see [secp256k1.publicKeyCreate](https://github.com/cryptocoinjs/secp256k1-node/blob/HEAD/API.md#publickeycreateprivatekey-uint8array-compressed-boolean--true-output-uint8array--len-number--uint8array--len--new-uint8arraylen-uint8array)
    */
   public static privateToPublicKey(privateKey: Uint8Array): Uint8Array {
-    return secp256k1.publicKeyCreate(privateKey, true);
+    return secp256k1.getPublicKey(privateKey, true);
   }
 
   /**

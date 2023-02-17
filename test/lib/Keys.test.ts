@@ -1,14 +1,18 @@
-import { expect } from 'chai';
-import { decodeBase16, decodeBase64, encodeBase16 } from '../../src';
-import { Ed25519, Secp256K1 } from '../../src/lib/Keys';
-import { byteHash } from '../../src/lib/ByteConverters';
-import * as nacl from 'tweetnacl-ts';
-import { encodeBase64 } from 'tweetnacl-ts';
-
 import * as fs from 'fs';
 import * as Crypto from 'crypto';
 import * as path from 'path';
 import * as os from 'os';
+
+import { expect } from 'chai';
+import * as ed25519 from '@noble/ed25519';
+import {
+  decodeBase16,
+  decodeBase64,
+  encodeBase16,
+  encodeBase64
+} from '../../src';
+import { Ed25519, Secp256K1 } from '../../src/lib/Keys';
+import { byteHash } from '../../src/lib/ByteConverters';
 
 describe('Ed25519', () => {
   it('calculates the account hash', () => {
@@ -16,16 +20,10 @@ describe('Ed25519', () => {
     // use lower case for node-rs
     const name = Buffer.from('ED25519'.toLowerCase());
     const sep = decodeBase16('00');
-    const bytes = Buffer.concat([
-      name,
-      sep,
-      signKeyPair.publicKey.value()
-    ]);
+    const bytes = Buffer.concat([name, sep, signKeyPair.publicKey.value()]);
     const hash = byteHash(bytes);
 
-    expect(Ed25519.accountHash(signKeyPair.publicKey.value())).deep.equal(
-      hash
-    );
+    expect(Ed25519.accountHash(signKeyPair.publicKey.value())).deep.equal(hash);
   });
 
   it('should generate PEM file for Ed25519 correctly', () => {
@@ -45,6 +43,7 @@ describe('Ed25519', () => {
     expect(encodeBase64(naclKeyPair.publicKey.value())).to.equal(
       encodeBase64(signKeyPair2.publicKey.value())
     );
+
     expect(encodeBase64(naclKeyPair.privateKey)).to.equal(
       encodeBase64(signKeyPair2.privateKey)
     );
@@ -69,19 +68,16 @@ describe('Ed25519', () => {
     // expect both of they generate the same signature
     const message = Buffer.from('hello world');
     const signatureByNode = Crypto.sign(null, message, priKeyImported);
-    const signatureByNacl = nacl.sign_detached(
-      Buffer.from(message),
-      naclKeyPair.privateKey
-    );
+    const signatureByNacl = naclKeyPair.sign(message);
     expect(encodeBase64(signatureByNode)).to.eq(encodeBase64(signatureByNacl));
 
     // expect both of they could verify by their own public key
     expect(Crypto.verify(null, message, pubKeyImported, signatureByNode)).to
       .true;
     expect(
-      nacl.sign_detached_verify(
-        message,
+      ed25519.sync.verify(
         signatureByNacl,
+        message,
         naclKeyPair.publicKey.value()
       )
     ).to.true;
@@ -112,16 +108,12 @@ describe('Secp256K1', () => {
     // use lower case for node-rs
     const name = Buffer.from('secp256k1'.toLowerCase());
     const sep = decodeBase16('00');
-    const bytes = Buffer.concat([
-      name,
-      sep,
-      signKeyPair.publicKey.value()
-    ]);
+    const bytes = Buffer.concat([name, sep, signKeyPair.publicKey.value()]);
     const hash = byteHash(bytes);
 
-    expect(
-      Secp256K1.accountHash(signKeyPair.publicKey.value())
-    ).deep.equal(hash);
+    expect(Secp256K1.accountHash(signKeyPair.publicKey.value())).deep.equal(
+      hash
+    );
   });
 
   it('should generate PEM file for Secp256K1 correctly', async () => {
