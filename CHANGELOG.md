@@ -4,22 +4,30 @@ All notable changes to casper-js-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## Next Release
+## 2.11.0
 
 ### Added
 
 - Support for checksumed mixed-case publickeys
 - Support for HTTPS EventStream
+- Extended test cases for `CasperServiceByJsonRPC`
 
 ### Changed
 
 - `CLPublicKey.toHex()` now by default returns checksummed value. You can use it in legacy mode by calling it `CLPublicKey.toHex(false)` that way
 - `CLPublicKey.fromHex()` now can get two arguments. The first one is string containing hex encoded public key, and the second one is a boolean value that indicates if you want to run checksum validation. When `true` is passed it will throw an error. Otherwise it will log warn to the console. We added this because we want to support users who store the non-checksumed publickeys and need time to adapt
-- `AccountHash` now can be serialized to bytes
+- `AccountHash` now can be serialized to bytes (it's an alias)
+- Some internal optimalization (in `matchByteParserByCLType`)
 
 ### Fixed
 
 - Issues with parsing broken deploys
+
+## 2.10.2
+
+### Fixed
+
+- Updated ts-results dependency of our own fork to fix some compiling issues
 
 ## 2.10.1
 
