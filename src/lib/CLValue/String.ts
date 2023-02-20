@@ -39,7 +39,9 @@ export class CLStringBytesParser extends CLValueBytesParsers {
       return resultHelper(Ok(new CLString(val)), CLU32rem.subarray(len));
     }
 
-    return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+    return resultHelper<CLString, CLErrorCodes>(
+      Err(CLErrorCodes.EarlyEndOfStream)
+    );
   }
 }
 
