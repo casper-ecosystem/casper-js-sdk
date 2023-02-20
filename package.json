@@ -13,7 +13,6 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "prepare": "husky-run install",
-    "prepublishOnly": "npm run build && npm run test",
     "lint": "eslint src/ --fix",
     "lint:ci": "eslint src/ --max-warnings=0",
     "prebuild": "npm run clean && npm run lint",
@@ -23,8 +22,10 @@
     "test:rpc": "TS_NODE_FILES=true mocha -r ts-node/register test/rpc/*.test.ts --timeout 5000000",
     "test": "TS_NODE_FILES=true mocha -r ts-node/register test/lib/*.test.ts src/lib/CLValue/*.test.ts",
     "test:coverage": "nyc npm run test",
-    "docs": "typedoc --out docs/ src",
-    "publish-doc": "yarn run docs && gh-pages -d docs -r https://github.com/casper-ecosystem/casper-client-sdk-docs"
+    "docs": "rm -rf docs && mkdir docs && typedoc --theme markdown --readme none --excludePrivate --out docs/ src",
+    "prepublish-docs": "npm run docs && concat-md --decrease-title-levels --dir-name-as-title docs >> README.md",
+    "prepublishOnly": "npm run build && npm run test && cp README.md ._README.md && npm run prepublish-docs",
+    "postpublish": "rm -rf temp-apidoc && mv ._README.md README.md"
   },
   "keywords": [
     "Casper",
@@ -51,12 +52,13 @@
     "@types/lodash.omit": "^4.5.7",
     "@types/mocha": "^5.2.7",
     "@types/node": "^14.14.31",
-    "@typescript-eslint/eslint-plugin": "^4.16.1",
-    "@typescript-eslint/parser": "^4.16.1",
+    "@typescript-eslint/eslint-plugin": "^5.52.0",
+    "@typescript-eslint/parser": "^5.52.0",
     "assert": "^2.0.0",
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
     "chai": "^4.2.0",
+    "concat-md": "^0.5.1",
     "concurrently": "^6.0.0",
     "copy-webpack-plugin": "^9.0.1",
     "crypto-browserify": "^3.12.0",
@@ -83,8 +85,9 @@
     "ts-node": "^8.4.1",
     "ts-protoc-gen": "^0.10.0",
     "tsconfig-paths": "^3.9.0",
-    "typedoc": "0.22.17",
-    "typescript": "4.0.2",
+    "typedoc": "^0.23.25",
+    "typedoc-plugin-markdown": "^3.14.0",
+    "typescript": "^4.9.5",
     "url": "^0.11.0",
     "webpack-cli": "^4.5.0",
     "webpack-node-externals": "^2.5.2"
