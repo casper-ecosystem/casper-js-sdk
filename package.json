@@ -102,6 +102,7 @@
     "tweetnacl-ts": "^1.0.3",
     "tweetnacl-util": "^0.15.0",
     "typedjson": "^1.6.0-rc2",
+    "util": "^0.12.5",
     "webpack": "^5.24.3"
   }
 }
