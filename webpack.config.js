@@ -44,7 +44,6 @@ const clientConfig = {
     fallback: {
       crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
-      asert: require.resolve('assert'),
       http: require.resolve('stream-http'),
       url: require.resolve('url/'),
       zlib: require.resolve('browserify-zlib'),
