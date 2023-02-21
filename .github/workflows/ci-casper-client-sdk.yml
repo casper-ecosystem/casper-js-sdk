@@ -3,17 +3,17 @@ name: ci-casper-js-sdk
 on:
   push:
     branches:
-      - "dev"
-      - "feat-*"
-      - "release-*"
+      - 'dev'
+      - 'feat-*'
+      - 'release-*'
     paths-ignore:
       - '**.md'
 
   pull_request:
     branches:
-      - "dev"
-      - "feat-*"
-      - "release-*"
+      - 'dev'
+      - 'feat-*'
+      - 'release-*'
     paths-ignore:
       - '**.md'
 
@@ -71,3 +71,5 @@ jobs:
 
       - name: Docs
         run: npm run docs
+      - name: Test build
+        run: npm run build
