@@ -229,6 +229,7 @@ export interface Bid {
   delegation_rate: number;
   reward: string;
   delegators: Delegators[];
+  inactive: boolean;
 }
 
 /** Interface describing a delegator */
