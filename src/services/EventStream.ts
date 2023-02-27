@@ -115,7 +115,7 @@ export class EventStream {
       throw Error('EventStream: Unsupported protocol');
     }
 
-    http.request(requestUrl, body => {
+    http.get(requestUrl, body => {
       this.stream = body;
       body.on('data', (buf: Uint8Array) => {
         const result = parseEvent(Buffer.from(buf).toString());
