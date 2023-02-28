@@ -1,4 +1,5 @@
 import http from 'http';
+import https from 'https';
 import { Result, Ok, Err } from 'ts-results';
 
 export interface DeploySubscription {
@@ -111,12 +112,11 @@ export class EventStream {
     const separator = this.eventStreamUrl.indexOf('?') > -1 ? '&' : '?';
     const requestUrl = `${this.eventStreamUrl}${separator}start_from=${eventId}`;
 
-    if (requestUrl.startsWith('https://')) {
-      throw Error('EventStream: Unsupported protocol');
-    }
+    const request = requestUrl.startsWith('https://') ? https.get : http.get;
 
-    http.request(requestUrl, body => {
+    request(requestUrl, body => {
       this.stream = body;
+
       body.on('data', (buf: Uint8Array) => {
         const result = parseEvent(Buffer.from(buf).toString());
         if (result && !result.err) {

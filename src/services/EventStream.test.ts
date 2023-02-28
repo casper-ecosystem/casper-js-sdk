@@ -28,22 +28,12 @@ describe('EventStream', () => {
       .and.to.be.a('string');
     es.stop();
   };
-  xit('should work on http', async () => {
-    await startEventStream('http://176.9.63.35:9999/events/main');
 
-    try {
-      await startEventStream(
-        'https://events.mainnet.casperlabs.io/events/main'
-      );
-    } catch (error) {
-      console.log(error);
-      expect(error).to.be.an('Error');
-    }
+  it('should work on http', async () => {
+    await startEventStream('http://176.9.63.35:9999/events/main');
   });
 
-  it('should throw error for https protocol', async () => {
-    await expect(
-      startEventStream('https://events.mainnet.casperlabs.io/events/main')
-    ).to.be.rejectedWith('EventStream: Unsupported protocol');
+  it('should work on http1.1/https protocol', async () => {
+    await startEventStream('https://events.mainnet.casperlabs.io/events/main');
   });
 });

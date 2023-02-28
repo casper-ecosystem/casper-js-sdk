@@ -51,7 +51,7 @@ const clientConfig = {
       zlib: require.resolve('browserify-zlib'),
       fs: false,
       tls: false,
-      https: false,
+      https: require.resolve('https-browserify'),
       http2: false,
       net: false
     }
