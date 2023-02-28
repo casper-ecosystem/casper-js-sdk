@@ -4,6 +4,5 @@ module.exports = {
   out: 'docs',
   navigationLinks: {
     GitHub: 'https://github.com/casper-ecosystem/casper-js-sdk'
-  },
-  plugin: ['typedoc-plugin-versions']
+  }
 };
