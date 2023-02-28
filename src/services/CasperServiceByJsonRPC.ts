@@ -45,11 +45,23 @@ export interface GetStateRootHashResult extends RpcResult {
   state_root_hash: string;
 }
 
+type TransformValue = any;
+
+interface Transform {
+  key: string;
+  transform: TransformValue;
+}
+
+interface Effect {
+  transforms: Transform[];
+}
+
 /** Result interface for an execution result body */
 interface ExecutionResultBody {
   cost: number;
   error_message?: string | null;
   transfers: string[];
+  effect: Effect;
 }
 
 /** Result interface for an execution result */
