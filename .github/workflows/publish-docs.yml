@@ -1,86 +1,35 @@
-name: PUBLISH DOCS
+name: Publish docs
 
 on:
   release:
     types: [created]
 
 permissions:
-  contents: write # allows the 'Commit' step without tokens
+  contents: write
 
 jobs:
-  get_history: # create an artifact from the existing documentation builds
-    runs-on: ubuntu-latest
+  build-and-deploy:
+    runs-on: ubuntu-20.04
+
+    strategy:
+      matrix:
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+        node-version: [16.x]
+
     steps:
-      - name: get the gh-pages repo
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
-        with:
-          ref: gh-pages
-
-      - name: tar the existing docs
-        run: |
-          mkdir -p ./docs
-          tar -cvf documentation.tar ./docs
-
-      - name: create a document artifact
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce #v3.1.2
-        with:
-          name: documentation
-          path: documentation.tar
-
-  build: # builds the distribution and then the documentation
-    needs: get_history
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout src
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
-
-      - run: mkdir -p ./docs
-      - name: Download the existing documents artifact
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a #v3.0.2
-        with:
-          name: documentation
-      - run: tar -xf documentation.tar ./docs -C ./docs
-
-      - name: Build
+      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
+      - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
         with:
-          node-version: 16.x
-          cache: 'npm'
-      - run: npm ci
-      - run: npm run build # set up 'build' script in your package.json
+          node-version: ${{ matrix.node-version }}
+          registry-url: 'https://registry.npmjs.org'
 
-      - name: Build documents
-        run: npm run docs #set up 'docs' build script in your package.json
-
-      - name: tar the new docs
-        run: tar -cvf newdocumentation.tar ./docs
-
-      - name: create a new document artifact
-        uses: actions/upload-artifact@0b7f8abb1508181956e8e162db84b466c27e18ce #v3.1.2
-        with:
-          name: newdocumentation
-          path: newdocumentation.tar
-
-  commit: # commit the old and new merged documents to gh-pages/docs
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: checkout the gh-pages repo
-        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
-        with:
-          ref: gh-pages
-
-      - run: mkdir -p ./docs
-      - name: Download the new documents artifact
-        uses: actions/download-artifact@9bc31d5ccc31df68ecc42ccf4149144866c47d8a #v3.0.2
-        with:
-          name: newdocumentation
-      - run: tar -xf newdocumentation.tar ./docs -C ./docs
-
-      - name: commit
+      - name: Install and Build 🔧 # This example project is built using npm and outputs the result to the 'build' folder. Replace with the commands required to build your project, or remove this step entirely if your site is pre-built.
         run: |
-          git config --global user.email "username@users.noreply.github.com"
-          git config --global user.name "Continuous Integration"
-          git add .
-          git commit -m "CI updated the documentation"
-          git push
+          npm ci
+          npm run docs:build
+
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@ba1486788b0490a235422264426c45848eac35c6 #v4.4.1
+        with:
+          folder: docs # The folder the action should deploy.
