@@ -50,10 +50,7 @@ const clientConfig = {
       util: require.resolve('util'),
       zlib: require.resolve('browserify-zlib'),
       fs: false,
-      tls: false,
-      https: require.resolve('https-browserify'),
-      http2: false,
-      net: false
+      https: require.resolve('https-browserify')
     }
   },
   plugins: [
