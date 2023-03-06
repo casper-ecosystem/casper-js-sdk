@@ -86,7 +86,9 @@ export class CLI32BytesParser extends NumericBytesParser {
     bytes: Uint8Array
   ): ResultAndRemainder<CLI32, CLErrorCodes> {
     if (bytes.length < 4) {
-      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+      return resultHelper<CLI32, CLErrorCodes>(
+        Err(CLErrorCodes.EarlyEndOfStream)
+      );
     }
     const i32Bytes = Uint8Array.from(bytes.subarray(0, 4));
     const i32 = BigNumber.from(i32Bytes.slice().reverse()).fromTwos(32);
@@ -117,7 +119,9 @@ export class CLI64BytesParser extends NumericBytesParser {
     rawBytes: Uint8Array
   ): ResultAndRemainder<CLI64, CLErrorCodes> {
     if (rawBytes.length < 8) {
-      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+      return resultHelper<CLI32, CLErrorCodes>(
+        Err(CLErrorCodes.EarlyEndOfStream)
+      );
     }
     const bytes = Uint8Array.from(rawBytes.subarray(0, 8));
     const val = BigNumber.from(bytes.slice().reverse()).fromTwos(64);
@@ -148,7 +152,9 @@ export class CLU8BytesParser extends NumericBytesParser {
     bytes: Uint8Array
   ): ResultAndRemainder<CLU8, CLErrorCodes> {
     if (bytes.length === 0) {
-      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+      return resultHelper<CLI32, CLErrorCodes>(
+        Err(CLErrorCodes.EarlyEndOfStream)
+      );
     }
     return resultHelper(Ok(new CLU8(bytes[0])), bytes.subarray(1));
   }
@@ -175,7 +181,9 @@ export class CLU32BytesParser extends NumericBytesParser {
     bytes: Uint8Array
   ): ResultAndRemainder<CLU32, CLErrorCodes> {
     if (bytes.length < 4) {
-      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+      return resultHelper<CLI32, CLErrorCodes>(
+        Err(CLErrorCodes.EarlyEndOfStream)
+      );
     }
     const u32Bytes = Uint8Array.from(bytes.subarray(0, 4));
     const u32 = BigNumber.from(u32Bytes.slice().reverse());
@@ -205,7 +213,9 @@ export class CLU64BytesParser extends NumericBytesParser {
     bytes: Uint8Array
   ): ResultAndRemainder<CLU64, CLErrorCodes> {
     if (bytes.length < 8) {
-      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+      return resultHelper<CLI32, CLErrorCodes>(
+        Err(CLErrorCodes.EarlyEndOfStream)
+      );
     }
     const u64Bytes = Uint8Array.from(bytes.subarray(0, 8));
     const u64 = BigNumber.from(u64Bytes.slice().reverse());
@@ -301,18 +311,24 @@ const fromBytesBigInt = (
   bitSize: number
 ): ResultAndRemainder<CLU128 | CLU256 | CLU512, CLErrorCodes> => {
   if (rawBytes.length < 1) {
-    return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+    return resultHelper<CLU128 | CLU256 | CLU512, CLErrorCodes>(
+      Err(CLErrorCodes.EarlyEndOfStream)
+    );
   }
 
   const byteSize = bitSize / 8;
   const n = rawBytes[0];
 
   if (n > byteSize) {
-    return resultHelper(Err(CLErrorCodes.Formatting));
+    return resultHelper<CLU128 | CLU256 | CLU512, CLErrorCodes>(
+      Err(CLErrorCodes.Formatting)
+    );
   }
 
   if (n + 1 > rawBytes.length) {
-    return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+    return resultHelper<CLU128 | CLU256 | CLU512, CLErrorCodes>(
+      Err(CLErrorCodes.EarlyEndOfStream)
+    );
   }
 
   const bigIntBytes = n === 0 ? [0] : rawBytes.subarray(1, 1 + n);
@@ -331,5 +347,7 @@ const fromBytesBigInt = (
     return resultHelper(Ok(new CLU512(value, rawBytes)), remainder);
   }
 
-  return resultHelper(Err(CLErrorCodes.Formatting));
+  return resultHelper<CLU128 | CLU256 | CLU512, CLErrorCodes>(
+    Err(CLErrorCodes.Formatting)
+  );
 };

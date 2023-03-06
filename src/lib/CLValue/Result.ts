@@ -84,7 +84,9 @@ export class CLResultBytesParser extends CLValueBytesParsers {
     } = new CLU8BytesParser().fromBytesWithRemainder(bytes);
 
     if (!U8Rem) {
-      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+      return resultHelper<CLResult<CLType, CLType>, CLErrorCodes>(
+        Err(CLErrorCodes.EarlyEndOfStream)
+      );
     }
 
     const resultTag = U8Res.unwrap()
@@ -123,7 +125,9 @@ export class CLResultBytesParser extends CLValueBytesParsers {
       return resultHelper(Ok(val), valRem);
     }
 
-    return resultHelper(Err(CLErrorCodes.Formatting));
+    return resultHelper<CLResult<CLType, CLType>, CLErrorCodes>(
+      Err(CLErrorCodes.Formatting)
+    );
   }
 }
 

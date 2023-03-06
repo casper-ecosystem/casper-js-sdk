@@ -269,7 +269,9 @@ export const matchBytesToCLType = (
       const okType = okTypeRes.unwrap();
 
       if (!okTypeRem)
-        return resultHelper(Err('Missing Error type bytes in Result'));
+        return resultHelper<CLType, string>(
+          Err('Missing Error type bytes in Result')
+        );
 
       const { result: errTypeRes, remainder: rem } = matchBytesToCLType(
         okTypeRem
@@ -288,7 +290,9 @@ export const matchBytesToCLType = (
       const keyType = keyTypeRes.unwrap();
 
       if (!keyTypeRem)
-        return resultHelper(Err('Missing Key type bytes in Map'));
+        return resultHelper<CLType, string>(
+          Err('Missing Key type bytes in Map')
+        );
 
       const { result: valTypeRes, remainder: rem } = matchBytesToCLType(
         keyTypeRem
@@ -313,7 +317,7 @@ export const matchBytesToCLType = (
       const innerType1 = innerType1Res.unwrap();
 
       if (!innerType1Rem) {
-        return resultHelper(
+        return resultHelper<CLType, string>(
           Err('Missing second tuple type bytes in CLTuple2Type')
         );
       }
@@ -337,7 +341,7 @@ export const matchBytesToCLType = (
       const innerType1 = innerType1Res.unwrap();
 
       if (!innerType1Rem) {
-        return resultHelper(
+        return resultHelper<CLType, string>(
           Err('Missing second tuple type bytes in CLTuple2Type')
         );
       }
@@ -349,7 +353,7 @@ export const matchBytesToCLType = (
       const innerType2 = innerType2Res.unwrap();
 
       if (!innerType2Rem) {
-        return resultHelper(
+        return resultHelper<CLType, string>(
           Err('Missing third tuple type bytes in CLTuple2Type')
         );
       }
@@ -366,13 +370,13 @@ export const matchBytesToCLType = (
       );
     }
     case CLTypeTag.Any: {
-      return resultHelper(Err('Any unsupported'));
+      return resultHelper<CLType, string>(Err('Any unsupported'));
     }
     case CLTypeTag.PublicKey:
       return resultHelper(Ok(new CLPublicKeyType()));
   }
 
-  return resultHelper(Err('Unsuported type'));
+  return resultHelper<CLType, string>(Err('Unsuported type'));
 };
 
 export const padNum = (v: string, n = 1): string =>

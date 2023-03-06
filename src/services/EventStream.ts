@@ -1,4 +1,5 @@
-import { fetch } from 'fetch-h2';
+import http from 'http';
+import https from 'https';
 import { Result, Ok, Err } from 'ts-results';
 
 export interface DeploySubscription {
@@ -107,45 +108,49 @@ export class EventStream {
     });
   }
 
-  public async start(eventId = 0) {
+  public start(eventId = 0) {
     const separator = this.eventStreamUrl.indexOf('?') > -1 ? '&' : '?';
     const requestUrl = `${this.eventStreamUrl}${separator}start_from=${eventId}`;
-    const response = await fetch(requestUrl);
-    const body = await response.readable();
 
-    body.on('data', (buf: Uint8Array) => {
-      const result = parseEvent(Buffer.from(buf).toString());
-      if (result && !result.err) {
-        this.runEventsLoop(result);
-      }
-      if (result.err === StreamErrors.EarlyEndOfStream) {
-        this.pendingDeployString = result.body;
-      }
-      if (result.err === StreamErrors.MissingDataHeaderAndId) {
-        this.pendingDeployString += result.body;
-      }
-      if (result.err === StreamErrors.MissingDataHeader) {
-        this.pendingDeployString += result.body;
-        this.pendingDeployString += `\nid:${result.id}`;
+    const request = requestUrl.startsWith('https://') ? https.get : http.get;
 
-        const newResult = parseEvent(this.pendingDeployString);
-        if (newResult.err === null) {
-          this.pendingDeployString = '';
+    request(requestUrl, body => {
+      this.stream = body;
+
+      body.on('data', (buf: Uint8Array) => {
+        const result = parseEvent(Buffer.from(buf).toString());
+        if (result && !result.err) {
+          this.runEventsLoop(result);
         }
-        this.runEventsLoop(newResult);
-      }
-    });
-    body.once('readable', () => {
-      console.info('Connected successfully to event stream endpoint.');
-    });
-    body.on('error', (error: Error) => {
-      throw error;
-    });
-    body.on('timeout', () => {
-      throw Error('EventStream: Timeout error');
-    });
-    body.on('close', () => {
-      throw Error('EventStream: Connection closed');
+        if (result.err === StreamErrors.EarlyEndOfStream) {
+          this.pendingDeployString = result.body;
+        }
+        if (result.err === StreamErrors.MissingDataHeaderAndId) {
+          this.pendingDeployString += result.body;
+        }
+        if (result.err === StreamErrors.MissingDataHeader) {
+          this.pendingDeployString += result.body;
+          this.pendingDeployString += `\nid:${result.id}`;
+
+          const newResult = parseEvent(this.pendingDeployString);
+          if (newResult.err === null) {
+            this.pendingDeployString = '';
+          }
+          this.runEventsLoop(newResult);
+        }
+      });
+      body.once('readable', () => {
+        console.info('Connected successfully to event stream endpoint.');
+      });
+      body.on('error', (error: Error) => {
+        throw error;
+      });
+      body.on('timeout', () => {
+        throw Error('EventStream: Timeout error');
+      });
+      body.on('close', () => {
+        throw Error('EventStream: Connection closed');
+      });
     });
   }
 

@@ -61,7 +61,9 @@ export class CLURefBytesParser extends CLValueBytesParsers {
     bytes: Uint8Array
   ): ResultAndRemainder<CLURef, CLErrorCodes> {
     if (bytes.length < UREF_BYTES_LENGTH) {
-      return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+      return resultHelper<CLURef, CLErrorCodes>(
+        Err(CLErrorCodes.EarlyEndOfStream)
+      );
     }
 
     const urefBytes = bytes.subarray(0, UREF_ADDR_LENGTH);

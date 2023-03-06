@@ -1,9 +1,11 @@
 node_modules
+
+# Output
+/docs/
 /dist/
+
 .eslintcache
 .nyc_output
-
-docs/
 
 .DS_Store
 

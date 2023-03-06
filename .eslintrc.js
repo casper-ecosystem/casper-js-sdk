@@ -4,14 +4,11 @@ module.exports = {
   },
   extends: [
     'plugin:@typescript-eslint/recommended',
-    'plugin:prettier/recommended'
+    'plugin:lodash/recommended',
+    'prettier'
   ],
   parser: '@typescript-eslint/parser',
-  plugins: [
-    'eslint-plugin-jsdoc',
-    'eslint-plugin-prefer-arrow',
-    '@typescript-eslint'
-  ],
+  plugins: ['eslint-plugin-jsdoc', 'eslint-plugin-prefer-arrow', 'lodash'],
   overrides: [
     {
       files: ['*.ts'], // Your TypeScript files extension
@@ -33,6 +30,13 @@ module.exports = {
     }
   ],
   rules: {
-    '@typescript-eslint/no-var-requires': 'off'
+    '@typescript-eslint/no-var-requires': 'off',
+    'lodash/import-scope': [2, 'method'],
+    'lodash/prefer-lodash-method': 'off',
+    'lodash/prefer-lodash-typecheck': 'off',
+    'lodash/prefer-constant': 'off',
+    'lodash/prefer-is-nil': 'off',
+    'lodash/prefer-includes': 'off',
+    'lodash/prefer-matches': 'off'
   }
 };

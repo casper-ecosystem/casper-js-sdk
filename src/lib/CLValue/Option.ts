@@ -86,7 +86,10 @@ export class CLOptionBytesParser extends CLValueBytesParsers {
     }
 
     if (optionTag === OPTION_TAG_SOME) {
-      if (!U8Rem) return resultHelper(Err(CLErrorCodes.EarlyEndOfStream));
+      if (!U8Rem)
+        return resultHelper<CLOption<CLValue>, CLErrorCodes>(
+          Err(CLErrorCodes.EarlyEndOfStream)
+        );
       const parser = matchByteParserByCLType(type.inner).unwrap();
       const {
         result: valRes,
@@ -97,7 +100,9 @@ export class CLOptionBytesParser extends CLValueBytesParsers {
       return resultHelper(Ok(new CLOption(Some(clValue))), valRem);
     }
 
-    return resultHelper(Err(CLErrorCodes.Formatting));
+    return resultHelper<CLOption<CLValue>, CLErrorCodes>(
+      Err(CLErrorCodes.Formatting)
+    );
   }
 }
 

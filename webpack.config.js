@@ -46,17 +46,15 @@ const clientConfig = {
   resolve: {
     ...common.resolve,
     fallback: {
+      assert: require.resolve('assert'),
       crypto: require.resolve('crypto-browserify'),
       stream: require.resolve('stream-browserify'),
-      asert: require.resolve('assert'),
       http: require.resolve('stream-http'),
-      url: require.resolve('url/'),
+      url: require.resolve('url'),
+      util: require.resolve('util'),
       zlib: require.resolve('browserify-zlib'),
       fs: false,
-      tls: false,
-      https: false,
-      http2: false,
-      net: false
+      https: require.resolve('https-browserify')
     }
   },
   plugins: [

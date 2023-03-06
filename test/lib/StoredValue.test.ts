@@ -1,9 +1,13 @@
+import mapKeys from 'lodash/mapKeys';
+import camelCase from 'lodash/camelCase';
 import { TypedJSON } from 'typedjson';
 import { StoredValue } from '../../src/lib/StoredValue';
 import { expect } from 'chai';
 
 describe('StoredValue', () => {
-  it('should parse Account stored value correctly', function () {
+  const serializer = new TypedJSON(StoredValue);
+
+  it('should parse Account stored value correctly', () => {
     const mockJson = {
       Account: {
         account_hash:
@@ -46,7 +50,6 @@ describe('StoredValue', () => {
       }
     };
 
-    const serializer = new TypedJSON(StoredValue);
     const storedValue = serializer.parse(mockJson);
     expect(storedValue?.Account).not.eq(undefined);
     expect(storedValue?.Account?.accountHash()).to.eq(
@@ -56,7 +59,7 @@ describe('StoredValue', () => {
     expect(storedValue?.Account?.namedKeys[0].name).to.eq('contract_version');
   });
 
-  it('should parse Transfer stored value correctly', function () {
+  it('should parse Transfer stored value correctly', () => {
     const mockJson = {
       Transfer: {
         deploy_hash:
@@ -75,7 +78,6 @@ describe('StoredValue', () => {
       }
     };
 
-    const serializer = new TypedJSON(StoredValue);
     const storedValue = serializer.parse(mockJson);
     expect(storedValue?.Transfer).to.not.eq(undefined);
     expect(storedValue?.Transfer?.deployHash).to.eq(
@@ -83,7 +85,7 @@ describe('StoredValue', () => {
     );
   });
 
-  it('should parse Contract stored value correctly', function () {
+  it('should parse Contract stored value correctly', () => {
     const mockJson = {
       Contract: {
         contract_package_hash: 'package-uref',
@@ -92,7 +94,6 @@ describe('StoredValue', () => {
       }
     };
 
-    const serializer = new TypedJSON(StoredValue);
     const storedValue = serializer.parse(mockJson);
     expect(storedValue?.Contract).to.not.eq(undefined);
     expect(storedValue?.Contract?.contractPackageHash).to.eq(
@@ -106,7 +107,48 @@ describe('StoredValue', () => {
     );
   });
 
-  it('should parse DeployInfo stored value correctly', function () {
+  it('should parse ContractPackageJson stored value correctly', () => {
+    //
+    const mockJson = {
+      ContractPackage: {
+        access_key:
+          'uref-6bec50abe6751e45e82763e5a52914ab7062d2147009a88d3555c7fe83849182-007',
+        versions: [
+          {
+            protocol_version_major: 1,
+            contract_version: 1,
+            contract_hash:
+              'contract-2e64dbd1aea72e5b7ad3fa6cc64087150962fb13e5acdf2f886540b543ef0727'
+          }
+        ],
+        disabled_versions: [],
+        groups: [
+          {
+            group: 'admin_group',
+            keys: [
+              'uref-67a1de85bd97664bbd037be2e5b97e5175599e29422daf87619efd30c3e16182-007'
+            ]
+          },
+          {
+            group: 'constructor',
+            keys: []
+          }
+        ]
+      }
+    };
+
+    const storedValue = serializer.parse(mockJson);
+    expect(storedValue?.ContractPackage?.accessKey).to.eq(
+      mockJson.ContractPackage.access_key
+    );
+    expect(storedValue?.ContractPackage?.versions).to.deep.eq(
+      mockJson.ContractPackage.versions.map(version =>
+        mapKeys(version, (_value, key) => camelCase(key))
+      )
+    );
+  });
+
+  it('should parse DeployInfo stored value correctly', () => {
     const mockJson = {
       DeployInfo: {
         deploy_hash:
@@ -122,7 +164,6 @@ describe('StoredValue', () => {
       }
     };
 
-    const serializer = new TypedJSON(StoredValue);
     const storedValue = serializer.parse(mockJson);
     expect(storedValue?.DeployInfo).to.not.eq(undefined);
     expect(storedValue?.DeployInfo?.deployHash).to.eq(
