@@ -22,7 +22,7 @@ const common = {
     extensions: ['.ts', '.js']
   },
   devtool: 'source-map',
-  plugins: [new BundleAnalyzerPlugin()]
+  plugins: [new BundleAnalyzerPlugin({ analyzerMode: 'disabled' })]
 };
 
 /** @type { import('webpack').Configuration } */
