@@ -1,10 +1,10 @@
 import { expect, assert } from 'chai';
-import { Keys, DeployUtil, CLValueBuilder } from '../../src/lib';
+import { Keys, DeployUtil, CLValueBuilder } from '.';
 import {
   humanizerTTL,
   dehumanizerTTL,
   StoredContractByHash
-} from '../../src/lib/DeployUtil';
+} from './DeployUtil';
 import { TypedJSON } from 'typedjson';
 
 const testDeploy = () => {

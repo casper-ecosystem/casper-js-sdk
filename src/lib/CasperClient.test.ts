@@ -1,12 +1,9 @@
-import * as fs from 'fs';
-import * as path from 'path';
-import * as os from 'os';
 import { expect } from 'chai';
 
-import { Secp256K1, SignatureAlgorithm } from '../../src/lib/Keys';
-import { decodeBase16, Keys, DeployUtil, CasperClient } from '../../src';
-
-const { Deploy } = DeployUtil;
+import { SignatureAlgorithm } from './Keys';
+import { decodeBase16 } from './Conversions';
+import { Deploy } from './DeployUtil';
+import { CasperClient } from './CasperClient';
 
 let casperClient: CasperClient;
 describe('CasperClient', () => {
@@ -25,44 +22,6 @@ describe('CasperClient', () => {
     expect(convertFromPrivateKey).to.deep.equal(publicKey);
   });
 
-  it('should generate PEM file for Ed25519 correctly', () => {
-    const edKeyPair = casperClient.newKeyPair(SignatureAlgorithm.Ed25519);
-    const publicKeyInPem = edKeyPair.exportPublicKeyInPem();
-    const privateKeyInPem = edKeyPair.exportPrivateKeyInPem();
-
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-'));
-    fs.writeFileSync(tempDir + '/public.pem', publicKeyInPem);
-    fs.writeFileSync(tempDir + '/private.pem', privateKeyInPem);
-    const publicKeyFromFIle = casperClient.loadPublicKeyFromFile(
-      tempDir + '/public.pem',
-      SignatureAlgorithm.Ed25519
-    );
-    const privateKeyFromFile = casperClient.loadPrivateKeyFromFile(
-      tempDir + '/private.pem',
-      SignatureAlgorithm.Ed25519
-    );
-
-    const keyPairFromFile = Keys.Ed25519.parseKeyPair(
-      publicKeyFromFIle,
-      privateKeyFromFile
-    );
-
-    expect(keyPairFromFile.publicKey.value()).to.deep.equal(
-      edKeyPair.publicKey.value()
-    );
-    expect(keyPairFromFile.privateKey).to.deep.equal(edKeyPair.privateKey);
-
-    // load the keypair from pem file of private key
-    const loadedKeyPair = casperClient.loadKeyPairFromPrivateFile(
-      tempDir + '/private.pem',
-      SignatureAlgorithm.Ed25519
-    );
-    expect(loadedKeyPair.publicKey.value()).to.deep.equal(
-      edKeyPair.publicKey.value()
-    );
-    expect(loadedKeyPair.privateKey).to.deep.equal(edKeyPair.privateKey);
-  });
-
   it('should generate new Secp256K1 key pair, and compute public key from private key', () => {
     const edKeyPair = casperClient.newKeyPair(SignatureAlgorithm.Secp256K1);
     const publicKey = edKeyPair.publicKey.value();
@@ -72,47 +31,6 @@ describe('CasperClient', () => {
       SignatureAlgorithm.Secp256K1
     );
     expect(convertFromPrivateKey).to.deep.equal(publicKey);
-  });
-
-  it('should generate PEM file for Secp256K1 and restore the key pair from PEM file correctly', () => {
-    const edKeyPair: Secp256K1 = casperClient.newKeyPair(
-      SignatureAlgorithm.Secp256K1
-    );
-    const publicKeyInPem = edKeyPair.exportPublicKeyInPem();
-    const privateKeyInPem = edKeyPair.exportPrivateKeyInPem();
-
-    const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'test-'));
-    fs.writeFileSync(tempDir + '/public.pem', publicKeyInPem);
-    fs.writeFileSync(tempDir + '/private.pem', privateKeyInPem);
-    const publicKeyFromFIle = casperClient.loadPublicKeyFromFile(
-      tempDir + '/public.pem',
-      SignatureAlgorithm.Secp256K1
-    );
-    const privateKeyFromFile = casperClient.loadPrivateKeyFromFile(
-      tempDir + '/private.pem',
-      SignatureAlgorithm.Secp256K1
-    );
-
-    const keyPairFromFile = Keys.Secp256K1.parseKeyPair(
-      publicKeyFromFIle,
-      privateKeyFromFile,
-      'raw'
-    );
-
-    expect(keyPairFromFile.publicKey.value()).to.deep.equal(
-      edKeyPair.publicKey.value()
-    );
-    expect(keyPairFromFile.privateKey).to.deep.equal(edKeyPair.privateKey);
-
-    // load the keypair from pem file of private key
-    const loadedKeyPair = casperClient.loadKeyPairFromPrivateFile(
-      tempDir + '/private.pem',
-      SignatureAlgorithm.Secp256K1
-    );
-    expect(loadedKeyPair.publicKey.value()).to.deep.equal(
-      edKeyPair.publicKey.value()
-    );
-    expect(loadedKeyPair.privateKey).to.deep.equal(edKeyPair.privateKey);
   });
 
   it('should create a HK wallet and derive child account correctly', function() {

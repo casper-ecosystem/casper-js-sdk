@@ -11,20 +11,20 @@ import {
   Keys,
   AccessRights,
   decodeBase16
-} from '../../src';
-import { toBytesNumber, toBytesDeployHash } from '../../src/lib/ByteConverters';
+} from '..';
+import { toBytesNumber, toBytesDeployHash } from './ByteConverters';
 
 describe(`numbers' toBytes`, () => {
   it('CLU256 of zero after serialization should be equal to [0]', () => {
     const toBytesNum128 = toBytesNumber(128, false);
     const toBytesNum256 = toBytesNumber(256, false);
-    const toBytesNum512= toBytesNumber(512, false);
+    const toBytesNum512 = toBytesNumber(512, false);
 
     const expectedRes = Uint8Array.from([0]);
 
-    expect(toBytesNum128(0)).to.deep.eq(expectedRes)
-    expect(toBytesNum256(0)).to.deep.eq(expectedRes)
-    expect(toBytesNum512(0)).to.deep.eq(expectedRes)
+    expect(toBytesNum128(0)).to.deep.eq(expectedRes);
+    expect(toBytesNum256(0)).to.deep.eq(expectedRes);
+    expect(toBytesNum512(0)).to.deep.eq(expectedRes);
   });
 
   it('should be able to serialize/deserialize u8', () => {

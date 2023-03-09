@@ -1,7 +1,7 @@
 import mapKeys from 'lodash/mapKeys';
 import camelCase from 'lodash/camelCase';
 import { TypedJSON } from 'typedjson';
-import { StoredValue } from '../../src/lib/StoredValue';
+import { StoredValue } from './StoredValue';
 import { expect } from 'chai';
 
 describe('StoredValue', () => {

@@ -1,9 +1,6 @@
-import chai, { expect } from 'chai';
-import chaiAsPromise from 'chai-as-promised';
+import { expect } from 'chai';
 
-import { EventName, EventStream } from './EventStream';
-
-chai.use(chaiAsPromise);
+import { EventName, EventStream } from '../../src/services/EventStream';
 
 const sleep = (ms: number) => {
   return new Promise(resolve => {
@@ -30,10 +27,12 @@ describe('EventStream', () => {
   };
 
   it('should work on http', async () => {
+    // TODO Replace this url to ENV
     await startEventStream('http://176.9.63.35:9999/events/main');
   });
 
-  it('should work on http1.1/https protocol', async () => {
+  it('should work on http1.1/https protocol', async done => {
     await startEventStream('https://events.mainnet.casperlabs.io/events/main');
+    done();
   });
 });
