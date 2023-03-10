@@ -17,7 +17,7 @@ module.exports = {
       // If you don't want to extend any rules, you don't need an `extends` attribute.
       extends: ['plugin:@typescript-eslint/recommended'],
       parserOptions: {
-        project: ['./tsconfig.eslint.json'] // Specify it only for TypeScript files
+        project: ['./tsconfig.json'] // Specify it only for TypeScript files
       },
       rules: {
         '@typescript-eslint/ban-ts-comment': 'off',
