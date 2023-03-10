@@ -5,6 +5,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 const nodeExternals = require('webpack-node-externals');
 
+/** @type { import('webpack').Configuration } */
 const common = {
   entry: './src/index.ts',
   mode: 'production',
@@ -20,10 +21,11 @@ const common = {
   resolve: {
     extensions: ['.ts', '.js']
   },
-  plugins: [new BundleAnalyzerPlugin()],
-  devtool: 'source-map'
+  devtool: 'source-map',
+  plugins: [new BundleAnalyzerPlugin({ analyzerMode: 'disabled' })]
 };
 
+/** @type { import('webpack').Configuration } */
 const serverConfig = {
   ...common,
   target: 'node',
@@ -40,6 +42,7 @@ const serverConfig = {
   externals: [nodeExternals()] // in order to ignore all modules in node_modules folder
 };
 
+/** @type { import('webpack').Configuration } */
 const clientConfig = {
   ...common,
   target: 'web',
@@ -72,6 +75,7 @@ const clientConfig = {
   }
 };
 
+/** @type { import('webpack').Configuration } */
 const bundlerConfig = {
   ...common,
   target: 'web',
@@ -89,4 +93,5 @@ const bundlerConfig = {
   }
 };
 
+/** @type { import('webpack').Configuration } */
 module.exports = [serverConfig, clientConfig, bundlerConfig];
