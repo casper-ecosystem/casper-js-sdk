@@ -2,9 +2,9 @@ import { assert } from 'chai';
 import { CasperServiceByJsonRPC } from '../../src/services';
 import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
 import { MockProvider } from './Provider.setup';
+import { NODE_URL } from '../config';
 
-const rpcTarget = 'http://127.0.0.1:11101/rpc';
-const provider = new MockProvider(rpcTarget);
+const provider = new MockProvider(NODE_URL);
 const client = new CasperServiceByJsonRPC(provider);
 
 describe('Provider', () => {

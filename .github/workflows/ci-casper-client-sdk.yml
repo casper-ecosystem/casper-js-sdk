@@ -59,14 +59,18 @@ jobs:
         env:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://localhost:7777/rpc'
+          HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
+          HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
           NETWORK_NAME: 'casper-example'
           RUST_LOG: 'INFO'
 
-      - name: Test - RPC - Casper Node - DEV
+      - name: Test RPC - Casper Node - DEV
         run: ./ci/setup.sh && npm run test:e2e
         env:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://localhost:7777/rpc'
+          HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
+          HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
           NETWORK_NAME: 'casper-example'
           RUST_LOG: 'INFO'
 

@@ -16,19 +16,19 @@ import { Transfers } from '../../src/lib/StoredValue';
 import { Contract } from '../../src/lib/Contracts';
 import path from 'path';
 import { BigNumber } from '@ethersproject/bignumber';
+import { FAUCET_PRIV_KEY, NETWORK_NAME, NODE_URL } from '../config';
 
 config();
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const localCasperNode = require('../../ci/start_node');
 const casperNodePid = localCasperNode.start_a_single_node();
 
 const { SignatureAlgorithm, getKeysFromHexPrivKey, Ed25519 } = Keys;
 
-const nodeUrl = process.env.NODE_URL!;
-const networkName = process.env.NETWORK_NAME!;
-const client = new CasperServiceByJsonRPC(nodeUrl);
+const client = new CasperServiceByJsonRPC(NODE_URL);
 const faucetKey = getKeysFromHexPrivKey(
-  process.env.FAUCET_PRIV_KEY!,
+  FAUCET_PRIV_KEY,
   SignatureAlgorithm.Ed25519
 );
 
@@ -99,7 +99,7 @@ describe('RPC', () => {
 
   it('state_get_balance', async () => {
     const stateRootHash = await client.getStateRootHash();
-    const accountInfo = await getAccountInfo(nodeUrl, faucetKey.publicKey);
+    const accountInfo = await getAccountInfo(NODE_URL, faucetKey.publicKey);
     const balance = await client.getAccountBalance(
       stateRootHash,
       accountInfo.mainPurse
@@ -176,7 +176,7 @@ describe('RPC', () => {
 
     const deployParams = new DeployUtil.DeployParams(
       faucetKey.publicKey,
-      networkName
+      NETWORK_NAME
     );
 
     const toPublicKey = Keys.Ed25519.new().publicKey;
@@ -211,7 +211,7 @@ describe('RPC', () => {
   });
 
   it('should deploy wasm over rpc', async () => {
-    const casperClient = new CasperClient(nodeUrl);
+    const casperClient = new CasperClient(NODE_URL);
     const erc20 = new Contract(casperClient);
     const wasmPath = path.resolve(__dirname, './erc20_token.wasm');
     const wasm = new Uint8Array(fs.readFileSync(wasmPath, null).buffer);
@@ -232,7 +232,7 @@ describe('RPC', () => {
       args,
       '200000000000',
       faucetKey.publicKey,
-      networkName,
+      NETWORK_NAME,
       [faucetKey]
     );
 
@@ -294,7 +294,7 @@ describe('RPC', () => {
       'transfer',
       transferArgs,
       faucetKey.publicKey,
-      networkName,
+      NETWORK_NAME,
       '2500000000',
       [faucetKey]
     );
@@ -337,7 +337,6 @@ describe('RPC', () => {
     const blockInfo = await client.getBlockInfoByHeight(height);
     expect(eraSummary.blockHash).to.be.equal(blockInfo.block?.hash);
   });
-
 });
 
 after(() => {

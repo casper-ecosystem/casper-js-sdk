@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 
 import { EventName, EventStream } from '../../src/services/EventStream';
+import { HTTPS_EVENT_STREAM_URL, HTTP_EVENT_STREAM_URL } from '../config';
 
 const sleep = (ms: number) => {
   return new Promise(resolve => {
@@ -27,12 +28,10 @@ describe('EventStream', () => {
   };
 
   it('should work on http', async () => {
-    // TODO Replace this url to ENV
-    await startEventStream('http://176.9.63.35:9999/events/main');
+    await startEventStream(HTTP_EVENT_STREAM_URL);
   });
 
-  it('should work on http1.1/https protocol', async done => {
-    await startEventStream('https://events.mainnet.casperlabs.io/events/main');
-    done();
+  it('should work on http1.1/https protocol', async () => {
+    await startEventStream(HTTPS_EVENT_STREAM_URL);
   });
 });

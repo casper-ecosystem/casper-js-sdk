@@ -5,14 +5,12 @@ import { expect } from 'chai';
 
 import { Secp256K1, SignatureAlgorithm } from '../../src/lib/Keys';
 import { decodeBase16, Keys, DeployUtil, CasperClient } from '../../src/lib';
+import { NODE_URL } from '../config';
 
 const { Deploy } = DeployUtil;
 
-let casperClient: CasperClient;
 describe('CasperClient', () => {
-  before(() => {
-    casperClient = new CasperClient('https://rpc.testnet.casperlabs.io/rpc');
-  });
+  const casperClient = new CasperClient(NODE_URL);
 
   it('should generate new Ed25519 key pair, and compute public key from private key', () => {
     const edKeyPair = casperClient.newKeyPair(SignatureAlgorithm.Ed25519);

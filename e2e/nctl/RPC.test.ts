@@ -7,8 +7,9 @@ import {
   PurseIdentifier
 } from '../../src/services';
 import { Keys, DeployUtil, RuntimeArgs } from '../../src/index';
+import { HTTP_EVENT_STREAM_URL, NODE_URL } from '../config';
 
-const client = new CasperServiceByJsonRPC('http://localhost:11101/rpc');
+const client = new CasperServiceByJsonRPC(NODE_URL);
 
 describe('RPC', () => {
   xit('should return correct block by number', async () => {
@@ -67,7 +68,7 @@ describe('RPC', () => {
   });
 
   xit('DeployWatcher', () => {
-    const client = new DeployWatcher('http://localhost:18101/events/main');
+    const client = new DeployWatcher(HTTP_EVENT_STREAM_URL);
     client.subscribe([
       {
         deployHash:
