@@ -1,7 +1,6 @@
 import { expect } from 'chai';
 import { Ed25519, Secp256K1 } from '../../src/lib/Keys';
 import {
-  encodeBase64,
   formatMessageWithHeaders,
   signRawMessage,
   verifyMessageSignature
@@ -24,11 +23,6 @@ describe('SignedMessage', () => {
       wrongMessage,
       signature
     );
-
-    const format = (msg: string) => Uint8Array.from(Buffer.from(`${msg}`));
-
-    console.log(encodeBase64(signKeyPair.sign(format(exampleMessage))));
-    console.log(encodeBase64(signKeyPair.sign(format(wrongMessage))));
 
     expect(valid).to.be.eq(true);
     expect(invalid).to.be.eq(false);

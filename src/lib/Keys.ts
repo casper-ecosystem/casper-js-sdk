@@ -460,7 +460,6 @@ export class Secp256K1 extends AsymmetricKey {
   /**
    * Generate a new pseudorandom Secp256k1 key pair
    * @returns A new `Secp256K1` object
-   * @see [eccrypto.getPublicCompressed](https://github.com/bitchan/eccrypto/blob/master/index.js#L123)
    */
   public static new() {
     const privateKey = secp256k1.utils.randomPrivateKey();
