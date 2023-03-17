@@ -41,6 +41,7 @@ import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { CasperClient } from './CasperClient';
 import { jsonArrayMember, jsonMember, jsonObject, TypedJSON } from 'typedjson';
 import { ByteArray } from 'tweetnacl-ts';
+import { DEFAULT_DEPLOY_TTL } from '../constants';
 
 const shortEnglishHumanizer = humanizeDuration.humanizer({
   spacer: '',
@@ -1026,7 +1027,7 @@ export class ExecutableDeployItem implements ToBytes {
     paymentAmount: BigNumberish,
     chainName: string,
     gasPrice = 1,
-    ttl = 1800000,
+    ttl = DEFAULT_DEPLOY_TTL,
     sourcePurse?: CLURef
   ): Deploy {
     const deployParams = new DeployUtil.DeployParams(
@@ -1329,7 +1330,7 @@ export class DeployParams {
     public accountPublicKey: CLPublicKey,
     public chainName: string,
     public gasPrice: number = 1,
-    public ttl: number = 1800000,
+    public ttl: number = DEFAULT_DEPLOY_TTL,
     public dependencies: Uint8Array[] = [],
     public timestamp?: number
   ) {
