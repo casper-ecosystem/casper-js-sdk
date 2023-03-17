@@ -1,9 +1,7 @@
-import chai, { expect } from 'chai';
-import chaiAsPromise from 'chai-as-promised';
+import { expect } from 'chai';
 
-import { EventName, EventStream } from './EventStream';
-
-chai.use(chaiAsPromise);
+import { EventName, EventStream } from '../../src/services/EventStream';
+import { HTTPS_EVENT_STREAM_URL } from '../config';
 
 const sleep = (ms: number) => {
   return new Promise(resolve => {
@@ -30,10 +28,12 @@ describe('EventStream', () => {
   };
 
   it('should work on http', async () => {
-    await startEventStream('http://176.9.63.35:9999/events/main');
+    // TODO Enable event stream on GitHub CI
+    // Replace hardcoded url with HTTP_EVENT_STREAM_URL
+    await startEventStream('http://65.21.231.87:9999/events/main');
   });
 
   it('should work on http1.1/https protocol', async () => {
-    await startEventStream('https://events.mainnet.casperlabs.io/events/main');
+    await startEventStream(HTTPS_EVENT_STREAM_URL);
   });
 });

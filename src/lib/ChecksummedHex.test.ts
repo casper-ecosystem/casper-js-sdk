@@ -5,7 +5,7 @@ import {
   isChecksummed,
   isSamecase,
   SMALL_BYTES_COUNT
-} from '../../src/lib/ChecksummedHex';
+} from './ChecksummedHex';
 
 chai.should();
 

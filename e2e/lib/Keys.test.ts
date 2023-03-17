@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { decodeBase16, decodeBase64, encodeBase16 } from '../../src';
+import { decodeBase16, decodeBase64, encodeBase16 } from '../../src/lib';
 import { Ed25519, Secp256K1 } from '../../src/lib/Keys';
 import { byteHash } from '../../src/lib/ByteConverters';
 import * as nacl from 'tweetnacl-ts';
@@ -16,16 +16,10 @@ describe('Ed25519', () => {
     // use lower case for node-rs
     const name = Buffer.from('ED25519'.toLowerCase());
     const sep = decodeBase16('00');
-    const bytes = Buffer.concat([
-      name,
-      sep,
-      signKeyPair.publicKey.value()
-    ]);
+    const bytes = Buffer.concat([name, sep, signKeyPair.publicKey.value()]);
     const hash = byteHash(bytes);
 
-    expect(Ed25519.accountHash(signKeyPair.publicKey.value())).deep.equal(
-      hash
-    );
+    expect(Ed25519.accountHash(signKeyPair.publicKey.value())).deep.equal(hash);
   });
 
   it('should generate PEM file for Ed25519 correctly', () => {
@@ -112,16 +106,12 @@ describe('Secp256K1', () => {
     // use lower case for node-rs
     const name = Buffer.from('secp256k1'.toLowerCase());
     const sep = decodeBase16('00');
-    const bytes = Buffer.concat([
-      name,
-      sep,
-      signKeyPair.publicKey.value()
-    ]);
+    const bytes = Buffer.concat([name, sep, signKeyPair.publicKey.value()]);
     const hash = byteHash(bytes);
 
-    expect(
-      Secp256K1.accountHash(signKeyPair.publicKey.value())
-    ).deep.equal(hash);
+    expect(Secp256K1.accountHash(signKeyPair.publicKey.value())).deep.equal(
+      hash
+    );
   });
 
   it('should generate PEM file for Secp256K1 correctly', async () => {
