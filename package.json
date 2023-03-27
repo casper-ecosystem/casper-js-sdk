@@ -30,7 +30,7 @@
     "docs:watch": "rm -rf docs && typedoc --watch",
     "docs:serve": "npm run docs:build && serve docs",
     "docs:dev": "concurrently \"npm run docs:watch\" \"serve docs\"",
-    "prepublishOnly": "npm run build && npm run test",
+    "prepublishOnly": "npm run build && npm run test:unit",
     "postpublish": "rm -rf temp-apidoc && mv ._README.md README.md"
   },
   "keywords": [
