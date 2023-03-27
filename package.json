@@ -25,7 +25,7 @@
     "test:unit": "cross-env NODE_ENV=test npm run test:node:unit && npm run test:browser:unit",
     "test:node:e2e": "cross-env NODE_ENV=test TS_NODE_FILES=true mocha -r ts-node/register e2e/**/*.test.ts --timeout 5000000",
     "test:e2e": "cross-env NODE_ENV=test npm run test:node:e2e",
-    "test": "npm run test:unit",
+    "test": "npm run test:unit && npm run test:e2e",
     "docs:build": "rm -rf docs && typedoc",
     "docs:watch": "rm -rf docs && typedoc --watch",
     "docs:serve": "npm run docs:build && serve docs",
