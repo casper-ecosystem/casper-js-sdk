@@ -1,6 +1,6 @@
 {
   "name": "casper-js-sdk",
-  "version": "2.11.0",
+  "version": "2.12.0",
   "license": "Apache 2.0",
   "description": "SDK to interact with the Casper blockchain",
   "homepage": "https://github.com/casper-ecosystem/casper-js-sdk#README.md",
@@ -30,7 +30,7 @@
     "docs:watch": "rm -rf docs && typedoc --watch",
     "docs:serve": "npm run docs:build && serve docs",
     "docs:dev": "concurrently \"npm run docs:watch\" \"serve docs\"",
-    "prepublishOnly": "npm run build && npm run test",
+    "prepublishOnly": "npm run build && npm run test:unit",
     "postpublish": "rm -rf temp-apidoc && mv ._README.md README.md"
   },
   "keywords": [
