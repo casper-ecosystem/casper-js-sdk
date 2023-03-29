@@ -19,4 +19,32 @@ npm run test
 
 ## Examples
 
-Basic examples of library usage are stored inside [`/test`](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/test) directory.
+Basic library usage can be found below files:
+
+- CLValues
+  - [CLUnit](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/CLValue/Unit.test.ts)
+  - [CLAccountHash](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/CLValue/AccountHash.test.ts)
+  - [CLTuple](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/CLValue/Tuple.test.ts)
+  - [Numeric (CLU8, CLU32, CLU64 ...)](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/CLValue/Numeric.test.ts)
+  - [CLKey](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/CLValue/Key.test.ts)
+  - [CLPublicKey](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/CLValue/PublicKey.test.ts)
+  - [CLURef](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/CLValue/URef.test.ts)
+  - [CLString](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/CLValue/String.test.ts)
+  - [CLBool](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/CLValue/Bool.test.ts)
+  - [CLResult](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/CLValue/Result.test.ts)
+  - [CLMap](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/CLValue/Map.test.ts)
+  - [CLByteArray](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/CLValue/ByteArray.test.ts)
+  - [CLOption](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/CLValue/Option.test.ts)
+  - [CLList](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/CLValue/List.test.ts)
+- [Keys - Ed25519, Secp256K1](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/e2e/lib/Keys.test.ts)
+- [CasperServiceByJsonRPC](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/e2e/rpc/RPC.test.ts)
+- [CasperClient](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/e2e/lib/CasperClient.test.ts)
+- [EventStream](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/e2e/services/EventStream.test.ts)
+- [Contracts](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/Contracts.test.ts)
+- [RuntimeArgs](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/RuntimeArgs.test.ts)
+- [DeployUtil](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/DeployUtil.test.ts)
+- [SignedMessage](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/SignedMessage.test.ts)
+- [StoredValue](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/StoredValue.test.ts)
+- [ByteConverters](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/ByteConverters.test.ts)
+- [ChecksummedHex](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/ChecksummedHex.test.ts)
+- [Serialization](https://github.com/casper-ecosystem/casper-js-sdk/tree/dev/src/lib/Serialization.test.ts)
