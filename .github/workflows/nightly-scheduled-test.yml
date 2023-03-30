@@ -7,7 +7,7 @@ on:
   schedule:
     # * is a special character in YAML so you have to quote this string
     # runs every day at midnight
-    - cron: "0 0 * * *"
+    - cron: '0 0 * * *'
 
 jobs:
   nightly-npm-test:
@@ -39,6 +39,8 @@ jobs:
         env:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://localhost:7777/rpc'
+          HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
+          HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
           NETWORK_NAME: 'casper-example'
           RUST_LOG: 'INFO'
 
@@ -53,6 +55,8 @@ jobs:
         env:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://localhost:7777/rpc'
+          HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
+          HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
           NETWORK_NAME: 'casper-example'
           RUST_LOG: 'INFO'
 
@@ -67,6 +71,8 @@ jobs:
         env:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://localhost:7777/rpc'
+          HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
+          HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
           NETWORK_NAME: 'casper-example'
           RUST_LOG: 'INFO'
 
