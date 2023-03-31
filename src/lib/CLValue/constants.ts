@@ -95,4 +95,5 @@ export const TUPLE1_TYPE = 'Tuple1';
 export const TUPLE2_TYPE = 'Tuple2';
 export const TUPLE3_TYPE = 'Tuple3';
 
+export const ANY_TYPE = 'Any';
 export const ACCOUNT_HASH_TYPE = 'AccountHash';

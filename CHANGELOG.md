@@ -4,6 +4,34 @@ All notable changes to casper-js-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.12.1
+
+### Fixed
+
+- Fix in CI job that broke README.md attached to NPM Package and tgz archive to the release
+- Fix links to the examples in docs
+
+## 2.12.0
+
+### Added
+
+- HTTPS Event stream without breaking browsers support
+- New docs generator
+- Add missing types for `ExecutionResult`
+- Added missing CLType `Any`
+- Added tests in browser env
+- Added source maps to build version
+
+### Changed
+
+- Move generated docs to github pages
+
+## 2.11.1
+
+### Removed
+
+- Support for HTTPS/HTTP2 EventStream - as it caused problems in browser environment
+
 ## 2.11.0
 
 ### Added

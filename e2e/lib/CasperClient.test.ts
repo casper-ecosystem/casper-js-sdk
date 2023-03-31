@@ -4,15 +4,14 @@ import * as os from 'os';
 import { expect } from 'chai';
 
 import { Secp256K1, SignatureAlgorithm } from '../../src/lib/Keys';
-import { decodeBase16, Keys, DeployUtil, CasperClient } from '../../src';
+import { decodeBase16, Keys, DeployUtil, CasperClient } from '../../src/lib';
+import { NODE_URL } from '../config';
+import { DEFAULT_DEPLOY_TTL } from '../../src/constants';
 
 const { Deploy } = DeployUtil;
 
-let casperClient: CasperClient;
 describe('CasperClient', () => {
-  before(() => {
-    casperClient = new CasperClient('https://rpc.testnet.casperlabs.io/rpc');
-  });
+  const casperClient = new CasperClient(NODE_URL);
 
   it('should generate new Ed25519 key pair, and compute public key from private key', () => {
     const edKeyPair = casperClient.newKeyPair(SignatureAlgorithm.Ed25519);
@@ -150,7 +149,7 @@ describe('CasperClient', () => {
     });
 
     expect(casperClient.deployFromJson(json).unwrap().header.ttl).to.be.eq(
-      1800000
+      DEFAULT_DEPLOY_TTL
     );
   });
 });

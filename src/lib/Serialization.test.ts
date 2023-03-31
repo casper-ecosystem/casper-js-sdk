@@ -28,13 +28,15 @@ describe('Args', () => {
     const a = ed25519.sync.getPublicKey(ed25519.utils.randomPrivateKey());
     const b = BigInt(500000);
     const result = Args(PublicKeyArg(a), UInt64Arg(b));
+
     const buffer = Buffer.from(result);
+
     expect(result[0]).to.equal(2);
     expect(result[1]).to.equal(0);
     expect(result[4]).to.equal(32);
     expect(result[5]).to.equal(0);
     expect(result[40]).to.equal(8);
-    expect(buffer.slice(8, 8 + 32).equals(a)).to.equal(true);
+    expect(buffer.slice(8, 8 + 32).equals(Buffer.from(a))).to.equal(true);
     expect(buffer.readBigInt64LE(44)).to.equal(b);
   });
 

@@ -13,7 +13,7 @@ const common = {
     rules: [
       {
         test: /\.ts?$/,
-        use: 'ts-loader',
+        use: 'ts-loader?configFile=tsconfig.build.json',
         exclude: /node_modules/
       }
     ]

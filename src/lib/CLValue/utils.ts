@@ -24,6 +24,7 @@ import {
   TUPLE2_TYPE,
   TUPLE3_TYPE,
   OPTION_TYPE,
+  ANY_TYPE,
   CLTypeTag
 } from './constants';
 import {
@@ -73,7 +74,8 @@ import {
   CLMapType,
   CLMapBytesParser,
   CLUnitType,
-  CLUnitBytesParser
+  CLUnitBytesParser,
+  CLAnyType
 } from './index';
 
 export const TUPLE_MATCH_LEN_TO_TYPE = [TUPLE1_TYPE, TUPLE2_TYPE, TUPLE3_TYPE];
@@ -109,6 +111,8 @@ export const matchTypeToCLType = (type: any): CLType => {
         return new CLU256Type();
       case U512_TYPE:
         return new CLU512Type();
+      case ANY_TYPE:
+        return new CLAnyType();
       default:
         throw new Error(`The simple type ${type} is not supported`);
     }

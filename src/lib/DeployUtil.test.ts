@@ -1,11 +1,12 @@
 import { expect, assert } from 'chai';
-import { Keys, DeployUtil, CLValueBuilder } from '../../src/lib';
+import { Keys, DeployUtil, CLValueBuilder } from '.';
 import {
   humanizerTTL,
   dehumanizerTTL,
   StoredContractByHash
-} from '../../src/lib/DeployUtil';
+} from './DeployUtil';
 import { TypedJSON } from 'typedjson';
+import { DEFAULT_DEPLOY_TTL } from '../constants';
 
 const testDeploy = () => {
   const senderKey = Keys.Ed25519.new();
@@ -539,7 +540,7 @@ describe('DeployUtil', () => {
 
     // Build second deploy with the first one as a dependency.
     const gasPrice = 1;
-    const ttl = 1800000;
+    const ttl = DEFAULT_DEPLOY_TTL;
     const dependencies = [firstDeploy.hash];
     const secondDeployParams = new DeployUtil.DeployParams(
       senderKey.publicKey,

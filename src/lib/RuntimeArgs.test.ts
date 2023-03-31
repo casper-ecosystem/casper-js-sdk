@@ -1,5 +1,5 @@
 import { expect, assert } from 'chai';
-import { None } from "ts-results";
+import { None } from 'ts-results';
 
 import {
   CLValueBuilder,
@@ -9,8 +9,8 @@ import {
   CLU512,
   CLByteArray,
   Keys
-} from '../../src/lib';
-import { decodeBase16 } from '../../src';
+} from '.';
+import { decodeBase16 } from '..';
 import { TypedJSON } from 'typedjson';
 
 describe(`RuntimeArgs`, () => {
@@ -53,28 +53,25 @@ describe(`RuntimeArgs`, () => {
   });
 
   it('should deserialize RuntimeArgs', () => {
-    let a = CLValueBuilder.u512(123);
+    const a = CLValueBuilder.u512(123);
     const runtimeArgs = RuntimeArgs.fromMap({
       a: CLValueBuilder.option(None, a.clType())
     });
-    let serializer = new TypedJSON(RuntimeArgs);
-    let str = serializer.stringify(runtimeArgs);
-    let value = serializer.parse(str)!;
+    const serializer = new TypedJSON(RuntimeArgs);
+    const str = serializer.stringify(runtimeArgs);
+    const value = serializer.parse(str)!;
     assert.isTrue((value.args.get('a')! as CLOption<CLU512>).isNone());
   });
 
   it('should allow to extract lists of account hashes.', () => {
     const account0 = Keys.Ed25519.new().accountHash();
     const account1 = Keys.Ed25519.new().accountHash();
-    const account0byteArray =         CLValueBuilder.byteArray(account0);
-    const account1byteArray =         CLValueBuilder.byteArray(account1);
-    let runtimeArgs = RuntimeArgs.fromMap({
-      accounts: CLValueBuilder.list([
-        account0byteArray,
-        account1byteArray
-      ])
+    const account0byteArray = CLValueBuilder.byteArray(account0);
+    const account1byteArray = CLValueBuilder.byteArray(account1);
+    const runtimeArgs = RuntimeArgs.fromMap({
+      accounts: CLValueBuilder.list([account0byteArray, account1byteArray])
     });
-    let accounts = runtimeArgs.args.get('accounts')! as CLList<CLByteArray>;
+    const accounts = runtimeArgs.args.get('accounts')! as CLList<CLByteArray>;
     assert.deepEqual(accounts.get(0), account0byteArray);
     assert.deepEqual(accounts.get(1), account1byteArray);
   });

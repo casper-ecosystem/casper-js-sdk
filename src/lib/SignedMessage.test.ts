@@ -1,10 +1,10 @@
 import { expect } from 'chai';
-import { Ed25519, Secp256K1 } from '../../src/lib/Keys';
+import { Ed25519, Secp256K1 } from './Keys';
 import {
   formatMessageWithHeaders,
   signRawMessage,
   verifyMessageSignature
-} from '../../src/index';
+} from '../index';
 
 describe('SignedMessage', () => {
   it('Should generate proper signed message and validate it (Ed25519)', () => {

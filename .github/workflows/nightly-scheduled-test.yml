@@ -7,7 +7,7 @@ on:
   schedule:
     # * is a special character in YAML so you have to quote this string
     # runs every day at midnight
-    - cron: "0 0 * * *"
+    - cron: '0 0 * * *'
 
 jobs:
   nightly-npm-test:
@@ -31,14 +31,16 @@ jobs:
       - name: Install
         run: npm install
 
-      - name: Test
-        run: npm test
+      - name: Unit Test
+        run: npm run test:unit
 
       - name: Test RPC - CN Dev
-        run: ./ci/setup.sh && npm run test:rpc
+        run: ./ci/setup.sh && npm run test:e2e
         env:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://localhost:7777/rpc'
+          HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
+          HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
           NETWORK_NAME: 'casper-example'
           RUST_LOG: 'INFO'
 
@@ -49,10 +51,12 @@ jobs:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
 
       - name: Test RPC - CN Release - ${{ env.CASPER_TAG_VERSION }}
-        run: ./ci/setup.sh branch=${{env.CASPER_TAG_VERSION }} && npm run test:rpc
+        run: ./ci/setup.sh branch=${{env.CASPER_TAG_VERSION }} && npm run test:e2e
         env:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://localhost:7777/rpc'
+          HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
+          HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
           NETWORK_NAME: 'casper-example'
           RUST_LOG: 'INFO'
 
@@ -63,10 +67,12 @@ jobs:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/branches'
 
       - name: Test RPC - CN RC - ${{ env.CASPER_RC_VERSION }}
-        run: ./ci/setup.sh branch=release-${{env.CASPER_RC_VERSION }} && npm run test:rpc
+        run: ./ci/setup.sh branch=release-${{env.CASPER_RC_VERSION }} && npm run test:e2e
         env:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://localhost:7777/rpc'
+          HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
+          HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
           NETWORK_NAME: 'casper-example'
           RUST_LOG: 'INFO'
 
@@ -75,9 +81,9 @@ jobs:
         if: always()
         with:
           status: ${{ job.status }}
-          notification_title: "*{repo}*"
-          message_format: "{emoji} *{workflow}* *{job}* *{status_message}* in <{repo_url}|{repo}@{branch}> on <{commit_url}|{commit_sha}>"
-          footer: "<{run_url}|View Run>"
+          notification_title: '*{repo}*'
+          message_format: '{emoji} *{workflow}* *{job}* *{status_message}* in <{repo_url}|{repo}@{branch}> on <{commit_url}|{commit_sha}>'
+          footer: '<{run_url}|View Run>'
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 

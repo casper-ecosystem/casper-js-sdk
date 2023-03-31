@@ -45,8 +45,8 @@ jobs:
       - name: Lints
         run: npm run lint:ci
 
-      - name: Test
-        run: npm test
+      - name: Unit Test
+        run: npm run test:unit
 
       - name: Get Latest Casper-Node Tag Version
         run: |
@@ -55,18 +55,22 @@ jobs:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
 
       - name: Test RPC - Casper Node - ${{ env.CASPER_TAG_VERSION }}
-        run: ./ci/setup.sh branch=${{env.CASPER_TAG_VERSION }} && npm run test:rpc
+        run: ./ci/setup.sh branch=${{env.CASPER_TAG_VERSION }} && npm run test:e2e
         env:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://localhost:7777/rpc'
+          HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
+          HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
           NETWORK_NAME: 'casper-example'
           RUST_LOG: 'INFO'
 
-      - name: Test - RPC - Casper Node - DEV
-        run: ./ci/setup.sh && npm run test:rpc
+      - name: Test RPC - Casper Node - DEV
+        run: ./ci/setup.sh && npm run test:e2e
         env:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://localhost:7777/rpc'
+          HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
+          HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
           NETWORK_NAME: 'casper-example'
           RUST_LOG: 'INFO'
 

@@ -9,6 +9,7 @@ import * as ed25519 from '@noble/ed25519';
 import * as secp256k1 from '@noble/secp256k1';
 import { sha256 } from '@noble/hashes/sha256';
 import { sha512 } from '@noble/hashes/sha512';
+import { hmac } from '@noble/hashes/hmac';
 import KeyEncoder from 'key-encoder';
 
 import { decodeBase64, encodeBase16, encodeBase64 } from '../index';
@@ -17,6 +18,8 @@ import { byteHash } from './ByteConverters';
 import { CasperHDKey } from './CasperHDKey';
 
 ed25519.utils.sha512Sync = (...m) => sha512(ed25519.utils.concatBytes(...m));
+secp256k1.utils.hmacSha256Sync = (k, ...m) =>
+  hmac(sha256, k, secp256k1.utils.concatBytes(...m));
 
 const keyEncoder = new KeyEncoder('secp256k1');
 
