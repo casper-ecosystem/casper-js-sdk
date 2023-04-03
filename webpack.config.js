@@ -1,9 +1,9 @@
-const webpack = require('webpack');
 const path = require('path');
+const copyPlugin = require('copy-webpack-plugin');
+const webpack = require('webpack');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
   .BundleAnalyzerPlugin;
 const nodeExternals = require('webpack-node-externals');
-const copyPlugin = require('copy-webpack-plugin');
 
 /** @type { import('webpack').Configuration } */
 const common = {

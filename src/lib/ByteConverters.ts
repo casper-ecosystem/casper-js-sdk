@@ -6,7 +6,7 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { MaxUint256, NegativeOne, One, Zero } from '@ethersproject/constants';
 import { arrayify, concat } from '@ethersproject/bytes';
-import blake from 'blakejs';
+import { blake2b } from '@noble/hashes/blake2b';
 
 import { CLValue, CLValueParsers, ToBytes } from './CLValue';
 
@@ -153,7 +153,9 @@ export const toBytesVector = <T extends ToBytes>(vec: T[]): Uint8Array => {
  * @returns `Uint8Array` buffer of the blake2b hash
  */
 export function byteHash(x: Uint8Array): Uint8Array {
-  return blake.blake2b(x, null, 32);
+  return blake2b(x, {
+    dkLen: 32
+  });
 }
 
 // TODO: Get rid after refactoring the whole

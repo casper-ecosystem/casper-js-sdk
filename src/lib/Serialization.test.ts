@@ -1,10 +1,11 @@
 import { expect } from 'chai';
-import * as nacl from 'tweetnacl-ts';
-import { Args, PublicKeyArg, UInt64Arg } from './Serialization';
+import * as ed25519 from '@noble/ed25519';
+
+import { Args, PublicKeyArg, UInt64Arg } from '../../src/lib/Serialization';
 
 describe('PublicKeyArg', () => {
   it('should serialize as 32 bytes with content using little endiannes', () => {
-    const key = nacl.sign_keyPair().publicKey;
+    const key = ed25519.sync.getPublicKey(ed25519.utils.randomPrivateKey());
     const result = PublicKeyArg(key);
     expect(result.length).to.equal(32);
     expect(result[0]).to.equal(key[0]);
@@ -24,7 +25,7 @@ describe('UInt64Arg', () => {
 
 describe('Args', () => {
   it('should serialize with size ++ concatenation of parts', () => {
-    const a = nacl.sign_keyPair().publicKey;
+    const a = ed25519.sync.getPublicKey(ed25519.utils.randomPrivateKey());
     const b = BigInt(500000);
     const result = Args(PublicKeyArg(a), UInt64Arg(b));
 
