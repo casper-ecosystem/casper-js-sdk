@@ -18,6 +18,13 @@ jobs:
         node-version: [16.x]
         os: [ubuntu-20.04, ubuntu-22.04]
     runs-on: ${{ matrix.os }}
+    env:
+      FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
+      NODE_URL: 'http://localhost:7777/rpc'
+      HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
+      HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
+      NETWORK_NAME: 'casper-example'
+      RUST_LOG: 'INFO'
 
     steps:
       - name: Checkout
@@ -36,13 +43,6 @@ jobs:
 
       - name: Test RPC - CN Dev
         run: ./ci/setup.sh && npm run test:e2e
-        env:
-          FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
-          NODE_URL: 'http://localhost:7777/rpc'
-          HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
-          HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
-          NETWORK_NAME: 'casper-example'
-          RUST_LOG: 'INFO'
 
       - name: Get Latest Casper-Node Tag Version
         run: |
@@ -52,13 +52,6 @@ jobs:
 
       - name: Test RPC - CN Release - ${{ env.CASPER_TAG_VERSION }}
         run: ./ci/setup.sh branch=${{env.CASPER_TAG_VERSION }} && npm run test:e2e
-        env:
-          FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
-          NODE_URL: 'http://localhost:7777/rpc'
-          HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
-          HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
-          NETWORK_NAME: 'casper-example'
-          RUST_LOG: 'INFO'
 
       - name: Get Latest Casper-Node RC Version
         run: |
@@ -68,13 +61,6 @@ jobs:
 
       - name: Test RPC - CN RC - ${{ env.CASPER_RC_VERSION }}
         run: ./ci/setup.sh branch=release-${{env.CASPER_RC_VERSION }} && npm run test:e2e
-        env:
-          FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
-          NODE_URL: 'http://localhost:7777/rpc'
-          HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
-          HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
-          NETWORK_NAME: 'casper-example'
-          RUST_LOG: 'INFO'
 
       - name: Slack Notification
         uses: ravsamhq/notify-slack-action@4ed28566c2bdcdaee6dca2b46b9666d01b4ed8a4 #v1.10.0
