@@ -1,13 +1,12 @@
-import { HDKeyT } from 'ethereum-cryptography/pure/hdkey';
-import { HDKey } from 'ethereum-cryptography/hdkey';
-import { sha256 } from 'ethereum-cryptography/sha256';
+import { HDKey } from '@scure/bip32';
+import { sha256 } from '@noble/hashes/sha256';
 import { Secp256K1 } from './Keys';
 
 export class CasperHDKey {
   // Registered at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
   private readonly bip44Index = 506;
 
-  constructor(private hdKey: HDKeyT) {}
+  constructor(private hdKey: HDKey) {}
 
   // see https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki#path-levels
   private bip44Path(index: number): string {

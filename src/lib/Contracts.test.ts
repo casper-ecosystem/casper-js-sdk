@@ -1,9 +1,9 @@
 import { expect } from 'chai';
+import * as ed25519 from '@noble/ed25519';
 
-import { decodeBase64 } from 'tweetnacl-ts';
-import * as nacl from 'tweetnacl-ts';
-import { byteHash } from './ByteConverters';
-import { Ed25519 } from './Keys';
+import { decodeBase64 } from '../../src/lib';
+import { byteHash } from '../../src/lib/ByteConverters';
+import { Ed25519 } from '../../src/lib/Keys';
 
 describe('byteHash', () => {
   it('should compute the same hash as Scala', () => {
@@ -33,7 +33,7 @@ describe('sign', () => {
     const privateKey = decodeBase64(privateKeyBase64);
     const keyPair = Ed25519.parseKeyPair(publicKey, privateKey);
 
-    const signature = nacl.sign_detached(input, keyPair.privateKey);
+    const signature = ed25519.sync.sign(input, keyPair.privateKey);
 
     const signatureHex = Buffer.from(signature).toString('hex');
     const expectedHex =

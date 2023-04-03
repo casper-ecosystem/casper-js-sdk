@@ -1,9 +1,22 @@
-import { decodeBase64 } from 'tweetnacl-util';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 
 // https://nodejs.org/api/buffer.html
 
-export { encodeBase64, decodeBase64 } from 'tweetnacl-util';
+/**
+ * Encode Uint8Array into string using Base-64 encoding.
+ */
+export function encodeBase64(bytes: Uint8Array): string {
+  return Buffer.from(bytes).toString('base64');
+}
+
+/**
+ * Decode Base-64 encoded string and returns Uint8Array of bytes.
+ *
+ * @param base64String base16 encoded string
+ */
+export function decodeBase64(base64String: string): Uint8Array {
+  return new Uint8Array(Buffer.from(base64String, 'base64'));
+}
 
 /**
  * Convert base64 encoded string to base16 encoded string
