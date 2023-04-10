@@ -15,7 +15,9 @@ import KeyEncoder from 'key-encoder';
 import { decodeBase64, encodeBase16, encodeBase64 } from '../index';
 import { CLPublicKey } from './CLValue';
 import { byteHash } from './ByteConverters';
-import { CasperHDKey } from './CasperHDKey';
+import { SignatureAlgorithm } from './types';
+
+export { SignatureAlgorithm } from './types';
 
 ed25519.utils.sha512Sync = (...m) => sha512(ed25519.utils.concatBytes(...m));
 secp256k1.utils.hmacSha256Sync = (k, ...m) =>
@@ -25,15 +27,6 @@ const keyEncoder = new KeyEncoder('secp256k1');
 
 const ED25519_PEM_SECRET_KEY_TAG = 'PRIVATE KEY';
 const ED25519_PEM_PUBLIC_KEY_TAG = 'PUBLIC KEY';
-
-/**
- * Supported Asymmetric Key algorithms
- * @enum
- */
-export enum SignatureAlgorithm {
-  Ed25519 = 'ed25519',
-  Secp256K1 = 'secp256k1'
-}
 
 export interface SignKeyPair {
   publicKey: Uint8Array; // Array with 32-byte public key
@@ -685,16 +678,5 @@ export class Secp256K1 extends AsymmetricKey {
     const privateKey = Secp256K1.parsePrivateKeyFile(privateKeyPath);
     const publicKey = Secp256K1.privateToPublicKey(privateKey);
     return Secp256K1.parseKeyPair(publicKey, privateKey, 'raw');
-  }
-
-  /**
-   * Derive a secp256k1 key from a heirarchical deterministic wallet and an index
-   * @param hdKey A heirarchical deterministic wallet
-   * @param index The index at which to derive the key
-   * @see {@link CasperHDKey.deriveIndex}
-   * @see [BIP44](https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki)
-   */
-  public static deriveIndex(hdKey: CasperHDKey, index: number) {
-    return hdKey.deriveIndex(index);
   }
 }

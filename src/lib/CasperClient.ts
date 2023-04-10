@@ -3,7 +3,7 @@ import { DeployUtil, Keys, CLPublicKey } from './index';
 import { encodeBase16 } from './Conversions';
 import { Deploy, DeployParams, ExecutableDeployItem } from './DeployUtil';
 import { AsymmetricKey, SignatureAlgorithm } from './Keys';
-import { CasperHDKey } from './CasperHDKey';
+import { Secp256K1HDKey, Ed25519HDKey, CasperHDKey } from './CasperHDKeys';
 import { BigNumber } from '@ethersproject/bignumber';
 
 export class CasperClient {
@@ -98,8 +98,16 @@ export class CasperClient {
    * @param seed The seed buffer for parent key
    * @returns A new bip32 compliant hierarchical deterministic wallet
    */
-  public newHdWallet(seed: Uint8Array): CasperHDKey {
-    return CasperHDKey.fromMasterSeed(seed);
+  public newHdWallet(
+    seed: Uint8Array,
+    algo: SignatureAlgorithm
+  ): CasperHDKey<AsymmetricKey> {
+    switch (algo) {
+      case SignatureAlgorithm.Ed25519:
+        return new Ed25519HDKey(seed);
+      case SignatureAlgorithm.Secp256K1:
+        return new Secp256K1HDKey(seed);
+    }
   }
 
   /**

@@ -1,39 +1,30 @@
 import { HDKey } from '@scure/bip32';
 import { sha256 } from '@noble/hashes/sha256';
-import { Secp256K1 } from './Keys';
+import { CasperHDKey } from './CasperHDKey';
+import { Secp256K1, SignatureAlgorithm } from '../Keys';
 
-export class CasperHDKey {
-  // Registered at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
-  private readonly bip44Index = 506;
+export class Secp256K1HDKey extends CasperHDKey<Secp256K1> {
+  private hdKey: HDKey;
 
-  constructor(private hdKey: HDKey) {}
-
-  // see https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki#path-levels
-  private bip44Path(index: number): string {
-    return [
-      'm',
-      `44'`, // bip 44
-      `${this.bip44Index}'`, // coin index
-      `0'`, // wallet
-      `0`, // external
-      `${index}` // child account index
-    ].join('/');
+  constructor(seed: Uint8Array) {
+    super(seed, SignatureAlgorithm.Ed25519);
+    this.hdKey = HDKey.fromMasterSeed(seed);
   }
 
-  /**
-   * Generate HDKey from master seed
-   * @param seed
-   */
-  public static fromMasterSeed(seed: Uint8Array): CasperHDKey {
-    return new CasperHDKey(HDKey.fromMasterSeed(Buffer.from(seed)));
+  public static new() {
+    return new Secp256K1HDKey(Secp256K1HDKey.newSeed());
+  }
+
+  public static fromMnemonic(mnemonic: string) {
+    return new Secp256K1HDKey(Secp256K1HDKey.mnemonicToSeed(mnemonic));
   }
 
   public publicKey() {
-    return this.hdKey.publicKey;
+    return this.hdKey.publicKey!;
   }
 
   public privateKey() {
-    return this.hdKey.privateKey;
+    return this.hdKey.privateKey!;
   }
 
   public privateExtendedKey() {
@@ -50,6 +41,7 @@ export class CasperHDKey {
    */
   public derive(path: string): Secp256K1 {
     const secpKeyPair = this.hdKey.derive(path);
+
     return new Secp256K1(
       new Uint8Array(secpKeyPair.publicKey!),
       new Uint8Array(secpKeyPair.privateKey!)
@@ -61,7 +53,7 @@ export class CasperHDKey {
    * @param index the index of child key
    */
   public deriveIndex(index: number): Secp256K1 {
-    return this.derive(this.bip44Path(index));
+    return this.derive(CasperHDKey.bip44Path(index));
   }
 
   /**
