@@ -1,14 +1,13 @@
 import * as bip39 from '@scure/bip39';
-import { wordlist } from '@scure/bip39/wordlists/english';
+import { wordlist as engWordlist } from '@scure/bip39/wordlists/english';
 
 import { SignatureAlgorithm } from '../types';
+
+let wordlist = engWordlist;
 
 export abstract class CasperHDKey<AsymmetricKey> {
   // Registered at https://github.com/satoshilabs/slips/blob/master/slip-0044.md
   static readonly bip44Index = 506;
-
-  readonly depth: number = 0;
-  readonly index: number = 0;
 
   constructor(
     private seed: Uint8Array,
@@ -41,6 +40,10 @@ export abstract class CasperHDKey<AsymmetricKey> {
 
   public static newSeed(): Uint8Array {
     return CasperHDKey.mnemonicToSeed(CasperHDKey.newMenmonic());
+  }
+
+  public static setWordlist(list: string[]) {
+    wordlist = list;
   }
 
   public static getWordlist(): string[] {

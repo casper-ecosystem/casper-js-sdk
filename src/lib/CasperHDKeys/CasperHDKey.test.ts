@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import { wordlist as chiWordlist } from '@scure/bip39/wordlists/simplified-chinese';
 
 import { CasperHDKey } from './CasperHDKey';
 
@@ -7,5 +8,10 @@ describe('CasperHDKey', () => {
     const mn = CasperHDKey.newMenmonic();
 
     expect(CasperHDKey.validateMnemonic(mn));
+  });
+
+  it('should set user specific wordlist', () => {
+    CasperHDKey.setWordlist(chiWordlist);
+    expect(CasperHDKey.getWordlist()).eq(chiWordlist);
   });
 });
