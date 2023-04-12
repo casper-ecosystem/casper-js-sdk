@@ -26,49 +26,113 @@ export abstract class CasperHDKey<AsymmetricKey> {
     ].join('/');
   }
 
-  public static newMenmonic(): string {
+  /**
+   * Returns mnemonic which can be used to construct HD wallet.
+   * @returns mnemonic word array
+   */
+  public static newMnemonic(): string {
     return bip39.generateMnemonic(CasperHDKey.getWordlist());
   }
 
+  /**
+   * Validate the mnemonic word array
+   * @param mnemonic word array
+   * @returns `true` if the word array is correct mnemonic, otherwise `false`
+   */
   public static validateMnemonic(mnemonic: string): boolean {
     return bip39.validateMnemonic(mnemonic, CasperHDKey.getWordlist());
   }
 
+  /**
+   * Convert mnemonic to relevant `Uint8Array`
+   * @param mnemonic word array
+   * @returns relevant `Uint8Array`
+   */
   public static mnemonicToSeed(mnemonic: string): Uint8Array {
     return bip39.mnemonicToEntropy(mnemonic, CasperHDKey.getWordlist());
   }
 
+  /**
+   * Returns randomly generated `Uint8Array` which can be used to construct HD wallet.
+   * @returns
+   */
   public static newSeed(): Uint8Array {
-    return CasperHDKey.mnemonicToSeed(CasperHDKey.newMenmonic());
+    return CasperHDKey.mnemonicToSeed(CasperHDKey.newMnemonic());
   }
 
+  /**
+   * Set provided word list as default word list
+   * @param list
+   */
   public static setWordlist(list: string[]) {
     wordlist = list;
   }
 
+  /**
+   * Returns word list
+   * @default english word list
+   * @returns word list
+   */
   public static getWordlist(): string[] {
     return wordlist;
   }
 
+  /**
+   * Returns english word list
+   * @returns word list
+   */
+  public static getDefaultWordlist(): string[] {
+    return engWordlist;
+  }
+
+  /**
+   * Returns SignatureAlgorithm
+   */
   public get signatureAlgorithm(): SignatureAlgorithm {
     return this.signatureAlorithm;
   }
 
+  /**
+   * Returns current wallet's mnemonic
+   */
   public get mnemonic(): string {
     return bip39.entropyToMnemonic(this.seed, CasperHDKey.getWordlist());
   }
 
+  /**
+   * Derive the child key based on BIP44
+   * @param index index of the child
+   */
   public deriveChild(index: number): AsymmetricKey {
     return this.derive(CasperHDKey.bip44Path(index));
   }
 
+  /**
+   * Derive the child key from the path
+   * @param path path to derive
+   */
   abstract derive(path: string): AsymmetricKey;
 
-  abstract sign(hash: Uint8Array): Uint8Array;
+  /**
+   * Generate the signature for the message by using the key
+   * @param msg The message to sign
+   */
+  abstract sign(msg: Uint8Array): Uint8Array;
 
-  abstract verify(hash: Uint8Array, signature: Uint8Array): boolean;
+  /**
+   * Verify the signature
+   * @param signature the signature generated for the msg
+   * @param msg the raw message
+   */
+  abstract verify(signature: Uint8Array, msg: Uint8Array): boolean;
 
+  /**
+   * Returns public key of the default HD wallet
+   */
   abstract publicKey(): Uint8Array;
 
+  /**
+   * Returns private key of the default HD wallet
+   */
   abstract privateKey(): Uint8Array;
 }

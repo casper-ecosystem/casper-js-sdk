@@ -18,6 +18,14 @@ export class Ed25519HDKey extends CasperHDKey<Ed25519> {
     return new Ed25519HDKey(Ed25519HDKey.mnemonicToSeed(mnemonic));
   }
 
+  publicKey(): Uint8Array {
+    return this.hdKey.publicKey;
+  }
+
+  privateKey(): Uint8Array {
+    return this.hdKey.privateKey;
+  }
+
   derive(path: string, forceHardened = true) {
     const newHdKey = this.hdKey.derive(path, forceHardened);
 
@@ -30,13 +38,8 @@ export class Ed25519HDKey extends CasperHDKey<Ed25519> {
   sign(hash: Uint8Array): Uint8Array {
     return this.hdKey.sign(hash);
   }
-  verify(hash: Uint8Array, signature: Uint8Array): boolean {
-    return this.hdKey.verify(hash, signature);
-  }
-  publicKey(): Uint8Array {
-    return this.hdKey.publicKey;
-  }
-  privateKey(): Uint8Array {
-    return this.hdKey.privateKey;
+
+  verify(signature: Uint8Array, msg: Uint8Array): boolean {
+    return this.hdKey.verify(msg, signature);
   }
 }

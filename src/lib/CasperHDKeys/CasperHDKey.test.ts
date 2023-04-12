@@ -5,7 +5,7 @@ import { CasperHDKey } from './CasperHDKey';
 
 describe('CasperHDKey', () => {
   it('should generate mnemonic', () => {
-    const mn = CasperHDKey.newMenmonic();
+    const mn = CasperHDKey.newMnemonic();
 
     expect(CasperHDKey.validateMnemonic(mn));
   });
