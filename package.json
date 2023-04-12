@@ -19,6 +19,7 @@
     "build": "webpack --config webpack.config.js",
     "clean": "rm -rf ./dist",
     "~build": "tsc --watch",
+    "test:2": "cross-env NODE_ENV=test TS_NODE_FILES=true mocha -r ts-node/register src/lib/CasperHDKeys/*.test.ts",
     "test:node:unit": "cross-env NODE_ENV=test TS_NODE_FILES=true mocha -r ts-node/register src/**/*.test.ts",
     "test:node:unit:coverage": "nyc npm run test:node:unit",
     "test:browser:unit": "cross-env NODE_ENV=test karma start karma.conf.js --single-run",
