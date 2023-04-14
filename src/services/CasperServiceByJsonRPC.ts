@@ -730,6 +730,34 @@ export class CasperServiceByJsonRPC {
   }
 
   /**
+   * Retrieve era summary information by block height (if provided) or most recently added block
+   * @param blockHeight The height of the switch block
+   * @returns A `Promise` resolving to an `EraSummary` containing the era information
+   */
+  public async getEraSummaryByBlockHeight(blockHeight?: number): Promise<EraSummary> {
+    const res = await this.client.request({
+      method: 'chain_get_era_summary',
+      params: {
+        block_identifier:
+          blockHeight !== undefined && blockHeight >= 0
+            ? {
+                Height: blockHeight
+              }
+            : null
+      }
+    });
+    if (res.error) {
+      return res;
+    } else {
+      const serializer = new TypedJSON(EraSummary);
+      const storedValue = serializer.parse(res.era_summary)!;
+      return storedValue;
+    }
+  }
+
+
+
+  /**
    * Get a dictionary item by its URef
    * @param stateRootHash The state root hash at which the item will be queried
    * @param dictionaryItemKey The key at which the item is stored
