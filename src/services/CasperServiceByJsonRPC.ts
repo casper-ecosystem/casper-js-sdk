@@ -705,6 +705,59 @@ export class CasperServiceByJsonRPC {
   }
 
   /**
+   * Retrieve era summary information by block hash (if provided) or most recently added block
+   * @param blockHash Hexadecimal block hash. If not provided, the last block added to the chain, known as the given node, will be used
+   * @returns A `Promise` resolving to an `EraSummary` containing the era information
+   */
+  public async getEraSummary(blockHash?: string): Promise<EraSummary> {
+    const res = await this.client.request({
+      method: 'chain_get_era_summary',
+      params: {
+        block_identifier: blockHash
+          ? {
+              Hash: blockHash
+            }
+          : null
+      }
+    });
+    if (res.error) {
+      return res;
+    } else {
+      const serializer = new TypedJSON(EraSummary);
+      const storedValue = serializer.parse(res.era_summary)!;
+      return storedValue;
+    }
+  }
+
+  /**
+   * Retrieve era summary information by block height (if provided) or most recently added block
+   * @param blockHeight The height of the switch block
+   * @returns A `Promise` resolving to an `EraSummary` containing the era information
+   */
+  public async getEraSummaryByBlockHeight(blockHeight?: number): Promise<EraSummary> {
+    const res = await this.client.request({
+      method: 'chain_get_era_summary',
+      params: {
+        block_identifier:
+          blockHeight !== undefined && blockHeight >= 0
+            ? {
+                Height: blockHeight
+              }
+            : null
+      }
+    });
+    if (res.error) {
+      return res;
+    } else {
+      const serializer = new TypedJSON(EraSummary);
+      const storedValue = serializer.parse(res.era_summary)!;
+      return storedValue;
+    }
+  }
+
+
+
+  /**
    * Get a dictionary item by its URef
    * @param stateRootHash The state root hash at which the item will be queried
    * @param dictionaryItemKey The key at which the item is stored
