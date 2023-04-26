@@ -15,6 +15,11 @@ import ProviderTransport, {
   SafeEventEmitterProvider
 } from './ProviderTransport';
 
+/** RPC request props interface */
+interface RpcRequestProps {
+  timeout?: number;
+}
+
 /** RPC result interface */
 interface RpcResult {
   api_version: string;
@@ -285,10 +290,6 @@ export interface AuctionState {
 export interface ValidatorsInfoResult extends RpcResult {
   api_version: string;
   auction_state: AuctionState;
-}
-
-export interface RpcRequestProps {
-  timeout?: number;
 }
 
 /** JSON RPC service for interacting with Casper nodes */
