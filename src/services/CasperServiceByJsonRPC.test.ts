@@ -23,7 +23,7 @@ describe('CasperServiceByJsonRPC', () => {
       PurseIdentifier.PurseUref,
       'uref-6f2d3316f5c114923e6ec7087a399f692f4ce85197106a6daa97bf7f444e4f9e-007',
       undefined,
-      timeout
+      { timeout }
     );
     expect(httpTransport.args[0][1]).to.eq(timeout);
   });
@@ -44,7 +44,7 @@ describe('CasperServiceByJsonRPC', () => {
       PurseIdentifier.PurseUref,
       'uref-6f2d3316f5c114923e6ec7087a399f692f4ce85197106a6daa97bf7f444e4f9e-007',
       undefined,
-      timeout
+      { timeout }
     );
     expect(providerTransport.args[0][1]).to.eq(timeout);
   });
