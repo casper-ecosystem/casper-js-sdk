@@ -1,9 +1,16 @@
+import { BigNumber } from '@ethersproject/bignumber';
 import { RequestManager, HTTPTransport, Client } from '@open-rpc/client-js';
 import { TypedJSON, jsonMember, jsonObject } from 'typedjson';
-import { DeployUtil, encodeBase16, CLPublicKey, CLValue } from '..';
-import { deployToJson } from '../lib/DeployUtil';
-import { StoredValue, Transfers } from '../lib/StoredValue';
-import { BigNumber } from '@ethersproject/bignumber';
+
+import {
+  DeployUtil,
+  encodeBase16,
+  CLPublicKey,
+  CLValue,
+  StoredValue,
+  Transfers
+} from '..';
+
 import ProviderTransport, {
   SafeEventEmitterProvider
 } from './ProviderTransport';
@@ -280,6 +287,10 @@ export interface ValidatorsInfoResult extends RpcResult {
   auction_state: AuctionState;
 }
 
+export interface RpcRequestProps {
+  timeout?: number;
+}
+
 /** JSON RPC service for interacting with Casper nodes */
 export class CasperServiceByJsonRPC {
   /** JSON RPC client */
@@ -308,7 +319,7 @@ export class CasperServiceByJsonRPC {
    */
   public async getDeployInfo(
     deployHashBase16: string,
-    timeout?: number
+    props?: RpcRequestProps
   ): Promise<GetDeployResult> {
     return await this.client.request(
       {
@@ -317,7 +328,7 @@ export class CasperServiceByJsonRPC {
           deploy_hash: deployHashBase16
         }
       },
-      timeout
+      props?.timeout
     );
   }
 
@@ -329,7 +340,7 @@ export class CasperServiceByJsonRPC {
    */
   public async getBlockInfo(
     blockHashBase16: JsonBlockHash,
-    timeout?: number
+    props?: RpcRequestProps
   ): Promise<GetBlockResult> {
     return await this.client
       .request(
@@ -341,7 +352,7 @@ export class CasperServiceByJsonRPC {
             }
           }
         },
-        timeout
+        props?.timeout
       )
       .then((res: GetBlockResult) => {
         if (
@@ -362,7 +373,7 @@ export class CasperServiceByJsonRPC {
    */
   public async getBlockInfoByHeight(
     height: number,
-    timeout?: number
+    props?: RpcRequestProps
   ): Promise<GetBlockResult> {
     return await this.client
       .request(
@@ -374,7 +385,7 @@ export class CasperServiceByJsonRPC {
             }
           }
         },
-        timeout
+        props?.timeout
       )
       .then((res: GetBlockResult) => {
         if (res.block !== null && res.block.header.height !== height) {
@@ -389,12 +400,14 @@ export class CasperServiceByJsonRPC {
    * @param timeout timeout for the request
    * @returns A `Promise` that resolves to a `GetBlockResult`
    */
-  public async getLatestBlockInfo(timeout?: number): Promise<GetBlockResult> {
+  public async getLatestBlockInfo(
+    props?: RpcRequestProps
+  ): Promise<GetBlockResult> {
     return await this.client.request(
       {
         method: 'chain_get_block'
       },
-      timeout
+      props?.timeout
     );
   }
 
@@ -403,12 +416,12 @@ export class CasperServiceByJsonRPC {
    * @param timeout timeout for the request
    * @returns A `Promise` that resolves to a `GetPeersResult`
    */
-  public async getPeers(timeout?: number): Promise<GetPeersResult> {
+  public async getPeers(props?: RpcRequestProps): Promise<GetPeersResult> {
     return await this.client.request(
       {
         method: 'info_get_peers'
       },
-      timeout
+      props?.timeout
     );
   }
 
@@ -417,12 +430,12 @@ export class CasperServiceByJsonRPC {
    * @param timeout timeout for the request
    * @returns A `Promise` that resolves to a `GetStatusResult`
    */
-  public async getStatus(timeout?: number): Promise<GetStatusResult> {
+  public async getStatus(props?: RpcRequestProps): Promise<GetStatusResult> {
     return await this.client.request(
       {
         method: 'info_get_status'
       },
-      timeout
+      props?.timeout
     );
   }
 
@@ -434,7 +447,7 @@ export class CasperServiceByJsonRPC {
    */
   public async getValidatorsInfo(
     blockHash?: string,
-    timeout?: number
+    props?: RpcRequestProps
   ): Promise<ValidatorsInfoResult> {
     return await this.client.request(
       {
@@ -447,7 +460,7 @@ export class CasperServiceByJsonRPC {
             }
           : []
       },
-      timeout
+      props?.timeout
     );
   }
 
@@ -459,7 +472,7 @@ export class CasperServiceByJsonRPC {
    */
   public async getValidatorsInfoByBlockHeight(
     blockHeight: number,
-    timeout?: number
+    props?: RpcRequestProps
   ): Promise<ValidatorsInfoResult> {
     return await this.client.request(
       {
@@ -473,7 +486,7 @@ export class CasperServiceByJsonRPC {
               : null
         }
       },
-      timeout
+      props?.timeout
     );
   }
 
@@ -487,13 +500,13 @@ export class CasperServiceByJsonRPC {
   public async getAccountBalanceUrefByPublicKeyHash(
     stateRootHash: string,
     accountHash: string,
-    timeout?: number
+    props?: RpcRequestProps
   ) {
     const account = await this.getBlockState(
       stateRootHash,
       'account-hash-' + accountHash,
       [],
-      timeout
+      props
     ).then(res => res.Account!);
     return account.mainPurse;
   }
@@ -509,12 +522,12 @@ export class CasperServiceByJsonRPC {
   public async getAccountBalanceUrefByPublicKey(
     stateRootHash: string,
     publicKey: CLPublicKey,
-    timeout?: number
+    props?: RpcRequestProps
   ) {
     return this.getAccountBalanceUrefByPublicKeyHash(
       stateRootHash,
       encodeBase16(publicKey.toAccountHash()),
-      timeout
+      props
     );
   }
 
@@ -528,7 +541,7 @@ export class CasperServiceByJsonRPC {
   public async getAccountBalance(
     stateRootHash: string,
     balanceUref: string,
-    timeout?: number
+    props?: RpcRequestProps
   ): Promise<BigNumber> {
     return await this.client
       .request(
@@ -539,7 +552,7 @@ export class CasperServiceByJsonRPC {
             purse_uref: balanceUref
           }
         },
-        timeout
+        props?.timeout
       )
       .then(res => BigNumber.from(res.balance_value));
   }
@@ -556,7 +569,7 @@ export class CasperServiceByJsonRPC {
     purseIdentifierType: PurseIdentifier,
     purseIdentifier: string,
     stateRootHash?: string,
-    timeout?: number
+    props?: RpcRequestProps
   ): Promise<BigNumber> {
     return await this.client
       .request(
@@ -569,7 +582,7 @@ export class CasperServiceByJsonRPC {
             state_identifier: stateRootHash
           }
         },
-        timeout
+        props?.timeout
       )
       .then(res => BigNumber.from(res.balance));
   }
@@ -582,7 +595,7 @@ export class CasperServiceByJsonRPC {
    */
   public async getStateRootHash(
     blockHashBase16?: JsonBlockHash,
-    timeout?: number
+    props?: RpcRequestProps
   ): Promise<string> {
     return await this.client
       .request(
@@ -590,7 +603,7 @@ export class CasperServiceByJsonRPC {
           method: 'chain_get_state_root_hash',
           params: blockHashBase16 ? { block_identifier: blockHashBase16 } : []
         },
-        timeout
+        props?.timeout
       )
       .then((res: GetStateRootHashResult) => res.state_root_hash);
   }
@@ -607,7 +620,7 @@ export class CasperServiceByJsonRPC {
     stateRootHash: string,
     key: string,
     path: string[],
-    timeout?: number
+    props?: RpcRequestProps
   ): Promise<StoredValue> {
     const res = await this.client.request(
       {
@@ -618,7 +631,7 @@ export class CasperServiceByJsonRPC {
           path
         }
       },
-      timeout
+      props?.timeout
     );
     if (res.error) {
       return res;
@@ -649,7 +662,7 @@ export class CasperServiceByJsonRPC {
    */
   public async deploy(
     signedDeploy: DeployUtil.Deploy,
-    timeout?: number
+    props?: RpcRequestProps
   ): Promise<DeployResult> {
     await this.checkDeploySize(signedDeploy);
 
@@ -659,9 +672,9 @@ export class CasperServiceByJsonRPC {
       return await this.client.request(
         {
           method: 'account_put_deploy',
-          params: deployToJson(signedDeploy)
+          params: DeployUtil.deployToJson(signedDeploy)
         },
-        timeout
+        props?.timeout
       );
     } catch (e) {
       return e;
@@ -696,11 +709,11 @@ export class CasperServiceByJsonRPC {
   public async speculativeDeploy(
     signedDeploy: DeployUtil.Deploy,
     blockIdentifier?: string,
-    timeout?: number
+    props?: RpcRequestProps
   ) {
     await this.checkDeploySize(signedDeploy);
 
-    const deploy = deployToJson(signedDeploy);
+    const deploy = DeployUtil.deployToJson(signedDeploy);
 
     return await this.client.request(
       {
@@ -709,7 +722,7 @@ export class CasperServiceByJsonRPC {
           ? { ...deploy, block_identifier: { Hash: blockIdentifier } }
           : { ...deploy }
       },
-      timeout
+      props?.timeout
     );
   }
   /**
@@ -720,7 +733,7 @@ export class CasperServiceByJsonRPC {
    */
   public async getBlockTransfers(
     blockHash?: string,
-    timeout?: number
+    props?: RpcRequestProps
   ): Promise<Transfers> {
     const res = await this.client.request(
       {
@@ -733,7 +746,7 @@ export class CasperServiceByJsonRPC {
             : null
         }
       },
-      timeout
+      props?.timeout
     );
     if (res.error) {
       return res;
@@ -752,7 +765,7 @@ export class CasperServiceByJsonRPC {
    */
   public async getEraInfoBySwitchBlock(
     blockHash?: string,
-    timeout?: number
+    props?: RpcRequestProps
   ): Promise<EraSummary> {
     const res = await this.client.request(
       {
@@ -765,7 +778,7 @@ export class CasperServiceByJsonRPC {
             : null
         }
       },
-      timeout
+      props?.timeout
     );
     if (res.error) {
       return res;
@@ -784,7 +797,7 @@ export class CasperServiceByJsonRPC {
    */
   public async getEraInfoBySwitchBlockHeight(
     height: number,
-    timeout?: number
+    props?: RpcRequestProps
   ): Promise<EraSummary> {
     const res = await this.client.request(
       {
@@ -795,7 +808,7 @@ export class CasperServiceByJsonRPC {
           }
         }
       },
-      timeout
+      props?.timeout
     );
     if (res.error) {
       return res;
@@ -819,9 +832,9 @@ export class CasperServiceByJsonRPC {
     stateRootHash: string,
     dictionaryItemKey: string,
     seedUref: string,
-    { rawData } = { rawData: false },
-    timeout?: number
+    props?: RpcRequestProps & { rawData?: boolean }
   ): Promise<StoredValue> {
+    const rawData = props?.rawData ?? false;
     const res = await this.client.request(
       {
         method: 'state_get_dictionary_item',
@@ -835,7 +848,7 @@ export class CasperServiceByJsonRPC {
           }
         }
       },
-      timeout
+      props?.timeout
     );
     if (res.error) {
       return res;
@@ -864,9 +877,10 @@ export class CasperServiceByJsonRPC {
     contractHash: string,
     dictionaryName: string,
     dictionaryItemKey: string,
-    { rawData } = { rawData: false },
-    timeout?: number
+    props?: RpcRequestProps & { rawData?: boolean }
   ): Promise<StoredValue> {
+    const rawData = props?.rawData ?? false;
+
     const res = await this.client.request(
       {
         method: 'state_get_dictionary_item',
@@ -881,7 +895,7 @@ export class CasperServiceByJsonRPC {
           }
         }
       },
-      timeout
+      props?.timeout
     );
     if (res.error) {
       return res;
