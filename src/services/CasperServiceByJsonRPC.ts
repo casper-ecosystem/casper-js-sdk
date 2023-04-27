@@ -315,7 +315,7 @@ export class CasperServiceByJsonRPC {
   /**
    * Get information about a deploy using its hexadecimal hash
    * @param deployHashBase16 The base-16 hash of the deploy
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns A `Promise` that resolves to a `GetDeployResult`
    */
   public async getDeployInfo(
@@ -336,7 +336,7 @@ export class CasperServiceByJsonRPC {
   /**
    * Get block information
    * @param blockHashBase16 A hexadecimal string representing the hash of a block
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns A `Promise` resolving to a `GetBlockResult`
    */
   public async getBlockInfo(
@@ -369,7 +369,7 @@ export class CasperServiceByJsonRPC {
   /**
    * Get block info at a provided block height
    * @param height The block height at which to gather the block info
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns A `Promise` resolving to a `GetBlockResult`
    */
   public async getBlockInfoByHeight(
@@ -398,7 +398,7 @@ export class CasperServiceByJsonRPC {
 
   /**
    * Get the block info of the latest block added
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns A `Promise` that resolves to a `GetBlockResult`
    */
   public async getLatestBlockInfo(
@@ -414,7 +414,7 @@ export class CasperServiceByJsonRPC {
 
   /**
    * Get the attached node's current peers
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns A `Promise` that resolves to a `GetPeersResult`
    */
   public async getPeers(props?: RpcRequestProps): Promise<GetPeersResult> {
@@ -428,7 +428,7 @@ export class CasperServiceByJsonRPC {
 
   /**
    * Get the status of a node
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns A `Promise` that resolves to a `GetStatusResult`
    */
   public async getStatus(props?: RpcRequestProps): Promise<GetStatusResult> {
@@ -443,7 +443,7 @@ export class CasperServiceByJsonRPC {
   /**
    * Get information on the current validators
    * @param blockHash (optional) blockHash that you want to check
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns A `Promise` that resolves to a `ValidatorsInfoResult`
    */
   public async getValidatorsInfo(
@@ -468,7 +468,7 @@ export class CasperServiceByJsonRPC {
   /**
    * Get information on the network validators of at a certain block height
    * @param blockHeight The block height at which to query the validators' info
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns A `Promise` that resolves to a `ValidatorsInfoResult`
    */
   public async getValidatorsInfoByBlockHeight(
@@ -495,7 +495,7 @@ export class CasperServiceByJsonRPC {
    * Get the reference to an account balance uref by an account's account hash, so it may be cached
    * @param stateRootHash The state root hash at which the main purse URef will be queried
    * @param accountHash The account hash of the account
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns The account's main purse URef
    */
   public async getAccountBalanceUrefByPublicKeyHash(
@@ -516,7 +516,7 @@ export class CasperServiceByJsonRPC {
    * Get the reference to an account balance uref by an account's public key, so it may be cached
    * @param stateRootHash The state root hash at which the main purse URef will be queried
    * @param publicKey The public key of the account
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns The account's main purse URef
    * @see [getAccountBalanceUrefByPublicKeyHash](#L380)
    */
@@ -536,7 +536,7 @@ export class CasperServiceByJsonRPC {
    * Get the balance of an account using its main purse URef
    * @param stateRootHash The state root hash at which the account balance will be queried
    * @param balanceUref The URef of an account's main purse URef
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns An account's balance
    */
   public async getAccountBalance(
@@ -563,7 +563,7 @@ export class CasperServiceByJsonRPC {
    * @param purseIdentifierType purse type enum
    * @param purseIdentifier purse identifier
    * @param stateRootHash state root hash at which the block state will be queried
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns Purse balance
    */
   public async queryBalance(
@@ -591,7 +591,7 @@ export class CasperServiceByJsonRPC {
   /**
    * Get the state root hash at a specific block hash
    * @param blockHashBase16 The hexadecimal string representation of a block hash
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns A `Promise` resolving to a state root hash hexadecimal string
    */
   public async getStateRootHash(
@@ -614,7 +614,7 @@ export class CasperServiceByJsonRPC {
    * @param stateRootHash The state root hash at which the block state will be queried
    * @param key The key at which to query the state
    * @param path An array of a path / paths at which to query the state
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns The block state at the state root hash, path, and key provided, as a `StoredValue`
    */
   public async getBlockState(
@@ -658,7 +658,7 @@ export class CasperServiceByJsonRPC {
   /**
    * Deploys a provided signed deploy
    * @param signedDeploy A signed `Deploy` object to be sent to a node
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @remarks A deploy must not exceed 1 megabyte
    */
   public async deploy(
@@ -729,7 +729,7 @@ export class CasperServiceByJsonRPC {
   /**
    * Retrieves all transfers for a block from the network
    * @param blockHash Hexadecimal block hash. If not provided, the last block added to the chain, known as the given node, will be used
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns A `Promise` resolving to a `Transfers` containing block transfers
    */
   public async getBlockTransfers(
@@ -761,7 +761,7 @@ export class CasperServiceByJsonRPC {
   /**
    * Retrieve era information at the block hash of a [switch block](https://docs.casperlabs.io/economics/consensus/#entry)
    * @param blockHash Hexadecimal block hash. If not provided, the last block added to the chain, known as the given node, will be used
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns A `Promise` resolving to an `EraSummary` containing the era information
    */
   public async getEraInfoBySwitchBlock(
@@ -793,7 +793,7 @@ export class CasperServiceByJsonRPC {
   /**
    * Retrieve era information by [switch block](https://docs.casperlabs.io/economics/consensus/#entry) height
    * @param height The height of the switch block
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns A `Promise` resolving to an `EraSummary` containing the era information
    */
   public async getEraInfoBySwitchBlockHeight(
@@ -826,7 +826,7 @@ export class CasperServiceByJsonRPC {
    * @param dictionaryItemKey The key at which the item is stored
    * @param seedUref The seed URef of the dictionary
    * @param opts.rawData Returns rawData if true, otherwise return parsed data
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns A `Promise` resolving to a `StoredValue` containing the item
    */
   public async getDictionaryItemByURef(
@@ -870,7 +870,7 @@ export class CasperServiceByJsonRPC {
    * @param dictionaryName The name of the dictionary
    * @param dictionaryItemKey The key at which the item is stored
    * @param opts.rawData Returns rawData if true, otherwise return parsed data
-   * @param timeout timeout for the request
+   * @param props optional request props
    * @returns A `Promise` resolving to a `StoredValue` containing the item
    */
   public async getDictionaryItemByName(
