@@ -1,12 +1,24 @@
+import { BigNumber } from '@ethersproject/bignumber';
 import { RequestManager, HTTPTransport, Client } from '@open-rpc/client-js';
 import { TypedJSON, jsonMember, jsonObject } from 'typedjson';
-import { DeployUtil, encodeBase16, CLPublicKey, CLValue } from '..';
-import { deployToJson } from '../lib/DeployUtil';
-import { StoredValue, Transfers } from '../lib/StoredValue';
-import { BigNumber } from '@ethersproject/bignumber';
+
+import {
+  DeployUtil,
+  encodeBase16,
+  CLPublicKey,
+  CLValue,
+  StoredValue,
+  Transfers
+} from '..';
+
 import ProviderTransport, {
   SafeEventEmitterProvider
 } from './ProviderTransport';
+
+/** RPC request props interface */
+interface RpcRequestProps {
+  timeout?: number;
+}
 
 /** RPC result interface */
 interface RpcResult {
@@ -303,36 +315,46 @@ export class CasperServiceByJsonRPC {
   /**
    * Get information about a deploy using its hexadecimal hash
    * @param deployHashBase16 The base-16 hash of the deploy
+   * @param props optional request props
    * @returns A `Promise` that resolves to a `GetDeployResult`
    */
   public async getDeployInfo(
-    deployHashBase16: string
+    deployHashBase16: string,
+    props?: RpcRequestProps
   ): Promise<GetDeployResult> {
-    return await this.client.request({
-      method: 'info_get_deploy',
-      params: {
-        deploy_hash: deployHashBase16
-      }
-    });
+    return await this.client.request(
+      {
+        method: 'info_get_deploy',
+        params: {
+          deploy_hash: deployHashBase16
+        }
+      },
+      props?.timeout
+    );
   }
 
   /**
    * Get block information
    * @param blockHashBase16 A hexadecimal string representing the hash of a block
+   * @param props optional request props
    * @returns A `Promise` resolving to a `GetBlockResult`
    */
   public async getBlockInfo(
-    blockHashBase16: JsonBlockHash
+    blockHashBase16: JsonBlockHash,
+    props?: RpcRequestProps
   ): Promise<GetBlockResult> {
     return await this.client
-      .request({
-        method: 'chain_get_block',
-        params: {
-          block_identifier: {
-            Hash: blockHashBase16
+      .request(
+        {
+          method: 'chain_get_block',
+          params: {
+            block_identifier: {
+              Hash: blockHashBase16
+            }
           }
-        }
-      })
+        },
+        props?.timeout
+      )
       .then((res: GetBlockResult) => {
         if (
           res.block !== null &&
@@ -347,18 +369,25 @@ export class CasperServiceByJsonRPC {
   /**
    * Get block info at a provided block height
    * @param height The block height at which to gather the block info
+   * @param props optional request props
    * @returns A `Promise` resolving to a `GetBlockResult`
    */
-  public async getBlockInfoByHeight(height: number): Promise<GetBlockResult> {
+  public async getBlockInfoByHeight(
+    height: number,
+    props?: RpcRequestProps
+  ): Promise<GetBlockResult> {
     return await this.client
-      .request({
-        method: 'chain_get_block',
-        params: {
-          block_identifier: {
-            Height: height
+      .request(
+        {
+          method: 'chain_get_block',
+          params: {
+            block_identifier: {
+              Height: height
+            }
           }
-        }
-      })
+        },
+        props?.timeout
+      )
       .then((res: GetBlockResult) => {
         if (res.block !== null && res.block.header.height !== height) {
           throw new Error('Returned block does not have a matching height.');
@@ -369,89 +398,116 @@ export class CasperServiceByJsonRPC {
 
   /**
    * Get the block info of the latest block added
+   * @param props optional request props
    * @returns A `Promise` that resolves to a `GetBlockResult`
    */
-  public async getLatestBlockInfo(): Promise<GetBlockResult> {
-    return await this.client.request({
-      method: 'chain_get_block'
-    });
+  public async getLatestBlockInfo(
+    props?: RpcRequestProps
+  ): Promise<GetBlockResult> {
+    return await this.client.request(
+      {
+        method: 'chain_get_block'
+      },
+      props?.timeout
+    );
   }
 
   /**
    * Get the attached node's current peers
+   * @param props optional request props
    * @returns A `Promise` that resolves to a `GetPeersResult`
    */
-  public async getPeers(): Promise<GetPeersResult> {
-    return await this.client.request({
-      method: 'info_get_peers'
-    });
+  public async getPeers(props?: RpcRequestProps): Promise<GetPeersResult> {
+    return await this.client.request(
+      {
+        method: 'info_get_peers'
+      },
+      props?.timeout
+    );
   }
 
   /**
    * Get the status of a node
+   * @param props optional request props
    * @returns A `Promise` that resolves to a `GetStatusResult`
    */
-  public async getStatus(): Promise<GetStatusResult> {
-    return await this.client.request({
-      method: 'info_get_status'
-    });
+  public async getStatus(props?: RpcRequestProps): Promise<GetStatusResult> {
+    return await this.client.request(
+      {
+        method: 'info_get_status'
+      },
+      props?.timeout
+    );
   }
 
   /**
    * Get information on the current validators
    * @param blockHash (optional) blockHash that you want to check
+   * @param props optional request props
    * @returns A `Promise` that resolves to a `ValidatorsInfoResult`
    */
   public async getValidatorsInfo(
-    blockHash?: string
+    blockHash?: string,
+    props?: RpcRequestProps
   ): Promise<ValidatorsInfoResult> {
-    return await this.client.request({
-      method: 'state_get_auction_info',
-      params: blockHash
-        ? {
-            block_identifier: {
-              Hash: blockHash
+    return await this.client.request(
+      {
+        method: 'state_get_auction_info',
+        params: blockHash
+          ? {
+              block_identifier: {
+                Hash: blockHash
+              }
             }
-          }
-        : []
-    });
+          : []
+      },
+      props?.timeout
+    );
   }
 
   /**
    * Get information on the network validators of at a certain block height
    * @param blockHeight The block height at which to query the validators' info
+   * @param props optional request props
    * @returns A `Promise` that resolves to a `ValidatorsInfoResult`
    */
   public async getValidatorsInfoByBlockHeight(
-    blockHeight: number
+    blockHeight: number,
+    props?: RpcRequestProps
   ): Promise<ValidatorsInfoResult> {
-    return await this.client.request({
-      method: 'state_get_auction_info',
-      params: {
-        block_identifier:
-          blockHeight >= 0
-            ? {
-                Height: blockHeight
-              }
-            : null
-      }
-    });
+    return await this.client.request(
+      {
+        method: 'state_get_auction_info',
+        params: {
+          block_identifier:
+            blockHeight >= 0
+              ? {
+                  Height: blockHeight
+                }
+              : null
+        }
+      },
+      props?.timeout
+    );
   }
 
   /**
    * Get the reference to an account balance uref by an account's account hash, so it may be cached
    * @param stateRootHash The state root hash at which the main purse URef will be queried
    * @param accountHash The account hash of the account
+   * @param props optional request props
    * @returns The account's main purse URef
    */
   public async getAccountBalanceUrefByPublicKeyHash(
     stateRootHash: string,
-    accountHash: string
+    accountHash: string,
+    props?: RpcRequestProps
   ) {
     const account = await this.getBlockState(
       stateRootHash,
       'account-hash-' + accountHash,
-      []
+      [],
+      props
     ).then(res => res.Account!);
     return account.mainPurse;
   }
@@ -460,16 +516,19 @@ export class CasperServiceByJsonRPC {
    * Get the reference to an account balance uref by an account's public key, so it may be cached
    * @param stateRootHash The state root hash at which the main purse URef will be queried
    * @param publicKey The public key of the account
+   * @param props optional request props
    * @returns The account's main purse URef
    * @see [getAccountBalanceUrefByPublicKeyHash](#L380)
    */
   public async getAccountBalanceUrefByPublicKey(
     stateRootHash: string,
-    publicKey: CLPublicKey
+    publicKey: CLPublicKey,
+    props?: RpcRequestProps
   ) {
     return this.getAccountBalanceUrefByPublicKeyHash(
       stateRootHash,
-      encodeBase16(publicKey.toAccountHash())
+      encodeBase16(publicKey.toAccountHash()),
+      props
     );
   }
 
@@ -477,55 +536,76 @@ export class CasperServiceByJsonRPC {
    * Get the balance of an account using its main purse URef
    * @param stateRootHash The state root hash at which the account balance will be queried
    * @param balanceUref The URef of an account's main purse URef
+   * @param props optional request props
    * @returns An account's balance
    */
   public async getAccountBalance(
     stateRootHash: string,
-    balanceUref: string
+    balanceUref: string,
+    props?: RpcRequestProps
   ): Promise<BigNumber> {
     return await this.client
-      .request({
-        method: 'state_get_balance',
-        params: {
-          state_root_hash: stateRootHash,
-          purse_uref: balanceUref
-        }
-      })
+      .request(
+        {
+          method: 'state_get_balance',
+          params: {
+            state_root_hash: stateRootHash,
+            purse_uref: balanceUref
+          }
+        },
+        props?.timeout
+      )
       .then(res => BigNumber.from(res.balance_value));
   }
 
-  // TODO: Add docs
+  /**
+   * Returns given purse balance
+   * @param purseIdentifierType purse type enum
+   * @param purseIdentifier purse identifier
+   * @param stateRootHash state root hash at which the block state will be queried
+   * @param props optional request props
+   * @returns Purse balance
+   */
   public async queryBalance(
     purseIdentifierType: PurseIdentifier,
     purseIdentifier: string,
-    stateRootHash?: string
+    stateRootHash?: string,
+    props?: RpcRequestProps
   ): Promise<BigNumber> {
     return await this.client
-      .request({
-        method: 'query_balance',
-        params: {
-          purse_identifier: {
-            [purseIdentifierType]: purseIdentifier
-          },
-          state_identifier: stateRootHash
-        }
-      })
+      .request(
+        {
+          method: 'query_balance',
+          params: {
+            purse_identifier: {
+              [purseIdentifierType]: purseIdentifier
+            },
+            state_identifier: stateRootHash
+          }
+        },
+        props?.timeout
+      )
       .then(res => BigNumber.from(res.balance));
   }
 
   /**
    * Get the state root hash at a specific block hash
    * @param blockHashBase16 The hexadecimal string representation of a block hash
+   * @param props optional request props
    * @returns A `Promise` resolving to a state root hash hexadecimal string
    */
   public async getStateRootHash(
-    blockHashBase16?: JsonBlockHash
+    blockHashBase16?: JsonBlockHash,
+    props?: RpcRequestProps
   ): Promise<string> {
     return await this.client
-      .request({
-        method: 'chain_get_state_root_hash',
-        params: blockHashBase16 ? { block_identifier: blockHashBase16 } : []
-      })
+      .request(
+        {
+          method: 'chain_get_state_root_hash',
+          params: blockHashBase16 ? { block_identifier: blockHashBase16 } : []
+        },
+        props?.timeout
+      )
       .then((res: GetStateRootHashResult) => res.state_root_hash);
   }
 
@@ -534,21 +614,26 @@ export class CasperServiceByJsonRPC {
    * @param stateRootHash The state root hash at which the block state will be queried
    * @param key The key at which to query the state
    * @param path An array of a path / paths at which to query the state
+   * @param props optional request props
    * @returns The block state at the state root hash, path, and key provided, as a `StoredValue`
    */
   public async getBlockState(
     stateRootHash: string,
     key: string,
-    path: string[]
+    path: string[],
+    props?: RpcRequestProps
   ): Promise<StoredValue> {
-    const res = await this.client.request({
-      method: 'state_get_item',
-      params: {
-        state_root_hash: stateRootHash,
-        key,
-        path
-      }
-    });
+    const res = await this.client.request(
+      {
+        method: 'state_get_item',
+        params: {
+          state_root_hash: stateRootHash,
+          key,
+          path
+        }
+      },
+      props?.timeout
+    );
     if (res.error) {
       return res;
     } else {
@@ -573,16 +658,25 @@ export class CasperServiceByJsonRPC {
   /**
    * Deploys a provided signed deploy
    * @param signedDeploy A signed `Deploy` object to be sent to a node
+   * @param props optional request props
    * @remarks A deploy must not exceed 1 megabyte
    */
-  public async deploy(signedDeploy: DeployUtil.Deploy): Promise<DeployResult> {
+  public async deploy(
+    signedDeploy: DeployUtil.Deploy,
+    props?: RpcRequestProps
+  ): Promise<DeployResult> {
     await this.checkDeploySize(signedDeploy);
 
+    // TODO: Check if the deploy is signed properly
+
     try {
-      return await this.client.request({
-        method: 'account_put_deploy',
-        params: deployToJson(signedDeploy)
-      });
+      return await this.client.request(
+        {
+          method: 'account_put_deploy',
+          params: DeployUtil.deployToJson(signedDeploy)
+        },
+        props?.timeout
+      );
     } catch (e) {
       return e;
     }
@@ -612,37 +706,49 @@ export class CasperServiceByJsonRPC {
     }
   }
 
+  // TODO: Update Doc
   public async speculativeDeploy(
     signedDeploy: DeployUtil.Deploy,
-    blockIdentifier?: string
+    blockIdentifier?: string,
+    props?: RpcRequestProps
   ) {
     await this.checkDeploySize(signedDeploy);
 
-    const deploy = deployToJson(signedDeploy);
+    const deploy = DeployUtil.deployToJson(signedDeploy);
 
-    return await this.client.request({
-      method: 'speculative_exec',
-      params: blockIdentifier
-        ? { ...deploy, block_identifier: { Hash: blockIdentifier } }
-        : { ...deploy }
-    });
+    return await this.client.request(
+      {
+        method: 'speculative_exec',
+        params: blockIdentifier
+          ? { ...deploy, block_identifier: { Hash: blockIdentifier } }
+          : { ...deploy }
+      },
+      props?.timeout
+    );
   }
   /**
    * Retrieves all transfers for a block from the network
    * @param blockHash Hexadecimal block hash. If not provided, the last block added to the chain, known as the given node, will be used
+   * @param props optional request props
    * @returns A `Promise` resolving to a `Transfers` containing block transfers
    */
-  public async getBlockTransfers(blockHash?: string): Promise<Transfers> {
-    const res = await this.client.request({
-      method: 'chain_get_block_transfers',
-      params: {
-        block_identifier: blockHash
-          ? {
-              Hash: blockHash
-            }
-          : null
-      }
-    });
+  public async getBlockTransfers(
+    blockHash?: string,
+    props?: RpcRequestProps
+  ): Promise<Transfers> {
+    const res = await this.client.request(
+      {
+        method: 'chain_get_block_transfers',
+        params: {
+          block_identifier: blockHash
+            ? {
+                Hash: blockHash
+              }
+            : null
+        }
+      },
+      props?.timeout
+    );
     if (res.error) {
       return res;
     } else {
@@ -655,21 +761,26 @@ export class CasperServiceByJsonRPC {
   /**
    * Retrieve era information at the block hash of a [switch block](https://docs.casperlabs.io/economics/consensus/#entry)
    * @param blockHash Hexadecimal block hash. If not provided, the last block added to the chain, known as the given node, will be used
+   * @param props optional request props
    * @returns A `Promise` resolving to an `EraSummary` containing the era information
    */
   public async getEraInfoBySwitchBlock(
-    blockHash?: string
+    blockHash?: string,
+    props?: RpcRequestProps
   ): Promise<EraSummary> {
-    const res = await this.client.request({
-      method: 'chain_get_era_info_by_switch_block',
-      params: {
-        block_identifier: blockHash
-          ? {
-              Hash: blockHash
-            }
-          : null
-      }
-    });
+    const res = await this.client.request(
+      {
+        method: 'chain_get_era_info_by_switch_block',
+        params: {
+          block_identifier: blockHash
+            ? {
+                Hash: blockHash
+              }
+            : null
+        }
+      },
+      props?.timeout
+    );
     if (res.error) {
       return res;
     } else {
@@ -682,19 +793,24 @@ export class CasperServiceByJsonRPC {
   /**
    * Retrieve era information by [switch block](https://docs.casperlabs.io/economics/consensus/#entry) height
    * @param height The height of the switch block
+   * @param props optional request props
    * @returns A `Promise` resolving to an `EraSummary` containing the era information
    */
   public async getEraInfoBySwitchBlockHeight(
-    height: number
+    height: number,
+    props?: RpcRequestProps
   ): Promise<EraSummary> {
-    const res = await this.client.request({
-      method: 'chain_get_era_info_by_switch_block',
-      params: {
-        block_identifier: {
-          Height: height
+    const res = await this.client.request(
+      {
+        method: 'chain_get_era_info_by_switch_block',
+        params: {
+          block_identifier: {
+            Height: height
+          }
         }
-      }
-    });
+      },
+      props?.timeout
+    );
     if (res.error) {
       return res;
     } else {
@@ -762,26 +878,32 @@ export class CasperServiceByJsonRPC {
    * @param stateRootHash The state root hash at which the item will be queried
    * @param dictionaryItemKey The key at which the item is stored
    * @param seedUref The seed URef of the dictionary
+   * @param opts.rawData Returns rawData if true, otherwise return parsed data
+   * @param props optional request props
    * @returns A `Promise` resolving to a `StoredValue` containing the item
    */
   public async getDictionaryItemByURef(
     stateRootHash: string,
     dictionaryItemKey: string,
     seedUref: string,
-    { rawData } = { rawData: false }
+    props?: RpcRequestProps & { rawData?: boolean }
   ): Promise<StoredValue> {
-    const res = await this.client.request({
-      method: 'state_get_dictionary_item',
-      params: {
-        state_root_hash: stateRootHash,
-        dictionary_identifier: {
-          URef: {
-            seed_uref: seedUref,
-            dictionary_item_key: dictionaryItemKey
+    const rawData = props?.rawData ?? false;
+    const res = await this.client.request(
+      {
+        method: 'state_get_dictionary_item',
+        params: {
+          state_root_hash: stateRootHash,
+          dictionary_identifier: {
+            URef: {
+              seed_uref: seedUref,
+              dictionary_item_key: dictionaryItemKey
+            }
           }
         }
-      }
-    });
+      },
+      props?.timeout
+    );
     if (res.error) {
       return res;
     } else {
@@ -800,6 +922,8 @@ export class CasperServiceByJsonRPC {
    * @param contractHash The contract hash of the contract that stores the queried dictionary
    * @param dictionaryName The name of the dictionary
    * @param dictionaryItemKey The key at which the item is stored
+   * @param opts.rawData Returns rawData if true, otherwise return parsed data
+   * @param props optional request props
    * @returns A `Promise` resolving to a `StoredValue` containing the item
    */
   public async getDictionaryItemByName(
@@ -807,21 +931,26 @@ export class CasperServiceByJsonRPC {
     contractHash: string,
     dictionaryName: string,
     dictionaryItemKey: string,
-    { rawData } = { rawData: false }
+    props?: RpcRequestProps & { rawData?: boolean }
   ): Promise<StoredValue> {
-    const res = await this.client.request({
-      method: 'state_get_dictionary_item',
-      params: {
-        state_root_hash: stateRootHash,
-        dictionary_identifier: {
-          ContractNamedKey: {
-            key: contractHash,
-            dictionary_name: dictionaryName,
-            dictionary_item_key: dictionaryItemKey
+    const rawData = props?.rawData ?? false;
+
+    const res = await this.client.request(
+      {
+        method: 'state_get_dictionary_item',
+        params: {
+          state_root_hash: stateRootHash,
+          dictionary_identifier: {
+            ContractNamedKey: {
+              key: contractHash,
+              dictionary_name: dictionaryName,
+              dictionary_item_key: dictionaryItemKey
+            }
           }
         }
-      }
-    });
+      },
+      props?.timeout
+    );
     if (res.error) {
       return res;
     } else {
