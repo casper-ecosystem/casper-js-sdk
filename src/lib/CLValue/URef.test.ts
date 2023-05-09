@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { CLURef, CLURefType, CLValueParsers, AccessRights } from './index';
-import { decodeBase16 } from '../../index';
+import { decodeBase16 } from '../Conversions';
 
 const urefAddr =
   '2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a';
@@ -16,6 +16,7 @@ describe('CLUref', () => {
   it('Should be valid by construction', () => {
     const badFn1 = () =>
       new CLURef(decodeBase16('3a3a3a'), AccessRights.READ_ADD_WRITE);
+    // @ts-ignore
     const badFn2 = () => new CLURef(decodeBase16(urefAddr), 10);
 
     expect(RWExampleURef).to.be.an.instanceof(CLURef);

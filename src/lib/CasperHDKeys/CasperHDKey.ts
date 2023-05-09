@@ -28,10 +28,16 @@ export abstract class CasperHDKey<AsymmetricKey> {
 
   /**
    * Returns mnemonic which can be used to construct HD wallet.
+   * @param wordLength mnemonic word length, default 12, possible lengths 12 or 24
    * @returns mnemonic word array
    */
-  public static newMnemonic(): string {
-    return bip39.generateMnemonic(CasperHDKey.getWordlist());
+  public static newMnemonic(wordLength = 12): string {
+    const validWordLengths = [12, 24];
+    if (!validWordLengths.includes(wordLength)) {
+      throw new Error('Invalid word length');
+    }
+    const strength = wordLength === 12 ? 128 : 256;
+    return bip39.generateMnemonic(CasperHDKey.getWordlist(), strength);
   }
 
   /**
