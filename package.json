@@ -117,6 +117,7 @@
     "@noble/secp256k1": "^1.7.1",
     "@open-rpc/client-js": "^1.6.2",
     "@scure/bip32": "^1.1.5",
+    "@scure/bip39": "^1.2.0",
     "@types/ws": "^8.2.2",
     "glob": "^7.1.6",
     "humanize-duration": "^3.24.0",
