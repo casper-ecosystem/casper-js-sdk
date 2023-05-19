@@ -50,7 +50,7 @@ jobs:
 
       - name: Get Latest Casper-Node Tag Version
         run: |
-          echo "CASPER_TAG_VERSION=$(curl -s ${{ env.GH_API_URL }} | jq -r '.[].name' | grep 'v*' | sort -V | sed 's/_$//' | tail -n1" >> $GITHUB_ENV
+          echo "CASPER_TAG_VERSION=$(curl -s ${{ env.GH_API_URL }} | jq -r '.[].name' | grep 'v*' | sort -V | sed 's/_$//' | tail -n1)" >> $GITHUB_ENV
         env:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
 
