@@ -7,8 +7,8 @@ import {
   AccessRights,
   CLAccountHash,
   CLByteArray
-} from './index'; // CLURef, CLAccountHash } from './index';
-import { decodeBase16 } from '../../index';
+} from './index';
+import { decodeBase16 } from '../Conversions';
 
 describe('CLKey', () => {
   const urefAddr =

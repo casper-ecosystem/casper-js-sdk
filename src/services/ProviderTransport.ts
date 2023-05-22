@@ -34,11 +34,8 @@ export interface SafeEventEmitterProvider {
 }
 
 class ProviderTransport extends Transport {
-  public provider: SafeEventEmitterProvider;
-
-  constructor(provider: SafeEventEmitterProvider) {
+  constructor(public provider: SafeEventEmitterProvider) {
     super();
-    this.provider = provider;
   }
 
   public connect(): Promise<any> {
