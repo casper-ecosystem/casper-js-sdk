@@ -304,11 +304,13 @@ export class CasperServiceByJsonRPC {
   constructor(provider: string | SafeEventEmitterProvider) {
     let transport: HTTPTransport | ProviderTransport;
     if (typeof provider === 'string') {
-      const providerUrl = provider.endsWith('/rpc')
-        ? provider
-        : provider.endsWith('/')
-        ? provider + 'rpc'
-        : provider + '/rpc';
+      let providerUrl = provider.endsWith('/')
+        ? provider.substring(0, provider.length - 1)
+        : provider;
+
+      providerUrl = providerUrl.endsWith('/rpc')
+        ? providerUrl
+        : providerUrl + '/rpc';
 
       transport = new HTTPTransport(providerUrl);
     } else {
