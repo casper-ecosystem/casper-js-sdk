@@ -1,4 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+
+import { JsonTypes } from 'typedjson';
 import BaseSigner from './BaseSigner';
+import { CLPublicKey, DeployUtil } from '..';
 
 export default class CasperWallet extends BaseSigner {
   public isCasperWallet = true;
@@ -11,7 +15,7 @@ export default class CasperWallet extends BaseSigner {
     this.connected = false;
     this.locked = true;
 
-    this.casperWalletProvider = window.CasperWalletProvider!(options);
+    this.setOption(options);
 
     // Register event listeners
     window.addEventListener(
@@ -123,38 +127,104 @@ export default class CasperWallet extends BaseSigner {
   public async getVersion(): Promise<string> {
     return this.casperWalletProvider.getVersion();
   }
+
   public async isConnected(): Promise<boolean> {
     return this.casperWalletProvider.isConnected();
   }
+
   public async connect(): Promise<string> {
     await this.casperWalletProvider.requestConnection();
     const activeAccount = await this.casperWalletProvider.getActivePublicKey();
 
     if (!activeAccount) {
+      // TODO: What Error should throw
       throw new Error('');
     }
     return activeAccount;
   }
+
   public async disconnect(): Promise<boolean> {
     return this.casperWalletProvider.disconnectFromSite();
   }
+
   public async changeAccount(): Promise<string> {
     throw new Error('Method not implemented.');
   }
-  public async signDeploy(): Promise<string> {
+
+  public async signDeploy(
+    deploy: { deploy: JsonTypes },
+    signingPublicKey: string
+  ): Promise<{ deploy: JsonTypes }> {
+    if (DeployUtil.deployFromJson(deploy).err) {
+      throw new Error('Invalid Deploy');
+    }
+
+    const result = await this.casperWalletProvider.sign(
+      JSON.stringify(deploy),
+      signingPublicKey
+    );
+
+    if (result.cancelled) {
+      throw new Error('User canceled sign');
+    } else {
+      const signedDeploy = DeployUtil.setSignature(
+        DeployUtil.deployFromJson(deploy).unwrap(),
+        result.signature,
+        CLPublicKey.fromHex(signingPublicKey)
+      );
+
+      return DeployUtil.deployToJson(signedDeploy);
+    }
+  }
+
+  public async signAndSendDeploy(
+    _deploy: { deploy: JsonTypes },
+    _signingPublicKey: string
+  ): Promise<string> {
     throw new Error('Method not implemented.');
   }
-  public async signAndSendDeploy(): Promise<string> {
-    throw new Error('Method not implemented.');
+
+  public async signMessage(
+    message: string,
+    signingPublicKey: string
+  ): Promise<string> {
+    const result = await this.casperWalletProvider.signMessage(
+      message,
+      signingPublicKey
+    );
+
+    if (result.cancelled) {
+      throw new Error('User canceled sign');
+    } else {
+      return result.signatureHex;
+    }
   }
-  public async signMessage(): Promise<string> {
-    throw new Error('Method not implemented.');
-  }
+
   public async getActiveAccount(): Promise<string> {
-    throw new Error('Method not implemented.');
+    const result = await this.casperWalletProvider.getActivePublicKey();
+
+    if (!result) {
+      throw new Error('No active account');
+    }
+
+    return result;
+  }
+
+  /**
+   * Recreate CasperWalletProvider instance
+   * @param options Casper WalletProvider options
+   * @see {@link CasperWalletProviderOptions}
+   */
+  public async setOption(options?: CasperWalletProviderOptions) {
+    if (!window.CasperWalletProvider) {
+      throw new Error('Please install Casper Wallet.');
+    }
+
+    this.casperWalletProvider = window.CasperWalletProvider(options);
   }
 }
 
+// TODO: Do we need to assign `CasperWallet` Instance to the window?
 declare global {
   interface Window {
     casperWallet?: CasperWallet;

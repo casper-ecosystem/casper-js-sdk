@@ -1,3 +1,5 @@
+import { JsonTypes } from 'typedjson';
+
 export type EventsMap = {
   connected: string;
   disconnected: void;
@@ -58,21 +60,79 @@ export default abstract class BaseSigner {
     this.events[name]?.forEach(cb => cb(event));
   }
 
+  /**
+   * Returns Signer version
+   */
   public abstract getVersion(): Promise<string>;
 
+  /**
+   * Returns connection status from Signer
+   */
   public abstract isConnected(): Promise<boolean>;
 
+  /**
+   * Request connection to the Signer
+   */
   public abstract connect(): Promise<string>;
 
+  /**
+   * Disconnect from the Signer
+   */
   public abstract disconnect(): Promise<boolean>;
 
+  /**
+   * Request the signer to change active account
+   * @returns changed active public key in hex format
+   */
   public abstract changeAccount(): Promise<string>;
 
-  public abstract signDeploy(): Promise<string>;
+  /**
+   * Sign deploy from `DeployUtil.deployToJson`
+   *
+   * @param deploy - deploy in JSON format
+   * @param signingPublicKey - public key in hex format, the corresponding private key will be used to sign.
+   *
+   * @throws Errors if the Signer extension is not connected.
+   * @throws Errors if signingPublicKey is not available or does not match the Active Key in the Signer.
+   *
+   * @returns serialized deploy which can be converted into `Deploy` using `DeployUtil.deployFromJson`
+   *
+   * @example
+   *  const serializedDeploy = DeployUtil.deployToJson(deploy);
+   *  const signedSerializedDeploy = await signer.signDeploy(serializedDeploy, pulicKey);
+   *  const signedDeploy = DeployUtil.deployFromJson(signedSerializedDeploy).unwrap();
+   */
+  public abstract signDeploy(
+    deploy: { deploy: JsonTypes },
+    signingPublicKey: string
+  ): Promise<{ deploy: JsonTypes }>;
 
-  public abstract signAndSendDeploy(): Promise<string>;
+  // TODO: Check integrate with `CasperServiceByJsonRPC`
+  public abstract signAndSendDeploy(
+    deploy: { deploy: JsonTypes },
+    signingPublicKey: string
+  ): Promise<string>;
 
-  public abstract signMessage(): Promise<string>;
+  /**
+   * Sign message with given public key's private key
+   * @param message string to be signed.
+   * @param signingPublicKey public key in hex format, the corresponding private key will be used to sign.
+   * @returns string in hex format
+   *
+   * @example
+   *  import { decodeBase16, verifyMessageSignature } from "casper-js-sdk";
+   *  const message = "Hello Casper";
+   *  const signature = await signer.signMessage(message, publicKey);
+   *  const isValidSignature = verifyMessageSignature(CLPublicKey.fromHex(publicKey), message, decodeBase16(signature));
+   */
+  public abstract signMessage(
+    message: string,
+    signingPublicKey: string
+  ): Promise<string>;
 
+  /**
+   * Retrives active public key in hex format
+   * @returns string active public key in hex format
+   */
   public abstract getActiveAccount(): Promise<string>;
 }
