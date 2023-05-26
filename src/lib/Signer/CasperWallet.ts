@@ -3,10 +3,6 @@ import BaseSigner from './BaseSigner';
 export default class CasperWallet extends BaseSigner {
   public isCasperWallet = true;
 
-  // Consider move these flags to the base class
-  private connected: boolean;
-  private locked: boolean;
-
   private casperWalletProvider: ReturnType<CasperWalletProvider>;
 
   constructor(options?: CasperWalletProviderOptions) {
@@ -20,57 +16,108 @@ export default class CasperWallet extends BaseSigner {
     // Register event listeners
     window.addEventListener(
       CasperWalletEventTypes.Connected,
-      this.handleEvent.bind(this)
+      this.handleConnected.bind(this)
     );
     window.addEventListener(
       CasperWalletEventTypes.Disconnected,
-      this.handleEvent.bind(this)
+      this.handleDisconnected.bind(this)
     );
     window.addEventListener(
       CasperWalletEventTypes.ActiveKeyChanged,
-      this.handleEvent.bind(this)
+      this.handleActiveKeyChanged.bind(this)
     );
     window.addEventListener(
       CasperWalletEventTypes.Locked,
-      this.handleEvent.bind(this)
+      this.handleLocked.bind(this)
     );
     window.addEventListener(
       CasperWalletEventTypes.Unlocked,
-      this.handleEvent.bind(this)
+      this.handleUnlocked.bind(this)
+    );
+    window.addEventListener(
+      CasperWalletEventTypes.TabChanged,
+      this.handleTabChanged.bind(this)
     );
   }
 
-  private handleEvent(event: any) {
+  private handleConnected(event: any) {
+    try {
+      const state: CasperWalletState = JSON.parse(event.detail);
+      this.emit('connected', this.activeAccount!);
+
+      this.updateState(state);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  private handleDisconnected(event: any) {
     try {
       const state: CasperWalletState = JSON.parse(event.detail);
 
-      if (state.isConnected !== this.connected) {
-        if (state.isConnected) {
-          this.emit('connected', this.activeAccount!);
-        } else {
-          // @ts-ignore
-          this.emit('disconnected');
-        }
-      }
-      if (state.activeKey && this.activeAccount !== state.activeKey) {
-        this.emit('accountChanged', state.activeKey);
-      }
-      if (this.locked !== state.isLocked) {
-        if (state.isLocked) {
-          // @ts-ignore
-          this.emit('locked');
-        } else {
-          // @ts-ignore
-          this.emit('unlocked');
-        }
-      }
+      // @ts-ignore
+      this.emit('disconnected');
 
-      this.connected = state.isConnected ?? false;
-      this.activeAccount = state.activeKey ?? undefined;
-      this.locked = state.isLocked;
-    } catch (err) {
-      console.error(err);
+      this.updateState(state);
+    } catch (error) {
+      console.error(error);
     }
+  }
+
+  private handleActiveKeyChanged(event: any) {
+    try {
+      const state: CasperWalletState = JSON.parse(event.detail);
+
+      this.emit('accountChanged', state.activeKey!);
+
+      this.updateState(state);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  private handleLocked(event: any) {
+    try {
+      const state: CasperWalletState = JSON.parse(event.detail);
+
+      // @ts-ignore
+      this.emit('locked');
+
+      this.updateState(state);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  private handleUnlocked(event: any) {
+    try {
+      const state: CasperWalletState = JSON.parse(event.detail);
+
+      // @ts-ignore
+      this.emit('unlocked');
+
+      this.updateState(state);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  private handleTabChanged(event: any) {
+    try {
+      const state: CasperWalletState = JSON.parse(event.detail);
+
+      //  TODO
+
+      this.updateState(state);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  private updateState(state: CasperWalletState) {
+    this.connected = state.isConnected ?? false;
+    this.activeAccount = state.activeKey ?? undefined;
+    this.locked = state.isLocked;
   }
 
   public async getVersion(): Promise<string> {

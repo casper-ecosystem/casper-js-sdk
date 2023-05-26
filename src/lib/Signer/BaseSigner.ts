@@ -9,6 +9,10 @@ export type EventsMap = {
 export default abstract class BaseSigner {
   public activeAccount?: string;
 
+  public connected: boolean;
+
+  public locked: boolean;
+
   private readonly events: Record<string, ((event: any) => void)[]> = {};
 
   public on<K extends keyof EventsMap>(
