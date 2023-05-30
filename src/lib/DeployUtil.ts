@@ -1342,8 +1342,11 @@ export class DeployParams {
     );
 
     if (!timestamp) {
+      // We need to provide some temp date even for the browser - as this method is non blocking.
+      // If its not running in a browser - why doing a calls to the TimeService - lets stick to Date.
       this.timestamp = Date.now();
       if (isBrowser) {
+        // If its Browser - lets overwrite the date.
         const timeService = new TimeService(
           `${location.protocol}//${TIME_API_URL}`
         );
