@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
-- Fallback mechanism for time not provided in browsers environment - in that case we fetch the time from objective source
+- New method `makeDeployAndFetchTimestamp` that fetches timestamp and then uses it to create deploy header.
 
 ## 2.13.0
 
