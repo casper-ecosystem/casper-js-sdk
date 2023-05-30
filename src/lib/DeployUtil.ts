@@ -1340,17 +1340,18 @@ export class DeployParams {
         dependencies.filter(t => encodeBase16(d) === encodeBase16(t)).length < 2
     );
     const isBrowser = typeof window !== 'undefined';
-    if (!timestamp && isBrowser) {
-      const timeService = new TimeService(
-        `${location.protocol}//${TIME_API_URL}`
-      );
-      timeService.getTime().then(({ unixtime }) => {
-        this.timestamp = unixtime;
-      });
-      return;
+    if (!timestamp) {
+      this.timestamp = Date.now();
+      if (isBrowser) {
+        const timeService = new TimeService(
+          `${location.protocol}//${TIME_API_URL}`
+        );
+        timeService.getTime().then(({ unixtime }) => {
+          this.timestamp = unixtime;
+        });
+      }
     }
 
-    this.timestamp = Date.now();
   }
 }
 
