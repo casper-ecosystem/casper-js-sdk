@@ -40,6 +40,7 @@ import { RuntimeArgs } from './RuntimeArgs';
 import { DeployUtil, Keys } from './index';
 import { AsymmetricKey, SignatureAlgorithm, validateSignature } from './Keys';
 import { CasperClient } from './CasperClient';
+import { TimeService } from '../services/TimeService';
 import { DEFAULT_DEPLOY_TTL } from '../constants';
 
 const shortEnglishHumanizer = humanizeDuration.humanizer({
