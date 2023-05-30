@@ -1333,27 +1333,15 @@ export class DeployParams {
     public gasPrice: number = 1,
     public ttl: number = DEFAULT_DEPLOY_TTL,
     public dependencies: Uint8Array[] = [],
-    public timestamp?: number
+    public timestamp: number
   ) {
-    const isBrowser = typeof window !== 'undefined';
     this.dependencies = dependencies.filter(
       d =>
         dependencies.filter(t => encodeBase16(d) === encodeBase16(t)).length < 2
     );
 
     if (!timestamp) {
-      // We need to provide some temp date even for the browser - as this method is non blocking.
-      // If its not running in a browser - why doing a calls to the TimeService - lets stick to Date.
-      this.timestamp = Date.now();
-      if (isBrowser) {
-        // If its Browser - lets overwrite the date.
-        const timeService = new TimeService(
-          `${location.protocol}//${TIME_API_URL}`
-        );
-        timeService.getTime().then(({ unixtime }) => {
-          this.timestamp = unixtime;
-        });
-      }
+      throw new Error('Timestamp is necessary');
     }
   }
 }
