@@ -8,6 +8,7 @@ import {
 import { TypedJSON } from 'typedjson';
 import { DEFAULT_DEPLOY_TTL } from '../constants';
 
+const isBrowser = typeof window !== 'undefined';
 const testDeploy = () => {
   const senderKey = Keys.Ed25519.new();
   const recipientKey = Keys.Ed25519.new();
@@ -606,4 +607,9 @@ describe('DeployUtil', () => {
 
     assert.exists(parsed);
   });
+  if (isBrowser) {
+    it('Should check if date is downloaded in the browser', async () => {
+      console.log("AHAHAHAHAHAHAH");
+    });
+  }
 });
