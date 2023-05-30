@@ -42,6 +42,7 @@ import { AsymmetricKey, SignatureAlgorithm, validateSignature } from './Keys';
 import { CasperClient } from './CasperClient';
 import { TimeService } from '../services/TimeService';
 import { DEFAULT_DEPLOY_TTL } from '../constants';
+import { TIME_API_URL } from '../config';
 
 const shortEnglishHumanizer = humanizeDuration.humanizer({
   spacer: '',
@@ -1339,7 +1340,12 @@ export class DeployParams {
         dependencies.filter(t => encodeBase16(d) === encodeBase16(t)).length < 2
     );
     if (!timestamp) {
-      this.timestamp = Date.now();
+      const timeService = new TimeService(
+        `${location.protocol}//${TIME_API_URL}`
+      );
+      timeService.getTime().then(({ unixtime }) => {
+        this.timestamp = unixtime;
+      });
     }
   }
 }
