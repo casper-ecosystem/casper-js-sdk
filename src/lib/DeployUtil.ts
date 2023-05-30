@@ -1341,17 +1341,16 @@ export class DeployParams {
         dependencies.filter(t => encodeBase16(d) === encodeBase16(t)).length < 2
     );
 
-    if (!timestamp && isBrowser) {
-      const timeService = new TimeService(
-        `${location.protocol}//${TIME_API_URL}`
-      );
-      timeService.getTime().then(({ unixtime }) => {
-        this.timestamp = unixtime;
-      });
-    }
-
-    if (!timestamp && !isBrowser) {
+    if (!timestamp) {
       this.timestamp = Date.now();
+      if (isBrowser) {
+        const timeService = new TimeService(
+          `${location.protocol}//${TIME_API_URL}`
+        );
+        timeService.getTime().then(({ unixtime }) => {
+          this.timestamp = unixtime;
+        });
+      }
     }
   }
 }
