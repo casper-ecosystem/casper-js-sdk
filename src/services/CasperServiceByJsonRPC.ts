@@ -304,7 +304,15 @@ export class CasperServiceByJsonRPC {
   constructor(provider: string | SafeEventEmitterProvider) {
     let transport: HTTPTransport | ProviderTransport;
     if (typeof provider === 'string') {
-      transport = new HTTPTransport(provider);
+      let providerUrl = provider.endsWith('/')
+        ? provider.substring(0, provider.length - 1)
+        : provider;
+
+      providerUrl = providerUrl.endsWith('/rpc')
+        ? providerUrl
+        : providerUrl + '/rpc';
+
+      transport = new HTTPTransport(providerUrl);
     } else {
       transport = new ProviderTransport(provider);
     }
@@ -850,7 +858,9 @@ export class CasperServiceByJsonRPC {
    * @param blockHeight The height of the switch block
    * @returns A `Promise` resolving to an `EraSummary` containing the era information
    */
-  public async getEraSummaryByBlockHeight(blockHeight?: number): Promise<EraSummary> {
+  public async getEraSummaryByBlockHeight(
+    blockHeight?: number
+  ): Promise<EraSummary> {
     const res = await this.client.request({
       method: 'chain_get_era_summary',
       params: {
@@ -870,8 +880,6 @@ export class CasperServiceByJsonRPC {
       return storedValue;
     }
   }
-
-
 
   /**
    * Get a dictionary item by its URef
