@@ -1339,14 +1339,18 @@ export class DeployParams {
       d =>
         dependencies.filter(t => encodeBase16(d) === encodeBase16(t)).length < 2
     );
-    if (!timestamp) {
+    const isBrowser = typeof window !== 'undefined';
+    if (!timestamp && isBrowser) {
       const timeService = new TimeService(
         `${location.protocol}//${TIME_API_URL}`
       );
       timeService.getTime().then(({ unixtime }) => {
         this.timestamp = unixtime;
       });
+      return;
     }
+
+    this.timestamp = Date.now();
   }
 }
 
