@@ -1325,7 +1325,7 @@ export class DeployParams {
    * @param gasPrice Conversion rate between the cost of Wasm opcodes and the motes sent by the payment code, where 1 mote = 1 * 10^-9 CSPR
    * @param ttl Time that the `Deploy` will remain valid for, in milliseconds. The default value is 1800000, which is 30 minutes
    * @param dependencies Hex-encoded `Deploy` hashes of deploys which must be executed before this one.
-   * @param timestamp  If `timestamp` is empty, the current time will be used. Note that timestamp is UTC, not local.
+   * @param timestamp  Note that timestamp is UTC, not local.
    */
   constructor(
     public accountPublicKey: CLPublicKey,
@@ -1333,16 +1333,12 @@ export class DeployParams {
     public gasPrice: number = 1,
     public ttl: number = DEFAULT_DEPLOY_TTL,
     public dependencies: Uint8Array[] = [],
-    public timestamp: number
+    public timestamp?: number
   ) {
     this.dependencies = dependencies.filter(
       d =>
         dependencies.filter(t => encodeBase16(d) === encodeBase16(t)).length < 2
     );
-
-    if (!timestamp) {
-      throw new Error('Timestamp is necessary');
-    }
   }
 }
 
@@ -1361,6 +1357,10 @@ export function makeDeploy(
   const serializedBody = serializeBody(payment, session);
   const bodyHash = byteHash(serializedBody);
 
+  if (!deployParam.timestamp) {
+    deployParam.timestamp = Date.now();
+  }
+
   const header: DeployHeader = new DeployHeader(
     deployParam.accountPublicKey,
     deployParam.timestamp!,
@@ -1373,6 +1373,30 @@ export function makeDeploy(
   const serializedHeader = serializeHeader(header);
   const deployHash = byteHash(serializedHeader.unwrap());
   return new Deploy(deployHash, header, payment, session, []);
+}
+
+/**
+ * Builds a `Deploy` object from `DeployParams`, session logic, and payment logic. 
+ * If there is no timestamp in `DeployParams` it fetches it from the TimeService.
+ * @param deployParam The parameters of the deploy, see [DeployParams](#L1323)
+ * @param session The session logic of the deploy
+ * @param payment The payment logic of the deploy
+ * @returns A new `Deploy` object
+ */
+export async function makeDeployAndFetchTimestamp(
+  deployParam: DeployParams,
+  session: ExecutableDeployItem,
+  payment: ExecutableDeployItem
+): Promise<Deploy> {
+  if (!deployParam.timestamp) {
+    const timeService = new TimeService(
+      `${location.protocol}//${TIME_API_URL}`
+    );
+    const { unixtime } = await timeService.getTime()
+    deployParam.timestamp = unixtime;
+  }
+
+  return makeDeploy(deployParam, session, payment);
 }
 
 /**
