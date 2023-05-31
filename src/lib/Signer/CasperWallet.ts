@@ -21,7 +21,20 @@ const CasperWalletEventTypes = {
   Unlocked: `${EVENT_TYPE_PREFIX}:unlocked`
 } as const;
 
-export default class CasperWallet extends BaseSigner {
+type CasperWalletProviderOptions = {
+  timeout: number; // timeout of request to extension (in ms)
+};
+
+type CasperWalletState = {
+  /** contain wallet is locked flag */
+  isLocked: boolean;
+  /** if unlocked contain connected status flag of active key otherwise null */
+  isConnected: boolean | null;
+  /** if unlocked and connected contain active key otherwise null */
+  activeKey: string | null;
+};
+
+export class CasperWallet extends BaseSigner {
   public isCasperWallet = true;
 
   private casperWalletProvider: ReturnType<CasperWalletProvider>;
@@ -64,9 +77,9 @@ export default class CasperWallet extends BaseSigner {
   private handleConnected(event: any) {
     try {
       const state: CasperWalletState = JSON.parse(event.detail);
-      this.emit('connected', this.activeAccount!);
-
       this.updateState(state);
+
+      this.emit('connected', this.activeAccount!);
     } catch (error) {
       console.error(error);
     }
@@ -75,11 +88,9 @@ export default class CasperWallet extends BaseSigner {
   private handleDisconnected(event: any) {
     try {
       const state: CasperWalletState = JSON.parse(event.detail);
-
+      this.updateState(state);
       // @ts-ignore
       this.emit('disconnected');
-
-      this.updateState(state);
     } catch (error) {
       console.error(error);
     }
@@ -88,10 +99,9 @@ export default class CasperWallet extends BaseSigner {
   private handleActiveKeyChanged(event: any) {
     try {
       const state: CasperWalletState = JSON.parse(event.detail);
+      this.updateState(state);
 
       this.emit('accountChanged', state.activeKey!);
-
-      this.updateState(state);
     } catch (error) {
       console.error(error);
     }
@@ -100,11 +110,10 @@ export default class CasperWallet extends BaseSigner {
   private handleLocked(event: any) {
     try {
       const state: CasperWalletState = JSON.parse(event.detail);
+      this.updateState(state);
 
       // @ts-ignore
       this.emit('locked');
-
-      this.updateState(state);
     } catch (error) {
       console.error(error);
     }
@@ -113,11 +122,10 @@ export default class CasperWallet extends BaseSigner {
   private handleUnlocked(event: any) {
     try {
       const state: CasperWalletState = JSON.parse(event.detail);
+      this.updateState(state);
 
       // @ts-ignore
       this.emit('unlocked');
-
-      this.updateState(state);
     } catch (error) {
       console.error(error);
     }
@@ -126,10 +134,9 @@ export default class CasperWallet extends BaseSigner {
   private handleTabChanged(event: any) {
     try {
       const state: CasperWalletState = JSON.parse(event.detail);
+      this.updateState(state);
 
       //  TODO
-
-      this.updateState(state);
     } catch (error) {
       console.error(error);
     }
