@@ -92,15 +92,21 @@ export default abstract class BaseSigner {
    * @param deploy - deploy in JSON format
    * @param signingPublicKey - public key in hex format, the corresponding private key will be used to sign.
    *
-   * @throws Errors if the Signer extension is not connected.
-   * @throws Errors if signingPublicKey is not available or does not match the Active Key in the Signer.
+   * @throws Error if the Signer extension is not connected.
+   * @throws Error if signingPublicKey is not available or does not match the Active Key in the Signer.
    *
    * @returns serialized deploy which can be converted into `Deploy` using `DeployUtil.deployFromJson`
    *
    * @example
-   *  const serializedDeploy = DeployUtil.deployToJson(deploy);
-   *  const signedSerializedDeploy = await signer.signDeploy(serializedDeploy, pulicKey);
-   *  const signedDeploy = DeployUtil.deployFromJson(signedSerializedDeploy).unwrap();
+   *  import { DeployUtil } from "casper-js-sdk";
+   *
+   *  try {
+   *    const serializedDeploy = DeployUtil.deployToJson(deploy);
+   *    const signedSerializedDeploy = await signer.signDeploy(serializedDeploy, pulicKey);
+   *    const signedDeploy = DeployUtil.deployFromJson(signedSerializedDeploy).unwrap();
+   *  } catch (error) {
+   *    // handle error
+   *  }
    */
   public abstract signDeploy(
     deploy: { deploy: JsonTypes },
@@ -115,9 +121,16 @@ export default abstract class BaseSigner {
    *
    * @example
    *  import { decodeBase16, verifyMessageSignature } from "casper-js-sdk";
-   *  const message = "Hello Casper";
-   *  const signature = await signer.signMessage(message, publicKey);
-   *  const isValidSignature = verifyMessageSignature(CLPublicKey.fromHex(publicKey), message, decodeBase16(signature));
+   *
+   *  try {
+   *
+   *    const message = "Hello Casper";
+   *    const signature = await signer.signMessage(message, publicKey);
+   *    const isValidSignature = verifyMessageSignature(CLPublicKey.fromHex(publicKey), message, decodeBase16(signature));
+   *
+   *  } catch(error) {
+   *    // handle error
+   *  }
    */
   public abstract signMessage(
     message: string,
