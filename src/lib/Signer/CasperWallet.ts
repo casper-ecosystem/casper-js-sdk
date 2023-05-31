@@ -4,6 +4,23 @@ import { JsonTypes } from 'typedjson';
 import BaseSigner from './BaseSigner';
 import { CLPublicKey, DeployUtil } from '..';
 
+const EVENT_TYPE_PREFIX = 'casper-wallet';
+
+const CasperWalletEventTypes = {
+  /** Account was connected using the wallet: */
+  Connected: `${EVENT_TYPE_PREFIX}:connected`,
+  /** Active key was changed using the Wallet interface: */
+  ActiveKeyChanged: `${EVENT_TYPE_PREFIX}:activeKeyChanged`,
+  /** Account was disconnected using the wallet: */
+  Disconnected: `${EVENT_TYPE_PREFIX}:disconnected`,
+  /** Browser tab was changed to some connected site: */
+  TabChanged: `${EVENT_TYPE_PREFIX}:tabChanged`,
+  /** Wallet was locked: */
+  Locked: `${EVENT_TYPE_PREFIX}:locked`,
+  /** Wallet was unlocked: */
+  Unlocked: `${EVENT_TYPE_PREFIX}:unlocked`
+} as const;
+
 export default class CasperWallet extends BaseSigner {
   public isCasperWallet = true;
 
