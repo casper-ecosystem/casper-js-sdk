@@ -107,12 +107,6 @@ export default abstract class BaseSigner {
     signingPublicKey: string
   ): Promise<{ deploy: JsonTypes }>;
 
-  // TODO: Check integrate with `CasperServiceByJsonRPC`
-  public abstract signAndSendDeploy(
-    deploy: { deploy: JsonTypes },
-    signingPublicKey: string
-  ): Promise<string>;
-
   /**
    * Sign message with given public key's private key
    * @param message string to be signed.

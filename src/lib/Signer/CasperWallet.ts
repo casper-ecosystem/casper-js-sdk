@@ -177,13 +177,6 @@ export default class CasperWallet extends BaseSigner {
     }
   }
 
-  public async signAndSendDeploy(
-    _deploy: { deploy: JsonTypes },
-    _signingPublicKey: string
-  ): Promise<string> {
-    throw new Error('Method not implemented.');
-  }
-
   public async signMessage(
     message: string,
     signingPublicKey: string
@@ -222,15 +215,4 @@ export default class CasperWallet extends BaseSigner {
 
     this.casperWalletProvider = window.CasperWalletProvider(options);
   }
-}
-
-// TODO: Do we need to assign `CasperWallet` Instance to the window?
-declare global {
-  interface Window {
-    casperWallet?: CasperWallet;
-  }
-}
-
-if (window.CasperWalletProvider) {
-  window.casperWallet = new CasperWallet();
 }
