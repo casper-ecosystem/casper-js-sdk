@@ -61,8 +61,10 @@ type CasperWalletProvider = (
   /**
    * Get the active public key of the Casper Wallet extension
    * @returns hex of the active public key.
+   * @throws when wallet is locked (err.code: 1)
+   * @throws when active account not approved to connect with the site (err.code: 2)
    */
-  getActivePublicKey(): Promise<string | undefined>;
+  getActivePublicKey(): Promise<string>;
 
   /**
    * Get version of the Casper Wallet extension

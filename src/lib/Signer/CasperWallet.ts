@@ -2,6 +2,7 @@
 
 import { JsonTypes } from 'typedjson';
 import BaseSigner from './BaseSigner';
+import { SignerError, SignerErrorCodes } from './error';
 import { CLPublicKey, DeployUtil } from '..';
 
 const EVENT_TYPE_PREFIX = 'casper-wallet';
@@ -152,6 +153,11 @@ export class CasperWallet extends BaseSigner {
     return this.casperWalletProvider.getVersion();
   }
 
+  /**
+   * Get the connection status of the Casper Wallet extension
+   * @returns `true` when currently connected at least one account, `false` otherwise.
+   * @throws when wallet is locked (err.code: 1)
+   */
   public async isConnected(): Promise<boolean> {
     return this.casperWalletProvider.isConnected();
   }
@@ -160,10 +166,6 @@ export class CasperWallet extends BaseSigner {
     await this.casperWalletProvider.requestConnection();
     const activeAccount = await this.casperWalletProvider.getActivePublicKey();
 
-    if (!activeAccount) {
-      // TODO: What Error should throw
-      throw new Error('');
-    }
     return activeAccount;
   }
 
@@ -180,7 +182,7 @@ export class CasperWallet extends BaseSigner {
     signingPublicKey: string
   ): Promise<{ deploy: JsonTypes }> {
     if (DeployUtil.deployFromJson(deploy).err) {
-      throw new Error('Invalid Deploy');
+      throw new SignerError(SignerErrorCodes.INVALID_DEPLOY);
     }
 
     const result = await this.casperWalletProvider.sign(
@@ -189,7 +191,7 @@ export class CasperWallet extends BaseSigner {
     );
 
     if (result.cancelled) {
-      throw new Error('User canceled sign');
+      throw new SignerError(SignerErrorCodes.USER_CANCELED_REQUEST);
     } else {
       const signedDeploy = DeployUtil.setSignature(
         DeployUtil.deployFromJson(deploy).unwrap(),
@@ -211,18 +213,20 @@ export class CasperWallet extends BaseSigner {
     );
 
     if (result.cancelled) {
-      throw new Error('User canceled sign');
+      throw new SignerError(SignerErrorCodes.USER_CANCELED_REQUEST);
     } else {
       return result.signatureHex;
     }
   }
 
+  /**
+   * Retrives active public key in hex format
+   * @returns string active public key in hex format
+   * @throws when wallet is locked (err.code: 1)
+   * @throws when active account not approved to connect with the site (err.code: 2)
+   */
   public async getActiveAccount(): Promise<string> {
     const result = await this.casperWalletProvider.getActivePublicKey();
-
-    if (!result) {
-      throw new Error('No active account');
-    }
 
     return result;
   }
@@ -234,7 +238,7 @@ export class CasperWallet extends BaseSigner {
    */
   public async setOption(options?: CasperWalletProviderOptions) {
     if (!window.CasperWalletProvider) {
-      throw new Error('Please install Casper Wallet.');
+      throw new SignerError(SignerErrorCodes.NOT_FOUND_SIGNER);
     }
 
     this.casperWalletProvider = window.CasperWalletProvider(options);
