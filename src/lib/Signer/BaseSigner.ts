@@ -84,7 +84,7 @@ export default abstract class BaseSigner {
    * Request the signer to change active account
    * @returns changed active public key in hex format
    */
-  public abstract changeAccount(): Promise<string>;
+  public abstract changeAccount(): Promise<boolean>;
 
   /**
    * Sign deploy from `DeployUtil.deployToJson`

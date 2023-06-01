@@ -171,8 +171,8 @@ export class CasperWallet extends BaseSigner {
     return this.casperWalletProvider.disconnectFromSite();
   }
 
-  public async changeAccount(): Promise<string> {
-    throw new Error('Method not implemented.');
+  public async changeAccount(): Promise<boolean> {
+    return this.casperWalletProvider.requestSwitchAccount();
   }
 
   public async signDeploy(
