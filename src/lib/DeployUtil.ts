@@ -1378,17 +1378,18 @@ export function makeDeploy(
 /**
  * Builds a `Deploy` object from `DeployParams`, session logic, and payment logic. 
  * If there is no timestamp in `DeployParams` it fetches it from the TimeService.
+ * Recommened to use in browser environment.
  * @param deployParam The parameters of the deploy, see [DeployParams](#L1323)
  * @param session The session logic of the deploy
  * @param payment The payment logic of the deploy
  * @returns A new `Deploy` object
  */
-export async function makeDeployAndFetchTimestamp(
+export async function makeDeployWithAutoTimestamp(
   deployParam: DeployParams,
   session: ExecutableDeployItem,
   payment: ExecutableDeployItem
 ): Promise<Deploy> {
-  if (!deployParam.timestamp) {
+  if (!deployParam.timestamp && typeof window !== 'undefined') {
     const timeService = new TimeService(
       `${location.protocol}//${TIME_API_URL}`
     );

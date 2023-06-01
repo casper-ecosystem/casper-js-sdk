@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
-- New method `makeDeployAndFetchTimestamp` that fetches timestamp and then uses it to create deploy header.
+- New method `makeDeployWithAutoTimestamp` that fetches timestamp and then uses it to create deploy header. Recommended to use it in browsers env.
 
 ## 2.13.0
 
