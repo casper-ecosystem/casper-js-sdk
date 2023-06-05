@@ -105,7 +105,10 @@ export default abstract class BaseSigner {
    *    const signedSerializedDeploy = await signer.signDeploy(serializedDeploy, pulicKey);
    *    const signedDeploy = DeployUtil.deployFromJson(signedSerializedDeploy).unwrap();
    *  } catch (error) {
-   *    // handle error
+   *    if (isSignerError(error)) {
+   *      // handle signer error
+   *    }
+   *    // handle unknown error
    *  }
    */
   public abstract signDeploy(
@@ -129,7 +132,10 @@ export default abstract class BaseSigner {
    *    const isValidSignature = verifyMessageSignature(CLPublicKey.fromHex(publicKey), message, decodeBase16(signature));
    *
    *  } catch(error) {
-   *    // handle error
+   *    if (isSignerError(error)) {
+   *      // handle signer error
+   *    }
+   *    // handle unknown error
    *  }
    */
   public abstract signMessage(
