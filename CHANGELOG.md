@@ -4,6 +4,12 @@ All notable changes to casper-js-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.13.1
+
+### Added
+
+- New method `makeDeployWithAutoTimestamp` that fetches timestamp and then uses it to create deploy header. Recommended to use it in browsers env.
+
 ## 2.13.0
 
 ### Added
