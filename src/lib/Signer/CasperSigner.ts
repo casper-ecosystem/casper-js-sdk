@@ -9,7 +9,7 @@ import { JsonTypes } from 'typedjson';
 import {
   CasperLabsHelper,
   SignerTestingHelper
-} from '../@types/casperlabsSigner';
+} from '../../@types/casperlabsSigner';
 
 declare global {
   interface Window {
