@@ -232,7 +232,7 @@ export class EraSummary {
   eraId: number;
 
   /** A `StoredValue` */
-  @jsonMember({ constructor: StoredValue, name: 'stored_value' })
+  @jsonMember(() => ({ constructor: StoredValue, name: 'stored_value' }))
   StoredValue: StoredValue;
 
   /** The state root hash when the era was encountered */
