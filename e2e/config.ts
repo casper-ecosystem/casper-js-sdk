@@ -6,7 +6,7 @@ const REQUIRED_ENVS = ['NODE_URL', 'NETWORK_NAME', 'FAUCET_PRIV_KEY'];
 
 export const NODE_ENV = process.env.NODE_ENV || 'production';
 
-if (NODE_ENV !== 'test') {
+if (NODE_ENV === 'test') {
   REQUIRED_ENVS.forEach(requiredEnv => {
     if (!Object.keys(process.env).includes(requiredEnv))
       throw Error(`Missing ${requiredEnv} env variable`);
