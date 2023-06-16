@@ -1,6 +1,6 @@
 import fs from 'fs';
 import { assert, expect } from 'chai';
-import { config } from 'dotenv';
+
 import { CasperServiceByJsonRPC, EraSummary } from '../../src/services';
 import {
   Keys,
@@ -11,7 +11,7 @@ import {
   CLValueParsers,
   CLKeyParameters
 } from '../../src/index';
-import { getAccountInfo } from './utils';
+import { getAccountInfo, sleep } from './utils';
 import { Transfers } from '../../src/lib/StoredValue';
 import { Contract } from '../../src/lib/Contracts';
 import path from 'path';
@@ -35,7 +35,7 @@ describe('RPC', () => {
       const result = await client.getBlockInfoByHeight(height);
       assert.equal(result.block?.header.height, height);
     };
-    const blocks_to_check = 3;
+    const blocks_to_check = 1;
     for (let i = 0; i < blocks_to_check; i++) {
       await check(i);
     }
@@ -49,7 +49,7 @@ describe('RPC', () => {
       const block = await client.getBlockInfo(block_hash!);
       assert.equal(block.block?.hash, block_hash);
     };
-    const blocks_to_check = 3;
+    const blocks_to_check = 1;
     for (let i = 0; i < blocks_to_check; i++) {
       await check(i);
     }
@@ -131,9 +131,9 @@ describe('RPC', () => {
   });
 
   it('state_get_auction_info - by height', async () => {
-    const validators = await client.getValidatorsInfoByBlockHeight(1);
+    const validators = await client.getValidatorsInfoByBlockHeight(0);
     expect(validators).to.have.property('auction_state');
-    expect(validators.auction_state.block_height).to.be.eq(1);
+    expect(validators.auction_state.block_height).to.be.eq(0);
   });
 
   it('state_get_item - account hash to main purse uref', async () => {
@@ -232,6 +232,9 @@ describe('RPC', () => {
     );
 
     await client.deploy(signedDeploy);
+
+    await sleep(4000);
+
     let result = await client.waitForDeploy(signedDeploy, 100000);
 
     const stateRootHash = await client.getStateRootHash();

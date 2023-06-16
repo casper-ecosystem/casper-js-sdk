@@ -20,10 +20,10 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
-      NODE_URL: 'http://localhost:7777/rpc'
-      HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
+      NODE_URL: 'http://127.0.0.1:7777/rpc'
+      HTTP_EVENT_STREAM_URL: 'http://127.0.0.1:18101/events/main'
       HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
-      NETWORK_NAME: 'casper-example'
+      NETWORK_NAME: 'casper-net-1'
       RUST_LOG: 'INFO'
 
     steps:
@@ -50,8 +50,14 @@ jobs:
         env:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
 
+      - name: Setup - Casper Node - ${{ env.CASPER_TAG_VERSION }}
+        run: npx casper-node-launcher node ${{ env.CASPER_TAG_VERSION }} --daemon
+
       - name: Test RPC - CN Release - ${{ env.CASPER_TAG_VERSION }}
-        run: ./ci/setup.sh branch=${{env.CASPER_TAG_VERSION }} && npm run test:e2e
+        run: npm run test:e2e
+
+      - name: Stop - Casper Node - ${{ env.CASPER_TAG_VERSION }}
+        run: npx casper-node-launcher stop
 
       - name: Get Latest Casper-Node RC Version
         run: |
@@ -59,8 +65,14 @@ jobs:
         env:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/branches'
 
+      - name: Setup - Casper Node - ${{ env.CASPER_RC_VERSION }}
+        run: npx casper-node-launcher node ${{ env.CASPER_RC_VERSION }} --daemon
+
       - name: Test RPC - CN RC - ${{ env.CASPER_RC_VERSION }}
-        run: ./ci/setup.sh branch=release-${{env.CASPER_RC_VERSION }} && npm run test:e2e
+        run: npm run test:e2e
+
+      - name: Stop - Casper Node - ${{ env.CASPER_TAG_VERSION }}
+        run: npx casper-node-launcher stop
 
       - name: Slack Notification
         uses: ravsamhq/notify-slack-action@4ed28566c2bdcdaee6dca2b46b9666d01b4ed8a4 #v1.10.0
