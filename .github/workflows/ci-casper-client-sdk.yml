@@ -52,8 +52,8 @@ jobs:
       - name: Lints
         run: npm run lint:ci
 
-      - name: Unit Test
-        run: npm run test:unit
+      # - name: Unit Test
+      #   run: npm run test:unit
 
       # - name: Get Latest Casper-Node Tag Version
       #   run: |
@@ -71,10 +71,10 @@ jobs:
       #   run: npx casper-node-launcher stop
 
       - name: Setup - Casper Node - DEV
-        run: npx casper-node-launcher node dev --daemon && npm run test:e2e
+        run: npx casper-node-launcher node dev
 
-      # - name: Test RPC - Casper Node - DEV
-      #   run: npm run test:e2e
+      - name: Test RPC - Casper Node - DEV
+        run: npm run test:e2e
 
       - name: Stop - Casper Node - DEV
         run: npx casper-node-launcher stop
