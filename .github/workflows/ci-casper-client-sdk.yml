@@ -71,10 +71,10 @@ jobs:
       #   run: npx casper-node-launcher stop
 
       - name: Setup - Casper Node - DEV
-        run: npx casper-node-launcher node dev --daemon
+        run: npx casper-node-launcher node dev --daemon && npm run test:e2e
 
-      - name: Test RPC - Casper Node - DEV
-        run: npm run test:e2e
+      # - name: Test RPC - Casper Node - DEV
+      #   run: npm run test:e2e
 
       - name: Stop - Casper Node - DEV
         run: npx casper-node-launcher stop
