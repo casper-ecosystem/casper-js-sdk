@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        node-version: [16.x]
+        node-version: [16.x, 18.x]
         os: [ubuntu-20.04, ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     env:
@@ -55,20 +55,20 @@ jobs:
       - name: Unit Test
         run: npm run test:unit
 
-      - name: Get Latest Casper-Node Tag Version
-        run: |
-          echo "CASPER_TAG_VERSION=$(curl -s ${{ env.GH_API_URL }} | jq -r '.[].name' | grep 'v*' | sort -V | sed 's/_$//' | tail -n1)" >> $GITHUB_ENV
-        env:
-          GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
+      # - name: Get Latest Casper-Node Tag Version
+      #   run: |
+      #     echo "CASPER_TAG_VERSION=$(curl -s ${{ env.GH_API_URL }} | jq -r '.[].name' | grep 'v*' | sort -V | sed 's/_$//' | tail -n1)" >> $GITHUB_ENV
+      #   env:
+      #     GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
 
-      - name: Setup - Casper Node - ${{ env.CASPER_TAG_VERSION }}
-        run: npx casper-node-launcher node ${{ env.CASPER_TAG_VERSION }} --daemon
+      # - name: Setup - Casper Node - ${{ env.CASPER_TAG_VERSION }}
+      #   run: npx casper-node-launcher node ${{ env.CASPER_TAG_VERSION }} --daemon
 
-      - name: Test RPC - Casper Node - ${{ env.CASPER_TAG_VERSION }}
-        run: npm run test:e2e
+      # - name: Test RPC - Casper Node - ${{ env.CASPER_TAG_VERSION }}
+      #   run: npm run test:e2e
 
-      - name: Stop - Casper Node - ${{ env.CASPER_TAG_VERSION }}
-        run: npx casper-node-launcher stop
+      # - name: Stop - Casper Node - ${{ env.CASPER_TAG_VERSION }}
+      #   run: npx casper-node-launcher stop
 
       - name: Setup - Casper Node - DEV
         run: npx casper-node-launcher node dev --daemon
@@ -76,7 +76,7 @@ jobs:
       - name: Test RPC - Casper Node - DEV
         run: npm run test:e2e
 
-      - name: Stop - Casper Node - ${{ env.CASPER_TAG_VERSION }}
+      - name: Stop - Casper Node - DEV
         run: npx casper-node-launcher stop
 
       - name: Test docs build
