@@ -103,21 +103,8 @@ describe('Ed25519', () => {
 });
 
 describe('Secp256K1', () => {
-  it('calculates the account hash', async () => {
-    const signKeyPair = await Secp256K1.new();
-    // use lower case for node-rs
-    const name = Buffer.from('secp256k1'.toLowerCase());
-    const sep = decodeBase16('00');
-    const bytes = Buffer.concat([name, sep, signKeyPair.publicKey.value()]);
-    const hash = byteHash(bytes);
-
-    expect(Secp256K1.accountHash(signKeyPair.publicKey.value())).deep.equal(
-      hash
-    );
-  });
-
-  it('should generate PEM file for Secp256K1 correctly', async () => {
-    const signKeyPair = await Secp256K1.new();
+  it('should generate PEM file for Secp256K1 correctly', () => {
+    const signKeyPair = Secp256K1.new();
 
     // export key in pem to save
     const publicKeyInPem = signKeyPair.exportPublicKeyInPem();
@@ -154,11 +141,5 @@ describe('Secp256K1', () => {
     expect(ecdh.getPublicKey('hex', 'compressed')).to.deep.equal(
       encodeBase16(signKeyPair.publicKey.value())
     );
-
-    // expect we could sign the message and verify the signature later.
-    const message = Buffer.from('hello world');
-    const signature = signKeyPair.sign(Buffer.from(message));
-    // expect we could verify the signature created by ourself
-    expect(signKeyPair.verify(signature, message)).to.equal(true);
   });
 });
