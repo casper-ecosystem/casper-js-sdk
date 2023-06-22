@@ -12,9 +12,9 @@ import { sha512 } from '@noble/hashes/sha512';
 import { hmac } from '@noble/hashes/hmac';
 import KeyEncoder from 'key-encoder';
 
-import { decodeBase64, encodeBase16, encodeBase64 } from '../index';
-import { CLPublicKey } from './CLValue';
 import { byteHash } from './ByteConverters';
+import { CLPublicKey } from './CLValue';
+import { decodeBase64, encodeBase16, encodeBase64 } from './Conversions';
 import { SignatureAlgorithm } from './types';
 
 export { SignatureAlgorithm } from './types';
@@ -635,7 +635,10 @@ export class Secp256K1 extends AsymmetricKey {
   public sign(msg: Uint8Array): Uint8Array {
     const signature = secp256k1.signSync(
       sha256(Buffer.from(msg)),
-      this.privateKey
+      this.privateKey,
+      {
+        der: false
+      }
     );
     return signature;
   }
