@@ -1,8 +1,8 @@
 import { expect } from 'chai';
 
-import { byteHash } from './ByteConverters';
 import { decodeBase16, decodeBase64 } from './Conversions';
 import { Ed25519, Secp256K1 } from './Keys';
+import { byteHash } from './ByteConverters';
 
 describe('Ed25519', () => {
   it('calculates the account hash', () => {

@@ -12,9 +12,9 @@ import { sha512 } from '@noble/hashes/sha512';
 import { hmac } from '@noble/hashes/hmac';
 import KeyEncoder from 'key-encoder';
 
-import { byteHash } from './ByteConverters';
+import { decodeBase64, encodeBase16, encodeBase64 } from '../index';
 import { CLPublicKey } from './CLValue';
-import { decodeBase64, encodeBase16, encodeBase64 } from './Conversions';
+import { byteHash } from './ByteConverters';
 import { SignatureAlgorithm } from './types';
 
 export { SignatureAlgorithm } from './types';
