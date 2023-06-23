@@ -116,7 +116,7 @@ export interface JsonSystemTransaction {
 /** JSON deploy header interface that acts as a schema for JSON deploy headers */
 interface JsonDeployHeader {
   account: string;
-  timestamp: number;
+  timestamp: string;
   ttl: number;
   gas_price: number;
   body_hash: string;
@@ -185,7 +185,7 @@ export interface JsonHeader {
   deploy_hashes: string[];
   random_bit: boolean;
   switch_block: boolean;
-  timestamp: number;
+  timestamp: string;
   system_transactions: JsonSystemTransaction[];
   era_id: number;
   height: number;
@@ -232,7 +232,7 @@ export class EraSummary {
   eraId: number;
 
   /** A `StoredValue` */
-  @jsonMember({ constructor: StoredValue, name: 'stored_value' })
+  @jsonMember(() => ({ constructor: StoredValue, name: 'stored_value' }))
   StoredValue: StoredValue;
 
   /** The state root hash when the era was encountered */
