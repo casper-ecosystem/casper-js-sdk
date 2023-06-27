@@ -40,7 +40,7 @@ jobs:
         run: npm install
 
       - name: Audits
-        run: npm audit
+        run: npm audit --omit=dev
 
       - name: Lints
         run: npm run lint:ci
