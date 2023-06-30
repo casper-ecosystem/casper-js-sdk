@@ -201,6 +201,7 @@ export abstract class AsymmetricKey {
  * Ed25519 variant of `AsymmetricKey`
  * @remarks
  * Based on SignatureAlgorithm.scala
+ * @see [Documentation](https://docs.casper.network/concepts/accounts-and-keys/#eddsa-keys)
  */
 export class Ed25519 extends AsymmetricKey {
   /**
@@ -395,7 +396,6 @@ export class Ed25519 extends AsymmetricKey {
    * Sign a message by using this instance's keypair
    * @param {Uint8Array} msg The message to be signed, as a byte array
    * @returns `Uint8Array` typed signature of the provided `msg`
-   * @see [sign_detached](https://www.npmjs.com/package/tweetnacl-ts#sign_detachedmessage-secretkey)
    */
   public sign(msg: Uint8Array): Uint8Array {
     return ed25519.sync.sign(msg, this.privateKey);
@@ -406,7 +406,6 @@ export class Ed25519 extends AsymmetricKey {
    * @param {Uint8Array} signature The signed message as a byte array
    * @param {Uint8Array} msg The original message as a byte array
    * @returns 'true' if the message if valid, `false` otherwise
-   * @see [sign_detached_verify](https://www.npmjs.com/package/tweetnacl-ts#sign_detached_verifymessage-signature-publickey)
    */
   public verify(signature: Uint8Array, msg: Uint8Array) {
     return ed25519.sync.verify(signature, msg, this.publicKey.value());
@@ -441,7 +440,7 @@ export class Ed25519 extends AsymmetricKey {
  * Secp256k1 variant of `AsymmetricKey`
  * @privateRemarks
  * Orignated from [Secp256k1](https://en.bitcoin.it/wiki/Secp256k1) to support Ethereum keys on the Casper.
- * @see [Accounts Documentation](https://docs.casperlabs.io/design/casper-design/#accounts-head)
+ * @see [Documentation](https://docs.casper.network/concepts/accounts-and-keys/#ethereum-keys)
  */
 export class Secp256K1 extends AsymmetricKey {
   /**
