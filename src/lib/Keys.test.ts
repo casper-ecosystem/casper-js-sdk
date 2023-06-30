@@ -33,6 +33,24 @@ describe('Ed25519', () => {
     const key3 = Ed25519.readBase64WithPEM(keyWithCRLF);
     expect(key3).to.deep.eq(key1);
   });
+
+  it('should generate r+s signature', () => {
+    const signKeyPair = Ed25519.new();
+    const message = Uint8Array.from(Buffer.from('Hello Ed25519'));
+
+    const signature = signKeyPair.sign(message);
+
+    expect(signature.length).to.equal(64);
+  });
+
+  it('should sign and verify message', () => {
+    const signKeyPair = Ed25519.new();
+    const message = Uint8Array.from(Buffer.from('Hello Ed25519'));
+
+    const signature = signKeyPair.sign(message);
+
+    expect(signKeyPair.verify(signature, message)).to.equal(true);
+  });
 });
 
 describe('Secp256K1', () => {
