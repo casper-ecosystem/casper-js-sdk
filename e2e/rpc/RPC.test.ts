@@ -1,6 +1,10 @@
 import fs from 'fs';
+import path from 'path';
+
 import { assert, expect } from 'chai';
 import { config } from 'dotenv';
+import { BigNumber } from '@ethersproject/bignumber';
+
 import { CasperServiceByJsonRPC, EraSummary } from '../../src/services';
 import {
   Keys,
@@ -11,11 +15,10 @@ import {
   CLValueParsers,
   CLKeyParameters
 } from '../../src/index';
-import { getAccountInfo } from './utils';
+import { getAccountInfo, sleep } from './utils';
 import { Transfers } from '../../src/lib/StoredValue';
 import { Contract } from '../../src/lib/Contracts';
-import path from 'path';
-import { BigNumber } from '@ethersproject/bignumber';
+
 import { FAUCET_PRIV_KEY, NETWORK_NAME, NODE_URL } from '../config';
 
 config();
@@ -28,17 +31,36 @@ const faucetKey = getKeysFromHexPrivKey(
   SignatureAlgorithm.Ed25519
 );
 
-let faucetMainPurseUref = '';
-let transferBlockHash = '';
-
 describe('RPC', () => {
+  const BLOCKS_TO_CHECK = 3;
+
+  let faucetMainPurseUref = '';
+  let transferBlockHash = '';
+
+  // Run tests after `BLOCKS_TO_CHECK` blocks are mined
+  before(async () => {
+    const promise = new Promise<void>(async resolve => {
+      setInterval(async () => {
+        const latestBlock = await client.getLatestBlockInfo();
+
+        if (
+          latestBlock.block?.header.height !== undefined &&
+          latestBlock.block?.header.height > BLOCKS_TO_CHECK
+        )
+          return resolve();
+      }, 500);
+    });
+
+    await promise;
+  });
+
   it('should return correct block by number', async () => {
     const check = async (height: number) => {
       const result = await client.getBlockInfoByHeight(height);
       assert.equal(result.block?.header.height, height);
     };
-    const blocks_to_check = 3;
-    for (let i = 0; i < blocks_to_check; i++) {
+
+    for (let i = 0; i < BLOCKS_TO_CHECK; i++) {
       await check(i);
     }
   });
@@ -51,8 +73,8 @@ describe('RPC', () => {
       const block = await client.getBlockInfo(block_hash!);
       assert.equal(block.block?.hash, block_hash);
     };
-    const blocks_to_check = 3;
-    for (let i = 0; i < blocks_to_check; i++) {
+
+    for (let i = 0; i < BLOCKS_TO_CHECK; i++) {
       await check(i);
     }
   });
@@ -189,6 +211,9 @@ describe('RPC', () => {
     const signedDeploy = DeployUtil.signDeploy(deploy, faucetKey);
 
     const { deploy_hash } = await client.deploy(signedDeploy);
+
+    await sleep(2500);
+
     const result = await client.waitForDeploy(signedDeploy, 100000);
 
     expect(deploy_hash).to.be.equal(result.deploy.hash);
@@ -233,6 +258,9 @@ describe('RPC', () => {
     );
 
     await client.deploy(signedDeploy);
+
+    await sleep(2500);
+
     let result = await client.waitForDeploy(signedDeploy, 100000);
 
     const stateRootHash = await client.getStateRootHash();

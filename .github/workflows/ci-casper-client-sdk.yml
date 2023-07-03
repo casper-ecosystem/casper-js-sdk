@@ -61,7 +61,7 @@ jobs:
           NODE_URL: 'http://localhost:7777/rpc'
           HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
           HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
-          NETWORK_NAME: 'casper-example'
+          NETWORK_NAME: 'casper-net-1'
           RUST_LOG: 'INFO'
 
       - name: Test RPC - Casper Node - DEV
@@ -71,7 +71,7 @@ jobs:
           NODE_URL: 'http://localhost:7777/rpc'
           HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
           HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
-          NETWORK_NAME: 'casper-example'
+          NETWORK_NAME: 'casper-net-1'
           RUST_LOG: 'INFO'
 
       - name: Test docs build

@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 
 import { EventName, EventStream } from '../../src/services/EventStream';
-import { HTTPS_EVENT_STREAM_URL } from '../config';
+import { HTTP_EVENT_STREAM_URL, HTTPS_EVENT_STREAM_URL } from '../config';
 
 const sleep = (ms: number) => {
   return new Promise(resolve => {
@@ -28,9 +28,7 @@ describe('EventStream', () => {
   };
 
   it('should work on http', async () => {
-    // TODO Enable event stream on GitHub CI
-    // Replace hardcoded url with HTTP_EVENT_STREAM_URL
-    await startEventStream('http://65.21.231.87:9999/events/main');
+    await startEventStream(HTTP_EVENT_STREAM_URL);
   });
 
   it('should work on http1.1/https protocol', async () => {
