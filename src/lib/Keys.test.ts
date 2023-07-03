@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+
 import { decodeBase16, decodeBase64 } from './Conversions';
 import { Ed25519, Secp256K1 } from './Keys';
 import { byteHash } from './ByteConverters';
@@ -35,8 +36,8 @@ describe('Ed25519', () => {
 });
 
 describe('Secp256K1', () => {
-  it('calculates the account hash', async () => {
-    const signKeyPair = await Secp256K1.new();
+  it('calculates the account hash', () => {
+    const signKeyPair = Secp256K1.new();
     // use lower case for node-rs
     const name = Buffer.from('secp256k1'.toLowerCase());
     const sep = decodeBase16('00');
@@ -46,5 +47,23 @@ describe('Secp256K1', () => {
     expect(Secp256K1.accountHash(signKeyPair.publicKey.value())).deep.equal(
       hash
     );
+  });
+
+  it('should generate r+s signature', () => {
+    const signKeyPair = Secp256K1.new();
+    const message = Uint8Array.from(Buffer.from('Hello Secp256K1'));
+
+    const signature = signKeyPair.sign(message);
+
+    expect(signature.length).to.equal(64);
+  });
+
+  it('should sign and verify message', () => {
+    const signKeyPair = Secp256K1.new();
+    const message = Uint8Array.from(Buffer.from('Hello Secp256K1'));
+
+    const signature = signKeyPair.sign(message);
+
+    expect(signKeyPair.verify(signature, message)).to.equal(true);
   });
 });
