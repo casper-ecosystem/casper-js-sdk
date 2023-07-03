@@ -20,10 +20,6 @@ import { FAUCET_PRIV_KEY, NETWORK_NAME, NODE_URL } from '../config';
 
 config();
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const localCasperNode = require('../../ci/start_node');
-const casperNodePid = localCasperNode.start_a_single_node();
-
 const { SignatureAlgorithm, getKeysFromHexPrivKey, Ed25519 } = Keys;
 
 const client = new CasperServiceByJsonRPC(NODE_URL);
@@ -337,8 +333,4 @@ describe('RPC', () => {
     const blockInfo = await client.getBlockInfoByHeight(height);
     expect(eraSummary.blockHash).to.be.equal(blockInfo.block?.hash);
   });
-});
-
-after(() => {
-  process.kill(casperNodePid);
 });
