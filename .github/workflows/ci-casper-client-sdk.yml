@@ -55,7 +55,7 @@ jobs:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
 
       - name: Test RPC - Casper Node - ${{ env.CASPER_TAG_VERSION }}
-        run: npx casper-node-launcher-js-test node ${{env.CASPER_TAG_VERSION }} --daemon && npm run test:e2e
+        run: npx casper-node-launcher-js-test node ${{env.CASPER_TAG_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js-test stop
         env:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEII8ULlk1CJ12ZQ+bScjBt/IxMAZNggClWqK56D1/7CbI' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://localhost:7777/rpc'
@@ -65,7 +65,7 @@ jobs:
           RUST_LOG: 'INFO'
 
       - name: Test RPC - Casper Node - DEV
-        run: npx casper-node-launcher-js-test node dev --daemon && npm run test:e2e
+        run: npx casper-node-launcher-js-test node dev --daemon && npm run test:e2e && npx casper-node-launcher-js-test stop
         env:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEII8ULlk1CJ12ZQ+bScjBt/IxMAZNggClWqK56D1/7CbI' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://localhost:7777/rpc'
