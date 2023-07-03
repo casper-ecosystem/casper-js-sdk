@@ -59,7 +59,7 @@ jobs:
         env:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEII8ULlk1CJ12ZQ+bScjBt/IxMAZNggClWqK56D1/7CbI' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://localhost:7777/rpc'
-          HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
+          HTTP_EVENT_STREAM_URL: 'http://localhost:9999/events/main'
           HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
           NETWORK_NAME: 'casper-net-1'
           RUST_LOG: 'INFO'
@@ -69,7 +69,7 @@ jobs:
         env:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEII8ULlk1CJ12ZQ+bScjBt/IxMAZNggClWqK56D1/7CbI' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://localhost:7777/rpc'
-          HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
+          HTTP_EVENT_STREAM_URL: 'http://localhost:9999/events/main'
           HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
           NETWORK_NAME: 'casper-net-1'
           RUST_LOG: 'INFO'
