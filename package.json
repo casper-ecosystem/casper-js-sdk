@@ -65,6 +65,7 @@
     "assert": "^2.0.0",
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
+    "casper-node-launcher-js-test": "^1.0.0",
     "chai": "^4.2.0",
     "copy-webpack-plugin": "^9.0.1",
     "cross-env": "^7.0.3",
