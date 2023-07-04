@@ -39,23 +39,27 @@ describe('RPC', () => {
 
   // Run tests after `BLOCKS_TO_CHECK` blocks are mined
   before(async () => {
-    const promise = new Promise<void>(async resolve => {
-      setInterval(async () => {
-        try {
-          const latestBlock = await client.getLatestBlockInfo();
+    try {
+      const promise = new Promise<void>(async resolve => {
+        setInterval(async () => {
+          try {
+            const latestBlock = await client.getLatestBlockInfo();
 
-          if (
-            latestBlock.block?.header.height !== undefined &&
-            latestBlock.block?.header.height > BLOCKS_TO_CHECK
-          )
-            return resolve();
-        } catch (error) {
-          console.error(error);
-        }
-      }, 500);
-    });
+            if (
+              latestBlock.block?.header.height !== undefined &&
+              latestBlock.block?.header.height > BLOCKS_TO_CHECK
+            )
+              return resolve();
+          } catch (error) {
+            console.error(error);
+          }
+        }, 500);
+      });
 
-    await promise;
+      await promise;
+    } catch (error) {
+      console.error(error);
+    }
   });
 
   it('should return correct block by number', async () => {
