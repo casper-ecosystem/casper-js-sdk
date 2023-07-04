@@ -23,7 +23,7 @@ jobs:
       fail-fast: false
       matrix:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        node-version: [16.x, 18.x, 20.x]
+        node-version: [16.x, 18.x]
         os: [ubuntu-20.04, ubuntu-22.04]
     runs-on: ${{ matrix.os }}
 
@@ -39,14 +39,14 @@ jobs:
       - name: Install
         run: npm install
 
-      # - name: Audits
-      #   run: npm audit --omit=dev
+      - name: Audits
+        run: npm audit --omit=dev
 
-      # - name: Lints
-      #   run: npm run lint:ci
+      - name: Lints
+        run: npm run lint:ci
 
-      # - name: Unit Test
-      #   run: npm run test:unit
+      - name: Unit Test
+        run: npm run test:unit
 
       - name: Get Latest Casper-Node Tag Version
         run: |
@@ -54,11 +54,8 @@ jobs:
         env:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
 
-      - name: Setup RPC - Casper Node - ${{ env.CASPER_TAG_VERSION }}
-        run: npx casper-node-launcher-js-test node ${{env.CASPER_TAG_VERSION }} --daemon
-
       - name: Test RPC - Casper Node - ${{ env.CASPER_TAG_VERSION }}
-        run: npm run test:e2e
+        run: npx casper-node-launcher-js-test node ${{env.CASPER_TAG_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js-test stop
         env:
           FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEII8ULlk1CJ12ZQ+bScjBt/IxMAZNggClWqK56D1/7CbI' #ci/test-assets/secret-key.pem
           NODE_URL: 'http://127.0.0.1:7777/rpc'
@@ -67,19 +64,17 @@ jobs:
           NETWORK_NAME: 'casper-net-1'
           RUST_LOG: 'INFO'
 
-      - name: Stop RPC - Casper Node - ${{ env.CASPER_TAG_VERSION }}
-        run: npx casper-node-launcher-js-test stop
-      # - name: Test RPC - Casper Node - DEV
-      #   run: npx casper-node-launcher-js-test node dev --daemon && npm run test:e2e && npx casper-node-launcher-js-test stop
-      #   env:
-      #     FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEII8ULlk1CJ12ZQ+bScjBt/IxMAZNggClWqK56D1/7CbI' #ci/test-assets/secret-key.pem
-      #     NODE_URL: 'http://localhost:7777/rpc'
-      #     HTTP_EVENT_STREAM_URL: 'http://localhost:9999/events/main'
-      #     HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
-      #     NETWORK_NAME: 'casper-net-1'
-      #     RUST_LOG: 'INFO'
+      - name: Test RPC - Casper Node - DEV
+        run: npx casper-node-launcher-js-test node dev --daemon && npm run test:e2e && npx casper-node-launcher-js-test stop
+        env:
+          FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEII8ULlk1CJ12ZQ+bScjBt/IxMAZNggClWqK56D1/7CbI' #ci/test-assets/secret-key.pem
+          NODE_URL: 'http://127.0.0.1:7777/rpc'
+          HTTP_EVENT_STREAM_URL: 'http://127.0.0.1:9999/events/main'
+          HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
+          NETWORK_NAME: 'casper-net-1'
+          RUST_LOG: 'INFO'
 
-      # - name: Test docs build
-      #   run: npm run docs:build
-      # - name: Test build
-      #   run: npm run build
+      - name: Test docs build
+        run: npm run docs:build
+      - name: Test build
+        run: npm run build

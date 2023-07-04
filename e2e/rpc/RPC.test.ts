@@ -57,8 +57,6 @@ describe('RPC', () => {
       });
 
       await promise;
-
-      await sleep(15000);
     } catch (error) {
       console.error(error);
     }
@@ -72,6 +70,12 @@ describe('RPC', () => {
 
     for (let i = 0; i < BLOCKS_TO_CHECK; i++) {
       await check(i);
+      //
+      // **Work arround for `Error: request to http://127.0.0.1:7777/rpc failed, reason: socket hang up` issue in Node.js v20 version**
+      // Check https://github.com/casper-ecosystem/casper-js-sdk/actions/runs/5451894505/jobs/9918683628#step:7:112
+      //
+      // await sleep(100);
+      //
     }
   });
 
@@ -80,6 +84,7 @@ describe('RPC', () => {
       const block_by_height = await client.getBlockInfoByHeight(height);
       const block_hash = block_by_height.block?.hash;
       assert.exists(block_hash);
+
       const block = await client.getBlockInfo(block_hash!);
       assert.equal(block.block?.hash, block_hash);
     };
