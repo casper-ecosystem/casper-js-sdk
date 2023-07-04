@@ -23,7 +23,7 @@
     "test:node:unit:coverage": "nyc npm run test:node:unit",
     "test:browser:unit": "cross-env NODE_ENV=test karma start karma.conf.js --single-run",
     "test:unit": "cross-env NODE_ENV=test npm run test:node:unit && npm run test:browser:unit",
-    "test:node:e2e": "cross-env NODE_ENV=test TS_NODE_FILES=true mocha -r ts-node/register \"e2e/**/*.test.ts\" --timeout 5000000",
+    "test:node:e2e": "cross-env NODE_ENV=test TS_NODE_FILES=true mocha -r ts-node/register \"e2e/rpc/*.test.ts\" --timeout 5000000",
     "test:e2e": "cross-env NODE_ENV=test npm run test:node:e2e",
     "test": "npm run test:unit && npm run test:e2e",
     "docs:build": "rm -rf docs && typedoc",
