@@ -41,13 +41,17 @@ describe('RPC', () => {
   before(async () => {
     const promise = new Promise<void>(async resolve => {
       setInterval(async () => {
-        const latestBlock = await client.getLatestBlockInfo();
+        try {
+          const latestBlock = await client.getLatestBlockInfo();
 
-        if (
-          latestBlock.block?.header.height !== undefined &&
-          latestBlock.block?.header.height > BLOCKS_TO_CHECK
-        )
-          return resolve();
+          if (
+            latestBlock.block?.header.height !== undefined &&
+            latestBlock.block?.header.height > BLOCKS_TO_CHECK
+          )
+            return resolve();
+        } catch (error) {
+          console.error(error);
+        }
       }, 500);
     });
 
