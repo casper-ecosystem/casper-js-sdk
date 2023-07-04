@@ -58,9 +58,7 @@ describe('RPC', () => {
 
       await promise;
 
-      const latestBlock = await client.getLatestBlockInfo();
-
-      console.log(latestBlock);
+      await sleep(15000);
     } catch (error) {
       console.error(error);
     }
