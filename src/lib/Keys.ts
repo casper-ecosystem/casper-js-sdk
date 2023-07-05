@@ -30,7 +30,7 @@ const ED25519_PEM_PUBLIC_KEY_TAG = 'PUBLIC KEY';
 
 export interface SignKeyPair {
   publicKey: Uint8Array; // Array with 32-byte public key
-  secretKey: Uint8Array; // Array with 64-byte secret key
+  secretKey: Uint8Array; // Array with 32-byte secret key
 }
 
 export const getKeysFromHexPrivKey = (
@@ -206,16 +206,24 @@ export class Ed25519 extends AsymmetricKey {
   /**
    * Constructs a new Ed25519 object from a `SignKeyPair`
    * @param {SignKeyPair} keyPair An object containing the keys "publicKey" and "secretKey" with corresponding `ByteArray` values
-   * @see [SignKeyPair](https://www.npmjs.com/package/tweetnacl-ts#sign_keypair)
    */
   constructor(keyPair: SignKeyPair) {
-    super(keyPair.publicKey, keyPair.secretKey, SignatureAlgorithm.Ed25519);
+    if (keyPair.secretKey.length != 32) {
+      console.warn(
+        `You're using private key from old version, please use newly formatted key with 32 bytes length.`
+      );
+    }
+
+    super(
+      keyPair.publicKey,
+      Ed25519.parsePrivateKey(keyPair.secretKey),
+      SignatureAlgorithm.Ed25519
+    );
   }
 
   /**
    * Generates a new Ed25519 key pair
    * @returns A new `Ed25519` object
-   * @see [nacl.sign_keyPair](https://www.npmjs.com/package/tweetnacl-ts#sign_keypair)
    */
   public static new() {
     const privateKey = ed25519.utils.randomPrivateKey();
@@ -265,12 +273,12 @@ export class Ed25519 extends AsymmetricKey {
    * Construct a keypair from a public key and corresponding private key
    * @param {Uint8Array} publicKey The public key of an Ed25519 account
    * @param {Uint8Array} privateKey The private key of the same Ed25519 account
-   * @returns A new `AsymmetricKey` keypair
+   * @returns A new `Ed25519` keypair
    */
   public static parseKeyPair(
     publicKey: Uint8Array,
     privateKey: Uint8Array
-  ): AsymmetricKey {
+  ): Ed25519 {
     const keyPair = new Ed25519({
       publicKey: Ed25519.parsePublicKey(publicKey),
       secretKey: Ed25519.parsePrivateKey(privateKey)
