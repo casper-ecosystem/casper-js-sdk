@@ -677,7 +677,9 @@ export class CasperServiceByJsonRPC {
   ): Promise<DeployResult> {
     await this.checkDeploySize(signedDeploy);
 
-    // TODO: Check if the deploy is signed properly
+    if (signedDeploy.approvals.length == 0) {
+      throw new Error('Required signed deploy');
+    }
 
     return await this.client.request(
       {

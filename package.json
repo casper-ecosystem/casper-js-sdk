@@ -66,6 +66,7 @@
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
     "chai": "^4.2.0",
+    "chai-as-promised": "^7.1.1",
     "concurrently": "^7.6.0",
     "copy-webpack-plugin": "^9.0.1",
     "cross-env": "^7.0.3",
