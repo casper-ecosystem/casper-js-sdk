@@ -46,7 +46,7 @@ jobs:
 
       - name: Get Latest Casper-Node Tag Version
         run: |
-          echo "CASPER_TAG_VERSION=$(curl -s ${{ env.GH_API_URL }} | jq -r '.[].name' | grep 'v*' | sort -r | head -n1)" >> $GITHUB_ENV
+          echo "CASPER_TAG_VERSION=$(curl -s ${{ env.GH_API_URL }} | jq -r '.[].name' | grep 'v*' | sort -V | sed 's/_$//' | tail -n1)" >> $GITHUB_ENV
         env:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
 
@@ -55,7 +55,7 @@ jobs:
 
       - name: Get Latest Casper-Node RC Version
         run: |
-          echo "CASPER_RC_VERSION=$(curl -s -G -d 'per_page=100' https://api.github.com/repos/casper-network/casper-node/branches | jq -r '.[].name' | grep '^release' | awk -F'-' '{print $2}'| sort -r | head -n1)" >> $GITHUB_ENV
+          echo "CASPER_RC_VERSION=$(curl -s -G -d 'per_page=100' https://api.github.com/repos/casper-network/casper-node/branches | jq -r '.[].name' | grep '^release' | awk -F'-' '{print $2}'| sort -V | sed 's/_$//' | tail -n1)" >> $GITHUB_ENV
         env:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/branches'
 

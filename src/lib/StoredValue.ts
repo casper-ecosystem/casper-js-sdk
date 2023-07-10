@@ -57,6 +57,10 @@ export class TransferJson {
   @jsonMember({ constructor: String })
   public from: string;
 
+  // Target account hash
+  @jsonMember({ constructor: String })
+  public to: string;
+
   // Source purse
   @jsonMember({ constructor: String })
   public source: string;

@@ -93,6 +93,24 @@ describe('Ed25519', () => {
 
     spy.restore();
   });
+
+  it('should generate r+s signature', () => {
+    const signKeyPair = Ed25519.new();
+    const message = Uint8Array.from(Buffer.from('Hello Ed25519'));
+
+    const signature = signKeyPair.sign(message);
+
+    expect(signature.length).to.equal(64);
+  });
+
+  it('should sign and verify message', () => {
+    const signKeyPair = Ed25519.new();
+    const message = Uint8Array.from(Buffer.from('Hello Ed25519'));
+
+    const signature = signKeyPair.sign(message);
+
+    expect(signKeyPair.verify(signature, message)).to.equal(true);
+  });
 });
 
 describe('Secp256K1', () => {
