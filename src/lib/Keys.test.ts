@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import sinon from 'sinon';
 
 import { decodeBase16, decodeBase64 } from './Conversions';
 import { Ed25519, Secp256K1 } from './Keys';
@@ -32,6 +33,65 @@ describe('Ed25519', () => {
       '-----END PUBLIC KEY-----\r\n';
     const key3 = Ed25519.readBase64WithPEM(keyWithCRLF);
     expect(key3).to.deep.eq(key1);
+  });
+
+  it('should parse old 64 bytes private key', () => {
+    // In v2.10 we used https://www.npmjs.com/package/tweetnacl-ts#sign_keypair which private key length is 64 bytes,
+    // From v2.13 migrated to noble scope libraries which private key length is 32 bytes [correct implementation]
+    // new version should support old format
+
+    // prettier-ignore
+    const privateKey = new Uint8Array([
+      92,  85,  34,  21, 229, 142, 168,
+      76, 221, 116,  56, 193, 153, 129,
+      32, 198, 125,  90, 231, 143, 220,
+     220, 158,  37, 196, 198,  34, 177,
+     100, 221, 229, 228
+    ]);
+    // prettier-ignore
+    const publicKey = new Uint8Array([
+      225, 123,  67, 141, 123,  40, 119, 138,
+      213, 235, 175,  59,  71, 169,  39, 235,
+      243, 228, 113, 203,  25,   9, 125,  64,
+        97, 165, 224,  86,  97, 251,   1,  91
+    ]);
+
+    const privateKeyPEM =
+      '-----BEGIN PRIVATE KEY-----\n' +
+      'MC4CAQAwBQYDK2VwBCIEIFxVIhXljqhM3XQ4wZmBIMZ9WueP3NyeJcTGIrFk3eXk=\n' +
+      '-----END PRIVATE KEY-----\n';
+
+    const publicKeyPEM =
+      '-----BEGIN PUBLIC KEY-----\n' +
+      'MCowBQYDK2VwAyEA4XtDjXsod4rV6687R6kn6/PkccsZCX1AYaXgVmH7AVs=\n' +
+      '-----END PUBLIC KEY-----\n';
+
+    // prettier-ignore
+    const oldPrivateKey = new Uint8Array([
+      92,  85,  34,  21, 229, 142, 168,  76, 221, 116,  56,
+      193, 153, 129,  32, 198, 125,  90, 231, 143, 220, 220,
+      158,  37, 196, 198,  34, 177, 100, 221, 229, 228, 225,
+      123,  67, 141, 123,  40, 119, 138, 213, 235, 175,  59,
+      71, 169,  39, 235, 243, 228, 113, 203,  25,   9, 125,
+      64,  97, 165, 224,  86,  97, 251,   1,  91
+    ])
+
+    const keyPair = Ed25519.parseKeyPair(publicKey, privateKey);
+    const keyPairFromPEM = Ed25519.parseKeyPair(
+      Ed25519.parsePublicKey(Ed25519.readBase64WithPEM(publicKeyPEM)),
+      Ed25519.parsePrivateKey(Ed25519.readBase64WithPEM(privateKeyPEM))
+    );
+
+    const spy = sinon.spy(console, 'warn');
+
+    const oldKeyPair = new Ed25519({ publicKey, secretKey: oldPrivateKey });
+
+    expect(keyPair.privateKey).deep.equal(keyPairFromPEM.privateKey);
+    expect(oldKeyPair.privateKey).deep.equal(keyPairFromPEM.privateKey);
+
+    expect(spy.calledOnce).true;
+
+    spy.restore();
   });
 
   it('should generate r+s signature', () => {
