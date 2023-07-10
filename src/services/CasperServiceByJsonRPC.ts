@@ -675,19 +675,13 @@ export class CasperServiceByJsonRPC {
   ): Promise<DeployResult> {
     await this.checkDeploySize(signedDeploy);
 
-    // TODO: Check if the deploy is signed properly
-
-    try {
-      return await this.client.request(
-        {
-          method: 'account_put_deploy',
-          params: DeployUtil.deployToJson(signedDeploy)
-        },
-        props?.timeout
-      );
-    } catch (e) {
-      return e;
-    }
+    return await this.client.request(
+      {
+        method: 'account_put_deploy',
+        params: DeployUtil.deployToJson(signedDeploy)
+      },
+      props?.timeout
+    );
   }
 
   /**
