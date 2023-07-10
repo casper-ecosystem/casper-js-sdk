@@ -15,6 +15,8 @@ import ProviderTransport, {
   SafeEventEmitterProvider
 } from './ProviderTransport';
 
+export { JSONRPCError } from '@open-rpc/client-js';
+
 /** RPC request props interface */
 interface RpcRequestProps {
   timeout?: number;
@@ -674,6 +676,10 @@ export class CasperServiceByJsonRPC {
     props?: RpcRequestProps
   ): Promise<DeployResult> {
     await this.checkDeploySize(signedDeploy);
+
+    if (signedDeploy.approvals.length == 0) {
+      throw new Error('Required signed deploy');
+    }
 
     return await this.client.request(
       {
