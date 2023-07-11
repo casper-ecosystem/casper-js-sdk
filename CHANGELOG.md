@@ -25,7 +25,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - Added `BaseSigner` class for further wallet & signer integrations, support [`CasperWallet`](https://github.com/make-software/casper-wallet). ([#300](https://github.com/casper-ecosystem/casper-js-sdk/pull/300))
 
-- Support nde URL without `/rpc` like `casper-client` does. ([#298](https://github.com/casper-ecosystem/casper-js-sdk/pull/298))
+- Support node URL without `/rpc` like `casper-client` does. ([#298](https://github.com/casper-ecosystem/casper-js-sdk/pull/298))
 
 - Added `to` field to the `TransferJson`. ([#312](https://github.com/casper-ecosystem/casper-js-sdk/pull/312))
 
