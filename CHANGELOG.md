@@ -4,6 +4,31 @@ All notable changes to casper-js-sdk.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+<!--
+  Please follow below structures.
+  ## [1.1.1] - 2023-03-05
+  ### Added
+  ### Fixed
+  ### Changed
+  ### Removed
+ -->
+
+## [Unreleased]
+
+## 2.14.0 - 2023-7-11
+
+### Fixed
+
+- `StoredValue` TypedJSON serialization issue. ([#312](https://github.com/casper-ecosystem/casper-js-sdk/pull/312))
+
+### Added
+
+- Added `BaseSigner` class for further wallet & signer integrations, support [`CasperWallet`](https://github.com/make-software/casper-wallet). ([#300](https://github.com/casper-ecosystem/casper-js-sdk/pull/300))
+
+- Support nde URL without `/rpc` like `casper-client` does. ([#298](https://github.com/casper-ecosystem/casper-js-sdk/pull/298))
+
+- Added `to` field to the `TransferJson`. ([#312](https://github.com/casper-ecosystem/casper-js-sdk/pull/312))
+
 ## 2.13.3
 
 ### Fixed
