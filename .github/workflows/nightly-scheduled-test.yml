@@ -42,7 +42,7 @@ jobs:
         run: npm run test:unit
 
       - name: Test RPC - CN Dev
-        run: ./ci/setup.sh && npm run test:e2e
+        run: npx casper-node-launcher-js node dev --daemon && npm run test:e2e && npx casper-node-launcher-js stop
 
       - name: Get Latest Casper-Node Tag Version
         run: |
@@ -51,7 +51,7 @@ jobs:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
 
       - name: Test RPC - CN Release - ${{ env.CASPER_TAG_VERSION }}
-        run: ./ci/setup.sh branch=${{env.CASPER_TAG_VERSION }} && npm run test:e2e
+        run: npx casper-node-launcher-js node ${{env.CASPER_TAG_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
 
       - name: Get Latest Casper-Node RC Version
         run: |
@@ -60,7 +60,7 @@ jobs:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/branches'
 
       - name: Test RPC - CN RC - ${{ env.CASPER_RC_VERSION }}
-        run: ./ci/setup.sh branch=release-${{env.CASPER_RC_VERSION }} && npm run test:e2e
+        run: npx casper-node-launcher-js node ${{env.CASPER_TAG_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
 
       - name: Slack Notification
         uses: ravsamhq/notify-slack-action@4ed28566c2bdcdaee6dca2b46b9666d01b4ed8a4 #v1.10.0
