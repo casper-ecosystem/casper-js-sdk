@@ -26,6 +26,8 @@ import {
   DeployResult
 } from './types';
 
+export { JSONRPCError } from '@open-rpc/client-js';
+
 export enum PurseIdentifier {
   MainPurseUnderPublicKey = 'main_purse_under_public_key',
   MainPurseUnderAccountHash = 'main_purse_under_account_hash',
@@ -487,19 +489,17 @@ export class CasperServiceByJsonRPC {
   ): Promise<DeployResult> {
     await this.checkDeploySize(signedDeploy);
 
-    // TODO: Check if the deploy is signed properly
-
-    try {
-      return await this.client.request(
-        {
-          method: 'account_put_deploy',
-          params: DeployUtil.deployToJson(signedDeploy)
-        },
-        props?.timeout
-      );
-    } catch (e) {
-      return e;
+    if (signedDeploy.approvals.length == 0) {
+      throw new Error('Required signed deploy');
     }
+
+    return await this.client.request(
+      {
+        method: 'account_put_deploy',
+        params: DeployUtil.deployToJson(signedDeploy)
+      },
+      props?.timeout
+    );
   }
 
   /**

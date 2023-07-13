@@ -116,6 +116,24 @@ describe('Secp256K1HDKey', () => {
     expect(key0.accountHex()).eq(recoveredKey0.accountHex());
   });
 
+  it('should generate r+s signature', () => {
+    const hdKey = Secp256K1HDKey.new();
+    const message = Uint8Array.from(Buffer.from('Hello Secp256K1HDKey'));
+
+    const signature = hdKey.sign(message);
+
+    expect(signature.length).to.equal(64);
+  });
+
+  it('should sign and verify message', () => {
+    const hdKey = Secp256K1HDKey.new();
+    const message = Uint8Array.from(Buffer.from('Hello Secp256K1HDKey'));
+
+    const signature = hdKey.sign(message);
+
+    expect(hdKey.verify(signature, message)).to.equal(true);
+  });
+
   secp256k1.forEach(({ seed, vectors }) => {
     describe(`Test seed ${seed}`, () => {
       vectors.forEach(({ chain, private: privateKey, public: publicKey }) => {
