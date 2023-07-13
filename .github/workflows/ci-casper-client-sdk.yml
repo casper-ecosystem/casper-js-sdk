@@ -23,9 +23,16 @@ jobs:
       fail-fast: false
       matrix:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        node-version: [16.x]
+        node-version: [16.x, 18.x]
         os: [ubuntu-20.04, ubuntu-22.04]
     runs-on: ${{ matrix.os }}
+    env:
+      FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEII8ULlk1CJ12ZQ+bScjBt/IxMAZNggClWqK56D1/7CbI' #ci/test-assets/secret-key.pem
+      NODE_URL: 'http://127.0.0.1:7777/rpc'
+      HTTP_EVENT_STREAM_URL: 'http://127.0.0.1:9999/events/main'
+      HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
+      NETWORK_NAME: 'casper-net-1'
+      RUST_LOG: 'INFO'
 
     steps:
       - name: Checkout
@@ -55,25 +62,12 @@ jobs:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
 
       - name: Test RPC - Casper Node - ${{ env.CASPER_TAG_VERSION }}
-        run: ./ci/setup.sh branch=${{env.CASPER_TAG_VERSION }} && npm run test:e2e
-        env:
-          FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
-          NODE_URL: 'http://localhost:7777/rpc'
-          HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
-          HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
-          NETWORK_NAME: 'casper-example'
-          RUST_LOG: 'INFO'
-
+        # TODO: The version should be updated once release new casper-node-launcher-js version
+        run: npx casper-node-launcher-js node v1.5.1 --daemon && npm run test:e2e && npx casper-node-launcher-js stop
+    
       - name: Test RPC - Casper Node - DEV
-        run: ./ci/setup.sh && npm run test:e2e
-        env:
-          FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
-          NODE_URL: 'http://localhost:7777/rpc'
-          HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
-          HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
-          NETWORK_NAME: 'casper-example'
-          RUST_LOG: 'INFO'
-
+        run: npx casper-node-launcher-js node dev --daemon && npm run test:e2e && npx casper-node-launcher-js stop
+    
       - name: Test docs build
         run: npm run docs:build
       - name: Test build
