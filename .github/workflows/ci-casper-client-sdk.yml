@@ -62,6 +62,7 @@ jobs:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
 
       - name: Test RPC - Casper Node - ${{ env.CASPER_TAG_VERSION }}
+        # TODO: The version should be updated once release new casper-node-launcher-js version
         run: npx casper-node-launcher-js node v1.5.1 --daemon && npm run test:e2e && npx casper-node-launcher-js stop
     
       - name: Test RPC - Casper Node - DEV
