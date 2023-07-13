@@ -43,7 +43,7 @@ export interface GetStateRootHashResult extends RpcResult {
 }
 
 export type WriteCLValue = {
-  cl_type: string | object;
+  cl_type: any;
   bytes: string;
   parsed: any;
 };
@@ -76,7 +76,7 @@ export type AddKey = {
   name: string;
 };
 
-type TransformValue =
+export type TransformValue =
   | 'Identity'
   | 'WriteContractWasm'
   | 'WriteContract'
