@@ -1,6 +1,10 @@
 import fs from 'fs';
+import path from 'path';
+
 import { assert, expect } from 'chai';
 import { config } from 'dotenv';
+import { BigNumber } from '@ethersproject/bignumber';
+
 import { CasperServiceByJsonRPC, EraSummary } from '../../src/services';
 import {
   Keys,
@@ -11,18 +15,13 @@ import {
   CLValueParsers,
   CLKeyParameters
 } from '../../src/index';
-import { getAccountInfo } from './utils';
+import { getAccountInfo, sleep } from './utils';
 import { Transfers } from '../../src/lib/StoredValue';
 import { Contract } from '../../src/lib/Contracts';
-import path from 'path';
-import { BigNumber } from '@ethersproject/bignumber';
+
 import { FAUCET_PRIV_KEY, NETWORK_NAME, NODE_URL } from '../config';
 
 config();
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const localCasperNode = require('../../ci/start_node');
-const casperNodePid = localCasperNode.start_a_single_node();
 
 const { SignatureAlgorithm, getKeysFromHexPrivKey, Ed25519 } = Keys;
 
@@ -32,18 +31,51 @@ const faucetKey = getKeysFromHexPrivKey(
   SignatureAlgorithm.Ed25519
 );
 
-let faucetMainPurseUref = '';
-let transferBlockHash = '';
-
 describe('RPC', () => {
+  const BLOCKS_TO_CHECK = 3;
+
+  let faucetMainPurseUref = '';
+  let transferBlockHash = '';
+
+  // Run tests after `BLOCKS_TO_CHECK` blocks are mined
+  before(async () => {
+    try {
+      const promise = new Promise<void>(async resolve => {
+        setInterval(async () => {
+          try {
+            const latestBlock = await client.getLatestBlockInfo();
+
+            if (
+              latestBlock.block?.header.height !== undefined &&
+              latestBlock.block?.header.height > BLOCKS_TO_CHECK
+            )
+              return resolve();
+          } catch (error) {
+            console.error(error);
+          }
+        }, 500);
+      });
+
+      await promise;
+    } catch (error) {
+      console.error(error);
+    }
+  });
+
   it('should return correct block by number', async () => {
     const check = async (height: number) => {
       const result = await client.getBlockInfoByHeight(height);
       assert.equal(result.block?.header.height, height);
     };
-    const blocks_to_check = 3;
-    for (let i = 0; i < blocks_to_check; i++) {
+
+    for (let i = 0; i < BLOCKS_TO_CHECK; i++) {
       await check(i);
+      //
+      // **Work arround for `Error: request to http://127.0.0.1:7777/rpc failed, reason: socket hang up` issue in Node.js v20 version**
+      // Check https://github.com/casper-ecosystem/casper-js-sdk/actions/runs/5451894505/jobs/9918683628#step:7:112
+      //
+      // await sleep(100);
+      //
     }
   });
 
@@ -52,11 +84,12 @@ describe('RPC', () => {
       const block_by_height = await client.getBlockInfoByHeight(height);
       const block_hash = block_by_height.block?.hash;
       assert.exists(block_hash);
+
       const block = await client.getBlockInfo(block_hash!);
       assert.equal(block.block?.hash, block_hash);
     };
-    const blocks_to_check = 3;
-    for (let i = 0; i < blocks_to_check; i++) {
+
+    for (let i = 0; i < BLOCKS_TO_CHECK; i++) {
       await check(i);
     }
   });
@@ -193,6 +226,9 @@ describe('RPC', () => {
     const signedDeploy = DeployUtil.signDeploy(deploy, faucetKey);
 
     const { deploy_hash } = await client.deploy(signedDeploy);
+
+    await sleep(2500);
+
     const result = await client.waitForDeploy(signedDeploy, 100000);
 
     expect(deploy_hash).to.be.equal(result.deploy.hash);
@@ -237,6 +273,9 @@ describe('RPC', () => {
     );
 
     await client.deploy(signedDeploy);
+
+    await sleep(2500);
+
     let result = await client.waitForDeploy(signedDeploy, 100000);
 
     const stateRootHash = await client.getStateRootHash();
@@ -337,8 +376,4 @@ describe('RPC', () => {
     const blockInfo = await client.getBlockInfoByHeight(height);
     expect(eraSummary.blockHash).to.be.equal(blockInfo.block?.hash);
   });
-});
-
-after(() => {
-  process.kill(casperNodePid);
 });
