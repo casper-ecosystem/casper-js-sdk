@@ -162,7 +162,7 @@ export class CasperClient {
    * @param signedDeploy Signed deploy object
    * @returns The sent Deploy's transaction hash, as a hexadecimal string
    */
-  public putDeploy(signedDeploy: Deploy): Promise<string> {
+  public async putDeploy(signedDeploy: Deploy): Promise<string> {
     return this.nodeClient.deploy(signedDeploy).then(it => it.deploy_hash);
   }
 
@@ -170,10 +170,10 @@ export class CasperClient {
    * Test deploy to network
    * @param signedDeploy Signed deploy object
    */
-  public speculativeDeploy(
+  public async speculativeDeploy(
     signedDeploy: Deploy,
     blockIdentifier?: string
-  ): Promise<string> {
+  ): Promise<any> {
     return this.nodeClient
       .speculativeDeploy(signedDeploy, blockIdentifier)
       .then(res => {
