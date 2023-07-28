@@ -25,7 +25,8 @@ import {
   GetStateRootHashResult,
   DeployResult,
   SpeculativeExecutionResult,
-  BlockIdentifier
+  BlockIdentifier,
+  GetChainSpecResult
 } from './types';
 
 export { JSONRPCError } from '@open-rpc/client-js';
@@ -836,5 +837,22 @@ export class CasperServiceByJsonRPC {
       }
       return storedValueJson;
     }
+  }
+
+  /**
+   * Returns raw bytes for chainspec files.
+   * @added casper-node 1.5
+   * @param props optional request props
+   * @returns chainspec files content in bytes
+   */
+  public async getChainSpec(
+    props?: RpcRequestProps
+  ): Promise<GetChainSpecResult> {
+    return await this.client.request(
+      {
+        method: 'info_get_chainspec'
+      },
+      props?.timeout
+    );
   }
 }

@@ -54,6 +54,14 @@ export interface GetStatusResult extends GetPeersResult {
   uptime: string;
 }
 
+export interface GetChainSpecResult extends RpcResult {
+  chainspec_bytes: {
+    chainspec_bytes: string;
+    maybe_genesis_accounts_bytes: string | null;
+    maybe_global_state_bytes: string | null;
+  };
+}
+
 /** Result interface for a get-state-root-hash call */
 export interface GetStateRootHashResult extends RpcResult {
   state_root_hash: string;
