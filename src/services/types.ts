@@ -31,10 +31,27 @@ interface LastAddedBlockInfo {
   creator: string;
 }
 
+interface NextUpgrade {
+  activation_point: number | string;
+  protocol_version: string;
+}
+
+type NodeState = 'FastSyncing' | 'SyncingToGenesis' | 'Participating';
+
 /** Result interface for a get-status call */
 export interface GetStatusResult extends GetPeersResult {
-  last_added_block_info: LastAddedBlockInfo;
+  api_version: string;
   build_version: string;
+  chainspec_name: string;
+  last_added_block_info: LastAddedBlockInfo | null;
+  next_upgrade: NextUpgrade | null;
+  /** @added casper-node 1.5 */
+  node_state: NodeState;
+  our_public_signing_key: string | null;
+  round_length: number | null;
+  /** @deprecated */
+  starting_state_root_hash: string;
+  uptime: string;
 }
 
 /** Result interface for a get-state-root-hash call */
@@ -122,6 +139,16 @@ export interface JsonExecutionResult {
 export interface GetDeployResult extends RpcResult {
   deploy: JsonDeploy;
   execution_results: JsonExecutionResult[];
+}
+
+export interface BlockIdentifier {
+  Hash?: string;
+  Height?: number;
+}
+
+export interface SpeculativeExecutionResult extends RpcResult {
+  block_hash: string;
+  execution_result: ExecutionResult;
 }
 
 /** Result interface for a get-block call */

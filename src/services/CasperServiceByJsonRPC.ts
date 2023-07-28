@@ -23,7 +23,9 @@ import {
   GetPeersResult,
   GetStatusResult,
   GetStateRootHashResult,
-  DeployResult
+  DeployResult,
+  SpeculativeExecutionResult,
+  BlockIdentifier
 } from './types';
 
 export { JSONRPCError } from '@open-rpc/client-js';
@@ -364,6 +366,7 @@ export class CasperServiceByJsonRPC {
    * @param stateRootHash The state root hash at which the account balance will be queried
    * @param balanceUref The URef of an account's main purse URef
    * @param props optional request props
+   * @deprecated casper-node 1.5
    * @returns An account's balance
    */
   public async getAccountBalance(
@@ -371,6 +374,9 @@ export class CasperServiceByJsonRPC {
     balanceUref: string,
     props?: RpcRequestProps
   ): Promise<BigNumber> {
+    console.warn(
+      'This method is deprecated and will be removed in the future release, please use queryBalance method instead.'
+    );
     return await this.client
       .request(
         {
@@ -384,6 +390,12 @@ export class CasperServiceByJsonRPC {
 
   /**
    * Returns balance using a purse identifier and a state identifier
+   * @added casper-node 1.5
+   * @example
+   * ```ts
+   * const client = new CasperServiceByJsonRPC("http://localhost:11101/rpc");
+   * const balance = await client.queryBalance(PurseIdentifier.MainPurseUnderAccountHash, "account-hash-0909090909090909090909090909090909090909090909090909090909090909");
+   * ```
    * @param purseIdentifierType purse type enum
    * @param purseIdentifier purse identifier
    * @param stateRootHash state root hash at which the block state will be queried
@@ -554,12 +566,22 @@ export class CasperServiceByJsonRPC {
     }
   }
 
-  // TODO: Update Doc
+  /**
+   * Estimate execution cost of the deploy without committing the execution result to the global state.
+   * By default, `speculative_exec` JSON RPC method is disabled on a node.
+   * Sending a request to a node with the endpoint disabled will result in an error message.
+   * If enabled, `speculative_exec` operates on a separate port from the primary JSON-RPC, using 7778.
+   * @added casper-node 1.5
+   * @param signedDeploy
+   * @param blockIdentifier
+   * @param props
+   * @returns
+   */
   public async speculativeDeploy(
     signedDeploy: DeployUtil.Deploy,
-    blockIdentifier?: string,
+    blockIdentifier?: BlockIdentifier,
     props?: RpcRequestProps
-  ) {
+  ): Promise<SpeculativeExecutionResult> {
     this.checkDeploySize(signedDeploy);
 
     const deploy = DeployUtil.deployToJson(signedDeploy);
@@ -568,7 +590,7 @@ export class CasperServiceByJsonRPC {
       {
         method: 'speculative_exec',
         params: blockIdentifier
-          ? { ...deploy, block_identifier: { Hash: blockIdentifier } }
+          ? { ...deploy, block_identifier: blockIdentifier }
           : { ...deploy }
       },
       props?.timeout
