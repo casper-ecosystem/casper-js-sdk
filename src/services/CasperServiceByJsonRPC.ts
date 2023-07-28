@@ -568,14 +568,14 @@ export class CasperServiceByJsonRPC {
 
   /**
    * Estimate execution cost of the deploy without committing the execution result to the global state.
-   * By default, `speculative_exec` JSON RPC method is disabled on a node.
+   * By default, `speculative_exec` JSON RPC method is **DISABLED** on a node.
    * Sending a request to a node with the endpoint disabled will result in an error message.
    * If enabled, `speculative_exec` operates on a separate port from the primary JSON-RPC, using 7778.
    * @added casper-node 1.5
-   * @param signedDeploy
-   * @param blockIdentifier
-   * @param props
-   * @returns
+   * @param signedDeploy signed deploy object
+   * @param blockIdentifier block identifier
+   * @param props optional request props
+   * @returns deploy execution result
    */
   public async speculativeDeploy(
     signedDeploy: DeployUtil.Deploy,
