@@ -31,7 +31,7 @@ const faucetKey = getKeysFromHexPrivKey(
   SignatureAlgorithm.Ed25519
 );
 
-describe('RPC', () => {
+describe('CasperServiceByJsonRPC', () => {
   const BLOCKS_TO_CHECK = 3;
 
   let faucetMainPurseUref = '';
