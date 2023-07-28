@@ -367,7 +367,7 @@ export class CasperServiceByJsonRPC {
    * @param stateRootHash The state root hash at which the account balance will be queried
    * @param balanceUref The URef of an account's main purse URef
    * @param props optional request props
-   * @deprecated casper-node 1.5
+   * @deprecated since casper-node 1.5, use `queryBalance` method instead
    * @returns An account's balance
    */
   public async getAccountBalance(

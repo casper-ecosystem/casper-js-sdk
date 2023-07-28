@@ -5,7 +5,11 @@ import { assert, expect } from 'chai';
 import { config } from 'dotenv';
 import { BigNumber } from '@ethersproject/bignumber';
 
-import { CasperServiceByJsonRPC, EraSummary } from '../../src/services';
+import {
+  CasperServiceByJsonRPC,
+  EraSummary,
+  PurseIdentifier
+} from '../../src/services';
 import {
   Keys,
   DeployUtil,
@@ -62,7 +66,7 @@ describe('CasperServiceByJsonRPC', () => {
     }
   });
 
-  it('should return correct block by number', async () => {
+  it('chain_get_block - by number', async () => {
     const check = async (height: number) => {
       const result = await client.getBlockInfoByHeight(height);
       assert.equal(result.block?.header.height, height);
@@ -79,7 +83,7 @@ describe('CasperServiceByJsonRPC', () => {
     }
   });
 
-  it('should return correct block by hash', async () => {
+  it('chain_get_block - by hash', async () => {
     const check = async (height: number) => {
       const block_by_height = await client.getBlockInfoByHeight(height);
       const block_hash = block_by_height.block?.hash;
@@ -92,6 +96,11 @@ describe('CasperServiceByJsonRPC', () => {
     for (let i = 0; i < BLOCKS_TO_CHECK; i++) {
       await check(i);
     }
+  });
+
+  it('chain_get_block', async () => {
+    const latestBlock = await client.getLatestBlockInfo();
+    expect(latestBlock).to.have.property('block');
   });
 
   it('should not allow to send deploy larger then 1 megabyte.', async () => {
@@ -114,7 +123,7 @@ describe('CasperServiceByJsonRPC', () => {
     assert.equal(DeployUtil.deploySizeInBytes(deploy), oneMegaByte + 1);
     await client
       .deploy(deploy)
-      .then(_ => {
+      .then(() => {
         assert.fail("client.deploy should't throw an error.");
       })
       .catch(err => {
@@ -125,24 +134,25 @@ describe('CasperServiceByJsonRPC', () => {
       });
   });
 
-  it('chain_get_state_root_hash', async () => {
-    const stateRootHash = await client.getStateRootHash();
+  it('chain_get_state_root_hash - by hash', async () => {
+    const latestBlock = await client.getLatestBlockInfo();
+
+    expect(latestBlock.block).to.exist;
+
+    const stateRootHash = await client.getStateRootHash(
+      latestBlock.block!.hash
+    );
     assert.equal(stateRootHash.length, 64);
   });
 
-  it('state_get_balance', async () => {
-    const stateRootHash = await client.getStateRootHash();
-    const accountInfo = await getAccountInfo(NODE_URL, faucetKey.publicKey);
-    const balance = await client.getAccountBalance(
-      stateRootHash,
-      accountInfo.mainPurse
-    );
-    assert.equal(balance.toString(), '1000000000000000000000000000000000');
-  });
-
-  it('chain_get_block', async () => {
+  it('chain_get_state_root_hash - by height', async () => {
     const latestBlock = await client.getLatestBlockInfo();
-    expect(latestBlock).to.have.property('block');
+
+    expect(latestBlock.block).to.exist;
+    expect(latestBlock.block!.header.height).to.greaterThan(1);
+
+    const stateRootHash = await client.getStateRootHashByHeight(1);
+    assert.equal(stateRootHash.length, 64);
   });
 
   it('info_get_peers', async () => {
@@ -154,6 +164,7 @@ describe('CasperServiceByJsonRPC', () => {
     const status = await client.getStatus();
     expect(status).to.have.property('peers');
     expect(status).to.have.property('chainspec_name');
+    // TODO: Remove this assert; deprecated `starting_state_root_hash`
     expect(status).to.have.property('starting_state_root_hash');
     expect(status).to.have.property('last_added_block_info');
     expect(status).to.have.property('our_public_signing_key');
@@ -161,6 +172,7 @@ describe('CasperServiceByJsonRPC', () => {
     expect(status).to.have.property('next_upgrade');
     expect(status).to.have.property('build_version');
     expect(status).to.have.property('uptime');
+    expect(status).to.have.property('node_state');
   });
 
   it('state_get_auction_info - newest one', async () => {
@@ -200,6 +212,42 @@ describe('CasperServiceByJsonRPC', () => {
     expect(suffix.length).to.be.equal(3);
   });
 
+  it('state_get_balance', async () => {
+    const stateRootHash = await client.getStateRootHash();
+    const accountInfo = await getAccountInfo(NODE_URL, faucetKey.publicKey);
+    const balance = await client.getAccountBalance(
+      stateRootHash,
+      accountInfo.mainPurse
+    );
+    assert.equal(balance.toString(), '1000000000000000000000000000000000');
+  });
+
+  it('query_balance', async () => {
+    const faucetBalance = '1000000000000000000000000000000000';
+    const balanceByPublicKey = await client.queryBalance(
+      PurseIdentifier.MainPurseUnderPublicKey,
+      faucetKey.publicKey.toHex(false)
+    );
+    expect(balanceByPublicKey).to.be.equal(faucetBalance);
+
+    const balanceByAccountHash = await client.queryBalance(
+      PurseIdentifier.MainPurseUnderAccountHash,
+      faucetKey.publicKey.toAccountHashStr()
+    );
+    expect(balanceByAccountHash).to.be.equal(faucetBalance);
+
+    const stateRootHash = await client.getStateRootHash();
+    const uref = await client.getAccountBalanceUrefByPublicKey(
+      stateRootHash,
+      faucetKey.publicKey
+    );
+    const balanceByUref = await client.queryBalance(
+      PurseIdentifier.PurseUref,
+      uref
+    );
+    expect(balanceByUref).to.be.equal(faucetBalance);
+  });
+
   it('should transfer native token by session', async () => {
     // for native-transfers payment price is fixed
     const paymentAmount = 10000000000;
@@ -237,12 +285,10 @@ describe('CasperServiceByJsonRPC', () => {
 
     transferBlockHash = result.execution_results[0].block_hash;
 
-    const stateRootHash = await client.getStateRootHash();
-    const uref = await client.getAccountBalanceUrefByPublicKey(
-      stateRootHash,
-      toPublicKey
+    const balance = await client.queryBalance(
+      PurseIdentifier.MainPurseUnderPublicKey,
+      toPublicKey.toHex(false)
     );
-    const balance = await client.getAccountBalance(stateRootHash, uref);
     expect(amount).to.be.equal(balance.toString());
   });
 
@@ -376,4 +422,18 @@ describe('CasperServiceByJsonRPC', () => {
     const blockInfo = await client.getBlockInfoByHeight(height);
     expect(eraSummary.blockHash).to.be.equal(blockInfo.block?.hash);
   });
+
+  it('chain_get_era_summary - by hash');
+
+  it('chain_get_era_summary - by height');
+
+  it('info_get_chainspec', async () => {
+    const result = await client.getChainSpec();
+    expect(result).to.have.property('chainspec_bytes');
+    expect(result).to.have.property('maybe_genesis_accounts_bytes');
+    expect(result).to.have.property('maybe_global_state_bytes');
+  });
+
+  // TODO
+  xit('speculative_exec');
 });
