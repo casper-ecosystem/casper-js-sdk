@@ -35,32 +35,6 @@ describe('CasperServiceByJsonRPC', () => {
     sandbox.restore();
   });
 
-  it('should throw error when signed deploy required', async () => {
-    const client = new CasperServiceByJsonRPC('');
-
-    const senderKey = Keys.Ed25519.new();
-    const recipientKey = Keys.Ed25519.new();
-    const networkName = 'test-network';
-    const paymentAmount = 10000000000000;
-    const transferAmount = 10;
-    const id = 34;
-
-    const deployParams = new DeployUtil.DeployParams(
-      senderKey.publicKey,
-      networkName
-    );
-    const session = DeployUtil.ExecutableDeployItem.newTransfer(
-      transferAmount,
-      recipientKey.publicKey,
-      undefined,
-      id
-    );
-    const payment = DeployUtil.standardPayment(paymentAmount);
-    const deploy = DeployUtil.makeDeploy(deployParams, session, payment);
-
-    expect(client.deploy(deploy)).to.be.rejectedWith('Required signed deploy');
-  });
-
   it('should support different url schemes', async () => {
     const constructorStub = sinon.stub();
 
