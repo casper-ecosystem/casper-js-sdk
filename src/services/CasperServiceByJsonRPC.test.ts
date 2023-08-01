@@ -58,7 +58,9 @@ describe('CasperServiceByJsonRPC', () => {
     const payment = DeployUtil.standardPayment(paymentAmount);
     const deploy = DeployUtil.makeDeploy(deployParams, session, payment);
 
-    expect(client.deploy(deploy)).to.be.rejectedWith('Required signed deploy');
+    expect(client.deploy(deploy, { checkApproval: true })).to.be.rejectedWith(
+      'Required signed deploy'
+    );
   });
 
   it('should does not throw error for unsigned deploy when checkApproval is false', async () => {
@@ -90,7 +92,7 @@ describe('CasperServiceByJsonRPC', () => {
     const payment = DeployUtil.standardPayment(paymentAmount);
     const deploy = DeployUtil.makeDeploy(deployParams, session, payment);
 
-    client.deploy(deploy, { checkApproval: false });
+    client.deploy(deploy);
 
     sandbox.restore();
   });
