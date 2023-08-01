@@ -485,11 +485,18 @@ export class CasperServiceByJsonRPC {
    */
   public async deploy(
     signedDeploy: DeployUtil.Deploy,
-    props?: RpcRequestProps
+    props?: RpcRequestProps & {
+      /**
+       * Throws error for unsigned deploy if true
+       * @default false
+       */
+      checkApproval?: boolean;
+    }
   ): Promise<DeployResult> {
     await this.checkDeploySize(signedDeploy);
 
-    if (signedDeploy.approvals.length == 0) {
+    const { checkApproval = false } = props ?? {};
+    if (checkApproval && signedDeploy.approvals.length == 0) {
       throw new Error('Required signed deploy');
     }
 

@@ -58,7 +58,43 @@ describe('CasperServiceByJsonRPC', () => {
     const payment = DeployUtil.standardPayment(paymentAmount);
     const deploy = DeployUtil.makeDeploy(deployParams, session, payment);
 
-    expect(client.deploy(deploy)).to.be.rejectedWith('Required signed deploy');
+    expect(client.deploy(deploy, { checkApproval: true })).to.be.rejectedWith(
+      'Required signed deploy'
+    );
+  });
+
+  it('should does not throw error for unsigned deploy when checkApproval is false', async () => {
+    const client = new CasperServiceByJsonRPC('');
+
+    const sandbox = sinon.createSandbox();
+    sandbox.stub(HTTPTransport.prototype, 'sendData').callsFake(async () => ({
+      deploy_hash:
+        '192191395a2a1c0503e11e00b683b158461f08e64052e7362516b723d7f53c6d'
+    }));
+
+    const senderKey = Keys.Ed25519.new();
+    const recipientKey = Keys.Ed25519.new();
+    const networkName = 'test-network';
+    const paymentAmount = 10000000000000;
+    const transferAmount = 10;
+    const id = 34;
+
+    const deployParams = new DeployUtil.DeployParams(
+      senderKey.publicKey,
+      networkName
+    );
+    const session = DeployUtil.ExecutableDeployItem.newTransfer(
+      transferAmount,
+      recipientKey.publicKey,
+      undefined,
+      id
+    );
+    const payment = DeployUtil.standardPayment(paymentAmount);
+    const deploy = DeployUtil.makeDeploy(deployParams, session, payment);
+
+    client.deploy(deploy);
+
+    sandbox.restore();
   });
 
   it('should support different url schemes', async () => {
