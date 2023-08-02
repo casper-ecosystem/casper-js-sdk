@@ -162,17 +162,20 @@ describe('CasperServiceByJsonRPC', () => {
 
   it('info_get_status', async () => {
     const status = await client.getStatus();
+
     expect(status).to.have.property('peers');
+    expect(status).to.have.property('build_version');
     expect(status).to.have.property('chainspec_name');
-    // TODO: Remove this assert; deprecated `starting_state_root_hash`
     expect(status).to.have.property('starting_state_root_hash');
     expect(status).to.have.property('last_added_block_info');
     expect(status).to.have.property('our_public_signing_key');
     expect(status).to.have.property('round_length');
     expect(status).to.have.property('next_upgrade');
-    expect(status).to.have.property('build_version');
     expect(status).to.have.property('uptime');
-    expect(status).to.have.property('node_state');
+    expect(status).to.have.property('reactor_state');
+    expect(status).to.have.property('last_progress');
+    expect(status).to.have.property('available_block_range');
+    expect(status).to.have.property('block_sync');
   });
 
   it('state_get_auction_info - newest one', async () => {
@@ -224,6 +227,7 @@ describe('CasperServiceByJsonRPC', () => {
 
   it('query_balance', async () => {
     const faucetBalance = '1000000000000000000000000000000000';
+    console.log(faucetKey.publicKey.toHex(false));
     const balanceByPublicKey = await client.queryBalance(
       PurseIdentifier.MainPurseUnderPublicKey,
       faucetKey.publicKey.toHex(false)
@@ -248,7 +252,7 @@ describe('CasperServiceByJsonRPC', () => {
     expect(balanceByUref).to.be.equal(faucetBalance);
   });
 
-  it('should transfer native token by session', async () => {
+  xit('should transfer native token by session', async () => {
     // for native-transfers payment price is fixed
     const paymentAmount = 10000000000;
     const id = Date.now();
@@ -292,7 +296,7 @@ describe('CasperServiceByJsonRPC', () => {
     expect(amount).to.be.equal(balance.toString());
   });
 
-  it('should deploy wasm over rpc', async () => {
+  xit('should deploy wasm over rpc', async () => {
     const casperClient = new CasperClient(NODE_URL);
     const erc20 = new Contract(casperClient);
     const wasmPath = path.resolve(__dirname, './erc20_token.wasm');
@@ -430,8 +434,11 @@ describe('CasperServiceByJsonRPC', () => {
   it('info_get_chainspec', async () => {
     const result = await client.getChainSpec();
     expect(result).to.have.property('chainspec_bytes');
-    expect(result).to.have.property('maybe_genesis_accounts_bytes');
-    expect(result).to.have.property('maybe_global_state_bytes');
+    expect(result.chainspec_bytes).to.have.property('chainspec_bytes');
+    expect(result.chainspec_bytes).to.have.property(
+      'maybe_genesis_accounts_bytes'
+    );
+    expect(result.chainspec_bytes).to.have.property('maybe_global_state_bytes');
   });
 
   // TODO

@@ -26,7 +26,8 @@ import {
   DeployResult,
   SpeculativeExecutionResult,
   BlockIdentifier,
-  GetChainSpecResult
+  GetChainSpecResult,
+  StateIdentifier
 } from './types';
 
 export { JSONRPCError } from '@open-rpc/client-js';
@@ -406,19 +407,24 @@ export class CasperServiceByJsonRPC {
   public async queryBalance(
     purseIdentifierType: PurseIdentifier,
     purseIdentifier: string,
-    stateRootHash?: string,
+    stateIdentifier?: StateIdentifier,
     props?: RpcRequestProps
   ): Promise<BigNumber> {
+    const params: any[] = [];
+    if (stateIdentifier) {
+      params.push(stateIdentifier);
+    } else {
+      params.push(null);
+    }
+    params.push({
+      [purseIdentifierType]: purseIdentifier
+    });
+
     return await this.client
       .request(
         {
           method: 'query_balance',
-          params: [
-            {
-              [purseIdentifierType]: purseIdentifier
-            },
-            { StateRootHash: stateRootHash }
-          ]
+          params
         },
         props?.timeout
       )

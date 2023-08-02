@@ -36,31 +36,78 @@ interface NextUpgrade {
   protocol_version: string;
 }
 
-type NodeState = 'FastSyncing' | 'SyncingToGenesis' | 'Participating';
+type ReactorState =
+  | 'Initialize'
+  | 'CatchUp'
+  | 'Upgrading'
+  | 'KeepUp'
+  | 'Validate'
+  | 'ShutdownForUpgrade';
+
+/** The status of syncing an individual block. */
+interface BlockSyncStatus {
+  /** The block hash. */
+  block_hash: string;
+  /** The height of the block, if known. */
+  block_height: number | null;
+  /** The state of acquisition of the data associated with the block. */
+  acquisition_state: string;
+}
+
+/** The status of the block synchronizer. */
+interface BlockSynchronizerStatus {
+  historical: BlockSyncStatus;
+  forward: BlockSyncStatus;
+}
 
 /** Result interface for a get-status call */
 export interface GetStatusResult extends GetPeersResult {
-  api_version: string;
+  /** The compiled node version. */
   build_version: string;
+  /** The chainspec name. */
   chainspec_name: string;
-  last_added_block_info: LastAddedBlockInfo | null;
-  next_upgrade: NextUpgrade | null;
-  /** @added casper-node 1.5 */
-  node_state: NodeState;
-  our_public_signing_key: string | null;
-  round_length: number | null;
-  /** @deprecated */
+  /** The state root hash of the lowest block in the available block range. */
   starting_state_root_hash: string;
+  /** The minimal info of the last block from the linear chain. */
+  last_added_block_info: LastAddedBlockInfo | null;
+  /** Our public signing key. */
+  our_public_signing_key: string | null;
+  /** The next round length if this node is a validator. */
+  round_length: number | null;
+  /** Information about the next scheduled upgrade. */
+  next_upgrade: NextUpgrade | null;
+  /** Time that passed since the node has started. */
   uptime: string;
+  /** @added casper-node 1.5 */
+  reactor_state: ReactorState;
+  /** Timestamp of the last recorded progress in the reactor. */
+  last_progress: string;
+  /** The available block range in storage. */
+  available_block_range: {
+    /** The inclusive lower bound of the range. */
+    row: number;
+    /** The inclusive upper bound of the range. */
+    high: number;
+  };
+  /** The status of syncing a forward block, if any. */
+  block_sync: BlockSynchronizerStatus | null;
 }
 
 export interface GetChainSpecResult extends RpcResult {
   chainspec_bytes: {
+    /** Hex-encoded raw bytes of the current chainspec.toml file. */
     chainspec_bytes: string;
+    /** Hex-encoded raw bytes of the current genesis accounts.toml file. */
     maybe_genesis_accounts_bytes: string | null;
+    /** Hex-encoded raw bytes of the current global_state.toml file. */
     maybe_global_state_bytes: string | null;
   };
 }
+
+export type StateIdentifier =
+  | { BlockHash: string }
+  | { BlockHeight: number }
+  | { StateRootHash: string };
 
 /** Result interface for a get-state-root-hash call */
 export interface GetStateRootHashResult extends RpcResult {
