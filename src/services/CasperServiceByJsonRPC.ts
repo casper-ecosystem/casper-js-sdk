@@ -23,7 +23,11 @@ import {
   GetPeersResult,
   GetStatusResult,
   GetStateRootHashResult,
-  DeployResult
+  DeployResult,
+  SpeculativeExecutionResult,
+  BlockIdentifier,
+  GetChainSpecResult,
+  StateIdentifier
 } from './types';
 
 export { JSONRPCError } from '@open-rpc/client-js';
@@ -136,20 +140,25 @@ export class CasperServiceByJsonRPC {
 
   /**
    * Get information about a deploy using its hexadecimal hash
-   * @param deployHashBase16 The base-16 hash of the deploy
+   * @param deployHash Hex-encoded hash digest.
+   * @param finalizedApprovals Whether to return the deploy with the finalized approvals substituted. If `false` or omitted, returns the deploy with the approvals that were originally received by the node.
    * @param props optional request props
    * @returns A `Promise` that resolves to a `GetDeployResult`
    */
   public async getDeployInfo(
-    deployHashBase16: string,
+    deployHash: string,
+    finalizedApprovals?: boolean,
     props?: RpcRequestProps
   ): Promise<GetDeployResult> {
+    const params: any[] = [deployHash];
+    if (finalizedApprovals) {
+      params.push(finalizedApprovals);
+    }
+
     return await this.client.request(
       {
         method: 'info_get_deploy',
-        params: {
-          deploy_hash: deployHashBase16
-        }
+        params
       },
       props?.timeout
     );
@@ -157,30 +166,30 @@ export class CasperServiceByJsonRPC {
 
   /**
    * Get block information
-   * @param blockHashBase16 A hexadecimal string representing the hash of a block
+   * @param blockHash A hexadecimal string representing the hash of a block
    * @param props optional request props
    * @returns A `Promise` resolving to a `GetBlockResult`
    */
   public async getBlockInfo(
-    blockHashBase16: JsonBlockHash,
+    blockHash: JsonBlockHash,
     props?: RpcRequestProps
   ): Promise<GetBlockResult> {
     return await this.client
       .request(
         {
           method: 'chain_get_block',
-          params: {
-            block_identifier: {
-              Hash: blockHashBase16
+          params: [
+            {
+              Hash: blockHash
             }
-          }
+          ]
         },
         props?.timeout
       )
       .then((res: GetBlockResult) => {
         if (
           res.block !== null &&
-          res.block.hash.toLowerCase() !== blockHashBase16.toLowerCase()
+          res.block.hash.toLowerCase() !== blockHash.toLowerCase()
         ) {
           throw new Error('Returned block does not have a matching hash.');
         }
@@ -202,11 +211,11 @@ export class CasperServiceByJsonRPC {
       .request(
         {
           method: 'chain_get_block',
-          params: {
-            block_identifier: {
+          params: [
+            {
               Height: height
             }
-          }
+          ]
         },
         props?.timeout
       )
@@ -276,11 +285,11 @@ export class CasperServiceByJsonRPC {
       {
         method: 'state_get_auction_info',
         params: blockHash
-          ? {
-              block_identifier: {
+          ? [
+              {
                 Hash: blockHash
               }
-            }
+            ]
           : []
       },
       props?.timeout
@@ -300,14 +309,14 @@ export class CasperServiceByJsonRPC {
     return await this.client.request(
       {
         method: 'state_get_auction_info',
-        params: {
-          block_identifier:
-            blockHeight >= 0
-              ? {
+        params:
+          blockHeight >= 0
+            ? [
+                {
                   Height: blockHeight
                 }
-              : null
-        }
+              ]
+            : []
       },
       props?.timeout
     );
@@ -324,7 +333,7 @@ export class CasperServiceByJsonRPC {
     stateRootHash: string,
     accountHash: string,
     props?: RpcRequestProps
-  ) {
+  ): Promise<string> {
     const account = await this.getBlockState(
       stateRootHash,
       'account-hash-' + accountHash,
@@ -346,7 +355,7 @@ export class CasperServiceByJsonRPC {
     stateRootHash: string,
     publicKey: CLPublicKey,
     props?: RpcRequestProps
-  ) {
+  ): Promise<string> {
     return this.getAccountBalanceUrefByPublicKeyHash(
       stateRootHash,
       encodeBase16(publicKey.toAccountHash()),
@@ -359,6 +368,7 @@ export class CasperServiceByJsonRPC {
    * @param stateRootHash The state root hash at which the account balance will be queried
    * @param balanceUref The URef of an account's main purse URef
    * @param props optional request props
+   * @deprecated since casper-node 1.5, use `queryBalance` method instead
    * @returns An account's balance
    */
   public async getAccountBalance(
@@ -366,14 +376,14 @@ export class CasperServiceByJsonRPC {
     balanceUref: string,
     props?: RpcRequestProps
   ): Promise<BigNumber> {
+    console.warn(
+      'This method is deprecated and will be removed in the future release, please use queryBalance method instead.'
+    );
     return await this.client
       .request(
         {
           method: 'state_get_balance',
-          params: {
-            state_root_hash: stateRootHash,
-            purse_uref: balanceUref
-          }
+          params: [stateRootHash, balanceUref]
         },
         props?.timeout
       )
@@ -381,7 +391,13 @@ export class CasperServiceByJsonRPC {
   }
 
   /**
-   * Returns given purse balance
+   * Returns balance using a purse identifier and a state identifier
+   * @added casper-node 1.5
+   * @example
+   * ```ts
+   * const client = new CasperServiceByJsonRPC("http://localhost:11101/rpc");
+   * const balance = await client.queryBalance(PurseIdentifier.MainPurseUnderAccountHash, "account-hash-0909090909090909090909090909090909090909090909090909090909090909");
+   * ```
    * @param purseIdentifierType purse type enum
    * @param purseIdentifier purse identifier
    * @param stateRootHash state root hash at which the block state will be queried
@@ -391,19 +407,24 @@ export class CasperServiceByJsonRPC {
   public async queryBalance(
     purseIdentifierType: PurseIdentifier,
     purseIdentifier: string,
-    stateRootHash?: string,
+    stateIdentifier?: StateIdentifier,
     props?: RpcRequestProps
   ): Promise<BigNumber> {
+    const params: any[] = [];
+    if (stateIdentifier) {
+      params.push(stateIdentifier);
+    } else {
+      params.push(null);
+    }
+    params.push({
+      [purseIdentifierType]: purseIdentifier
+    });
+
     return await this.client
       .request(
         {
           method: 'query_balance',
-          params: {
-            purse_identifier: {
-              [purseIdentifierType]: purseIdentifier
-            },
-            state_identifier: stateRootHash
-          }
+          params
         },
         props?.timeout
       )
@@ -432,6 +453,27 @@ export class CasperServiceByJsonRPC {
   }
 
   /**
+   * Get the state root hash at a specific block height
+   * @param blockHeight The height of a block hash
+   * @param props optional request props
+   * @returns A `Promise` resolving to a state root hash hexadecimal string
+   */
+  public async getStateRootHashByHeight(
+    blockHeight: number,
+    props?: RpcRequestProps
+  ): Promise<string> {
+    return await this.client
+      .request(
+        {
+          method: 'chain_get_state_root_hash',
+          params: [{ Height: blockHeight }]
+        },
+        props?.timeout
+      )
+      .then((res: GetStateRootHashResult) => res.state_root_hash);
+  }
+
+  /**
    * Get the global block state at a certain state root hash, path, and key
    * @param stateRootHash The state root hash at which the block state will be queried
    * @param key The key at which to query the state
@@ -448,11 +490,7 @@ export class CasperServiceByJsonRPC {
     const res = await this.client.request(
       {
         method: 'state_get_item',
-        params: {
-          state_root_hash: stateRootHash,
-          key,
-          path
-        }
+        params: [stateRootHash, key, path]
       },
       props?.timeout
     );
@@ -466,7 +504,11 @@ export class CasperServiceByJsonRPC {
     }
   }
 
-  public async checkDeploySize(deploy: DeployUtil.Deploy) {
+  /**
+   * Check deploy size and throws error if deploy size exceeds 1 Mbytes.
+   * @param deploy deploy to check size.
+   */
+  public checkDeploySize(deploy: DeployUtil.Deploy) {
     const oneMegaByte = 1048576;
     const size = DeployUtil.deploySizeInBytes(deploy);
     if (size > oneMegaByte) {
@@ -493,7 +535,7 @@ export class CasperServiceByJsonRPC {
       checkApproval?: boolean;
     }
   ): Promise<DeployResult> {
-    await this.checkDeploySize(signedDeploy);
+    this.checkDeploySize(signedDeploy);
 
     const { checkApproval = false } = props ?? {};
     if (checkApproval && signedDeploy.approvals.length == 0) {
@@ -503,7 +545,7 @@ export class CasperServiceByJsonRPC {
     return await this.client.request(
       {
         method: 'account_put_deploy',
-        params: DeployUtil.deployToJson(signedDeploy)
+        params: [DeployUtil.deployToJson(signedDeploy).deploy]
       },
       props?.timeout
     );
@@ -511,11 +553,14 @@ export class CasperServiceByJsonRPC {
 
   /**
    * Wait for deploy to be confirmed on-chain
-   * @param signedDeploy deploy signed by the deployer
+   * @param deploy deploy instance or deploy hash
    * @param timeout optional parameter for timeout
    * @returns GetDepoyResult
    */
-  public async waitForDeploy(signedDeploy: DeployUtil.Deploy, timeout = 60000) {
+  public async waitForDeploy(
+    deploy: DeployUtil.Deploy | string,
+    timeout = 60000
+  ) {
     const sleep = (ms: number) => {
       return new Promise(resolve => setTimeout(resolve, ms));
     };
@@ -523,23 +568,35 @@ export class CasperServiceByJsonRPC {
       throw new Error('Timeout');
     }, timeout);
     while (true) {
-      const deploy = await this.getDeployInfo(encodeBase16(signedDeploy.hash));
-      if (deploy.execution_results.length > 0) {
+      const deployHash =
+        typeof deploy === 'string' ? deploy : encodeBase16(deploy.hash);
+      const deployInfo = await this.getDeployInfo(deployHash);
+      if (deployInfo.execution_results.length > 0) {
         clearTimeout(timer);
-        return deploy;
+        return deployInfo;
       } else {
         await sleep(400);
       }
     }
   }
 
-  // TODO: Update Doc
+  /**
+   * Estimate execution cost of the deploy without committing the execution result to the global state.
+   * By default, `speculative_exec` JSON RPC method is **DISABLED** on a node.
+   * Sending a request to a node with the endpoint disabled will result in an error message.
+   * If enabled, `speculative_exec` operates on a separate port from the primary JSON-RPC, using 7778.
+   * @added casper-node 1.5
+   * @param signedDeploy signed deploy object
+   * @param blockIdentifier block identifier
+   * @param props optional request props
+   * @returns deploy execution result
+   */
   public async speculativeDeploy(
     signedDeploy: DeployUtil.Deploy,
-    blockIdentifier?: string,
+    blockIdentifier?: BlockIdentifier,
     props?: RpcRequestProps
-  ) {
-    await this.checkDeploySize(signedDeploy);
+  ): Promise<SpeculativeExecutionResult> {
+    this.checkDeploySize(signedDeploy);
 
     const deploy = DeployUtil.deployToJson(signedDeploy);
 
@@ -547,7 +604,7 @@ export class CasperServiceByJsonRPC {
       {
         method: 'speculative_exec',
         params: blockIdentifier
-          ? { ...deploy, block_identifier: { Hash: blockIdentifier } }
+          ? { ...deploy, block_identifier: blockIdentifier }
           : { ...deploy }
       },
       props?.timeout
@@ -566,13 +623,13 @@ export class CasperServiceByJsonRPC {
     const res = await this.client.request(
       {
         method: 'chain_get_block_transfers',
-        params: {
-          block_identifier: blockHash
-            ? {
+        params: blockHash
+          ? [
+              {
                 Hash: blockHash
               }
-            : null
-        }
+            ]
+          : []
       },
       props?.timeout
     );
@@ -598,13 +655,15 @@ export class CasperServiceByJsonRPC {
     const res = await this.client.request(
       {
         method: 'chain_get_era_info_by_switch_block',
-        params: {
-          block_identifier: blockHash
-            ? {
-                Hash: blockHash
-              }
-            : null
-        }
+        params: [
+          blockHash
+            ? [
+                {
+                  Hash: blockHash
+                }
+              ]
+            : []
+        ]
       },
       props?.timeout
     );
@@ -630,11 +689,11 @@ export class CasperServiceByJsonRPC {
     const res = await this.client.request(
       {
         method: 'chain_get_era_info_by_switch_block',
-        params: {
-          block_identifier: {
+        params: [
+          {
             Height: height
           }
-        }
+        ]
       },
       props?.timeout
     );
@@ -655,13 +714,15 @@ export class CasperServiceByJsonRPC {
   public async getEraSummary(blockHash?: string): Promise<EraSummary> {
     const res = await this.client.request({
       method: 'chain_get_era_summary',
-      params: {
-        block_identifier: blockHash
-          ? {
-              Hash: blockHash
-            }
-          : null
-      }
+      params: [
+        blockHash
+          ? [
+              {
+                Hash: blockHash
+              }
+            ]
+          : []
+      ]
     });
     if (res.error) {
       return res;
@@ -682,14 +743,15 @@ export class CasperServiceByJsonRPC {
   ): Promise<EraSummary> {
     const res = await this.client.request({
       method: 'chain_get_era_summary',
-      params: {
-        block_identifier:
-          blockHeight !== undefined && blockHeight >= 0
-            ? {
+      params: [
+        blockHeight !== undefined && blockHeight >= 0
+          ? [
+              {
                 Height: blockHeight
               }
-            : null
-      }
+            ]
+          : []
+      ]
     });
     if (res.error) {
       return res;
@@ -719,15 +781,15 @@ export class CasperServiceByJsonRPC {
     const res = await this.client.request(
       {
         method: 'state_get_dictionary_item',
-        params: {
-          state_root_hash: stateRootHash,
-          dictionary_identifier: {
+        params: [
+          stateRootHash,
+          {
             URef: {
               seed_uref: seedUref,
               dictionary_item_key: dictionaryItemKey
             }
           }
-        }
+        ]
       },
       props?.timeout
     );
@@ -765,16 +827,16 @@ export class CasperServiceByJsonRPC {
     const res = await this.client.request(
       {
         method: 'state_get_dictionary_item',
-        params: {
-          state_root_hash: stateRootHash,
-          dictionary_identifier: {
+        params: [
+          stateRootHash,
+          {
             ContractNamedKey: {
               key: contractHash,
               dictionary_name: dictionaryName,
               dictionary_item_key: dictionaryItemKey
             }
           }
-        }
+        ]
       },
       props?.timeout
     );
@@ -788,5 +850,22 @@ export class CasperServiceByJsonRPC {
       }
       return storedValueJson;
     }
+  }
+
+  /**
+   * Returns raw bytes for chainspec files.
+   * @added casper-node 1.5
+   * @param props optional request props
+   * @returns chainspec files content in bytes
+   */
+  public async getChainSpec(
+    props?: RpcRequestProps
+  ): Promise<GetChainSpecResult> {
+    return await this.client.request(
+      {
+        method: 'info_get_chainspec'
+      },
+      props?.timeout
+    );
   }
 }

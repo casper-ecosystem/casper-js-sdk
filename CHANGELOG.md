@@ -19,6 +19,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - `checkApproval` optional parameter (`false` by default) to the `deploy` method of `CasperServiceByJsonRPC` class. ([#348](https://github.com/casper-ecosystem/casper-js-sdk/pull/348))
 
+### Fixed
+
+- Fixed JSON RPC request issues with 1.5 node. ([#339](https://github.com/casper-ecosystem/casper-js-sdk/pull/339),[#344](https://github.com/casper-ecosystem/casper-js-sdk/pull/344))
+
+### Changed
+
+- `waitForDeploy` method of `CasperServiceByJsonRPC` class now supports deploy hash in string
+
 ## [2.14.0] - 2023-7-11
 
 ### Fixed
@@ -603,5 +611,5 @@ const myOkComplexRes = new CLResult( Ok(new CLList([new CLList([new CLU8(5), new
 
 <!-- Add version compare links here -->
 
-[unreleased]: https://github.com/casper-ecosystem/casper-js-sdk/compare/2.13.0...dev
+[unreleased]: https://github.com/casper-ecosystem/casper-js-sdk/compare/2.14.0...dev
 [2.14.0]: https://github.com/casper-ecosystem/casper-js-sdk/compare/2.13.3...2.14.0
