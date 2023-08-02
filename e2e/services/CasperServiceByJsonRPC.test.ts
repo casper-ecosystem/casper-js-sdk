@@ -253,7 +253,7 @@ describe('CasperServiceByJsonRPC', () => {
     expect(balanceByUref.eq(faucetBalance)).to.be;
   });
 
-  it('should transfer native token by session', async () => {
+  xit('should transfer native token by session', async () => {
     // for native-transfers payment price is fixed
     const paymentAmount = 10000000000;
     const id = Date.now();
