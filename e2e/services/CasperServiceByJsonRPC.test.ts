@@ -216,29 +216,30 @@ describe('CasperServiceByJsonRPC', () => {
   });
 
   it('state_get_balance', async () => {
+    const faucetBalance = '1000000000000000000000000000000000';
     const stateRootHash = await client.getStateRootHash();
     const accountInfo = await getAccountInfo(NODE_URL, faucetKey.publicKey);
     const balance = await client.getAccountBalance(
       stateRootHash,
       accountInfo.mainPurse
     );
-    assert.equal(balance.toString(), '1000000000000000000000000000000000');
+    expect(balance.eq(faucetBalance)).to.be;
   });
 
   it('query_balance', async () => {
     const faucetBalance = '1000000000000000000000000000000000';
-    console.log(faucetKey.publicKey.toHex(false));
+
     const balanceByPublicKey = await client.queryBalance(
       PurseIdentifier.MainPurseUnderPublicKey,
       faucetKey.publicKey.toHex(false)
     );
-    expect(balanceByPublicKey).to.be.equal(faucetBalance);
+    expect(balanceByPublicKey.eq(faucetBalance)).to.be;
 
     const balanceByAccountHash = await client.queryBalance(
       PurseIdentifier.MainPurseUnderAccountHash,
       faucetKey.publicKey.toAccountHashStr()
     );
-    expect(balanceByAccountHash).to.be.equal(faucetBalance);
+    expect(balanceByAccountHash.eq(faucetBalance)).to.be;
 
     const stateRootHash = await client.getStateRootHash();
     const uref = await client.getAccountBalanceUrefByPublicKey(
@@ -249,10 +250,10 @@ describe('CasperServiceByJsonRPC', () => {
       PurseIdentifier.PurseUref,
       uref
     );
-    expect(balanceByUref).to.be.equal(faucetBalance);
+    expect(balanceByUref.eq(faucetBalance)).to.be;
   });
 
-  xit('should transfer native token by session', async () => {
+  it('should transfer native token by session', async () => {
     // for native-transfers payment price is fixed
     const paymentAmount = 10000000000;
     const id = Date.now();
@@ -296,7 +297,7 @@ describe('CasperServiceByJsonRPC', () => {
     expect(amount).to.be.equal(balance.toString());
   });
 
-  xit('should deploy wasm over rpc', async () => {
+  it('should deploy wasm over rpc', async () => {
     const casperClient = new CasperClient(NODE_URL);
     const erc20 = new Contract(casperClient);
     const wasmPath = path.resolve(__dirname, './erc20_token.wasm');
