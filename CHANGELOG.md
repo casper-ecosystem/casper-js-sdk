@@ -13,6 +13,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+## [2.15.2] - 2023-8-4
+
+### Fixed
+
+- Reintroduced `getStateRootHash` fix as its not specific for `casper-node 1.5` ([#339](https://github.com/casper-ecosystem/casper-js-sdk/pull/339))
+
 ## [2.15.1] - 2023-8-4
 
 ### Fixed

@@ -612,7 +612,7 @@ export class CasperServiceByJsonRPC {
       .request(
         {
           method: 'chain_get_state_root_hash',
-          params: blockHashBase16 ? { block_identifier: blockHashBase16 } : []
+          params: blockHashBase16 ? [{ Hash: blockHashBase16 }] : []
         },
         props?.timeout
       )

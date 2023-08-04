@@ -1,6 +1,6 @@
 {
   "name": "casper-js-sdk",
-  "version": "2.15.1",
+  "version": "2.15.2",
   "license": "Apache 2.0",
   "description": "SDK to interact with the Casper blockchain",
   "homepage": "https://github.com/casper-ecosystem/casper-js-sdk#README.md",
@@ -19,6 +19,7 @@
     "build": "webpack --config webpack.config.js",
     "clean": "rm -rf ./dist",
     "~build": "tsc --watch",
+    "test:local": "cross-env NODE_ENV=test TS_NODE_FILES=true mocha -r ts-node/register \"src/local.test.ts\"",
     "test:node:unit": "cross-env NODE_ENV=test TS_NODE_FILES=true mocha -r ts-node/register \"src/**/*.test.ts\"",
     "test:node:unit:coverage": "nyc npm run test:node:unit",
     "test:browser:unit": "cross-env NODE_ENV=test karma start karma.conf.js --single-run",
