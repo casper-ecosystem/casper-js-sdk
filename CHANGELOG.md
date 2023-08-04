@@ -17,7 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Fixed
 
-- Reverted 1.5 compatibility.
+- Reverted broken 1.4.x compatibility. The version compatible with protocol version 1.5.x will be released as a separate one. ([#351](https://github.com/casper-ecosystem/casper-js-sdk/issues/351))
 
 ## [2.15.0] - 2023-8-3
 
