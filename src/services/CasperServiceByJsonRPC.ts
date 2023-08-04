@@ -692,11 +692,14 @@ export class CasperServiceByJsonRPC {
 
   /**
    * Wait for deploy to be confirmed on-chain
-   * @param signedDeploy deploy signed by the deployer
+   * @param deploy deploy instance or deploy hash
    * @param timeout optional parameter for timeout
    * @returns GetDepoyResult
    */
-  public async waitForDeploy(signedDeploy: DeployUtil.Deploy, timeout = 60000) {
+  public async waitForDeploy(
+    deploy: DeployUtil.Deploy | string,
+    timeout = 60000
+  ) {
     const sleep = (ms: number) => {
       return new Promise(resolve => setTimeout(resolve, ms));
     };
@@ -704,10 +707,12 @@ export class CasperServiceByJsonRPC {
       throw new Error('Timeout');
     }, timeout);
     while (true) {
-      const deploy = await this.getDeployInfo(encodeBase16(signedDeploy.hash));
-      if (deploy.execution_results.length > 0) {
+      const deployHash =
+        typeof deploy === 'string' ? deploy : encodeBase16(deploy.hash);
+      const deployInfo = await this.getDeployInfo(deployHash);
+      if (deployInfo.execution_results.length > 0) {
         clearTimeout(timer);
-        return deploy;
+        return deployInfo;
       } else {
         await sleep(400);
       }

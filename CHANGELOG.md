@@ -13,7 +13,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
-## [Unreleased]
+## [2.15.1] - 2023-8-4
+
+### Fixed
+
+- Reverted 1.5 compatibility.
+
+## [2.15.0] - 2023-8-3
+
+### Added
+
+- `checkApproval` optional parameter (`false` by default) to the `deploy` method of `CasperServiceByJsonRPC` class. ([#348](https://github.com/casper-ecosystem/casper-js-sdk/pull/348))
+
+### Fixed
+
+- Fixed JSON RPC request issues with 1.5 node. ([#339](https://github.com/casper-ecosystem/casper-js-sdk/pull/339),[#344](https://github.com/casper-ecosystem/casper-js-sdk/pull/344))
+
+### Changed
+
+- `waitForDeploy` method of `CasperServiceByJsonRPC` class now supports deploy hash in string
 
 ## [2.14.0] - 2023-7-11
 
