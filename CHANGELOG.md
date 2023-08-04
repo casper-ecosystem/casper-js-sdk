@@ -33,10 +33,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - `waitForDeploy` method of `CasperServiceByJsonRPC` class now supports deploy hash in string
 
-### Added
-
-- `checkApproval` optional parameter (`false` by default) to the `deploy` method of `CasperServiceByJsonRPC` class. ([#348](https://github.com/casper-ecosystem/casper-js-sdk/pull/348))
-
 ## [2.14.0] - 2023-7-11
 
 ### Fixed
