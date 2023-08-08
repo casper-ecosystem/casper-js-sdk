@@ -47,7 +47,7 @@ jobs:
       # test mainnet
       - name: Get the mainnet version
         id: get-mainnet-version
-        run: echo "MAINNET_VERSION=$(MAINNET_VERSION_URL)" >> "$GITHUB_ENV"
+        run: echo "MAINNET_VERSION=$(${{ MAINNET_VERSION_URL }})" >> "$GITHUB_ENV"
         env:
           MAINNET_VERSION_URL: 'curl -s -X POST --data-raw ${{ env.VERSION_QUERY }} -H "Content-Type: application/json" ${{ env.MAINNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1'
 
@@ -57,7 +57,7 @@ jobs:
       # test testnet
       - name: Get the testnet version
         id: get-testnet-version
-        run: echo "TESTNET_VERSION=$(TESTNET_VERSION_URL)" >> "$GITHUB_ENV"
+        run: echo "TESTNET_VERSION=$(${{ TESTNET_VERSION_URL }})" >> "$GITHUB_ENV"
         env:
           TESTNET_VERSION_URL: 'curl -s -X POST --data-raw ${{ env.VERSION_QUERY }} -H "Content-Type: application/json" ${{ env.TESTNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1'
 
