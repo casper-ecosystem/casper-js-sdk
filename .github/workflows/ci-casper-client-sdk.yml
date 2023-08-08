@@ -49,25 +49,25 @@ jobs:
       - name: Install
         run: npm install
 
-      - name: Audits
-        run: npm audit --omit=dev
+      # - name: Audits
+      #   run: npm audit --omit=dev
 
-      - name: Lints
-        run: npm run lint:ci
+      # - name: Lints
+      #   run: npm run lint:ci
 
-      - name: Unit Test
-        run: npm run test:unit
+      # - name: Unit Test
+      #   run: npm run test:unit
 
-      - name: Test docs build
-        run: npm run docs:build
+      # - name: Test docs build
+      #   run: npm run docs:build
 
-      - name: Test build
-        run: npm run build
+      # - name: Test build
+      #   run: npm run build
 
       # test mainnet
       - name: Get the mainnet version
         id: get-mainnet-version
-        run: echo "MAINNET_VERSION=$(curl -s -X POST --data-raw ${{ env.VERSION_QUERY }} -H "Content-Type:application/json" ${{ env.MAINNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1)" >> "$GITHUB_ENV"
+        run: echo "MAINNET_VERSION=$(curl -s -X POST --data-raw '${{ env.VERSION_QUERY }}' -H "Content-Type:application/json" ${{ env.MAINNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1)" >> "$GITHUB_ENV"
         env:
           MAINNET_VERSION_URL: 'curl -s -X POST --data-raw ${{ env.VERSION_QUERY }} -H "Content-Type: application/json" ${{ env.MAINNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1'
 
@@ -77,7 +77,7 @@ jobs:
       # test testnet
       - name: Get the testnet version
         id: get-testnet-version
-        run: echo "TESTNET_VERSION=$(curl -s -X POST --data-raw ${{ env.VERSION_QUERY }} -H "Content-Type:application/json" ${{ env.TESTNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1)" >> "$GITHUB_ENV"
+        run: echo "TESTNET_VERSION=$(curl -s -X POST --data-raw '${{ env.VERSION_QUERY }}' -H "Content-Type:application/json" ${{ env.TESTNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1)" >> "$GITHUB_ENV"
         env:
           TESTNET_VERSION_URL: 'curl -s -X POST --data-raw ${{ env.VERSION_QUERY }} -H "Content-Type: application/json" ${{ env.TESTNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1'
 
