@@ -27,7 +27,7 @@ jobs:
       RUST_LOG: 'INFO'
       VERSION_QUERY: '{"jsonrpc": "2.0", "id": "1", "method": "info_get_status"}'
       MAINNET_NODE_URL: 'https://rpc.mainnet.casperlabs.io/rpc'
-      TESTNET_NODE_URL: 'https://rpc.mainnet.casperlabs.io/rpc'
+      TESTNET_NODE_URL: 'https://rpc.testnet.casperlabs.io/rpc'
 
     steps:
       - name: Checkout
