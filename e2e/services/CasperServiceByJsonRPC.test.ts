@@ -82,10 +82,12 @@ describe('CasperServiceByJsonRPC', () => {
     expect(status).to.have.property('round_length');
     expect(status).to.have.property('next_upgrade');
     expect(status).to.have.property('uptime');
-    expect(status).to.have.property('reactor_state');
-    expect(status).to.have.property('last_progress');
-    expect(status).to.have.property('available_block_range');
-    expect(status).to.have.property('block_sync');
+    if (isAfterDot5) {
+      expect(status).to.have.property('reactor_state');
+      expect(status).to.have.property('last_progress');
+      expect(status).to.have.property('available_block_range');
+      expect(status).to.have.property('block_sync');
+    }
   });
 
   it('chain_get_block - by number', async () => {
