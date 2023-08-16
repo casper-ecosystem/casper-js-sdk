@@ -40,6 +40,8 @@ describe('CasperServiceByJsonRPC', () => {
 
   let faucetMainPurseUref = '';
   let transferBlockHash = '';
+  // TODO: Remove After mainnet goes 1.5
+  let isAfterDot5 = false;
 
   // Run tests after `BLOCKS_TO_CHECK` blocks are mined
   before(async () => {
@@ -63,6 +65,28 @@ describe('CasperServiceByJsonRPC', () => {
       await promise;
     } catch (error) {
       console.error(error);
+    }
+  });
+
+  it('info_get_status', async () => {
+    const status = await client.getStatus();
+
+    isAfterDot5 = !status.build_version.startsWith('1.4');
+
+    expect(status).to.have.property('peers');
+    expect(status).to.have.property('build_version');
+    expect(status).to.have.property('chainspec_name');
+    expect(status).to.have.property('starting_state_root_hash');
+    expect(status).to.have.property('last_added_block_info');
+    expect(status).to.have.property('our_public_signing_key');
+    expect(status).to.have.property('round_length');
+    expect(status).to.have.property('next_upgrade');
+    expect(status).to.have.property('uptime');
+    if (isAfterDot5) {
+      expect(status).to.have.property('reactor_state');
+      expect(status).to.have.property('last_progress');
+      expect(status).to.have.property('available_block_range');
+      expect(status).to.have.property('block_sync');
     }
   });
 
@@ -160,24 +184,6 @@ describe('CasperServiceByJsonRPC', () => {
     expect(peers).to.have.property('peers');
   });
 
-  it('info_get_status', async () => {
-    const status = await client.getStatus();
-
-    expect(status).to.have.property('peers');
-    expect(status).to.have.property('build_version');
-    expect(status).to.have.property('chainspec_name');
-    expect(status).to.have.property('starting_state_root_hash');
-    expect(status).to.have.property('last_added_block_info');
-    expect(status).to.have.property('our_public_signing_key');
-    expect(status).to.have.property('round_length');
-    expect(status).to.have.property('next_upgrade');
-    expect(status).to.have.property('uptime');
-    expect(status).to.have.property('reactor_state');
-    expect(status).to.have.property('last_progress');
-    expect(status).to.have.property('available_block_range');
-    expect(status).to.have.property('block_sync');
-  });
-
   it('state_get_auction_info - newest one', async () => {
     const validators = await client.getValidatorsInfo();
     expect(validators).to.have.property('auction_state');
@@ -227,6 +233,10 @@ describe('CasperServiceByJsonRPC', () => {
   });
 
   it('query_balance', async () => {
+    if (!isAfterDot5) {
+      return;
+    }
+
     const faucetBalance = '1000000000000000000000000000000000';
 
     const balanceByPublicKey = await client.queryBalance(
@@ -290,10 +300,21 @@ describe('CasperServiceByJsonRPC', () => {
 
     transferBlockHash = result.execution_results[0].block_hash;
 
-    const balance = await client.queryBalance(
-      PurseIdentifier.MainPurseUnderPublicKey,
-      toPublicKey.toHex(false)
-    );
+    let balance = BigNumber.from(0);
+
+    if (isAfterDot5) {
+      balance = await client.queryBalance(
+        PurseIdentifier.MainPurseUnderPublicKey,
+        toPublicKey.toHex(false)
+      );
+    } else {
+      const stateRootHash = await client.getStateRootHash();
+      const uref = await client.getAccountBalanceUrefByPublicKey(
+        stateRootHash,
+        toPublicKey
+      );
+      balance = await client.getAccountBalance(stateRootHash, uref);
+    }
     expect(amount).to.be.equal(balance.toString());
   });
 
@@ -433,6 +454,9 @@ describe('CasperServiceByJsonRPC', () => {
   it('chain_get_era_summary - by height');
 
   it('info_get_chainspec', async () => {
+    if (!isAfterDot5) {
+      return;
+    }
     const result = await client.getChainSpec();
     expect(result).to.have.property('chainspec_bytes');
     expect(result.chainspec_bytes).to.have.property('chainspec_bytes');

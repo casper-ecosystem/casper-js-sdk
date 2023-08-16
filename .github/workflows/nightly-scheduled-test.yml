@@ -25,6 +25,9 @@ jobs:
       HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
       NETWORK_NAME: 'casper-net-1'
       RUST_LOG: 'INFO'
+      VERSION_QUERY: '{"jsonrpc": "2.0", "id": "1", "method": "info_get_status"}'
+      MAINNET_NODE_URL: 'https://rpc.mainnet.casperlabs.io/rpc'
+      TESTNET_NODE_URL: 'https://rpc.testnet.casperlabs.io/rpc'
 
     steps:
       - name: Checkout
@@ -40,6 +43,22 @@ jobs:
 
       - name: Unit Test
         run: npm run test:unit
+
+      # test mainnet
+      - name: Get the mainnet version
+        id: get-mainnet-version
+        run: echo "MAINNET_VERSION=$(curl -s -X POST --data-raw '${{ env.VERSION_QUERY }}' -H "Content-Type:application/json" ${{ env.MAINNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1)" >> "$GITHUB_ENV"
+
+      - name: Test RPC - mainnet ${{ env.MAINNET_VERSION }}
+        run: npx casper-node-launcher-js node v${{ env.MAINNET_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
+
+      # test testnet
+      - name: Get the testnet version
+        id: get-testnet-version
+        run: echo "TESTNET_VERSION=$(curl -s -X POST --data-raw '${{ env.VERSION_QUERY }}' -H "Content-Type:application/json" ${{ env.TESTNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1)" >> "$GITHUB_ENV"
+
+      - name: Test RPC - testnet ${{ env.TESTNET_VERSION }}
+        run: npx casper-node-launcher-js node v${{ env.TESTNET_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
 
       - name: Test RPC - CN Dev
         run: npx casper-node-launcher-js node dev --daemon && npm run test:e2e && npx casper-node-launcher-js stop
