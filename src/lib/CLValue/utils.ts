@@ -29,8 +29,6 @@ import {
   CONTRACT_PACKAGE_HASH_TYPE,
   CONTRACT_HASH_TYPE
 } from './constants';
-import {} from './ContractHash';
-import {} from './ContractPackageHash';
 import {
   CLValueBytesParsers,
   CLAccountHashBytesParser,
