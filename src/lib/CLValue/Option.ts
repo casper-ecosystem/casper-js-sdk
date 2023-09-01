@@ -72,14 +72,10 @@ export class CLOptionBytesParser extends CLValueBytesParsers {
     bytes: Uint8Array,
     type: CLOptionType<CLType>
   ): ResultAndRemainder<CLOption<CLValue>, CLErrorCodes> {
-    const {
-      result: U8Res,
-      remainder: U8Rem
-    } = new CLU8BytesParser().fromBytesWithRemainder(bytes);
+    const { result: U8Res, remainder: U8Rem } =
+      new CLU8BytesParser().fromBytesWithRemainder(bytes);
 
-    const optionTag = U8Res.unwrap()
-      .value()
-      .toNumber();
+    const optionTag = U8Res.unwrap().value().toNumber();
 
     if (optionTag === OPTION_TAG_NONE) {
       return resultHelper(Ok(new CLOption(None, type.inner)), U8Rem);
@@ -91,10 +87,8 @@ export class CLOptionBytesParser extends CLValueBytesParsers {
           Err(CLErrorCodes.EarlyEndOfStream)
         );
       const parser = matchByteParserByCLType(type.inner).unwrap();
-      const {
-        result: valRes,
-        remainder: valRem
-      } = parser.fromBytesWithRemainder(U8Rem, type.inner);
+      const { result: valRes, remainder: valRem } =
+        parser.fromBytesWithRemainder(U8Rem, type.inner);
 
       const clValue = valRes.unwrap();
       return resultHelper(Ok(new CLOption(Some(clValue))), valRem);
@@ -111,7 +105,10 @@ export class CLOption<T extends CLValue> extends CLValue {
   /**
    * Constructs a new option containing the value of Some or None from ts-result.
    */
-  constructor(public data: Option<T>, innerType?: CLType) {
+  constructor(
+    public data: Option<T>,
+    innerType?: CLType
+  ) {
     super();
     if (data.none) {
       if (!innerType) {
@@ -121,7 +118,6 @@ export class CLOption<T extends CLValue> extends CLValue {
     } else {
       this.innerType = data.val.clType();
     }
-    super();
   }
 
   /**

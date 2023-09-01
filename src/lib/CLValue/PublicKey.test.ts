@@ -42,6 +42,7 @@ describe('CLPublicKey', () => {
   });
 
   it('Invalid by construction', () => {
+    // @ts-ignore
     const badFn = () => new CLPublicKey(rawEd25519Account, 4);
     expect(badFn).to.throw('Unsupported type of public key');
   });
