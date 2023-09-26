@@ -15,7 +15,7 @@
     "prepare": "husky-run install",
     "lint": "eslint src/ --fix",
     "lint:ci": "eslint src/ --max-warnings=0",
-    "prebuild2": "npm run clean && npm run lint",
+    "prebuild": "npm run clean && npm run lint",
     "build": "rollup -c",
     "clean": "rm -rf ./dist",
     "~build": "tsc --watch",

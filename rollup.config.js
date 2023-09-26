@@ -3,9 +3,22 @@ const { nodeResolve } = require('@rollup/plugin-node-resolve');
 const json = require('@rollup/plugin-json');
 const nodePolyfills = require('rollup-plugin-polyfill-node');
 
+/**
+ * Get configuration for rollup
+ * @param {{
+ *  browser: boolean,
+ *  suffix: string | undefined,
+ *  format: import('rollup').OutputOptions['format'],
+ *  name: string | undefined
+ * }} opts
+ * @returns {import('rollup').RollupOptions}
+ */
 function getConfig(opts) {
   if (opts == null) {
-    opts = {};
+    opts = {
+      browser: true,
+      format: 'esm'
+    };
   }
 
   const file = `./dist/lib${opts.suffix || ''}.js`;
@@ -13,6 +26,21 @@ function getConfig(opts) {
   const mainFields = ['module', 'main'];
   if (opts.browser) {
     mainFields.unshift('browser');
+  }
+
+  const plugins = [
+    json(),
+    typescript({ tsconfig: './tsconfig.build.json' }),
+    nodeResolve({
+      exportConditions,
+      mainFields,
+      modulesOnly: true,
+      preferBuiltins: opts.browser ? false : true
+    })
+  ];
+
+  if (opts.browser) {
+    plugins.push(nodePolyfills({ exclude: ['fs'] }));
   }
 
   return {
@@ -24,71 +52,17 @@ function getConfig(opts) {
       sourcemap: true
     },
     treeshake: true,
-    plugins: [
-      json(),
-      typescript({ tsconfig: './tsconfig.build.json' }),
-      nodeResolve({
-        exportConditions,
-        mainFields,
-        modulesOnly: true,
-        preferBuiltins: false
-      }),
-      nodePolyfills({ exclude: ['fs'] })
-    ]
+    plugins
   };
 }
 
-// /** @type {import('rollup').RollupOptions} */
-// const commonjsConfig = {
-//   ...config,
-//   output: {
-//     ...config.output,
-//     file: 'dist/lib.cjs.js',
-//     format: 'cjs'
-//   },
-//   plugins: [...config.plugins, commonjs()]
-// };
-
-// /** @type {import('rollup').RollupOptions} */
-// const browserConfig = {
-//   ...config,
-//   output: {
-//     ...config.output,
-//     file: 'dist/lib.js',
-//     name: 'casper-js-sdk',
-//     format: 'umd'
-//   },
-//   plugins: [
-//     ...config.plugins,
-//     resolve({
-//       preferBuiltins: false,
-//       browser: true
-//     }),
-//     commonjs(),
-//     nodePolyfills({ exclude: ['fs'] })
-//   ]
-// };
-
-// /** @type {import('rollup').RollupOptions} */
-// const nodeConfig = {
-//   ...config,
-//   output: {
-//     ...config.output,
-//     file: 'dist/lib.node.js',
-//     name: 'casper-js-sdk',
-//     format: 'umd'
-//   },
-//   plugins: [...config.plugins]
-// };
-
 /** @type {import('rollup').RollupOptions} */
 module.exports = [
-  getConfig({ browser: true }),
+  getConfig({ browser: true, format: 'esm' }),
   getConfig({
-    browser: true,
-    suffix: '.umd',
-    format: 'umd',
+    browser: false,
+    suffix: '.node',
+    format: 'commonjs',
     name: 'casper-js-sdk'
   })
 ];
-// export default browserConfig;
