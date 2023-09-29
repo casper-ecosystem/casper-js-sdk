@@ -2,7 +2,8 @@ node_modules
 
 # Output
 /docs/
-/dist/
+dist/
+.turbo
 
 .eslintcache
 .nyc_output

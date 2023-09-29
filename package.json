@@ -8,9 +8,12 @@
     "type": "git",
     "url": "https://github.com/casper-ecosystem/casper-js-sdk.git"
   },
-  "main": "dist/lib.umd.js",
-  "browser": "dist/lib.js",
-  "types": "dist/index.d.ts",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
   "scripts": {
     "prepare": "husky-run install",
     "lint": "eslint src/ --fix",
@@ -25,7 +28,8 @@
     "test:unit": "cross-env NODE_ENV=test npm run test:node:unit && npm run test:browser:unit",
     "test:node:e2e": "cross-env NODE_ENV=test TS_NODE_FILES=true mocha -r ts-node/register \"e2e/**/*.test.ts\" --timeout 5000000 --exit",
     "test:e2e": "cross-env NODE_ENV=test npm run test:node:e2e",
-    "test": "npm run test:unit && npm run test:e2e",
+    "test:coverage": "turbo test:coverage",
+    "test": "turbo test",
     "docs:build": "rm -rf docs && typedoc",
     "docs:watch": "rm -rf docs && typedoc --watch",
     "docs:serve": "npm run docs:build && serve docs",
@@ -107,6 +111,7 @@
     "stream-http": "^3.2.0",
     "ts-loader": "^9.4.2",
     "ts-node": "^10.9.1",
+    "turbo": "^1.10.14",
     "typedoc": "^0.25.0",
     "typescript": "^5.2.2",
     "url": "^0.11.0",

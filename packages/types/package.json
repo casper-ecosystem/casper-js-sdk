@@ -1,0 +1,15 @@
+{
+  "name": "@casper-js-sdk/types",
+  "version": "3.0.0-beta",
+  "description": "",
+  "main": "dist/lib.node.js",
+  "browser": "dist/lib.js",
+  "types": "dist/index.d.ts",
+  "author": "Ryo Kanazawa <ryo@casperlabs.io>",
+  "license": "Apache-2.0",
+  "scripts": {
+    "build": "rollup -c",
+    "test": "cross-env NODE_ENV=test TS_NODE_FILES=true mocha -r ts-node/register \"src/**/*.test.ts\"",
+    "test:coverage": "nyc yarn test"
+  }
+}
