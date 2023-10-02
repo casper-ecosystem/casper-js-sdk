@@ -11,6 +11,9 @@
     "test:coverage": {
       "dependsOn": ["test"]
     },
+    "coverage": {
+      "dependsOn": ["test:coverage"]
+    },
     "lint": {}
   }
 }

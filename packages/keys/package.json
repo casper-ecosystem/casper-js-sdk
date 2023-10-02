@@ -8,6 +8,7 @@
   "scripts": {
     "build": "rollup -c",
     "test": "cross-env NODE_ENV=test TS_NODE_FILES=true mocha -r ts-node/register \"src/**/*.test.ts\"",
-    "test:coverage": "nyc yarn test"
+    "test:coverage": "nyc --reporter=lcov yarn test",
+    "coverage": "codecov"
   }
 }

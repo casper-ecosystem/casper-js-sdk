@@ -7,6 +7,7 @@ dist/
 
 .eslintcache
 .nyc_output
+coverage
 
 .DS_Store
 
