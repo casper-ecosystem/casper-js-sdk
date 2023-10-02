@@ -9,7 +9,8 @@
       "dependsOn": ["build"]
     },
     "test:coverage": {
-      "dependsOn": ["test"]
+      "dependsOn": ["test"],
+      "cache": false
     },
     "coverage": {
       "dependsOn": ["test:coverage"]
