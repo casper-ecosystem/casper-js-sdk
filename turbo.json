@@ -3,14 +3,14 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist"]
+      "outputs": ["dist/**"]
     },
     "test": {
       "dependsOn": ["build"]
     },
     "test:coverage": {
       "dependsOn": ["test"],
-      "cache": false
+      "outputs": ["coverage/**", "!coverage/lcov-report/**", ".nyc_output/**"]
     },
     "coverage": {
       "dependsOn": ["test:coverage"]
