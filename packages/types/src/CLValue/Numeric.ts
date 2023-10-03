@@ -1,16 +1,16 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
-import { Ok, Err } from 'ts-results';
+import { Err, Ok } from 'ts-results';
 
+import { toBytesNumber } from '../ByteConverters';
 import {
   CLType,
   CLValue,
   CLValueBytesParsers,
   ResultAndRemainder,
-  ToBytesResult,
-  resultHelper
+  resultHelper,
+  ToBytesResult
 } from './Abstract';
 import { CLErrorCodes } from './constants';
-import { toBytesNumber } from '../ByteConverters';
 import {
   CLTypeTag,
   I32_TYPE,

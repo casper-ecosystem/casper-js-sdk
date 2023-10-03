@@ -1,20 +1,20 @@
 import { concat } from '@ethersproject/bytes';
-import { Ok, Err } from 'ts-results';
+import { Err, Ok } from 'ts-results';
 
-import {
-  CLType,
-  CLValue,
-  CLValueParsers,
-  CLErrorCodes,
-  resultHelper,
-  ResultAndRemainder,
-  ToBytesResult,
-  CLU32BytesParser,
-  CLValueBytesParsers,
-  matchByteParserByCLType
-} from './index';
-import { MAP_TYPE, CLTypeTag } from './constants';
 import { toBytesU32 } from '../ByteConverters';
+import { CLTypeTag, MAP_TYPE } from './constants';
+import {
+  CLErrorCodes,
+  CLType,
+  CLU32BytesParser,
+  CLValue,
+  CLValueBytesParsers,
+  CLValueParsers,
+  matchByteParserByCLType,
+  ResultAndRemainder,
+  resultHelper,
+  ToBytesResult
+} from './index';
 
 export interface MapEntryType {
   key: CLType;
@@ -84,15 +84,10 @@ export class CLMapBytesParser extends CLValueBytesParsers {
     bytes: Uint8Array,
     mapType: CLMapType<CLType, CLType>
   ): ResultAndRemainder<CLMap<KeyVal, KeyVal>, CLErrorCodes> {
-    const {
-      result: u32Res,
-      remainder: u32Rem
-    } = new CLU32BytesParser().fromBytesWithRemainder(bytes);
+    const { result: u32Res, remainder: u32Rem } =
+      new CLU32BytesParser().fromBytesWithRemainder(bytes);
 
-    const size = u32Res
-      .unwrap()
-      .value()
-      .toNumber();
+    const size = u32Res.unwrap().value().toNumber();
     const vec: [KeyVal, KeyVal][] = [];
 
     let remainder = u32Rem;
@@ -111,10 +106,8 @@ export class CLMapBytesParser extends CLValueBytesParsers {
         );
 
       const keyParser = matchByteParserByCLType(mapType.innerKey).unwrap();
-      const {
-        result: kRes,
-        remainder: kRem
-      } = keyParser.fromBytesWithRemainder(remainder, mapType.innerKey);
+      const { result: kRes, remainder: kRem } =
+        keyParser.fromBytesWithRemainder(remainder, mapType.innerKey);
 
       const finalKey = kRes.unwrap();
       remainder = kRem;
@@ -125,10 +118,8 @@ export class CLMapBytesParser extends CLValueBytesParsers {
         );
 
       const valParser = matchByteParserByCLType(mapType.innerValue).unwrap();
-      const {
-        result: vRes,
-        remainder: vRem
-      } = valParser.fromBytesWithRemainder(remainder, mapType.innerValue);
+      const { result: vRes, remainder: vRem } =
+        valParser.fromBytesWithRemainder(remainder, mapType.innerValue);
 
       const finalValue = vRes.unwrap();
       remainder = vRem;

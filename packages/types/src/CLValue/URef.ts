@@ -1,18 +1,18 @@
 import { concat } from '@ethersproject/bytes';
-import { Ok, Err } from 'ts-results';
+import { Err, Ok } from 'ts-results';
 
+import { decodeBase16, encodeBase16 } from '../Conversions';
+import { CLTypeTag, UREF_TYPE } from './constants';
 import {
+  CLErrorCodes,
   CLType,
   CLValue,
   CLValueBytesParsers,
-  CLErrorCodes,
+  padNum,
   ResultAndRemainder,
-  ToBytesResult,
   resultHelper,
-  padNum
+  ToBytesResult
 } from './index';
-import { UREF_TYPE, CLTypeTag } from './constants';
-import { decodeBase16, encodeBase16 } from '../Conversions';
 
 export enum AccessRights {
   // No permissions

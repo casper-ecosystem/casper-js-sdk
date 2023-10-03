@@ -1,10 +1,11 @@
 import { expect } from 'chai';
+
 import {
-  CLValueBuilder,
-  CLValueParsers,
   CLBool,
   CLBoolType,
-  CLErrorCodes
+  CLErrorCodes,
+  CLValueBuilder,
+  CLValueParsers
 } from './index';
 
 describe('CLBool', () => {

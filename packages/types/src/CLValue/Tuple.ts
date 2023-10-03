@@ -1,19 +1,19 @@
-import { Ok, Err } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
+import { Err, Ok } from 'ts-results';
 
+import { CLTypeTag, TUPLE1_TYPE, TUPLE2_TYPE, TUPLE3_TYPE } from './constants';
 import {
+  CLErrorCodes,
   CLType,
   CLValue,
-  CLValueParsers,
   CLValueBytesParsers,
-  ResultAndRemainder,
-  ToBytesResult,
-  resultHelper,
+  CLValueParsers,
   matchByteParserByCLType,
-  CLErrorCodes
+  ResultAndRemainder,
+  resultHelper,
+  ToBytesResult
 } from './index';
 import { TUPLE_MATCH_LEN_TO_TYPE } from './utils';
-import { CLTypeTag, TUPLE1_TYPE, TUPLE2_TYPE, TUPLE3_TYPE } from './constants';
 
 export abstract class CLTupleType extends CLType {
   tag: CLTypeTag;

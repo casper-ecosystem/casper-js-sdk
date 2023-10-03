@@ -1,15 +1,15 @@
 import { Ok } from 'ts-results';
 
+import { CLTypeTag, UNIT_TYPE } from './constants';
 import {
+  CLErrorCodes,
   CLType,
   CLValue,
   CLValueBytesParsers,
-  CLErrorCodes,
   ResultAndRemainder,
-  ToBytesResult,
-  resultHelper
+  resultHelper,
+  ToBytesResult
 } from './index';
-import { UNIT_TYPE, CLTypeTag } from './constants';
 
 export class CLUnitType extends CLType {
   tag = CLTypeTag.Unit;

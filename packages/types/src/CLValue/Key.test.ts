@@ -1,14 +1,15 @@
 import { expect } from 'chai';
+
+import { decodeBase16 } from '../Conversions';
 import {
-  CLValueParsers,
+  AccessRights,
+  CLAccountHash,
+  CLByteArray,
   CLKey,
   CLKeyType,
   CLURef,
-  AccessRights,
-  CLAccountHash,
-  CLByteArray
+  CLValueParsers
 } from './index';
-import { decodeBase16 } from '../Conversions';
 
 describe('CLKey', () => {
   const urefAddr =
@@ -44,39 +45,8 @@ describe('CLKey', () => {
     const arr8 = Uint8Array.from(Array(32).fill(42));
     const byteArr = new CLByteArray(arr8);
     const expectedBytes = Uint8Array.from([
-      1,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42,
-      42
+      1, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42,
+      42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42, 42
     ]);
     const myKey = new CLKey(byteArr);
     const bytes = CLValueParsers.toBytes(myKey).unwrap();

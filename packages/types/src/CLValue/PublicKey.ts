@@ -1,22 +1,21 @@
 import { concat } from '@ethersproject/bytes';
-import { Ok, Err } from 'ts-results';
+import { Err, Ok } from 'ts-results';
 
+import { byteHash } from '../ByteConverters';
+import { encode, isChecksummed } from '../ChecksummedHex';
+import { decodeBase16, encodeBase16 } from '../Conversions';
+// TODO: Tidy up almost the same enum in Keys.
+import { SignatureAlgorithm } from '../types';
+import { CLTypeTag, PUBLIC_KEY_TYPE } from './constants';
 import {
+  CLErrorCodes,
   CLType,
   CLValue,
   CLValueBytesParsers,
-  CLErrorCodes,
-  resultHelper,
   ResultAndRemainder,
+  resultHelper,
   ToBytesResult
 } from './index';
-import { PUBLIC_KEY_TYPE, CLTypeTag } from './constants';
-import { decodeBase16, encodeBase16 } from '../Conversions';
-import { byteHash } from '../ByteConverters';
-
-// TODO: Tidy up almost the same enum in Keys.
-import { SignatureAlgorithm } from '../types';
-import { encode, isChecksummed } from '../ChecksummedHex';
 
 const ED25519_LENGTH = 32;
 const SECP256K1_LENGTH = 33;

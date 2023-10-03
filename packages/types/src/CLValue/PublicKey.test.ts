@@ -1,11 +1,12 @@
 import { expect } from 'chai';
+
+import { SignatureAlgorithm } from '../types';
 import {
   CLPublicKey,
-  CLPublicKeyType,
   CLPublicKeyTag,
+  CLPublicKeyType,
   CLValueParsers
 } from './index';
-import { SignatureAlgorithm } from '../types';
 
 // prettier-ignore
 const rawEd25519Account = Uint8Array.from([

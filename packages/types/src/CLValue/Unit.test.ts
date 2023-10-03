@@ -1,5 +1,6 @@
 import { expect } from 'chai';
-import { CLValueParsers, CLUnit } from './index';
+
+import { CLUnit, CLValueParsers } from './index';
 
 describe('Unit implementation tests', () => {
   it('Unit value() should return proper value', () => {

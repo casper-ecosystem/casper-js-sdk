@@ -1,12 +1,13 @@
 import { expect } from 'chai';
+import { None, Some } from 'ts-results';
+
 import {
-  CLValueParsers,
   CLBool,
-  CLOption,
   CLBoolType,
-  CLOptionType
+  CLOption,
+  CLOptionType,
+  CLValueParsers
 } from './index';
-import { Some, None } from 'ts-results';
 
 const mySomeOpt = new CLOption(Some(new CLBool(true)));
 const myNoneOpt = new CLOption(None, new CLBoolType());

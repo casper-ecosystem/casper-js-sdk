@@ -1,18 +1,15 @@
-import { Result, Ok, Err } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
+import { Err, Ok, Result } from 'ts-results';
 
 import { toBytesArrayU8 } from '../ByteConverters';
+import { decodeBase16, encodeBase16 } from '../Conversions';
 import { CLErrorCodes, CLTypeTag } from './constants';
-
-import {
-  matchTypeToCLType,
-  matchBytesToCLType,
-  matchByteParserByCLType
-} from './utils';
-
 import { CLU32BytesParser } from './index';
-
-import { encodeBase16, decodeBase16 } from '../Conversions';
+import {
+  matchByteParserByCLType,
+  matchBytesToCLType,
+  matchTypeToCLType
+} from './utils';
 
 export interface ResultAndRemainder<T, E> {
   result: Result<T, E>;

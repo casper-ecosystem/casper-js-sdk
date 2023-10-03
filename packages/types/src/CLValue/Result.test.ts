@@ -1,18 +1,19 @@
 import { expect } from 'chai';
+import { Err, Ok, Some } from 'ts-results';
+
 import {
-  CLValueParsers,
   CLBool,
   CLBoolType,
+  CLList,
+  CLListType,
+  CLOption,
+  CLOptionType,
   CLResult,
   CLResultType,
   CLU8,
   CLU8Type,
-  CLListType,
-  CLList,
-  CLOptionType,
-  CLOption
+  CLValueParsers
 } from './index';
-import { Ok, Err, Some } from 'ts-results';
 
 const myTypes = { ok: new CLBoolType(), err: new CLU8Type() };
 const myOkRes = new CLResult(Ok(new CLBool(true)), myTypes);
@@ -93,16 +94,13 @@ describe('CLResult', () => {
   });
 
   it('toBytesWithType() / fromBytesWithType()', () => {
-    const okResBytesWithCLType = CLValueParsers.toBytesWithType(
-      myOkRes
-    ).unwrap();
-    const okFromBytes = CLValueParsers.fromBytesWithType(
-      okResBytesWithCLType
-    ).unwrap();
+    const okResBytesWithCLType =
+      CLValueParsers.toBytesWithType(myOkRes).unwrap();
+    const okFromBytes =
+      CLValueParsers.fromBytesWithType(okResBytesWithCLType).unwrap();
 
-    const errResBytesWithCLType = CLValueParsers.toBytesWithType(
-      myErrRes
-    ).unwrap();
+    const errResBytesWithCLType =
+      CLValueParsers.toBytesWithType(myErrRes).unwrap();
     const errFromBytes = CLValueParsers.fromBytesWithType(
       errResBytesWithCLType
     ).unwrap();
@@ -112,16 +110,13 @@ describe('CLResult', () => {
   });
 
   it('Complex examples toBytesWithCLType() / fromBytesWithCLType()', () => {
-    const okResBytesWithCLType = CLValueParsers.toBytesWithType(
-      myOkComplexRes
-    ).unwrap();
-    const okFromBytes = CLValueParsers.fromBytesWithType(
-      okResBytesWithCLType
-    ).unwrap();
+    const okResBytesWithCLType =
+      CLValueParsers.toBytesWithType(myOkComplexRes).unwrap();
+    const okFromBytes =
+      CLValueParsers.fromBytesWithType(okResBytesWithCLType).unwrap();
 
-    const errResBytesWithCLType = CLValueParsers.toBytesWithType(
-      myErrComplexRes
-    ).unwrap();
+    const errResBytesWithCLType =
+      CLValueParsers.toBytesWithType(myErrComplexRes).unwrap();
     const errFromBytes = CLValueParsers.fromBytesWithType(
       errResBytesWithCLType
     ).unwrap();

@@ -1,16 +1,17 @@
-import { Ok, Err } from 'ts-results';
+import { Err, Ok } from 'ts-results';
+
+import { fromBytesString, toBytesString } from '../ByteConverters';
+import { CLTypeTag, STRING_TYPE } from './constants';
 import {
-  CLType,
-  CLValue,
-  CLU32BytesParser,
-  ResultAndRemainder,
-  ToBytesResult,
-  resultHelper,
   CLErrorCodes,
-  CLValueBytesParsers
+  CLType,
+  CLU32BytesParser,
+  CLValue,
+  CLValueBytesParsers,
+  ResultAndRemainder,
+  resultHelper,
+  ToBytesResult
 } from './index';
-import { STRING_TYPE, CLTypeTag } from './constants';
-import { toBytesString, fromBytesString } from '../ByteConverters';
 
 export class CLStringType extends CLType {
   linksTo = STRING_TYPE;
@@ -25,14 +26,10 @@ export class CLStringBytesParser extends CLValueBytesParsers {
   fromBytesWithRemainder(
     rawBytes: Uint8Array
   ): ResultAndRemainder<CLString, CLErrorCodes> {
-    const {
-      result: CLU32res,
-      remainder: CLU32rem
-    } = new CLU32BytesParser().fromBytesWithRemainder(rawBytes);
+    const { result: CLU32res, remainder: CLU32rem } =
+      new CLU32BytesParser().fromBytesWithRemainder(rawBytes);
 
-    const len = CLU32res.unwrap()
-      .value()
-      .toNumber();
+    const len = CLU32res.unwrap().value().toNumber();
 
     if (CLU32rem) {
       const val = fromBytesString(CLU32rem.subarray(0, len));

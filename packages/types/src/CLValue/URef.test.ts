@@ -1,6 +1,7 @@
 import { expect } from 'chai';
-import { CLURef, CLURefType, CLValueParsers, AccessRights } from './index';
+
 import { decodeBase16 } from '../Conversions';
+import { AccessRights, CLURef, CLURefType, CLValueParsers } from './index';
 
 const urefAddr =
   '2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a';

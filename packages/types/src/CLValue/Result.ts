@@ -1,19 +1,19 @@
-import { Result, Ok, Err } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
+import { Err, Ok, Result } from 'ts-results';
 
-import {
-  CLValue,
-  CLValueParsers,
-  CLType,
-  CLErrorCodes,
-  ResultAndRemainder,
-  ToBytesResult,
-  resultHelper,
-  CLU8BytesParser,
-  CLValueBytesParsers,
-  matchByteParserByCLType
-} from './index';
 import { CLTypeTag, RESULT_TYPE } from './constants';
+import {
+  CLErrorCodes,
+  CLType,
+  CLU8BytesParser,
+  CLValue,
+  CLValueBytesParsers,
+  CLValueParsers,
+  matchByteParserByCLType,
+  ResultAndRemainder,
+  resultHelper,
+  ToBytesResult
+} from './index';
 
 const RESULT_TAG_ERROR = 0;
 const RESULT_TAG_OK = 1;
@@ -78,10 +78,8 @@ export class CLResultBytesParser extends CLValueBytesParsers {
     bytes: Uint8Array,
     type: CLResultType<CLType, CLType>
   ): ResultAndRemainder<CLResult<CLType, CLType>, CLErrorCodes> {
-    const {
-      result: U8Res,
-      remainder: U8Rem
-    } = new CLU8BytesParser().fromBytesWithRemainder(bytes);
+    const { result: U8Res, remainder: U8Rem } =
+      new CLU8BytesParser().fromBytesWithRemainder(bytes);
 
     if (!U8Rem) {
       return resultHelper<CLResult<CLType, CLType>, CLErrorCodes>(
@@ -89,18 +87,14 @@ export class CLResultBytesParser extends CLValueBytesParsers {
       );
     }
 
-    const resultTag = U8Res.unwrap()
-      .value()
-      .toNumber();
+    const resultTag = U8Res.unwrap().value().toNumber();
     const referenceErr = type.innerErr;
     const referenceOk = type.innerOk;
 
     if (resultTag === RESULT_TAG_ERROR) {
       const parser = matchByteParserByCLType(referenceErr).unwrap();
-      const {
-        result: valRes,
-        remainder: valRem
-      } = parser.fromBytesWithRemainder(U8Rem, type.innerErr);
+      const { result: valRes, remainder: valRem } =
+        parser.fromBytesWithRemainder(U8Rem, type.innerErr);
 
       const val = new CLResult(Err(valRes.unwrap()), {
         ok: referenceOk,
@@ -112,10 +106,8 @@ export class CLResultBytesParser extends CLValueBytesParsers {
 
     if (resultTag === RESULT_TAG_OK) {
       const parser = matchByteParserByCLType(referenceOk).unwrap();
-      const {
-        result: valRes,
-        remainder: valRem
-      } = parser.fromBytesWithRemainder(U8Rem, type.innerOk);
+      const { result: valRes, remainder: valRem } =
+        parser.fromBytesWithRemainder(U8Rem, type.innerOk);
 
       const val = new CLResult(Ok(valRes.unwrap()), {
         ok: referenceOk,

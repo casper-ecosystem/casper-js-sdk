@@ -1,31 +1,31 @@
 // NOTE: Revisit in future based on https://docs.rs/casper-types/1.0.1/casper_types/enum.Key.html
 
 import { concat } from '@ethersproject/bytes';
-import { Ok, Err } from 'ts-results';
+import { Err, Ok } from 'ts-results';
 
+import { CLTypeTag, KEY_TYPE } from './constants';
 import {
-  CLType,
-  CLValue,
-  CLByteArray,
-  CLByteArrayType,
-  CLByteArrayBytesParser,
-  CLURef,
-  CLURefBytesParser,
-  CLAccountHash,
-  CLAccountHashBytesParser,
-  CLErrorCodes,
-  KeyVariant,
-  ResultAndRemainder,
-  ToBytesResult,
-  CLValueBytesParsers,
-  CLValueParsers,
-  CLPublicKey,
-  resultHelper,
   ACCOUNT_HASH_TYPE,
   BYTE_ARRAY_TYPE,
+  CLAccountHash,
+  CLAccountHashBytesParser,
+  CLByteArray,
+  CLByteArrayBytesParser,
+  CLByteArrayType,
+  CLErrorCodes,
+  CLPublicKey,
+  CLType,
+  CLURef,
+  CLURefBytesParser,
+  CLValue,
+  CLValueBytesParsers,
+  CLValueParsers,
+  KeyVariant,
+  ResultAndRemainder,
+  resultHelper,
+  ToBytesResult,
   UREF_TYPE
 } from './index';
-import { KEY_TYPE, CLTypeTag } from './constants';
 
 const HASH_LENGTH = 32;
 
@@ -81,21 +81,17 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
 
     if (tag === KeyVariant.Hash) {
       const hashBytes = bytes.subarray(1);
-      const {
-        result: hashResult,
-        remainder: hashRemainder
-      } = new CLByteArrayBytesParser().fromBytesWithRemainder(
-        hashBytes,
-        new CLByteArrayType(HASH_LENGTH)
-      );
+      const { result: hashResult, remainder: hashRemainder } =
+        new CLByteArrayBytesParser().fromBytesWithRemainder(
+          hashBytes,
+          new CLByteArrayType(HASH_LENGTH)
+        );
       const hash = hashResult.unwrap();
       const key = new CLKey(hash);
       return resultHelper(Ok(key), hashRemainder);
     } else if (tag === KeyVariant.URef) {
-      const {
-        result: urefResult,
-        remainder: urefRemainder
-      } = new CLURefBytesParser().fromBytesWithRemainder(bytes.subarray(1));
+      const { result: urefResult, remainder: urefRemainder } =
+        new CLURefBytesParser().fromBytesWithRemainder(bytes.subarray(1));
       if (urefResult.ok) {
         const key = new CLKey(urefResult.val);
         return resultHelper(Ok(key), urefRemainder);
@@ -103,12 +99,10 @@ export class CLKeyBytesParser extends CLValueBytesParsers {
         return resultHelper<CLKey, CLErrorCodes>(Err(urefResult.val));
       }
     } else if (tag === KeyVariant.Account) {
-      const {
-        result: accountHashResult,
-        remainder: accountHashRemainder
-      } = new CLAccountHashBytesParser().fromBytesWithRemainder(
-        bytes.subarray(1)
-      );
+      const { result: accountHashResult, remainder: accountHashRemainder } =
+        new CLAccountHashBytesParser().fromBytesWithRemainder(
+          bytes.subarray(1)
+        );
       if (accountHashResult.ok) {
         const key = new CLKey(accountHashResult.val);
         return resultHelper(Ok(key), accountHashRemainder);

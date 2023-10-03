@@ -1,15 +1,15 @@
-import { Ok, Err } from 'ts-results';
+import { Err, Ok } from 'ts-results';
 
+import { BOOL_TYPE, CLTypeTag } from './constants';
 import {
+  CLErrorCodes,
   CLType,
   CLValue,
+  CLValueBytesParsers,
   ResultAndRemainder,
-  ToBytesResult,
-  CLErrorCodes,
   resultHelper,
-  CLValueBytesParsers
+  ToBytesResult
 } from './index';
-import { BOOL_TYPE, CLTypeTag } from './constants';
 
 export class CLBoolType extends CLType {
   linksTo = BOOL_TYPE;

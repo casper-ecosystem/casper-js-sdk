@@ -1,16 +1,16 @@
-import { Ok, Err } from 'ts-results';
+import { Err, Ok } from 'ts-results';
 
 import {
-  CLValue,
-  CLValueBytesParsers,
-  CLType,
-  CLErrorCodes,
-  ResultAndRemainder,
-  ToBytesResult,
-  resultHelper,
+  ACCOUNT_HASH_LENGTH,
   ACCOUNT_HASH_TYPE,
   CLByteArrayType,
-  ACCOUNT_HASH_LENGTH
+  CLErrorCodes,
+  CLType,
+  CLValue,
+  CLValueBytesParsers,
+  ResultAndRemainder,
+  resultHelper,
+  ToBytesResult
 } from './index';
 
 // AccountHash is an alias, not a fully functional CLType so uses the same CLTypeTag as ByteArray

@@ -1,16 +1,17 @@
 import { expect } from 'chai';
+
 import {
-  CLValueParsers,
-  CLList,
-  CLListType,
   CLBool,
   CLBoolType,
-  CLStringType,
-  CLU8,
+  CLByteArray,
   CLI32,
   CLI32Type,
   CLKey,
-  CLByteArray
+  CLList,
+  CLListType,
+  CLStringType,
+  CLU8,
+  CLValueParsers
 } from './index';
 
 describe('CLValue List implementation', () => {
@@ -220,37 +221,8 @@ describe('CLValue List implementation', () => {
     const clKey = new CLKey(
       new CLByteArray(
         Uint8Array.from([
-          48,
-          17,
-          103,
-          38,
-          142,
-          192,
-          14,
-          235,
-          126,
-          223,
-          125,
-          18,
-          217,
-          65,
-          153,
-          33,
-          225,
-          93,
-          189,
-          123,
-          20,
-          94,
-          69,
-          77,
-          148,
-          84,
-          10,
-          169,
-          28,
-          38,
-          14,
+          48, 17, 103, 38, 142, 192, 14, 235, 126, 223, 125, 18, 217, 65, 153,
+          33, 225, 93, 189, 123, 20, 94, 69, 77, 148, 84, 10, 169, 28, 38, 14,
           219
         ])
       )
@@ -271,9 +243,8 @@ describe('CLValue List implementation', () => {
 
     const bytesWithCLType = CLValueParsers.toBytesWithType(myList).unwrap();
 
-    const fromBytes = CLValueParsers.fromBytesWithType(
-      bytesWithCLType
-    ).unwrap();
+    const fromBytes =
+      CLValueParsers.fromBytesWithType(bytesWithCLType).unwrap();
 
     expect(fromBytes).to.be.deep.eq(myList);
   });

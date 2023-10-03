@@ -1,17 +1,17 @@
-import { Ok } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
+import { Ok } from 'ts-results';
 
+import { toBytesU32 } from '../ByteConverters';
+import { BYTE_ARRAY_TYPE, CLTypeTag } from './constants';
 import {
+  CLErrorCodes,
   CLType,
   CLValue,
-  ToBytesResult,
   CLValueBytesParsers,
-  CLErrorCodes,
   ResultAndRemainder,
-  resultHelper
+  resultHelper,
+  ToBytesResult
 } from './index';
-import { BYTE_ARRAY_TYPE, CLTypeTag } from './constants';
-import { toBytesU32 } from '../ByteConverters';
 
 export class CLByteArrayType extends CLType {
   linksTo = BYTE_ARRAY_TYPE;

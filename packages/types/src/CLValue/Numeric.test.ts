@@ -1,6 +1,6 @@
 import { expect } from 'chai';
+
 import {
-  CLValueParsers,
   CLI32,
   CLI32Type,
   CLI64,
@@ -11,7 +11,8 @@ import {
   CLU32Type,
   CLU64,
   CLU64Type,
-  CLU128
+  CLU128,
+  CLValueParsers
 } from './index';
 
 const MAX_I64 = '9223372036854775807';

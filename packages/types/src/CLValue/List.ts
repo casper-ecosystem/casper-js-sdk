@@ -1,21 +1,20 @@
-import { Ok, Err } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
+import { Err, Ok } from 'ts-results';
 
-import {
-  CLValue,
-  CLType,
-  ToBytes,
-  CLErrorCodes,
-  resultHelper,
-  ResultAndRemainder,
-  ToBytesResult,
-  CLValueBytesParsers,
-  CLU32BytesParser,
-  matchByteParserByCLType
-} from './index';
 import { toBytesVectorNew } from '../ByteConverters';
-
-import { LIST_TYPE, CLTypeTag } from './constants';
+import { CLTypeTag, LIST_TYPE } from './constants';
+import {
+  CLErrorCodes,
+  CLType,
+  CLU32BytesParser,
+  CLValue,
+  CLValueBytesParsers,
+  matchByteParserByCLType,
+  ResultAndRemainder,
+  resultHelper,
+  ToBytes,
+  ToBytesResult
+} from './index';
 
 export class CLListType<T extends CLType> extends CLType {
   inner: T;
@@ -53,10 +52,8 @@ export class CLListBytesParser extends CLValueBytesParsers {
     bytes: Uint8Array,
     listType: CLListType<CLType>
   ): ResultAndRemainder<CLList<CLValue>, CLErrorCodes> {
-    const {
-      result: u32Res,
-      remainder: u32Rem
-    } = new CLU32BytesParser().fromBytesWithRemainder(bytes);
+    const { result: u32Res, remainder: u32Rem } =
+      new CLU32BytesParser().fromBytesWithRemainder(bytes);
 
     if (!u32Res.ok) {
       return resultHelper<CLList<CLValue>, CLErrorCodes>(Err(u32Res.val));

@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+
 import { CLByteArray, CLByteArrayType, CLValueParsers } from './index';
 
 describe('CLByteArray', () => {

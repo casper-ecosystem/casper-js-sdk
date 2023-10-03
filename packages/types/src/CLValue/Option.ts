@@ -1,20 +1,19 @@
-import { Ok, Err, Option, Some, None } from 'ts-results';
 import { concat } from '@ethersproject/bytes';
-
-import {
-  CLValue,
-  CLValueParsers,
-  CLValueBytesParsers,
-  CLType,
-  CLErrorCodes,
-  ResultAndRemainder,
-  ToBytesResult,
-  CLU8BytesParser,
-  resultHelper,
-  matchByteParserByCLType
-} from './index';
+import { Err, None, Ok, Option, Some } from 'ts-results';
 
 import { CLTypeTag, OPTION_TYPE } from './constants';
+import {
+  CLErrorCodes,
+  CLType,
+  CLU8BytesParser,
+  CLValue,
+  CLValueBytesParsers,
+  CLValueParsers,
+  matchByteParserByCLType,
+  ResultAndRemainder,
+  resultHelper,
+  ToBytesResult
+} from './index';
 
 const OPTION_TAG_NONE = 0;
 const OPTION_TAG_SOME = 1;

@@ -1,5 +1,6 @@
 import { expect } from 'chai';
-import { CLValueParsers, CLString, CLStringType } from './index';
+
+import { CLString, CLStringType, CLValueParsers } from './index';
 
 describe('CLString', () => {
   it('CLString value() should return proper value', () => {

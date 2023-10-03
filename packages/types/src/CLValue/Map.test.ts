@@ -1,14 +1,15 @@
 import { expect } from 'chai';
+
 import {
-  CLValueParsers,
-  CLValueBuilder,
+  CLBool,
+  CLI32,
+  CLI32Type,
   CLMap,
   CLMapType,
-  CLBool,
   CLString,
   CLStringType,
-  CLI32,
-  CLI32Type
+  CLValueBuilder,
+  CLValueParsers
 } from './index';
 
 describe('CLValue CLMap implementation', () => {
