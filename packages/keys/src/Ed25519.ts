@@ -3,18 +3,18 @@
  * @packageDocumentation
  */
 
-import * as fs from 'fs';
+import * as fs from 'node:fs';
 
 import {
-  SignatureAlgorithm,
   encodeBase16,
-  encodeBase64
+  encodeBase64,
+  SignatureAlgorithm
 } from '@casper-js-sdk/types';
 import * as ed25519 from '@noble/ed25519';
-import * as secp256k1 from '@noble/secp256k1';
+import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha256';
 import { sha512 } from '@noble/hashes/sha512';
-import { hmac } from '@noble/hashes/hmac';
+import * as secp256k1 from '@noble/secp256k1';
 
 import { AsymmetricKey } from './AsymmetricKey';
 import { accountHashHelper } from './utils';

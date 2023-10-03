@@ -1,6 +1,7 @@
 import { byteHash, decodeBase16, decodeBase64 } from '@casper-js-sdk/types';
 import { expect } from 'chai';
 import sinon from 'sinon';
+
 import { Ed25519 } from './Ed25519';
 
 describe('Ed25519', () => {
