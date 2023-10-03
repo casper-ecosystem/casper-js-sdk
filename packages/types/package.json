@@ -5,7 +5,7 @@
   "main": "dist/lib.node.js",
   "browser": "dist/lib.js",
   "types": "dist/index.d.ts",
-  "author": "Ryo Kanazawa <ryo@casperlabs.io>",
+  "author": "Jan Hoffmann <jan@casperlabs.io>, Ryo Kanazawa <ryo@casperlabs.io>",
   "license": "Apache-2.0",
   "scripts": {
     "build": "rollup -c",

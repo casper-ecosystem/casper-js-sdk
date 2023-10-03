@@ -56,7 +56,7 @@ function getConfig(opts) {
   };
 }
 
-/** @type {import('rollup').RollupOptions} */
+/** @type {import('rollup').RollupOptions[]} */
 module.exports = [
   getConfig({ browser: true, format: 'esm' }),
   getConfig({

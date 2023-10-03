@@ -3,7 +3,7 @@
   "version": "3.0.0-beta",
   "description": "",
   "main": "index.js",
-  "author": "Ryo Kanazawa <ryo@casperlabs.io>",
+  "author": "Jan Hoffmann <jan@casperlabs.io>, Ryo Kanazawa <ryo@casperlabs.io>",
   "license": "Apache-2.0",
   "scripts": {
     "build": "rollup -c",

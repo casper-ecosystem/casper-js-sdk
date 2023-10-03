@@ -1,0 +1,36 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 80%
+        threshold: 1%
+    patch:
+      default:
+        target: auto
+        threshold: 5%
+
+component_management:
+  default_rules: # default rules that will be inherited by all components
+    statuses:
+      - type: project
+        target: 80%
+      - type: patch
+        target: 80%
+
+  individual_components:
+    - component_id: 'web3'
+      paths:
+        - /packages/web3/src/
+    - component_id: '@casper-js-sdk/types'
+      paths:
+        - /packages/types/src/
+    - component_id: '@casper-js-sdk/keys'
+      paths:
+        - /packages/keys/src/
+
+comment:
+  layout: 'header, diff, flags, components'
+  behavior: 'default'
+  require_changes: false
+  require_base: no
+  require_head: no
