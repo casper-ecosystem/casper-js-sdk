@@ -16,8 +16,8 @@
   },
   "scripts": {
     "prepare": "husky-run install",
-    "lint": "eslint src/ --fix",
-    "lint:ci": "eslint src/ --max-warnings=0",
+    "lint": "eslint packages/ --fix",
+    "lint:ci": "eslint packages/ --max-warnings=0",
     "prebuild": "npm run clean && npm run lint",
     "build": "rollup -c",
     "clean": "rm -rf ./dist",
@@ -88,6 +88,7 @@
     "eslint-plugin-jsdoc": "^46.5.1",
     "eslint-plugin-lodash": "^7.4.0",
     "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
     "https-browserify": "^1.0.0",
     "husky": "^4.3.8",
     "karma": "^6.4.1",

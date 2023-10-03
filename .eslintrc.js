@@ -11,15 +11,18 @@ module.exports = {
   plugins: ['eslint-plugin-jsdoc', 'eslint-plugin-prefer-arrow', 'lodash'],
   overrides: [
     {
-      files: ['*.ts'], // Your TypeScript files extension
+      files: ['packages/**/*.ts'], // Your TypeScript files extension
       // As mentioned in the comments, you should extend TypeScript plugins here,
       // instead of extending them outside the `overrides`.
       // If you don't want to extend any rules, you don't need an `extends` attribute.
       extends: ['plugin:@typescript-eslint/recommended'],
+      plugins: ['simple-import-sort'],
       parserOptions: {
         project: ['./tsconfig.json'] // Specify it only for TypeScript files
       },
       rules: {
+        'simple-import-sort/imports': 'error',
+        'simple-import-sort/exports': 'error',
         '@typescript-eslint/ban-ts-comment': 'off',
         '@typescript-eslint/no-non-null-assertion': 'off',
         '@typescript-eslint/explicit-module-boundary-types': 'off',
