@@ -5,6 +5,7 @@
 //! Migrate from https://github.com/casper-network/casper-node/blob/9609a616439de334d89917a14240940615a49f81/types/src/checksummed_hex.rs
 
 import { concat } from '@ethersproject/bytes';
+
 import { byteHash } from './ByteConverters';
 import { decodeBase16 } from './Conversions';
 

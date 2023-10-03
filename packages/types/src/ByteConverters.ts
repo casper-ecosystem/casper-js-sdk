@@ -4,8 +4,8 @@
 'use strict';
 
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
-import { MaxUint256, NegativeOne, One, Zero } from '@ethersproject/constants';
 import { arrayify, concat } from '@ethersproject/bytes';
+import { MaxUint256, NegativeOne, One, Zero } from '@ethersproject/constants';
 import { blake2b as _blake2b } from '@noble/hashes/blake2b';
 
 import { CLValue, CLValueParsers, ToBytes } from './CLValue';

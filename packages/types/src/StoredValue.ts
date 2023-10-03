@@ -1,5 +1,6 @@
 import { jsonArrayMember, jsonMember, jsonObject } from 'typedjson';
-import { CLValue, CLType, CLValueParsers, matchTypeToCLType } from './CLValue';
+
+import { CLType, CLValue, CLValueParsers, matchTypeToCLType } from './CLValue';
 
 @jsonObject
 class NamedKey {
