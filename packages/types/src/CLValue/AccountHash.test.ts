@@ -1,6 +1,7 @@
 import { expect } from 'chai';
+
 import { CLAccountHash } from './AccountHash';
-import { CLValueParsers, CLAccountHashType } from './index';
+import { CLAccountHashType, CLValueParsers } from './index';
 
 describe('CLAccountHash', () => {
   it('Should be able to return proper value by calling .value()', () => {

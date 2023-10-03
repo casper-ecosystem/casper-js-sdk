@@ -1,8 +1,9 @@
-import mapKeys from 'lodash/mapKeys';
-import camelCase from 'lodash/camelCase';
-import { TypedJSON } from 'typedjson';
-import { StoredValue } from './StoredValue';
 import { expect } from 'chai';
+import camelCase from 'lodash/camelCase';
+import mapKeys from 'lodash/mapKeys';
+import { TypedJSON } from 'typedjson';
+
+import { StoredValue } from './StoredValue';
 
 describe('StoredValue', () => {
   const serializer = new TypedJSON(StoredValue);
@@ -15,23 +16,19 @@ describe('StoredValue', () => {
         named_keys: [
           {
             name: 'contract_version',
-            key:
-              'uref-4d95be7a26ef0ca91f2a1755a7293dfd5a25f1a0f1b69057d7d852c42614ba91-007'
+            key: 'uref-4d95be7a26ef0ca91f2a1755a7293dfd5a25f1a0f1b69057d7d852c42614ba91-007'
           },
           {
             name: 'faucet',
-            key:
-              'hash-1c16234ad1d27b51614ec5dca0bc28ea235eb2dc3a1f9d98aa238dc3df1fd63a'
+            key: 'hash-1c16234ad1d27b51614ec5dca0bc28ea235eb2dc3a1f9d98aa238dc3df1fd63a'
           },
           {
             name: 'faucet_package',
-            key:
-              'hash-ea058d32053f59e9f66dd3d4de4594a8a3de36c65c87417efe79cdc7c1b926b4'
+            key: 'hash-ea058d32053f59e9f66dd3d4de4594a8a3de36c65c87417efe79cdc7c1b926b4'
           },
           {
             name: 'faucet_package_access',
-            key:
-              'uref-9eab12b986299509b4471060fe4d17f087bdd2596871c38d39019ef94f8d10a6-007'
+            key: 'uref-9eab12b986299509b4471060fe4d17f087bdd2596871c38d39019ef94f8d10a6-007'
           }
         ],
         main_purse:
@@ -64,10 +61,8 @@ describe('StoredValue', () => {
       Transfer: {
         deploy_hash:
           'c5bed7511b23946a87c7237fceb55fe2f3a84ee28a41f3830f021711a1210047',
-        from:
-          'account-hash-97623c065702e82ccb15387a1fb8f4f89bd6c54ea3283831249404af8fd2e4bb',
-        to:
-          'account-hash-9244197a59bf76965c4981b04e5e58824d0ba450c68cc50246e83f1b6544638a',
+        from: 'account-hash-97623c065702e82ccb15387a1fb8f4f89bd6c54ea3283831249404af8fd2e4bb',
+        to: 'account-hash-9244197a59bf76965c4981b04e5e58824d0ba450c68cc50246e83f1b6544638a',
         source:
           'uref-657bec09f43593b985fca6a6c1a05c90c35cd85643f96722c9ca652e5d690b94-007',
         target:
@@ -156,8 +151,7 @@ describe('StoredValue', () => {
         transfers: [
           'transfer-c6c3694f3760c562ca41bcfb394f10783e529d336f17a11900b57234830b3e13'
         ],
-        from:
-          'account-hash-97623c065702e82ccb15387a1fb8f4f89bd6c54ea3283831249404af8fd2e4bb',
+        from: 'account-hash-97623c065702e82ccb15387a1fb8f4f89bd6c54ea3283831249404af8fd2e4bb',
         source:
           'uref-657bec09f43593b985fca6a6c1a05c90c35cd85643f96722c9ca652e5d690b94-007',
         gas: '0'
