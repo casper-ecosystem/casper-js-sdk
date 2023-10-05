@@ -57,7 +57,7 @@ jobs:
         run: yarn install
 
       - name: Audits
-        run: yarn audit
+        run: yarn npm audit --environment production
 
       - name: Lints
         run: yarn lint:ci
