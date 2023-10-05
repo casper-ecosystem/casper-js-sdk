@@ -8,10 +8,10 @@
   "author": "Jan Hoffmann <jan@casperlabs.io>, Ryo Kanazawa <ryo@casperlabs.io>",
   "license": "Apache-2.0",
   "scripts": {
-    "build": "rollup -c",
-    "test": "cross-env NODE_ENV=test TS_NODE_FILES=true mocha -r ts-node/register \"src/**/*.test.ts\"",
-    "test:coverage": "nyc --reporter=lcov yarn test",
-    "coverage": "codecov"
+    "build": "run -T rollup -c",
+    "test": "run -T cross-env NODE_ENV=test TS_NODE_FILES=true mocha -r ts-node/register \"src/**/*.test.ts\"",
+    "test:coverage": "run -T nyc --reporter=lcov yarn test",
+    "coverage": "run -T codecov"
   },
   "dependencies": {
     "@casper-js-sdk/types": "workspace:^"
