@@ -14,6 +14,6 @@
     "coverage": "codecov"
   },
   "dependencies": {
-    "@casper-js-sdk/types": "*"
+    "@casper-js-sdk/types": "workspace:^"
   }
 }

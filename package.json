@@ -144,5 +144,6 @@
     "reflect-metadata": "^0.1.13",
     "ts-results": "npm:@casperlabs/ts-results@^3.3.4",
     "typedjson": "^1.6.0-rc2"
-  }
+  },
+  "packageManager": "yarn@3.6.4"
 }
