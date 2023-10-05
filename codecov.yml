@@ -18,9 +18,6 @@ component_management:
         target: 80%
 
   individual_components:
-    - component_id: 'web3'
-      paths:
-        - /packages/web3/src/
     - component_id: '@casper-js-sdk/types'
       paths:
         - /packages/types/src/

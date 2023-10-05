@@ -28,16 +28,21 @@ export abstract class AsymmetricKey {
   /**
    * Inserts the provided `content` and `tag` into a .pem compliant string
    * @param tag The tag inserted on the END line
-   * @param content The base-64 PEM compliant private key
+   * @param content The base-64 PEM compliant key
    */
-  protected toPem(tag: string, content: string) {
+  protected toPem(tag: string, content: string): string {
     // prettier-ignore
     return `-----BEGIN ${tag}-----\n` +
       `${content}\n` +
       `-----END ${tag}-----\n`;
   }
 
-  public static readBase64WithPEM(content: string) {
+  /**
+   * Return Uint8Array, ignoring PEM frames
+   * @param content The base-64 PEM compliant key
+   * @returns Uint8Array
+   */
+  public static readBase64WithPEM(content: string): Uint8Array {
     const base64 = content
       // there are two kinks of line-endings, CRLF(\r\n) and LF(\n)
       // we need handle both

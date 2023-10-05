@@ -75,9 +75,9 @@ export class Ed25519 extends AsymmetricKey {
    * Generates a new Ed25519 key pair
    * @returns A new `Ed25519` object
    */
-  public static new() {
+  public static new(): Ed25519 {
     const privateKey = ed25519.utils.randomPrivateKey();
-    const publicKey = ed25519.sync.getPublicKey(privateKey);
+    const publicKey = Ed25519.privateToPublicKey(privateKey);
     return new Ed25519(publicKey, privateKey);
   }
 
@@ -98,7 +98,7 @@ export class Ed25519 extends AsymmetricKey {
   public static parseKeyFiles(
     publicKeyPath: string,
     privateKeyPath: string
-  ): AsymmetricKey {
+  ): Ed25519 {
     const publicKey = Ed25519.parsePublicKeyFile(publicKeyPath);
     const privateKey = Ed25519.parsePrivateKeyFile(privateKeyPath);
     return new Ed25519(publicKey, privateKey);
@@ -179,7 +179,7 @@ export class Ed25519 extends AsymmetricKey {
    */
   private static readBase64File(path: string): Uint8Array {
     const content = fs.readFileSync(path).toString();
-    return Ed25519.readBase64WithPEM(content);
+    return this.readBase64WithPEM(content);
   }
 
   /**

@@ -5,6 +5,92 @@ import sinon from 'sinon';
 import { Ed25519 } from './Ed25519';
 
 describe('Ed25519', () => {
+  const isNodeJS = typeof window === 'undefined';
+
+  // prettier-ignore
+  const privateKey = new Uint8Array([
+    92,  85,  34,  21, 229, 142, 168,
+    76, 221, 116,  56, 193, 153, 129,
+    32, 198, 125,  90, 231, 143, 220,
+   220, 158,  37, 196, 198,  34, 177,
+   100, 221, 229, 228
+  ]);
+  // prettier-ignore
+  const publicKey = new Uint8Array([
+    225, 123,  67, 141, 123,  40, 119, 138,
+    213, 235, 175,  59,  71, 169,  39, 235,
+    243, 228, 113, 203,  25,   9, 125,  64,
+      97, 165, 224,  86,  97, 251,   1,  91
+  ]);
+
+  it('should support old key format', () => {
+    const keyPair = new Ed25519({
+      publicKey: publicKey,
+      secretKey: privateKey
+    });
+
+    expect(keyPair.privateKey).deep.equal(privateKey);
+    expect(keyPair.publicKey.value()).deep.equal(publicKey);
+  });
+
+  it('should throw error when private key is not provided', () => {
+    const badFn1 = () =>
+      // @ts-ignore
+      new Ed25519({
+        publicKey: publicKey
+      });
+    const badFn2 = () =>
+      // @ts-ignore
+      new Ed25519(publicKey);
+
+    expect(badFn1).to.throw('private key is required');
+    expect(badFn2).to.throw('private key is required');
+  });
+
+  if (isNodeJS) {
+    it('should import keys from saved file', () => {
+      const publicKeyPath = __dirname + '/../assets/ed25519/public_key.pem';
+      const privateKeyPath = __dirname + '/../assets/ed25519/private_key.pem';
+
+      const publicKeyFromFile = Ed25519.parsePublicKeyFile(publicKeyPath);
+      expect(publicKeyFromFile).to.deep.eq(publicKey);
+
+      const privateKeyFromFile = Ed25519.parsePrivateKeyFile(privateKeyPath);
+      expect(privateKeyFromFile).to.deep.eq(privateKey);
+
+      const keyPair1 = Ed25519.parseKeyFiles(publicKeyPath, privateKeyPath);
+      expect(keyPair1.publicKey.value()).to.deep.eq(publicKey);
+      expect(keyPair1.privateKey).to.deep.eq(privateKey);
+
+      const keyPair2 = Ed25519.loadKeyPairFromPrivateFile(privateKeyPath);
+
+      expect(keyPair2.publicKey.value()).to.deep.eq(publicKey);
+      expect(keyPair2.privateKey).to.deep.eq(privateKey);
+    });
+  }
+
+  it('should export keys to PEM', () => {
+    const keyPair = new Ed25519(publicKey, privateKey);
+
+    const publicKeyPEMString = keyPair.exportPublicKeyInPem();
+    const privateKeyPEMString = keyPair.exportPrivateKeyInPem();
+
+    expect(publicKeyPEMString).to.eq(
+      '-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA4XtDjXsod4rV6687R6kn6/PkccsZCX1AYaXgVmH7AVs=\n-----END PUBLIC KEY-----\n'
+    );
+    expect(privateKeyPEMString).to.eq(
+      '-----BEGIN PRIVATE KEY-----\nMC4CAQAwBQYDK2VwBCIEIFxVIhXljqhM3XQ4wZmBIMZ9WueP3NyeJcTGIrFk3eXk\n-----END PRIVATE KEY-----\n'
+    );
+  });
+
+  it('should throw error when key length is incorrect', () => {
+    const invalidKey = new Uint8Array([1, 2, 3, 4, 5, 6, 7, 8]);
+
+    const badFn = () => Ed25519.parsePublicKey(invalidKey);
+
+    expect(badFn).to.throw(`Unexpected key length: ${invalidKey.length}`);
+  });
+
   it('calculates the account hash', () => {
     const signKeyPair = Ed25519.new();
     // use lower case for node-rs
@@ -38,22 +124,6 @@ describe('Ed25519', () => {
     // In v2.10 we used https://www.npmjs.com/package/tweetnacl-ts#sign_keypair which private key length is 64 bytes,
     // From v2.13 migrated to noble scope libraries which private key length is 32 bytes [correct implementation]
     // new version should support old format
-
-    // prettier-ignore
-    const privateKey = new Uint8Array([
-      92,  85,  34,  21, 229, 142, 168,
-      76, 221, 116,  56, 193, 153, 129,
-      32, 198, 125,  90, 231, 143, 220,
-     220, 158,  37, 196, 198,  34, 177,
-     100, 221, 229, 228
-    ]);
-    // prettier-ignore
-    const publicKey = new Uint8Array([
-      225, 123,  67, 141, 123,  40, 119, 138,
-      213, 235, 175,  59,  71, 169,  39, 235,
-      243, 228, 113, 203,  25,   9, 125,  64,
-        97, 165, 224,  86,  97, 251,   1,  91
-    ]);
 
     const privateKeyPEM =
       '-----BEGIN PRIVATE KEY-----\n' +
@@ -93,6 +163,13 @@ describe('Ed25519', () => {
     spy.restore();
   });
 
+  it('should throw error when public key and private key are mismatched', () => {
+    const badFn = () =>
+      Ed25519.parseKeyPair(new Uint8Array(publicKey).reverse(), privateKey);
+
+    expect(badFn).to.throw('Invalid key pairs');
+  });
+
   it('should generate r+s signature', () => {
     const signKeyPair = Ed25519.new();
     const message = Uint8Array.from(Buffer.from('Hello Ed25519'));
@@ -109,5 +186,13 @@ describe('Ed25519', () => {
     const signature = signKeyPair.sign(message);
 
     expect(signKeyPair.verify(signature, message)).to.equal(true);
+  });
+
+  it('should generate hex string of public key', () => {
+    const publicKeyHexString = Ed25519.accountHex(publicKey);
+
+    expect(publicKeyHexString).to.eq(
+      '01e17b438d7b28778ad5ebaf3b47a927ebf3e471cb19097d4061a5e05661fb015b'
+    );
   });
 });
