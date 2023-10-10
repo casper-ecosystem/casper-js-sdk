@@ -11,21 +11,20 @@ import {
   SignatureAlgorithm
 } from '@casper-js-sdk/types';
 import * as ed25519 from '@noble/ed25519';
-import { hmac } from '@noble/hashes/hmac';
-import { sha256 } from '@noble/hashes/sha256';
 import { sha512 } from '@noble/hashes/sha512';
-import * as secp256k1 from '@noble/secp256k1';
 
 import { AsymmetricKey } from './AsymmetricKey';
 import { accountHashHelper } from './utils';
 
 ed25519.utils.sha512Sync = (...m) => sha512(ed25519.utils.concatBytes(...m));
-secp256k1.utils.hmacSha256Sync = (k, ...m) =>
-  hmac(sha256, k, secp256k1.utils.concatBytes(...m));
 
 const ED25519_PEM_SECRET_KEY_TAG = 'PRIVATE KEY';
 const ED25519_PEM_PUBLIC_KEY_TAG = 'PUBLIC KEY';
 
+/**
+ * Ed25519 key pair
+ * @deprecated use public and private key instead
+ */
 export interface SignKeyPair {
   publicKey: Uint8Array; // Array with 32-byte public key
   secretKey: Uint8Array; // Array with 32-byte secret key

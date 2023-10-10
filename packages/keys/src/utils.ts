@@ -14,7 +14,7 @@ export function accountHashHelper(
   const prefix = Buffer.concat([Buffer.from(signatureAlgorithm), separator]);
 
   if (publicKey.length === 0) {
-    return Buffer.from([]);
+    return new Uint8Array();
   } else {
     return blake2b(Buffer.concat([prefix, Buffer.from(publicKey)]));
   }

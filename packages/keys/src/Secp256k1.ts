@@ -23,7 +23,7 @@ const keyEncoder = new KeyEncoder('secp256k1');
  * Secp256k1 variant of `AsymmetricKey`
  * @privateRemarks
  * Orignated from [Secp256k1](https://en.bitcoin.it/wiki/Secp256k1) to support Ethereum keys on the Casper.
- * @see [Documentation](https://docs.casper.network/concepts/accounts-and-keys/#ethereum-keys)
+ * @see [Documentation](https://docs.casper.network/concepts/accounts-and-keys/#ecdsa-keys)
  */
 export class Secp256K1 extends AsymmetricKey {
   /**
@@ -36,10 +36,10 @@ export class Secp256K1 extends AsymmetricKey {
   }
 
   /**
-   * Generate a new pseudorandom Secp256k1 key pair
+   * Generate a new pseudo random Secp256k1 key pair
    * @returns A new `Secp256K1` object
    */
-  public static new() {
+  public static new(): Secp256K1 {
     const privateKey = secp256k1.utils.randomPrivateKey();
     const publicKey = secp256k1.getPublicKey(privateKey, true);
     return new Secp256K1(publicKey, privateKey);
@@ -54,7 +54,7 @@ export class Secp256K1 extends AsymmetricKey {
   public static parseKeyFiles(
     publicKeyPath: string,
     privateKeyPath: string
-  ): AsymmetricKey {
+  ): Secp256K1 {
     const publicKey = Secp256K1.parsePublicKeyFile(publicKeyPath);
     const privateKey = Secp256K1.parsePrivateKeyFile(privateKeyPath);
     return new Secp256K1(publicKey, privateKey);
@@ -88,7 +88,7 @@ export class Secp256K1 extends AsymmetricKey {
   public static parseKeyPair(
     publicKey: Uint8Array,
     privateKey: Uint8Array,
-    originalFormat: 'raw' | 'der'
+    originalFormat: 'raw' | 'der' = 'der'
   ): AsymmetricKey {
     const publ = Secp256K1.parsePublicKey(publicKey, originalFormat);
     const priv = Secp256K1.parsePrivateKey(privateKey, originalFormat);
@@ -136,7 +136,7 @@ export class Secp256K1 extends AsymmetricKey {
       rawKeyHex = encodeBase16(bytes);
     }
 
-    const privateKey = Buffer.from(rawKeyHex, 'hex');
+    const privateKey = Uint8Array.from(Buffer.from(rawKeyHex, 'hex'));
     return privateKey;
   }
 
