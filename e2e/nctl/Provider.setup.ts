@@ -93,7 +93,7 @@ const processDeploy = async (
     req.params = DeployUtil.deployToJson(signedDeploy);
     //   const jrpcResult = await sendRpcRequestToChain(req, rpcTarget);
     const jrpcResult = { deploy_hash: '0x123', rpcTarget };
-    return jrpcResult
+    return jrpcResult;
   }
   throw new Error('Failed to parse deploy');
 };
@@ -107,7 +107,7 @@ export class MockProvider {
     this.client = new CasperClient(rpcTarget);
   }
 
-  async sendAsync(req: JRPCRequest<unknown>): Promise<any> {
+  async request(req: JRPCRequest<unknown>): Promise<any> {
     // we are intercepting 'account_put_deploy' (ie. signing the deploy and then submitting the signed deploy
     // to blockchain)
     // for rest of rpc calls we are simply sending rpc call to blockchain and returning the result.
@@ -116,11 +116,15 @@ export class MockProvider {
     } else {
       try {
         const jrpcResult = await sendRpcRequestToChain(req, this.rpcTarget);
-        return jrpcResult
+        return jrpcResult;
       } catch (error) {
         throw error;
       }
     }
+  }
+
+  async sendAsync(req: JRPCRequest<unknown>): Promise<any> {
+    return this.request(req);
   }
 
   // currently we only use sendAsync in provider transport, so we live it unimplemented here.

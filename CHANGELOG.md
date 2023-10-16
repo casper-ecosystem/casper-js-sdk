@@ -13,6 +13,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+## [2.15.3] - 2023-10-16
+
+### Fixed
+
+- replace legacy `sendAsync` with `request` ([#373](https://github.com/casper-ecosystem/casper-js-sdk/pull/373))
+
+[2.15.3]: https://github.com/casper-ecosystem/casper-js-sdk/compare/2.15.2...2.15.3
+
 ## [2.15.2] - 2023-8-4
 
 ### Fixed
