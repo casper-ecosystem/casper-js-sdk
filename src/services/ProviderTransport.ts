@@ -27,10 +27,20 @@ export interface JRPCResponse<T> extends JRPCBase {
 }
 
 export type SendCallBack<U> = (err: any, providerRes: U) => void;
+export type Maybe<T> = T | Partial<T> | null | undefined;
+
+export interface RequestArguments<T> {
+  method: string;
+  params?: T;
+}
 
 export interface SafeEventEmitterProvider {
   sendAsync: <T, U>(req: JRPCRequest<T>) => Promise<U>;
-  send: <T, U>(req: JRPCRequest<T>, callback: SendCallBack<U>) => void;
+  send: <T, U>(
+    req: JRPCRequest<T>,
+    callback: SendCallBack<JRPCResponse<U>>
+  ) => void;
+  request: <T, U>(req: RequestArguments<T>) => Promise<Maybe<U>>;
 }
 
 class ProviderTransport extends Transport {
@@ -50,8 +60,8 @@ class ProviderTransport extends Transport {
     const notifications = getNotifications(data);
     const batch = getBatchRequests(data);
     try {
-      const result = await this.provider.sendAsync(
-        (data.request as IJSONRPCRequest) as JRPCRequest<any>
+      const result = await this.provider.request(
+        (data.request as IJSONRPCRequest) as RequestArguments<any>
       );
       const jsonrpcResponse = {
         id: data.request.id,
