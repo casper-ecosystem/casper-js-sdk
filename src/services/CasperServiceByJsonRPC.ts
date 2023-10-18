@@ -453,6 +453,27 @@ export class CasperServiceByJsonRPC {
   }
 
   /**
+   * Get the state root hash at a specific block height
+   * @param blockHeight The height of a block hash
+   * @param props optional request props
+   * @returns A `Promise` resolving to a state root hash hexadecimal string
+   */
+  public async getStateRootHashByHeight(
+    blockHeight: number,
+    props?: RpcRequestProps
+  ): Promise<string> {
+    return await this.client
+      .request(
+        {
+          method: 'chain_get_state_root_hash',
+          params: [{ Height: blockHeight }]
+        },
+        props?.timeout
+      )
+      .then((res: GetStateRootHashResult) => res.state_root_hash);
+  }
+
+  /**
    * Get the global block state at a certain state root hash, path, and key
    * @param stateRootHash The state root hash at which the block state will be queried
    * @param key The key at which to query the state
