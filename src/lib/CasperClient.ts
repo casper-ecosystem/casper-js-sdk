@@ -1,10 +1,15 @@
-import { CasperServiceByJsonRPC, GetDeployResult } from '../services';
+import { BigNumber } from '@ethersproject/bignumber';
+
+import {
+  BlockIdentifier,
+  CasperServiceByJsonRPC,
+  GetDeployResult
+} from '../services';
 import { DeployUtil, Keys, CLPublicKey } from './index';
 import { encodeBase16 } from './Conversions';
 import { Deploy, DeployParams, ExecutableDeployItem } from './DeployUtil';
 import { AsymmetricKey, SignatureAlgorithm } from './Keys';
 import { Secp256K1HDKey, Ed25519HDKey, CasperHDKey } from './CasperHDKeys';
-import { BigNumber } from '@ethersproject/bignumber';
 
 export class CasperClient {
   public nodeClient: CasperServiceByJsonRPC;
@@ -162,18 +167,22 @@ export class CasperClient {
    * @param signedDeploy Signed deploy object
    * @returns The sent Deploy's transaction hash, as a hexadecimal string
    */
-  public putDeploy(signedDeploy: Deploy): Promise<string> {
+  public async putDeploy(signedDeploy: Deploy): Promise<string> {
     return this.nodeClient.deploy(signedDeploy).then(it => it.deploy_hash);
   }
 
   /**
-   * Test deploy to network
+   * Estimate execution cost of the deploy without committing the execution result to the global state.
+   * By default, `speculative_exec` JSON RPC method is disabled on a node.
+   * Sending a request to a node with the endpoint disabled will result in an error message.
+   * If enabled, `speculative_exec` operates on a separate port from the primary JSON-RPC, using 7778.
+   * @added casper-node 1.5
    * @param signedDeploy Signed deploy object
    */
-  public speculativeDeploy(
+  public async speculativeDeploy(
     signedDeploy: Deploy,
-    blockIdentifier?: string
-  ): Promise<string> {
+    blockIdentifier: BlockIdentifier
+  ): Promise<any> {
     return this.nodeClient
       .speculativeDeploy(signedDeploy, blockIdentifier)
       .then(res => {

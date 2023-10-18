@@ -8,7 +8,11 @@ import { BigNumber } from '@ethersproject/bignumber';
 export class BalanceServiceByJsonRPC {
   private balanceUrefs = new Map<string, string>();
 
-  constructor(private casperService: CasperServiceByJsonRPC) {}
+  constructor(private casperService: CasperServiceByJsonRPC) {
+    console.log(
+      `This class is deprecated and will be removed in the future release`
+    );
+  }
 
   /**
    * Query balance for the specified account

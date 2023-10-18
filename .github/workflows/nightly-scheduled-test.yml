@@ -15,16 +15,19 @@ jobs:
       fail-fast: false
       matrix:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        node-version: [16.x]
+        node-version: [16.x, 18.x]
         os: [ubuntu-20.04, ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     env:
-      FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIH1yvW0YCDqi6tu7p/2ZXeBNMzozkfw4oWtcPNSmwl1U' #ci/test-assets/secret-key.pem
-      NODE_URL: 'http://localhost:7777/rpc'
-      HTTP_EVENT_STREAM_URL: 'http://localhost:18101/events/main'
+      FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEII8ULlk1CJ12ZQ+bScjBt/IxMAZNggClWqK56D1/7CbI'
+      NODE_URL: 'http://127.0.0.1:7777/rpc'
+      HTTP_EVENT_STREAM_URL: 'http://127.0.0.1:9999/events/main'
       HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
-      NETWORK_NAME: 'casper-example'
+      NETWORK_NAME: 'casper-net-1'
       RUST_LOG: 'INFO'
+      VERSION_QUERY: '{"jsonrpc": "2.0", "id": "1", "method": "info_get_status"}'
+      MAINNET_NODE_URL: 'https://rpc.mainnet.casperlabs.io/rpc'
+      TESTNET_NODE_URL: 'https://rpc.testnet.casperlabs.io/rpc'
 
     steps:
       - name: Checkout
@@ -41,8 +44,24 @@ jobs:
       - name: Unit Test
         run: npm run test:unit
 
+      # test mainnet
+      - name: Get the mainnet version
+        id: get-mainnet-version
+        run: echo "MAINNET_VERSION=$(curl -s -X POST --data-raw '${{ env.VERSION_QUERY }}' -H "Content-Type:application/json" ${{ env.MAINNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1)" >> "$GITHUB_ENV"
+
+      - name: Test RPC - mainnet ${{ env.MAINNET_VERSION }}
+        run: npx casper-node-launcher-js node v${{ env.MAINNET_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
+
+      # test testnet
+      - name: Get the testnet version
+        id: get-testnet-version
+        run: echo "TESTNET_VERSION=$(curl -s -X POST --data-raw '${{ env.VERSION_QUERY }}' -H "Content-Type:application/json" ${{ env.TESTNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1)" >> "$GITHUB_ENV"
+
+      - name: Test RPC - testnet ${{ env.TESTNET_VERSION }}
+        run: npx casper-node-launcher-js node v${{ env.TESTNET_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
+
       - name: Test RPC - CN Dev
-        run: ./ci/setup.sh && npm run test:e2e
+        run: npx casper-node-launcher-js node dev --daemon && npm run test:e2e && npx casper-node-launcher-js stop
 
       - name: Get Latest Casper-Node Tag Version
         run: |
@@ -51,7 +70,7 @@ jobs:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
 
       - name: Test RPC - CN Release - ${{ env.CASPER_TAG_VERSION }}
-        run: ./ci/setup.sh branch=${{env.CASPER_TAG_VERSION }} && npm run test:e2e
+        run: npx casper-node-launcher-js node ${{env.CASPER_TAG_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
 
       - name: Get Latest Casper-Node RC Version
         run: |
@@ -60,7 +79,7 @@ jobs:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/branches'
 
       - name: Test RPC - CN RC - ${{ env.CASPER_RC_VERSION }}
-        run: ./ci/setup.sh branch=release-${{env.CASPER_RC_VERSION }} && npm run test:e2e
+        run: npx casper-node-launcher-js node ${{env.CASPER_TAG_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
 
       - name: Slack Notification
         uses: ravsamhq/notify-slack-action@4ed28566c2bdcdaee6dca2b46b9666d01b4ed8a4 #v1.10.0
