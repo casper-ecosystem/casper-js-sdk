@@ -132,15 +132,6 @@ describe('Secp256K1HDKey', () => {
     expect(hdKey.verify(signature, message)).to.equal(true);
   });
 
-  // it('should generate2222', () => {
-  //   const key = Secp256K1HDKey.fromMnemonic(
-  //     'equip will roof matter pink blind book anxiety banner elbow sun young'
-  //   );
-
-  //   console.log(key.deriveChild(0).accountHex());
-  //   console.log(key.deriveChild(1).accountHex());
-  // });
-
   secp256k1.forEach(({ seed, vectors }) => {
     describe(`Test seed ${seed}`, () => {
       vectors.forEach(({ chain, private: privateKey, public: publicKey }) => {
