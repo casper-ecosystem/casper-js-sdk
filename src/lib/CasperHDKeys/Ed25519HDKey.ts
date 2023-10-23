@@ -2,6 +2,16 @@ import { HDKey } from './hdkey';
 import { CasperHDKey } from './CasperHDKey';
 import { Ed25519, SignatureAlgorithm } from '../Keys';
 
+/**
+ * Casper HD Key for Ed25519.
+ *
+ * Examples
+ * ```ts
+ *  const mn = Ed25519HDKey.newMnemonic();
+ *  const hdKey = Ed25519HDKey.fromMnemonic(mn);
+ *  const key0 = hdKey.deriveChild(0);
+ * ```
+ */
 export class Ed25519HDKey extends CasperHDKey<Ed25519> {
   private hdKey: HDKey;
 

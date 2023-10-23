@@ -3,6 +3,16 @@ import { sha256 } from '@noble/hashes/sha256';
 import { CasperHDKey } from './CasperHDKey';
 import { Secp256K1, SignatureAlgorithm } from '../Keys';
 
+/**
+ * Casper HD Key for Secp256K1.
+ *
+ * Examples
+ * ```ts
+ *  const mn = Secp256K1HDKey.newMnemonic();
+ *  const hdKey = Secp256K1HDKey.fromMnemonic(mn);
+ *  const key0 = hdKey.deriveChild(0);
+ * ```
+ */
 export class Secp256K1HDKey extends CasperHDKey<Secp256K1> {
   private hdKey: HDKey;
 

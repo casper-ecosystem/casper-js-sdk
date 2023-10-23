@@ -1,5 +1,6 @@
 import { expect } from 'chai';
 import { wordlist as chiWordlist } from '@scure/bip39/wordlists/simplified-chinese';
+import { wordlist as engWordlist } from '@scure/bip39/wordlists/english';
 
 import { CasperHDKey } from './CasperHDKey';
 
@@ -13,6 +14,7 @@ describe('CasperHDKey', () => {
   it('should set user specific wordlist', () => {
     CasperHDKey.setWordlist(chiWordlist);
     expect(CasperHDKey.getWordlist()).eq(chiWordlist);
+    CasperHDKey.setWordlist(engWordlist);
   });
 
   it('should generate 24 length mnemonic', () => {
