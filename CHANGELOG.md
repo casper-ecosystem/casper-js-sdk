@@ -13,6 +13,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+## [2.15.3] - 2023-10-16
+
+### Fixed
+
+- replace legacy `sendAsync` with `request` ([#373](https://github.com/casper-ecosystem/casper-js-sdk/pull/373))
+
+[2.15.3]: https://github.com/casper-ecosystem/casper-js-sdk/compare/2.15.2...2.15.3
+
+## [2.15.2] - 2023-8-4
+
+### Fixed
+
+- Reintroduced `getStateRootHash` fix as its not specific for `casper-node 1.5` ([#339](https://github.com/casper-ecosystem/casper-js-sdk/pull/339))
+
+## [2.15.1] - 2023-8-4
+
+### Fixed
+
+- Reverted broken 1.4.x compatibility. The version compatible with protocol version 1.5.x will be released as a separate one. ([#351](https://github.com/casper-ecosystem/casper-js-sdk/issues/351))
+
 ## [2.15.0] - 2023-8-3
 
 ### Added
