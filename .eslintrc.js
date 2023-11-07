@@ -18,7 +18,7 @@ module.exports = {
       extends: ['plugin:@typescript-eslint/recommended'],
       parserOptions: {
         tsconfigRootDir: __dirname,
-        project: ['./packages/*/tsconfig.json']
+        project: ['./tsconfig.eslint.json']
       },
       rules: {
         '@typescript-eslint/ban-ts-comment': 'off',

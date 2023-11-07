@@ -1,9 +1,0 @@
-{
-  "extends": "./tsconfig.base.json",
-  "compilerOptions": {
-    "paths": {
-      "@casper-js-sdk/types": ["./packages/types/src"]
-    }
-  },
-  "include": [""]
-}
