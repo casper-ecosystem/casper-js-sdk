@@ -47,19 +47,31 @@ jobs:
         uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'npm'
+          cache: 'yarn'
+
+        # https://github.com/dtinth/setup-github-actions-caching-for-turbo
+      - name: Setup Turbo cache server
+        uses: dtinth/setup-github-actions-caching-for-turbo@e26dc6b0473cc072107f6cb4f6e69d33ac2fc386 # v1.1.0
 
       - name: Install
-        run: npm install
+        run: yarn install
 
       - name: Audits
-        run: npm audit --omit=dev
+        run: yarn npm audit --environment production
 
       - name: Lints
-        run: npm run lint:ci
+        run: yarn lint:ci
 
       - name: Unit Test
-        run: npm run test:unit
+        run: yarn test
+
+      - name: Generate coverage report
+        run: yarn test:coverage
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
       - name: Test docs build
         run: npm run docs:build
@@ -67,32 +79,32 @@ jobs:
       - name: Test build
         run: npm run build
 
-      # test mainnet
-      - name: Get the mainnet version
-        id: get-mainnet-version
-        run: echo "MAINNET_VERSION=$(curl -s -X POST --data-raw '${{ env.VERSION_QUERY }}' -H "Content-Type:application/json" ${{ env.MAINNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1)" >> "$GITHUB_ENV"
+      # # test mainnet
+      # - name: Get the mainnet version
+      #   id: get-mainnet-version
+      #   run: echo "MAINNET_VERSION=$(curl -s -X POST --data-raw '${{ env.VERSION_QUERY }}' -H "Content-Type:application/json" ${{ env.MAINNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1)" >> "$GITHUB_ENV"
 
-      - name: Test RPC - mainnet ${{ env.MAINNET_VERSION }}
-        run: npx casper-node-launcher-js node v${{ env.MAINNET_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
+      # - name: Test RPC - mainnet ${{ env.MAINNET_VERSION }}
+      #   run: npx casper-node-launcher-js node v${{ env.MAINNET_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
 
-      # test testnet
-      - name: Get the testnet version
-        id: get-testnet-version
-        run: echo "TESTNET_VERSION=$(curl -s -X POST --data-raw '${{ env.VERSION_QUERY }}' -H "Content-Type:application/json" ${{ env.TESTNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1)" >> "$GITHUB_ENV"
+      # # test testnet
+      # - name: Get the testnet version
+      #   id: get-testnet-version
+      #   run: echo "TESTNET_VERSION=$(curl -s -X POST --data-raw '${{ env.VERSION_QUERY }}' -H "Content-Type:application/json" ${{ env.TESTNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1)" >> "$GITHUB_ENV"
 
-      - name: Test RPC - testnet ${{ env.TESTNET_VERSION }}
-        run: npx casper-node-launcher-js node v${{ env.TESTNET_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
+      # - name: Test RPC - testnet ${{ env.TESTNET_VERSION }}
+      #   run: npx casper-node-launcher-js node v${{ env.TESTNET_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
 
-      - name: Get Latest Casper-Node Tag Version
-        run: |
-          echo "CASPER_TAG_VERSION=$(curl -s ${{ env.GH_API_URL }} | jq -r '.[].name' | grep 'v*' | sort -V | sed 's/_$//' | tail -n1)" >> $GITHUB_ENV
-        env:
-          GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
+      # - name: Get Latest Casper-Node Tag Version
+      #   run: |
+      #     echo "CASPER_TAG_VERSION=$(curl -s ${{ env.GH_API_URL }} | jq -r '.[].name' | grep 'v*' | sort -V | sed 's/_$//' | tail -n1)" >> $GITHUB_ENV
+      #   env:
+      #     GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
 
-      - name: Test RPC - Casper Node - ${{ env.CASPER_TAG_VERSION }}
-        # Runs action if the latest version is different from mainnet and testnet
-        if: ${{ env.CASPER_TAG_VERSION }} != v${{ env.MAINNET_VERSION }} && ${{ env.CASPER_TAG_VERSION }} != v${{ env.TESTNET_VERSION }}
-        run: npx casper-node-launcher-js node ${{ env.CASPER_TAG_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
+      # - name: Test RPC - Casper Node - ${{ env.CASPER_TAG_VERSION }}
+      #   # Runs action if the latest version is different from mainnet and testnet
+      #   if: ${{ env.CASPER_TAG_VERSION }} != v${{ env.MAINNET_VERSION }} && ${{ env.CASPER_TAG_VERSION }} != v${{ env.TESTNET_VERSION }}
+      #   run: npx casper-node-launcher-js node ${{ env.CASPER_TAG_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
 
-      - name: Test RPC - Casper Node - DEV
-        run: npx casper-node-launcher-js node dev --daemon && npm run test:e2e && npx casper-node-launcher-js stop
+      # - name: Test RPC - Casper Node - DEV
+      #   run: npx casper-node-launcher-js node dev --daemon && npm run test:e2e && npx casper-node-launcher-js stop

@@ -2,11 +2,22 @@ node_modules
 
 # Output
 /docs/
-/dist/
+dist/
+.turbo
 
 .eslintcache
 .nyc_output
+coverage
 
 .DS_Store
 
 .env
+
+# Yarn
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions

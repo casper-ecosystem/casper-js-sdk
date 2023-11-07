@@ -1,0 +1,20 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**"]
+    },
+    "test": {
+      "dependsOn": ["build"]
+    },
+    "test:coverage": {
+      "dependsOn": ["test"],
+      "outputs": ["coverage/**", "!coverage/lcov-report/**", ".nyc_output/**"]
+    },
+    "coverage": {
+      "dependsOn": ["test:coverage"]
+    },
+    "lint": {}
+  }
+}
