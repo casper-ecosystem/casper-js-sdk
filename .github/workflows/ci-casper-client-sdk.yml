@@ -25,8 +25,8 @@ jobs:
       fail-fast: false
       matrix:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        node-version: [16.x, 18.x]
-        os: [ubuntu-20.04, ubuntu-22.04]
+        node-version: [18.x]
+        os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     env:
       FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEII8ULlk1CJ12ZQ+bScjBt/IxMAZNggClWqK56D1/7CbI' #ci/test-assets/secret-key.pem
