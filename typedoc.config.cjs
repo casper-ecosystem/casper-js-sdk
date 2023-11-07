@@ -1,7 +1,8 @@
 /** @type {import('typedoc').TypeDocOptions} */
 module.exports = {
-  entryPoints: ['./src/index.ts'],
+  entryPoints: ['packages/**'],
   out: 'docs',
+  entryPointStrategy: 'packages',
   navigationLinks: {
     GitHub: 'https://github.com/casper-ecosystem/casper-js-sdk'
   }
