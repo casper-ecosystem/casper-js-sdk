@@ -67,7 +67,7 @@ export class CLContractPackageHash extends CLByteArray {
    * @param v formatted string
    * @returns CLContractPackageHash
    */
-  static fromFormattedString(v: FormattedContractPackageHash): CLContractPackageHash {
+  static fromFormattedString(v: FormattedContractPackageHash | `contract-package-wasm${string}`): CLContractPackageHash {
     if (!v.startsWith(PACKAGE_STRING_PREFIX)) {
       throw new Error('Invalid Format');
     }

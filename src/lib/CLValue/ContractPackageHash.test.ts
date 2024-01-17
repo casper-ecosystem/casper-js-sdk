@@ -58,6 +58,7 @@ describe('CLAccountHash', () => {
   it('should throw error when invalid formatted string is provided', () => {
     const badFn = () =>
       CLContractPackageHash.fromFormattedString(
+        // @ts-ignore
         'contrac-2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a'
       );
     expect(badFn).throw('Invalid Format');
