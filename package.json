@@ -1,6 +1,6 @@
 {
   "name": "casper-js-sdk",
-  "version": "2.15.0",
+  "version": "2.15.3",
   "license": "Apache 2.0",
   "description": "SDK to interact with the Casper blockchain",
   "homepage": "https://github.com/casper-ecosystem/casper-js-sdk#README.md",
@@ -111,6 +111,7 @@
     "@ethersproject/bignumber": "^5.0.8",
     "@ethersproject/bytes": "^5.0.5",
     "@ethersproject/constants": "^5.0.5",
+    "@noble/curves": "^1.1.0",
     "@noble/ed25519": "^1.7.3",
     "@noble/hashes": "^1.2.0",
     "@noble/secp256k1": "^1.7.1",
@@ -122,7 +123,7 @@
     "humanize-duration": "^3.24.0",
     "key-encoder": "^2.0.3",
     "lodash": "^4.17.21",
-    "node-fetch": "^2.6.11",
+    "node-fetch": "2.6.13",
     "reflect-metadata": "^0.1.13",
     "ts-results": "npm:@casperlabs/ts-results@^3.3.4",
     "typedjson": "^1.6.0-rc2"
