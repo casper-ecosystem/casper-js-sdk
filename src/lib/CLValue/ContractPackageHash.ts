@@ -15,6 +15,8 @@ import {
   CONTRACT_PACKAGE_HASH_TYPE
 } from './constants';
 
+export type FormattedContractPackageHash = `contact-package-${string}`
+
 export class CLContractPackageHashType extends CLByteArrayType {
   linksTo = CONTRACT_PACKAGE_HASH_TYPE;
   constructor() {
@@ -65,7 +67,7 @@ export class CLContractPackageHash extends CLByteArray {
    * @param v formatted string
    * @returns CLContractPackageHash
    */
-  static fromFormattedString(v: string): CLContractPackageHash {
+  static fromFormattedString(v: FormattedContractPackageHash): CLContractPackageHash {
     if (!v.startsWith(PACKAGE_STRING_PREFIX)) {
       throw new Error('Invalid Format');
     }
@@ -83,7 +85,7 @@ export class CLContractPackageHash extends CLByteArray {
    * Return formatted string (starts with `contract-package-`).
    * @returns formatted string
    */
-  toFormattedString(): string {
-    return PACKAGE_STRING_PREFIX + encodeBase16(this.data);
+  toFormattedString(): FormattedContractPackageHash {
+    return PACKAGE_STRING_PREFIX + encodeBase16(this.data) as FormattedContractPackageHash;
   }
 }

@@ -14,6 +14,8 @@ import {
   KEY_HASH_LENGTH
 } from './constants';
 
+export type FormattedContractHash = `contact-${string}`
+
 export class CLContractHashType extends CLByteArrayType {
   linksTo = CONTRACT_HASH_TYPE;
 
@@ -60,7 +62,7 @@ export class CLContractHash extends CLByteArray {
    * @param v formatted string
    * @returns CLContractHash
    */
-  static fromFormattedString(v: string): CLContractHash {
+  static fromFormattedString(v: FormattedContractHash): CLContractHash {
     if (!v.startsWith(CONTRACT_STRING_PREFIX)) {
       throw new Error('Invalid Format');
     }
@@ -74,7 +76,7 @@ export class CLContractHash extends CLByteArray {
    * Return formatted string (starts with `contract-`).
    * @returns formatted string
    */
-  toFormattedString(): string {
-    return CONTRACT_STRING_PREFIX + encodeBase16(this.data);
+  toFormattedString(): FormattedContractHash {
+    return CONTRACT_STRING_PREFIX + encodeBase16(this.data) as FormattedContractHash;
   }
 }
