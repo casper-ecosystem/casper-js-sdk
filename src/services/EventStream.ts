@@ -145,12 +145,6 @@ export class EventStream {
       body.on('error', (error: Error) => {
         throw error;
       });
-      body.on('timeout', () => {
-        throw Error('EventStream: Timeout error');
-      });
-      body.on('close', () => {
-        throw Error('EventStream: Connection closed');
-      });
     });
   }
 
