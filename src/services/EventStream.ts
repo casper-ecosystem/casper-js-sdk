@@ -108,10 +108,12 @@ export class EventStream {
     });
   }
 
-  public start(eventId = 0) {
+  public start(eventId?: number) {
     const separator = this.eventStreamUrl.indexOf('?') > -1 ? '&' : '?';
-    const requestUrl = `${this.eventStreamUrl}${separator}start_from=${eventId}`;
-
+    let requestUrl = `${this.eventStreamUrl}${separator}`;
+    if (eventId !== undefined) {
+      requestUrl = requestUrl.concat(`start_from=${eventId}`);
+    }
     const request = requestUrl.startsWith('https://') ? https.get : http.get;
 
     request(requestUrl, body => {
