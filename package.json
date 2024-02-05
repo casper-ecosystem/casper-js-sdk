@@ -9,7 +9,7 @@
     "url": "https://github.com/casper-ecosystem/casper-js-sdk.git"
   },
   "main": "dist/lib.node.js",
-  "browser": "dist/lib.js",
+  "browser": "dist/lib.web.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "prepare": "husky-run install",
