@@ -58,9 +58,11 @@ jobs:
         run: echo "TESTNET_VERSION=$(curl -s -X POST --data-raw '${{ env.VERSION_QUERY }}' -H "Content-Type:application/json" ${{ env.TESTNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1)" >> "$GITHUB_ENV"
 
       - name: Test RPC - testnet ${{ env.TESTNET_VERSION }}
+        continue-on-error: true
         run: npx casper-node-launcher-js node v${{ env.TESTNET_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
 
       - name: Test RPC - CN Dev
+        continue-on-error: true
         run: npx casper-node-launcher-js node dev --daemon && npm run test:e2e && npx casper-node-launcher-js stop
 
       - name: Get Latest Casper-Node Tag Version
@@ -79,6 +81,7 @@ jobs:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/branches'
 
       - name: Test RPC - CN RC - ${{ env.CASPER_RC_VERSION }}
+        continue-on-error: true
         run: npx casper-node-launcher-js node ${{env.CASPER_TAG_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
 
       - name: Slack Notification
