@@ -17,12 +17,16 @@ enum StreamErrors {
   MissingId
 }
 
+interface EventStreamOptions {
+  headers?: object;
+}
+
 export class DeployWatcher {
   es: EventStream;
   watchList: DeploySubscription[] = [];
 
-  constructor(public eventStreamUrl: string) {
-    this.es = new EventStream(eventStreamUrl);
+  constructor(public eventStreamUrl: string, protected eventStreamOptions?: EventStreamOptions) {
+    this.es = new EventStream(eventStreamUrl, eventStreamOptions);
   }
 
   subscribe(val: DeploySubscription[]): void {
@@ -83,7 +87,7 @@ export class EventStream {
   subscribedTo: EventSubscription[] = [];
   eventSource: EventSource;
 
-  constructor(public eventStreamUrl: string) {}
+  constructor(public eventStreamUrl: string, protected eventStreamOptions?: EventStreamOptions) {}
 
   public subscribe(
     eventName: EventName,
@@ -120,7 +124,7 @@ export class EventStream {
     if (eventId !== undefined) {
       requestUrl = requestUrl.concat(`start_from=${eventId}`);
     }
-    this.eventSource = new EventSource(requestUrl);
+    this.eventSource = new EventSource(requestUrl, this.eventStreamOptions);
 
     this.eventSource.onmessage = e => {
       const event = {
