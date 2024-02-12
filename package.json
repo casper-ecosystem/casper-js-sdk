@@ -1,6 +1,6 @@
 {
   "name": "casper-js-sdk",
-  "version": "2.15.3",
+  "version": "2.15.4",
   "license": "Apache 2.0",
   "description": "SDK to interact with the Casper blockchain",
   "homepage": "https://github.com/casper-ecosystem/casper-js-sdk#README.md",
@@ -9,7 +9,7 @@
     "url": "https://github.com/casper-ecosystem/casper-js-sdk.git"
   },
   "main": "dist/lib.node.js",
-  "browser": "dist/lib.js",
+  "browser": "dist/lib.web.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "prepare": "husky-run install",
@@ -54,6 +54,7 @@
     "@jsdevtools/coverage-istanbul-loader": "^3.0.5",
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.5",
+    "@types/eventsource": "^1.1.15",
     "@types/humanize-duration": "^3.18.1",
     "@types/lodash": "^4.14.191",
     "@types/mocha": "^5.2.7",
@@ -119,6 +120,7 @@
     "@scure/bip32": "^1.1.5",
     "@scure/bip39": "^1.2.0",
     "@types/ws": "^8.2.2",
+    "eventsource": "^2.0.2",
     "glob": "^7.1.6",
     "humanize-duration": "^3.24.0",
     "key-encoder": "^2.0.3",

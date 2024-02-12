@@ -70,7 +70,7 @@ const clientConfig = {
   ],
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'lib.js',
+    filename: 'lib.web.js',
     libraryTarget: 'umd'
   }
 };
