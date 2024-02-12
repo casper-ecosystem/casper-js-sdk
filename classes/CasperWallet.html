@@ -22,7 +22,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">CasperWallet</span></li></ul></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L38">src/lib/Signer/CasperWallet.ts:38</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L38">src/lib/Signer/CasperWallet.ts:38</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -79,7 +79,7 @@
 <h4 class="tsd-returns-title">Returns <a href="CasperWallet.html" class="tsd-signature-type" data-tsd-kind="Class">CasperWallet</a></h4><aside class="tsd-sources">
 <p>Overrides BaseSigner.constructor</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L43">src/lib/Signer/CasperWallet.ts:43</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L43">src/lib/Signer/CasperWallet.ts:43</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="activeAccount" class="tsd-anchor"></a>
@@ -87,7 +87,7 @@
 <div class="tsd-signature">active<wbr/>Account<span class="tsd-signature-symbol">?:</span> <span class="tsd-signature-type">string</span></div><aside class="tsd-sources">
 <p>Inherited from BaseSigner.activeAccount</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/BaseSigner.ts#L12">src/lib/Signer/BaseSigner.ts:12</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/BaseSigner.ts#L12">src/lib/Signer/BaseSigner.ts:12</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private"><a id="casperWalletProvider" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>casper<wbr/>Wallet<wbr/>Provider</span><a href="#casperWalletProvider" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">casper<wbr/>Wallet<wbr/>Provider<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-symbol">{ </span><br/><span>    </span>isConnected<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>requestConnection<span class="tsd-signature-symbol">: </span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol"> =&gt; </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>disconnectFromSite<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>getActivePublicKey<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>getVersion<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>requestSwitchAccount<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>sign<span class="tsd-signature-symbol">(</span>deployJson<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, signingPublicKeyHex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">SignatureResponse</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span><br/><span>    </span>signMessage<span class="tsd-signature-symbol">(</span>message<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, signingPublicKeyHex<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">SignatureResponse</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span></div>
@@ -132,7 +132,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/@types/casperWallet.d.ts#L59">src/@types/casperWallet.d.ts:59</a></li></ul></aside></li></ul></li>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/@types/casperWallet.d.ts#L59">src/@types/casperWallet.d.ts:59</a></li></ul></aside></li></ul></li>
 <li class="tsd-parameter">
 <h5>get<wbr/>Active<wbr/>Public<wbr/>Key<span class="tsd-signature-symbol">:</span>function</h5>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-type-literal">
@@ -148,7 +148,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/@types/casperWallet.d.ts#L67">src/@types/casperWallet.d.ts:67</a></li></ul></aside></li></ul></li>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/@types/casperWallet.d.ts#L67">src/@types/casperWallet.d.ts:67</a></li></ul></aside></li></ul></li>
 <li class="tsd-parameter">
 <h5>get<wbr/>Version<span class="tsd-signature-symbol">:</span>function</h5>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-type-literal">
@@ -160,7 +160,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/@types/casperWallet.d.ts#L73">src/@types/casperWallet.d.ts:73</a></li></ul></aside></li></ul></li>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/@types/casperWallet.d.ts#L73">src/@types/casperWallet.d.ts:73</a></li></ul></aside></li></ul></li>
 <li class="tsd-parameter">
 <h5>request<wbr/>Switch<wbr/>Account<span class="tsd-signature-symbol">:</span>function</h5>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-type-literal">
@@ -173,7 +173,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/@types/casperWallet.d.ts#L29">src/@types/casperWallet.d.ts:29</a></li></ul></aside></li></ul></li>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/@types/casperWallet.d.ts#L29">src/@types/casperWallet.d.ts:29</a></li></ul></aside></li></ul></li>
 <li class="tsd-parameter">
 <h5>sign<span class="tsd-signature-symbol">:</span>function</h5>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-type-literal">
@@ -196,7 +196,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">SignatureResponse</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/@types/casperWallet.d.ts#L37">src/@types/casperWallet.d.ts:37</a></li></ul></aside></li></ul></li>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/@types/casperWallet.d.ts#L37">src/@types/casperWallet.d.ts:37</a></li></ul></aside></li></ul></li>
 <li class="tsd-parameter">
 <h5>sign<wbr/>Message<span class="tsd-signature-symbol">:</span>function</h5>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-type-literal">
@@ -219,26 +219,26 @@ Will not show UI for already connected accounts and return true immediately</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">SignatureResponse</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/@types/casperWallet.d.ts#L48">src/@types/casperWallet.d.ts:48</a></li></ul></aside></li></ul></li></ul></div><aside class="tsd-sources">
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/@types/casperWallet.d.ts#L48">src/@types/casperWallet.d.ts:48</a></li></ul></aside></li></ul></li></ul></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L41">src/lib/Signer/CasperWallet.ts:41</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L41">src/lib/Signer/CasperWallet.ts:41</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="connected" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>connected</span><a href="#connected" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">connected<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div><aside class="tsd-sources">
 <p>Inherited from BaseSigner.connected</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/BaseSigner.ts#L14">src/lib/Signer/BaseSigner.ts:14</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/BaseSigner.ts#L14">src/lib/Signer/BaseSigner.ts:14</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="isCasperWallet" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Casper<wbr/>Wallet</span><a href="#isCasperWallet" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">is<wbr/>Casper<wbr/>Wallet<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> = true</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L39">src/lib/Signer/CasperWallet.ts:39</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L39">src/lib/Signer/CasperWallet.ts:39</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="locked" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>locked</span><a href="#locked" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">locked<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span></div><aside class="tsd-sources">
 <p>Inherited from BaseSigner.locked</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/BaseSigner.ts#L16">src/lib/Signer/BaseSigner.ts:16</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/BaseSigner.ts#L16">src/lib/Signer/BaseSigner.ts:16</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="addEventListener" class="tsd-anchor"></a>
@@ -272,7 +272,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <p>Inherited from BaseSigner.addEventListener</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/BaseSigner.ts#L27">src/lib/Signer/BaseSigner.ts:27</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/BaseSigner.ts#L27">src/lib/Signer/BaseSigner.ts:27</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="changeAccount" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>change<wbr/>Account</span><a href="#changeAccount" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -281,7 +281,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <p>Overrides BaseSigner.changeAccount</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L176">src/lib/Signer/CasperWallet.ts:176</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L176">src/lib/Signer/CasperWallet.ts:176</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="connect" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>connect</span><a href="#connect" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -290,7 +290,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <p>Overrides BaseSigner.connect</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L165">src/lib/Signer/CasperWallet.ts:165</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L165">src/lib/Signer/CasperWallet.ts:165</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="disconnect" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>disconnect</span><a href="#disconnect" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -299,7 +299,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <p>Overrides BaseSigner.disconnect</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L172">src/lib/Signer/CasperWallet.ts:172</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L172">src/lib/Signer/CasperWallet.ts:172</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="emit" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>emit</span><a href="#emit" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited">
@@ -320,7 +320,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <p>Inherited from BaseSigner.emit</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/BaseSigner.ts#L59">src/lib/Signer/BaseSigner.ts:59</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/BaseSigner.ts#L59">src/lib/Signer/BaseSigner.ts:59</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getActiveAccount" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Active<wbr/>Account</span><a href="#getActiveAccount" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -337,7 +337,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <p>Overrides BaseSigner.getActiveAccount</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L228">src/lib/Signer/CasperWallet.ts:228</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L228">src/lib/Signer/CasperWallet.ts:228</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getVersion-2" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Version</span><a href="#getVersion-2" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -346,7 +346,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <p>Overrides BaseSigner.getVersion</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L152">src/lib/Signer/CasperWallet.ts:152</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L152">src/lib/Signer/CasperWallet.ts:152</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private"><a id="handleActiveKeyChanged" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>handle<wbr/>Active<wbr/>Key<wbr/>Changed</span><a href="#handleActiveKeyChanged" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
@@ -359,7 +359,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h5>event: <span class="tsd-signature-type">any</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L100">src/lib/Signer/CasperWallet.ts:100</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L100">src/lib/Signer/CasperWallet.ts:100</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private"><a id="handleConnected" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>handle<wbr/>Connected</span><a href="#handleConnected" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
@@ -372,7 +372,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h5>event: <span class="tsd-signature-type">any</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L78">src/lib/Signer/CasperWallet.ts:78</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L78">src/lib/Signer/CasperWallet.ts:78</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private"><a id="handleDisconnected" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>handle<wbr/>Disconnected</span><a href="#handleDisconnected" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
@@ -385,7 +385,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h5>event: <span class="tsd-signature-type">any</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L89">src/lib/Signer/CasperWallet.ts:89</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L89">src/lib/Signer/CasperWallet.ts:89</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private"><a id="handleLocked" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>handle<wbr/>Locked</span><a href="#handleLocked" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
@@ -398,7 +398,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h5>event: <span class="tsd-signature-type">any</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L111">src/lib/Signer/CasperWallet.ts:111</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L111">src/lib/Signer/CasperWallet.ts:111</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private"><a id="handleTabChanged" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>handle<wbr/>Tab<wbr/>Changed</span><a href="#handleTabChanged" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
@@ -411,7 +411,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h5>event: <span class="tsd-signature-type">any</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L135">src/lib/Signer/CasperWallet.ts:135</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L135">src/lib/Signer/CasperWallet.ts:135</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private"><a id="handleUnlocked" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>handle<wbr/>Unlocked</span><a href="#handleUnlocked" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
@@ -424,7 +424,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h5>event: <span class="tsd-signature-type">any</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L123">src/lib/Signer/CasperWallet.ts:123</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L123">src/lib/Signer/CasperWallet.ts:123</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isConnected-1" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Connected</span><a href="#isConnected-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -439,7 +439,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <p>Overrides BaseSigner.isConnected</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L161">src/lib/Signer/CasperWallet.ts:161</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L161">src/lib/Signer/CasperWallet.ts:161</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="off" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>off</span><a href="#off" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -471,7 +471,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <p>Inherited from BaseSigner.off</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/BaseSigner.ts#L36">src/lib/Signer/BaseSigner.ts:36</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/BaseSigner.ts#L36">src/lib/Signer/BaseSigner.ts:36</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="on" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>on</span><a href="#on" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -503,7 +503,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <p>Inherited from BaseSigner.on</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/BaseSigner.ts#L20">src/lib/Signer/BaseSigner.ts:20</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/BaseSigner.ts#L20">src/lib/Signer/BaseSigner.ts:20</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="removeEventListener" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>remove<wbr/>Event<wbr/>Listener</span><a href="#removeEventListener" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
@@ -535,7 +535,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <p>Inherited from BaseSigner.removeEventListener</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/BaseSigner.ts#L43">src/lib/Signer/BaseSigner.ts:43</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/BaseSigner.ts#L43">src/lib/Signer/BaseSigner.ts:43</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="setOption" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>set<wbr/>Option</span><a href="#setOption" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -554,7 +554,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L239">src/lib/Signer/CasperWallet.ts:239</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L239">src/lib/Signer/CasperWallet.ts:239</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="signDeploy" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>sign<wbr/>Deploy</span><a href="#signDeploy" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -573,7 +573,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-symbol">{ </span><br/><span>    </span>deploy<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">JsonTypes</span><span class="tsd-signature-symbol">; </span><br/><span class="tsd-signature-symbol">}</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <p>Overrides BaseSigner.signDeploy</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L180">src/lib/Signer/CasperWallet.ts:180</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L180">src/lib/Signer/CasperWallet.ts:180</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="signMessage-2" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>sign<wbr/>Message</span><a href="#signMessage-2" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -589,7 +589,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <p>Overrides BaseSigner.signMessage</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L206">src/lib/Signer/CasperWallet.ts:206</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L206">src/lib/Signer/CasperWallet.ts:206</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private"><a id="updateState" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>update<wbr/>State</span><a href="#updateState" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
@@ -602,7 +602,7 @@ Will not show UI for already connected accounts and return true immediately</p>
 <h5>state: <span class="tsd-signature-type">CasperWalletState</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/lib/Signer/CasperWallet.ts#L146">src/lib/Signer/CasperWallet.ts:146</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/lib/Signer/CasperWallet.ts#L146">src/lib/Signer/CasperWallet.ts:146</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">

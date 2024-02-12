@@ -16,7 +16,7 @@
 <li><a href="EventName.html">EventName</a></li></ul>
 <h1>Enumeration EventName</h1></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/services/EventStream.ts#L55">src/services/EventStream.ts:55</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/services/EventStream.ts#L57">src/services/EventStream.ts:57</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -26,6 +26,7 @@
 <h3 class="tsd-index-heading">Enumeration Members</h3>
 <div class="tsd-index-list"><a href="EventName.html#BlockAdded" class="tsd-index-link tsd-kind-enum-member tsd-parent-kind-enum"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF984D" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-1024-path"></rect><path d="M9.354 16V7.24H12.174C12.99 7.24 13.638 7.476 14.118 7.948C14.606 8.412 14.85 9.036 14.85 9.82C14.85 10.604 14.606 11.232 14.118 11.704C13.638 12.168 12.99 12.4 12.174 12.4H10.434V16H9.354ZM10.434 11.428H12.174C12.646 11.428 13.022 11.284 13.302 10.996C13.59 10.7 13.734 10.308 13.734 9.82C13.734 9.324 13.59 8.932 13.302 8.644C13.022 8.356 12.646 8.212 12.174 8.212H10.434V11.428Z" fill="var(--color-text)" id="icon-1024-text"></path></svg><span>Block<wbr/>Added</span></a>
 <a href="EventName.html#BlockFinalized" class="tsd-index-link tsd-kind-enum-member tsd-parent-kind-enum"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>Block<wbr/>Finalized</span></a>
+<a href="EventName.html#DeployAccepted" class="tsd-index-link tsd-kind-enum-member tsd-parent-kind-enum"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>Deploy<wbr/>Accepted</span></a>
 <a href="EventName.html#DeployProcessed" class="tsd-index-link tsd-kind-enum-member tsd-parent-kind-enum"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>Deploy<wbr/>Processed</span></a>
 <a href="EventName.html#Fault" class="tsd-index-link tsd-kind-enum-member tsd-parent-kind-enum"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>Fault</span></a>
 <a href="EventName.html#FinalitySignature" class="tsd-index-link tsd-kind-enum-member tsd-parent-kind-enum"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>Finality<wbr/>Signature</span></a>
@@ -34,29 +35,42 @@
 <h2>Enumeration Members</h2>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="BlockAdded" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>Block<wbr/>Added</span><a href="#BlockAdded" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none" id="icon-anchor-a"></path><path d="M10 14a3.5 3.5 0 0 0 5 0l4 -4a3.5 3.5 0 0 0 -5 -5l-.5 .5" id="icon-anchor-b"></path><path d="M14 10a3.5 3.5 0 0 0 -5 0l-4 4a3.5 3.5 0 0 0 5 5l.5 -.5" id="icon-anchor-c"></path></svg></a></h3>
-<div class="tsd-signature">Block<wbr/>Added<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;BlockAdded&quot;</span></div><aside class="tsd-sources">
+<div class="tsd-signature">Block<wbr/>Added<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;BlockAdded&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Can be fetched in <code>/events/main</code> path</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/services/EventStream.ts#L56">src/services/EventStream.ts:56</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/services/EventStream.ts#L59">src/services/EventStream.ts:59</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="BlockFinalized" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>Block<wbr/>Finalized</span><a href="#BlockFinalized" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">Block<wbr/>Finalized<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;BlockFinalized&quot;</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/services/EventStream.ts#L57">src/services/EventStream.ts:57</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/services/EventStream.ts#L64">src/services/EventStream.ts:64</a></li></ul></aside></section>
+<section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="DeployAccepted" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><span>Deploy<wbr/>Accepted</span><a href="#DeployAccepted" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<div class="tsd-signature">Deploy<wbr/>Accepted<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;DeployAccepted&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Can be fetched in <code>/events/deploys</code> path</p>
+</div><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/services/EventStream.ts#L63">src/services/EventStream.ts:63</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="DeployProcessed" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>Deploy<wbr/>Processed</span><a href="#DeployProcessed" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">Deploy<wbr/>Processed<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;DeployProcessed&quot;</span></div><aside class="tsd-sources">
+<div class="tsd-signature">Deploy<wbr/>Processed<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;DeployProcessed&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Can be fetched in <code>/events/main</code> path</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/services/EventStream.ts#L60">src/services/EventStream.ts:60</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/services/EventStream.ts#L61">src/services/EventStream.ts:61</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="Fault" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>Fault</span><a href="#Fault" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">Fault<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;Fault&quot;</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/services/EventStream.ts#L59">src/services/EventStream.ts:59</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/services/EventStream.ts#L67">src/services/EventStream.ts:67</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-enum-member tsd-parent-kind-enum"><a id="FinalitySignature" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>Finality<wbr/>Signature</span><a href="#FinalitySignature" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">Finality<wbr/>Signature<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;FinalitySignature&quot;</span></div><aside class="tsd-sources">
+<div class="tsd-signature">Finality<wbr/>Signature<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">&quot;FinalitySignature&quot;</span></div>
+<div class="tsd-comment tsd-typography"><p>Can be fetched in <code>/events/sigs</code> path</p>
+</div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/a6ddf98/src/services/EventStream.ts#L58">src/services/EventStream.ts:58</a></li></ul></aside></section></section></div>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/6d07fec/src/services/EventStream.ts#L66">src/services/EventStream.ts:66</a></li></ul></aside></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
@@ -91,6 +105,7 @@
 <ul>
 <li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="EventName.html#BlockAdded" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>Block<wbr/>Added</a></li>
 <li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="EventName.html#BlockFinalized" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>Block<wbr/>Finalized</a></li>
+<li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="EventName.html#DeployAccepted" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>Deploy<wbr/>Accepted</a></li>
 <li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="EventName.html#DeployProcessed" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>Deploy<wbr/>Processed</a></li>
 <li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="EventName.html#Fault" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>Fault</a></li>
 <li class="tsd-kind-enum-member tsd-parent-kind-enum"><a href="EventName.html#FinalitySignature" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>Finality<wbr/>Signature</a></li></ul></li></ul></nav></div></div>
