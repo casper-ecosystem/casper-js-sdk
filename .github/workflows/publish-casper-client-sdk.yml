@@ -32,7 +32,7 @@ jobs:
     - name: Get latest release version number
       id: get_version
       uses: battila7/get-version-action@d97fbc34ceb64d1f5d95f4dfd6dce33521ccccf5 #v2.3.0
-    - run: cp dist/lib.js casper-js-sdk.v${{ steps.get_version.outputs.version }}.js
+    - run: cp dist/lib.web.js casper-js-sdk.v${{ steps.get_version.outputs.version }}.js
     - uses: meeDamian/github-release@7ae19492500104f636b3fee4d8103af0fed36c8e #v2.0.3
       with:
         token: ${{ secrets.GITHUB_TOKEN }}

@@ -1,5 +1,4 @@
-import http from 'http';
-import https from 'https';
+import EventSource from 'eventsource';
 import { Result, Ok, Err } from 'ts-results';
 
 export interface DeploySubscription {
@@ -7,6 +6,9 @@ export interface DeploySubscription {
   eventHandlerFn: EventHandlerFn;
 }
 
+/**
+ * @deprecated
+ */
 enum StreamErrors {
   NotAnEvent,
   EarlyEndOfStream,
@@ -53,11 +55,16 @@ export class DeployWatcher {
 type EventHandlerFn = (result: any) => void;
 
 export enum EventName {
+  /** Can be fetched in `/events/main` path */
   BlockAdded = 'BlockAdded',
+  /** Can be fetched in `/events/main` path */
+  DeployProcessed = 'DeployProcessed',
+  /** Can be fetched in `/events/deploys` path */
+  DeployAccepted = 'DeployAccepted',
   BlockFinalized = 'BlockFinalized',
+  /** Can be fetched in `/events/sigs` path */
   FinalitySignature = 'FinalitySignature',
-  Fault = 'Fault',
-  DeployProcessed = 'DeployProcessed'
+  Fault = 'Fault'
 }
 
 interface EventSubscription {
@@ -65,17 +72,16 @@ interface EventSubscription {
   eventHandlerFn: EventHandlerFn;
 }
 
-export interface EventParseResult {
-  id: string | null;
-  err: StreamErrors | null;
-  body: any | null;
+export interface EventParseResult<E = unknown> {
+  id: string;
+  /** @deprecated */
+  err?: StreamErrors | null;
+  body: E;
 }
 
 export class EventStream {
   subscribedTo: EventSubscription[] = [];
-  pendingDeploysParts: EventParseResult[] = [];
-  pendingDeployString = '';
-  stream?: NodeJS.ReadableStream;
+  eventSource: EventSource;
 
   constructor(public eventStreamUrl: string) {}
 
@@ -108,95 +114,28 @@ export class EventStream {
     });
   }
 
-  public start(eventId = 0) {
+  public start(eventId?: number) {
     const separator = this.eventStreamUrl.indexOf('?') > -1 ? '&' : '?';
-    const requestUrl = `${this.eventStreamUrl}${separator}start_from=${eventId}`;
+    let requestUrl = `${this.eventStreamUrl}${separator}`;
+    if (eventId !== undefined) {
+      requestUrl = requestUrl.concat(`start_from=${eventId}`);
+    }
+    this.eventSource = new EventSource(requestUrl);
 
-    const request = requestUrl.startsWith('https://') ? https.get : http.get;
+    this.eventSource.onmessage = e => {
+      const event = {
+        body: JSON.parse(e.data),
+        id: e.lastEventId
+      };
+      this.runEventsLoop(event);
+    };
 
-    request(requestUrl, body => {
-      this.stream = body;
-
-      body.on('data', (buf: Uint8Array) => {
-        const result = parseEvent(Buffer.from(buf).toString());
-        if (result && !result.err) {
-          this.runEventsLoop(result);
-        }
-        if (result.err === StreamErrors.EarlyEndOfStream) {
-          this.pendingDeployString = result.body;
-        }
-        if (result.err === StreamErrors.MissingDataHeaderAndId) {
-          this.pendingDeployString += result.body;
-        }
-        if (result.err === StreamErrors.MissingDataHeader) {
-          this.pendingDeployString += result.body;
-          this.pendingDeployString += `\nid:${result.id}`;
-
-          const newResult = parseEvent(this.pendingDeployString);
-          if (newResult.err === null) {
-            this.pendingDeployString = '';
-          }
-          this.runEventsLoop(newResult);
-        }
-      });
-      body.once('readable', () => {
-        console.info('Connected successfully to event stream endpoint.');
-      });
-      body.on('error', (error: Error) => {
-        throw error;
-      });
-      body.on('timeout', () => {
-        throw Error('EventStream: Timeout error');
-      });
-      body.on('close', () => {
-        throw Error('EventStream: Connection closed');
-      });
-    });
+    this.eventSource.onerror = err => {
+      throw err;
+    };
   }
 
   public stop(): void {
-    if (this.stream) this.stream.pause();
+    if (this.eventSource) this.eventSource.close();
   }
 }
-
-export const parseEvent = (eventString: string): any => {
-  if (eventString.startsWith('data')) {
-    const splitted = eventString.split('\n');
-    const id =
-      splitted[1] && splitted[1].startsWith('id:')
-        ? splitted[1].substr(3)
-        : null;
-    try {
-      const body = JSON.parse(splitted[0].substr(5));
-      if (id) {
-        // Note: This is case where there is proper object with JSON body and id in one chunk.
-        return { id, body, err: null };
-      } else {
-        // Note: This is case where there is proper object with JSON body but without ID.
-        return { id, body, err: StreamErrors.MissingId };
-      }
-    } catch {
-      // Note: This is case where there is invalid JSON because of early end of stream.
-      const body = splitted[0];
-      return { id, body, err: StreamErrors.EarlyEndOfStream };
-    }
-  } else {
-    // Note: This is in case where there data chunk which isn't the first one.
-    const splitted = eventString.split('\n');
-    const body = splitted[0];
-    const id =
-      splitted[1] && splitted[1].startsWith('id:')
-        ? splitted[1].substr(3)
-        : null;
-
-    if (splitted[0] === ':' && splitted[1] === '' && splitted[2] === '') {
-      return { id: null, body: null, err: StreamErrors.NotAnEvent };
-    }
-
-    if (id) {
-      return { id, body, err: StreamErrors.MissingDataHeader };
-    } else {
-      return { id: null, body, err: StreamErrors.MissingDataHeaderAndId };
-    }
-  }
-};

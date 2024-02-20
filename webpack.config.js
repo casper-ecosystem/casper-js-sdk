@@ -1,8 +1,8 @@
 const path = require('path');
 const copyPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-  .BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin =
+  require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const nodeExternals = require('webpack-node-externals');
 
 /** @type { import('webpack').Configuration } */
@@ -70,7 +70,7 @@ const clientConfig = {
   ],
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'lib.js',
+    filename: 'lib.web.js',
     libraryTarget: 'umd'
   }
 };

@@ -1012,6 +1012,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/eventsource@npm:^1.1.15":
+  version: 1.1.15
+  resolution: "@types/eventsource@npm:1.1.15"
+  checksum: 52e024f5aebfd6bc166f2162d6e408cf788886007e571519c75f8c3623feaa3c5a74681fd3a128de6d21b28ef88dd683421264f10d5c98728959b99b1229b85e
+  languageName: node
+  linkType: hard
+
 "@types/humanize-duration@npm:^3.18.1":
   version: 3.27.1
   resolution: "@types/humanize-duration@npm:3.27.1"
@@ -2275,6 +2282,7 @@ __metadata:
     "@scure/bip39": "npm:^1.2.0"
     "@types/chai": "npm:^4.1.7"
     "@types/chai-as-promised": "npm:^7.1.5"
+    "@types/eventsource": "npm:^1.1.15"
     "@types/humanize-duration": "npm:^3.18.1"
     "@types/lodash": "npm:^4.14.191"
     "@types/mocha": "npm:^5.2.7"
@@ -2301,6 +2309,7 @@ __metadata:
     eslint-plugin-lodash: "npm:^7.4.0"
     eslint-plugin-prefer-arrow: "npm:^1.2.3"
     eslint-plugin-simple-import-sort: "npm:^10.0.0"
+    eventsource: "npm:^2.0.2"
     glob: "npm:^7.1.6"
     https-browserify: "npm:^1.0.0"
     humanize-duration: "npm:^3.24.0"
@@ -2318,9 +2327,9 @@ __metadata:
     lint-staged: "npm:^10.5.4"
     lodash: "npm:^4.17.21"
     mocha: "npm:^10.1.0"
-    node-fetch: "npm:^2.6.11"
+    node-fetch: "npm:2.6.13"
     nyc: "npm:^15.1.0"
-    prettier: "npm:^3.0.3"
+    prettier: "npm:^3.2.5"
     process: "npm:^0.11.10"
     reflect-metadata: "npm:^0.1.13"
     rollup: "npm:^3.28.1"
@@ -3712,6 +3721,13 @@ __metadata:
   version: 3.3.0
   resolution: "events@npm:3.3.0"
   checksum: a3d47e285e28d324d7180f1e493961a2bbb4cad6412090e4dec114f4db1f5b560c7696ee8e758f55e23913ede856e3689cd3aa9ae13c56b5d8314cd3b3ddd1be
+  languageName: node
+  linkType: hard
+
+"eventsource@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "eventsource@npm:2.0.2"
+  checksum: e1c4c3664cebf9efdd55c90818ef847099f298bf521768d479cf22d8a681e666b3042de85327711ba6a8414ac6a04c70d2aeb4f405bba8239a8c36e06a019374
   languageName: node
   linkType: hard
 
@@ -6308,6 +6324,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-fetch@npm:2.6.13":
+  version: 2.6.13
+  resolution: "node-fetch@npm:2.6.13"
+  dependencies:
+    whatwg-url: "npm:^5.0.0"
+  peerDependencies:
+    encoding: ^0.1.0
+  peerDependenciesMeta:
+    encoding:
+      optional: true
+  checksum: 72f94498d547e322207575b2778e7b3d969b0d73f35a19f258c7fb982bf0ae96e5a3a518477300ba1dd2bd22e6b05be074648ed88448c5cf1a9b7d23c6529d1a
+  languageName: node
+  linkType: hard
+
 "node-fetch@npm:^2.6.1, node-fetch@npm:^2.6.11":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
@@ -6851,12 +6881,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:^3.0.3":
-  version: 3.0.3
-  resolution: "prettier@npm:3.0.3"
+"prettier@npm:^3.2.5":
+  version: 3.2.5
+  resolution: "prettier@npm:3.2.5"
   bin:
     prettier: bin/prettier.cjs
-  checksum: ccf1ead9794b017be6b42d0873f459070beef2069eb393c8b4c0d11aa3430acefc54f6d5f44a5b7ce9af05ad8daf694b912f0aa2808d1c22dfa86e61e9d563f8
+  checksum: d509f9da0b70e8cacc561a1911c0d99ec75117faed27b95cc8534cb2349667dee6351b0ca83fa9d5703f14127faa52b798de40f5705f02d843da133fc3aa416a
   languageName: node
   linkType: hard
 
