@@ -97,3 +97,11 @@ export const TUPLE3_TYPE = 'Tuple3';
 
 export const ANY_TYPE = 'Any';
 export const ACCOUNT_HASH_TYPE = 'AccountHash';
+
+export const CONTRACT_STRING_PREFIX = 'contract-';
+export const PACKAGE_STRING_PREFIX = 'contract-package-';
+export const PACKAGE_STRING_LEGACY_EXTRA_PREFIX = 'wasm';
+export const CONTRACT_HASH_TYPE = 'ContractHash';
+export const CONTRACT_PACKAGE_HASH_TYPE = 'ContractPackageHash';
+
+export const KEY_HASH_LENGTH = 32;

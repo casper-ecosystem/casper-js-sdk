@@ -25,7 +25,9 @@ import {
   TUPLE3_TYPE,
   OPTION_TYPE,
   ANY_TYPE,
-  CLTypeTag
+  CLTypeTag,
+  CONTRACT_PACKAGE_HASH_TYPE,
+  CONTRACT_HASH_TYPE
 } from './constants';
 import {
   CLValueBytesParsers,
@@ -75,6 +77,8 @@ import {
   CLMapBytesParser,
   CLUnitType,
   CLUnitBytesParser,
+  CLContractHashBytesParser,
+  CLContractPackageHashBytesParser,
   CLAnyType
 } from './index';
 
@@ -185,6 +189,10 @@ export const matchByteParserByCLType = (
       return Ok(new CLU512BytesParser());
     case BYTE_ARRAY_TYPE:
       return Ok(new CLByteArrayBytesParser());
+    case CONTRACT_HASH_TYPE:
+      return Ok(new CLContractHashBytesParser());
+    case CONTRACT_PACKAGE_HASH_TYPE:
+      return Ok(new CLContractPackageHashBytesParser());
     case UREF_TYPE:
       return Ok(new CLURefBytesParser());
     case KEY_TYPE:

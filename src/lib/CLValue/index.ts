@@ -2,6 +2,8 @@ export * from './Abstract';
 export * from './Builders';
 export * from './ByteArray';
 export * from './Any';
+export * from './ContractHash';
+export * from './ContractPackageHash';
 export * from './Key';
 export * from './List';
 export * from './Map';
