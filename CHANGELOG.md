@@ -19,11 +19,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 - invalid seed usage in the HDKey ([#377](https://github.com/casper-ecosystem/casper-js-sdk/pull/377))
 
+## [2.15.4] - 2024-02-12
+
+### Fixed
+
+- [`newTransferWithOptionalTransferId` now uses `PublicKey` as a target instead of `AccountHash`.](https://github.com/casper-ecosystem/casper-js-sdk/issues/385)
+- [Fixed implementation of `EventStream`. Previous one had problems when there was two events emmited at the same time](https://github.com/casper-ecosystem/casper-js-sdk/issues/379)
+- [Fixed imports problem in modern TS environment](https://github.com/casper-ecosystem/casper-js-sdk/issues/386)
+
 ## [2.15.3] - 2023-10-16
 
 ### Fixed
 
-- replace legacy `sendAsync` with `request` ([#373](https://github.com/casper-ecosystem/casper-js-sdk/pull/373))
+- Replace legacy `sendAsync` with `request` ([#373](https://github.com/casper-ecosystem/casper-js-sdk/pull/373))
 
 [2.15.3]: https://github.com/casper-ecosystem/casper-js-sdk/compare/2.15.2...2.15.3
 
