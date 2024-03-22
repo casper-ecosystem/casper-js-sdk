@@ -54,8 +54,7 @@ describe('Secp256K1HDKey', () => {
       ]
     },
     {
-      seed:
-        'fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542',
+      seed: 'fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542',
       vectors: [
         {
           chain: 'm',
@@ -103,17 +102,16 @@ describe('Secp256K1HDKey', () => {
     }
   ];
   it('should generate key from mnemonic', () => {
-    const key = Secp256K1HDKey.new();
-
-    const key0 = key.deriveChild(1);
-
-    const mn = key.mnemonic;
+    const mn =
+      'equip will roof matter pink blind book anxiety banner elbow sun young';
 
     const recoveredKey = Secp256K1HDKey.fromMnemonic(mn);
 
-    const recoveredKey0 = recoveredKey.deriveChild(1);
+    const key0 = recoveredKey.deriveChild(0);
 
-    expect(key0.accountHex()).eq(recoveredKey0.accountHex());
+    expect(key0.accountHex(false)).eq(
+      '02028b2ddbe59976ad2f4138ca46553866de5124d13db4e13611ca751eedde9e0297'
+    );
   });
 
   it('should generate r+s signature', () => {

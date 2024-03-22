@@ -54,8 +54,7 @@ describe('Ed25519HDKey', () => {
       ]
     },
     {
-      seed:
-        'fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542',
+      seed: 'fffcf9f6f3f0edeae7e4e1dedbd8d5d2cfccc9c6c3c0bdbab7b4b1aeaba8a5a29f9c999693908d8a8784817e7b7875726f6c696663605d5a5754514e4b484542',
       vectors: [
         {
           chain: 'm',
@@ -103,17 +102,16 @@ describe('Ed25519HDKey', () => {
     }
   ];
   it('should generate key from mnemonic', () => {
-    const key = Ed25519HDKey.new();
+    const mn =
+      'equip will roof matter pink blind book anxiety banner elbow sun young';
 
-    const key0 = key.deriveChild(1);
+    const hdKey = Ed25519HDKey.fromMnemonic(mn);
 
-    const mn = key.mnemonic;
+    const key0 = hdKey.deriveChild(0);
 
-    const recoveredKey = Ed25519HDKey.fromMnemonic(mn);
-
-    const recoveredKey0 = recoveredKey.deriveChild(1);
-
-    expect(key0.accountHex()).eq(recoveredKey0.accountHex());
+    expect(key0.accountHex(false)).to.eq(
+      '016ca12581a38658e71826aa124ffb9f3e3fdc4687b2379da609b187a5b11a80f1'
+    );
   });
 
   it('should generate r+s signature', () => {

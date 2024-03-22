@@ -153,10 +153,11 @@ export abstract class AsymmetricKey {
 
   /**
    * Gets the hexadecimal public key of the account
+   * @param {boolean} checksummed Indicates whether the public key should be checksummed, default: `true`
    * @returns The public key of the `AsymmetricKey` as a hexadecimal string
    */
-  public accountHex(): string {
-    return this.publicKey.toHex();
+  public accountHex(checksummed = true): string {
+    return this.publicKey.toHex(checksummed);
   }
 
   /**
