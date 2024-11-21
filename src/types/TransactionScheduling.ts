@@ -1,8 +1,9 @@
 import { jsonObject, jsonMember } from 'typedjson';
-import { concat } from '@ethersproject/bytes';
 
 import { Timestamp } from './Time';
 import { CLValueUInt64 } from './clvalue';
+import { CalltableSerialization } from './CalltableSerialization';
+import { toBytesU64 } from './ByteConverters';
 
 /**
  * Enum representing the scheduling tags for transaction scheduling types.
@@ -35,6 +36,17 @@ class FutureEraScheduling {
   constructor(eraID: number) {
     this.eraID = eraID;
   }
+
+  public toBytes(): Uint8Array {
+    const calltableSerialization = new CalltableSerialization();
+    calltableSerialization.addField(0, Uint8Array.of(1));
+    calltableSerialization.addField(
+      1,
+      CLValueUInt64.newCLUint64(this.eraID).bytes()
+    );
+
+    return calltableSerialization.toBytes();
+  }
 }
 
 /**
@@ -60,6 +72,17 @@ class FutureTimestampScheduling {
    */
   constructor(timestamp: Timestamp) {
     this.timestamp = timestamp;
+  }
+
+  public toBytes(): Uint8Array {
+    const calltableSerialization = new CalltableSerialization();
+    calltableSerialization.addField(0, Uint8Array.of(2));
+    calltableSerialization.addField(
+      1,
+      toBytesU64(Date.parse(this.timestamp.toJSON()))
+    );
+
+    return calltableSerialization.toBytes();
   }
 }
 
@@ -124,19 +147,17 @@ export class TransactionScheduling {
    * @returns A `Uint8Array` representing the transaction scheduling.
    */
   bytes(): Uint8Array {
-    const tagBytes = Uint8Array.of(this.tag());
-
-    if (this.futureEra) {
-      const eraBytes = new CLValueUInt64(BigInt(this.futureEra.eraID)).bytes();
-      return concat([tagBytes, eraBytes]);
+    if (this.standard) {
+      const calltableSerialization = new CalltableSerialization();
+      calltableSerialization.addField(0, Uint8Array.of(0));
+      return calltableSerialization.toBytes();
+    } else if (this.futureEra) {
+      return this.futureEra.toBytes();
     } else if (this.futureTimestamp) {
-      const timestampBytes = new CLValueUInt64(
-        BigInt(this.futureTimestamp.timestamp.toMilliseconds())
-      ).bytes();
-      return concat([tagBytes, timestampBytes]);
+      return this.futureTimestamp.toBytes();
     }
 
-    return tagBytes;
+    throw new Error('Unable to serialize TransactionScheduling');
   }
 
   /**

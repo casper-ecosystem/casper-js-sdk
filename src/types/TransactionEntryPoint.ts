@@ -1,7 +1,7 @@
 import { jsonObject, jsonMember } from 'typedjson';
-import { concat } from '@ethersproject/bytes';
 
 import { CLValueString } from './clvalue';
+import { CalltableSerialization } from './CalltableSerialization';
 
 /**
  * Enum representing the available transaction entry points, each representing a different operation in the system.
@@ -16,14 +16,16 @@ export enum TransactionEntryPointEnum {
   Redelegate = 'Redelegate',
   ActivateBid = 'ActivateBid',
   ChangeBidPublicKey = 'ChangeBidPublicKey',
-  Call = 'Call'
+  Call = 'Call',
+  AddReservations = 'AddReservations',
+  CancelReservations = 'CancelReservations'
 }
 
 /**
  * Enum representing the tags for different transaction entry points. This is used for efficient storage and comparison.
  */
 export enum TransactionEntryPointTag {
-  Custom = 0,
+  Call = 1,
   Transfer,
   AddBid,
   WithdrawBid,
@@ -32,7 +34,8 @@ export enum TransactionEntryPointTag {
   Redelegate,
   ActivateBid,
   ChangeBidPublicKey,
-  Call
+  AddReservations,
+  CancelReservations
 }
 
 /**
@@ -102,6 +105,18 @@ export class TransactionEntryPoint {
   call?: Record<string, unknown>;
 
   /**
+   * The call action as a generic object.
+   */
+  @jsonMember({ constructor: Object, name: 'AddReservations' })
+  addReservations?: Record<string, unknown>;
+
+  /**
+   * The call action as a generic object.
+   */
+  @jsonMember({ constructor: Object, name: 'CancelReservations' })
+  cancelReservations?: Record<string, unknown>;
+
+  /**
    * Creates a new `TransactionEntryPoint` instance, where each parameter corresponds to a specific entry point action.
    *
    * @param custom A custom entry point action represented as a string.
@@ -125,7 +140,9 @@ export class TransactionEntryPoint {
     redelegate?: Record<string, unknown>,
     activateBid?: Record<string, unknown>,
     changeBidPublicKey?: Record<string, unknown>,
-    call?: Record<string, unknown>
+    call?: Record<string, unknown>,
+    addReservations?: Record<string, unknown>,
+    cancelReservations?: Record<string, unknown>
   ) {
     this.custom = custom;
     this.transfer = transfer;
@@ -137,6 +154,8 @@ export class TransactionEntryPoint {
     this.activateBid = activateBid;
     this.changeBidPublicKey = changeBidPublicKey;
     this.call = call;
+    this.addReservations = addReservations;
+    this.cancelReservations = cancelReservations;
   }
 
   /**
@@ -155,7 +174,11 @@ export class TransactionEntryPoint {
     if (this.changeBidPublicKey)
       return TransactionEntryPointTag.ChangeBidPublicKey;
     if (this.call) return TransactionEntryPointTag.Call;
-    return TransactionEntryPointTag.Custom;
+    if (this.addReservations) return TransactionEntryPointTag.AddReservations;
+    if (this.cancelReservations)
+      return TransactionEntryPointTag.CancelReservations;
+
+    throw new Error('Unknown TransactionEntryPointTag');
   }
 
   /**
@@ -164,12 +187,20 @@ export class TransactionEntryPoint {
    * @returns A `Uint8Array` representing the transaction entry point and any associated data.
    */
   bytes(): Uint8Array {
-    let result = new Uint8Array([this.tag()]);
+    const calltableSerialization = new CalltableSerialization();
+    calltableSerialization.addField(0, Uint8Array.of(this.tag()));
+
     if (this.custom) {
-      const customBytes = new CLValueString(this.custom).bytes();
-      result = concat([result, customBytes]);
+      const calltableSerialization = new CalltableSerialization();
+      calltableSerialization.addField(0, Uint8Array.of(1));
+      calltableSerialization.addField(
+        1,
+        CLValueString.newCLString(this.custom).bytes()
+      );
+
+      return calltableSerialization.toBytes();
     }
-    return result;
+    return calltableSerialization.toBytes();
   }
 
   /**
@@ -238,6 +269,12 @@ export class TransactionEntryPoint {
         break;
       case TransactionEntryPointEnum.Call:
         entryPoint.call = {};
+        break;
+      case TransactionEntryPointEnum.CancelReservations:
+        entryPoint.cancelReservations = {};
+        break;
+      case TransactionEntryPointEnum.AddReservations:
+        entryPoint.addReservations = {};
         break;
       default:
         throw new Error('Unknown entry point');

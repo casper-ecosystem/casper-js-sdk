@@ -1,27 +1,14 @@
-import { concat } from '@ethersproject/bytes';
-
 import { jsonObject, jsonMember } from 'typedjson';
 import { Hash } from './key';
-import { CLValueUInt64 } from './clvalue';
-
-/**
- * Enum representing the different pricing modes available.
- */
-export enum PricingModeTag {
-  /** Classic pricing mode */
-  Classic = 0,
-  /** Fixed pricing mode */
-  Fixed = 1,
-  /** Reserved pricing mode */
-  Reserved = 2
-}
+import { CLValueBool, CLValueUInt64, CLValueUInt8 } from './clvalue';
+import { CalltableSerialization } from './CalltableSerialization';
 
 /**
  * Represents the classic pricing mode, including parameters for gas price tolerance,
  * payment amount, and standard payment.
  */
 @jsonObject
-export class ClassicMode {
+export class PaymentLimitedMode {
   /**
    * The tolerance for gas price fluctuations in classic pricing mode.
    */
@@ -39,6 +26,25 @@ export class ClassicMode {
    */
   @jsonMember({ name: 'standard_payment', constructor: Boolean })
   standardPayment: boolean;
+
+  public toBytes(): Uint8Array {
+    const calltableSerializer = new CalltableSerialization();
+    calltableSerializer.addField(0, CLValueUInt8.newCLUint8(0).bytes());
+    calltableSerializer.addField(
+      1,
+      CLValueUInt64.newCLUint64(this.paymentAmount).bytes()
+    );
+    calltableSerializer.addField(
+      2,
+      CLValueUInt8.newCLUint8(this.gasPriceTolerance).bytes()
+    );
+    calltableSerializer.addField(
+      3,
+      CLValueBool.fromBoolean(this.standardPayment).bytes()
+    );
+
+    return calltableSerializer.toBytes();
+  }
 }
 
 /**
@@ -51,13 +57,43 @@ export class FixedMode {
    */
   @jsonMember({ name: 'gas_price_tolerance', constructor: Number })
   gasPriceTolerance: number;
+
+  /**
+   * User-specified additional computation factor (minimum 0).
+   *
+   * - If `0` is provided, no additional logic is applied to the computation limit.
+   * - Each value above `0` tells the node that it needs to treat the transaction
+   *   as if it uses more gas than its serialized size indicates.
+   * - Each increment of `1` increases the "wasm lane" size bucket for this transaction by `1`.
+   *
+   * For example:
+   * - If the transaction's size indicates bucket `0` and `additionalComputationFactor = 2`,
+   *   the transaction will be treated as if it belongs to bucket `2`.
+   */
+  @jsonMember({ name: 'additional_computation_factor', constructor: Number })
+  additionalComputationFactor!: number;
+
+  public toBytes(): Uint8Array {
+    const calltableSerializer = new CalltableSerialization();
+    calltableSerializer.addField(0, CLValueUInt8.newCLUint8(1).bytes());
+    calltableSerializer.addField(
+      1,
+      CLValueUInt8.newCLUint8(this.gasPriceTolerance).bytes()
+    );
+    calltableSerializer.addField(
+      2,
+      CLValueUInt8.newCLUint8(this.additionalComputationFactor).bytes()
+    );
+
+    return calltableSerializer.toBytes();
+  }
 }
 
 /**
  * Represents the reserved pricing mode, which includes a receipt hash.
  */
 @jsonObject
-export class ReservedMode {
+export class PrepaidMode {
   /**
    * The receipt associated with the reserved pricing mode.
    */
@@ -68,6 +104,14 @@ export class ReservedMode {
     serializer: value => value.toJSON()
   })
   receipt: Hash;
+
+  public toBytes(): Uint8Array {
+    const calltableSerializer = new CalltableSerialization();
+    calltableSerializer.addField(0, CLValueUInt8.newCLUint8(2).bytes());
+    calltableSerializer.addField(1, this.receipt.toBytes());
+
+    return calltableSerializer.toBytes();
+  }
 }
 
 /**
@@ -78,8 +122,8 @@ export class PricingMode {
   /**
    * The classic pricing mode, if applicable.
    */
-  @jsonMember({ name: 'Classic', constructor: ClassicMode })
-  classic?: ClassicMode;
+  @jsonMember({ name: 'PaymentLimited', constructor: PaymentLimitedMode })
+  paymentLimited?: PaymentLimitedMode;
 
   /**
    * The fixed pricing mode, if applicable.
@@ -90,8 +134,8 @@ export class PricingMode {
   /**
    * The reserved pricing mode, if applicable.
    */
-  @jsonMember({ name: 'reserved', constructor: ReservedMode })
-  reserved?: ReservedMode;
+  @jsonMember({ name: 'Prepaid', constructor: PrepaidMode })
+  prepaid?: PrepaidMode;
 
   /**
    * Converts the pricing mode instance into a byte array representation.
@@ -100,40 +144,14 @@ export class PricingMode {
    * @returns A `Uint8Array` representing the serialized pricing mode.
    */
   toBytes(): Uint8Array {
-    let result: Uint8Array;
-
-    if (this.classic) {
-      const classicPaymentBytes = new CLValueUInt64(
-        BigInt(this.classic.paymentAmount)
-      ).bytes();
-      const gasPriceToleranceByte = new Uint8Array([
-        this.classic.gasPriceTolerance
-      ]);
-      const standardPaymentByte = new Uint8Array([
-        this.classic.standardPayment ? 1 : 0
-      ]);
-
-      result = concat([
-        Uint8Array.of(PricingModeTag.Classic),
-        classicPaymentBytes,
-        gasPriceToleranceByte,
-        standardPaymentByte
-      ]);
+    if (this.paymentLimited) {
+      return this.paymentLimited.toBytes();
     } else if (this.fixed) {
-      const gasPriceToleranceByte = new Uint8Array([
-        this.fixed.gasPriceTolerance
-      ]);
-      result = concat([
-        Uint8Array.of(PricingModeTag.Fixed),
-        gasPriceToleranceByte
-      ]);
-    } else if (this.reserved) {
-      const receiptBytes = this.reserved.receipt.toBytes();
-      result = concat([Uint8Array.of(PricingModeTag.Reserved), receiptBytes]);
-    } else {
-      result = new Uint8Array(0); // empty array if none of the conditions match
+      return this.fixed.toBytes();
+    } else if (this.prepaid) {
+      return this.prepaid.toBytes();
     }
 
-    return result;
+    throw new Error('Unable to serialize PricingMode');
   }
 }

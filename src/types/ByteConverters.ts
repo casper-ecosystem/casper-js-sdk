@@ -57,6 +57,11 @@ export const toBytesNumber = (bitSize: number, signed: boolean) => (
 export const toBytesU8 = toBytesNumber(8, false);
 
 /**
+ * Converts an 16-bit unsigned integer (`u16`) to little-endian byte format.
+ */
+export const toBytesU16 = toBytesNumber(16, false);
+
+/**
  * Converts a 32-bit signed integer (`i32`) to little-endian byte format.
  */
 export const toBytesI32 = toBytesNumber(32, true);

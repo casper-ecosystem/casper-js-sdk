@@ -15,7 +15,7 @@ import {
 } from './Transaction';
 import { TransactionEntryPoint } from './TransactionEntryPoint';
 import { InitiatorAddr } from './InitiatorAddr';
-import { ClassicMode, PricingMode } from './PricingMode';
+import { PaymentLimitedMode, PricingMode } from './PricingMode';
 import { TransactionTarget } from './TransactionTarget';
 import { TransactionScheduling } from './TransactionScheduling';
 import { ExecutableDeployItem } from './ExecutableDeployItem';
@@ -394,7 +394,7 @@ export class Deploy {
     const standardPayment = paymentAmount === 0 && !deploy.payment.moduleBytes;
 
     const pricingMode = new PricingMode();
-    const classicMode = new ClassicMode();
+    const classicMode = new PaymentLimitedMode();
     classicMode.gasPriceTolerance = 1;
     classicMode.paymentAmount = paymentAmount;
     classicMode.standardPayment = standardPayment;
