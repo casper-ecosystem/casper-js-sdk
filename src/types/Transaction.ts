@@ -148,7 +148,6 @@ export class TransactionV1 {
    * @throws {TransactionError} Throws errors if validation fails.
    */
   public validate(): boolean {
-    console.log(this.payload);
     const payloadBytes = this.payload!.toBytes();
     const calculatedHash = new Hash(byteHash(payloadBytes));
 
@@ -401,7 +400,7 @@ export class TransactionBody {
    * The category of the transaction, indicating its type (e.g., minting, auction).
    */
   @jsonMember({ name: 'transaction_category', constructor: Number })
-  public category: number;
+  public category?: number;
 
   /**
    * Constructs a `TransactionBody` with the given arguments, target, entry point, scheduling, and category.
@@ -416,7 +415,7 @@ export class TransactionBody {
     target: TransactionTarget,
     entryPoint: TransactionEntryPoint,
     scheduling: TransactionScheduling,
-    category: number
+    category?: number
   ) {
     this.args = args;
     this.target = target;

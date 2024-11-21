@@ -19,12 +19,11 @@ import {
   CLValueUInt64
 } from './clvalue';
 import { PublicKey } from './keypair';
-import { PayloadFields, TransactionV1Payload } from './TransactionPayload';
+import { TransactionV1Payload } from './TransactionPayload';
 
 describe('Test Transaction', () => {
   it('should create a Transaction from TransactionV1', async () => {
     const keys = await PrivateKey.generate(KeyAlgorithm.ED25519);
-    const timestamp = new Timestamp(new Date());
     const paymentAmount = 20000000000000;
 
     const pricingMode = new PricingMode();
@@ -43,36 +42,26 @@ describe('Test Transaction', () => {
       id: CLValueOption.newCLOption(CLValueUInt64.newCLUint64(3))
     });
 
-    const transactionTarget = new TransactionTarget(new SessionTarget());
-    const entryPoint = new TransactionEntryPoint(undefined, {});
-    const scheduling = new TransactionScheduling({});
-
-    const payloadFields = new PayloadFields();
-    payloadFields.addField(0, args.toBytes());
-    payloadFields.addField(1, transactionTarget.toBytes());
-    payloadFields.addField(2, entryPoint.bytes());
-    payloadFields.addField(3, scheduling.bytes());
-
-    const transactionPayload = new TransactionV1Payload();
-    transactionPayload.initiatorAddr = new InitiatorAddr(keys.publicKey);
-    transactionPayload.ttl = new Duration(1800000);
-    transactionPayload.args = args;
-    transactionPayload.entryPoint = entryPoint;
-    transactionPayload.pricingMode = pricingMode;
-    transactionPayload.timestamp = timestamp;
-    transactionPayload.category = 2;
-    transactionPayload.target = transactionTarget;
-    transactionPayload.scheduling = scheduling;
-    transactionPayload.chainName = 'casper-net-1';
-    transactionPayload.fields = payloadFields;
+    const transactionPayload = TransactionV1Payload.build({
+      initiatorAddr: new InitiatorAddr(keys.publicKey),
+      ttl: new Duration(1800000),
+      args,
+      timestamp: new Timestamp(new Date()),
+      category: 2,
+      entryPoint: new TransactionEntryPoint(undefined, {}),
+      scheduling: new TransactionScheduling({}),
+      transactionTarget: new TransactionTarget(new SessionTarget()),
+      chainName: 'casper-net-1',
+      pricingMode
+    });
 
     const transaction = TransactionV1.makeTransactionV1(transactionPayload);
     await transaction.sign(keys);
 
-    // const toJson = TransactionV1.toJson(transaction);
-    // const parsed = TransactionV1.fromJSON(toJson);
+    const toJson = TransactionV1.toJson(transaction);
+    console.log(toJson);
 
-    // console.log(Args.fromBytes(transaction.payload.fields.fields.get(0)!));
+    // const parsed = TransactionV1.fromJSON(toJson);
 
     // const transactionPaymentAmount = parsed.body.args.args
     //   .get('amount')!
