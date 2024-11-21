@@ -19,6 +19,19 @@ import {
   byteArrayJsonSerializer
 } from './SerializationUtils';
 
+interface ITransactionPayloadBuildParams {
+  initiatorAddr: InitiatorAddr;
+  args: Args;
+  ttl: Duration;
+  entryPoint: TransactionEntryPoint;
+  pricingMode: PricingMode;
+  timestamp: Timestamp;
+  category?: number;
+  transactionTarget: TransactionTarget;
+  scheduling: TransactionScheduling;
+  chainName: string;
+}
+
 export class PayloadFields {
   public fields: Map<number, Uint8Array> = new Map();
 
@@ -125,7 +138,7 @@ export class TransactionV1Payload {
   public target: TransactionTarget;
   public entryPoint: TransactionEntryPoint;
   public scheduling: TransactionScheduling;
-  public category: number;
+  public category?: number;
 
   public toBytes(): Uint8Array {
     const calltableSerialization = new CalltableSerialization();
@@ -146,5 +159,39 @@ export class TransactionV1Payload {
     calltableSerialization.addField(5, fields.toBytes());
 
     return calltableSerialization.toBytes();
+  }
+
+  public static build({
+    initiatorAddr,
+    args,
+    ttl,
+    entryPoint,
+    pricingMode,
+    timestamp,
+    category,
+    transactionTarget,
+    scheduling,
+    chainName
+  }: ITransactionPayloadBuildParams): TransactionV1Payload {
+    const payloadFields = new PayloadFields();
+    payloadFields.addField(0, args.toBytes());
+    payloadFields.addField(1, transactionTarget.toBytes());
+    payloadFields.addField(2, entryPoint.bytes());
+    payloadFields.addField(3, scheduling.bytes());
+
+    const transactionPayload = new TransactionV1Payload();
+    transactionPayload.initiatorAddr = initiatorAddr;
+    transactionPayload.ttl = ttl;
+    transactionPayload.args = args;
+    transactionPayload.entryPoint = entryPoint;
+    transactionPayload.pricingMode = pricingMode;
+    transactionPayload.timestamp = timestamp;
+    transactionPayload.category = category;
+    transactionPayload.target = transactionTarget;
+    transactionPayload.scheduling = scheduling;
+    transactionPayload.chainName = chainName;
+    transactionPayload.fields = payloadFields;
+
+    return transactionPayload;
   }
 }
