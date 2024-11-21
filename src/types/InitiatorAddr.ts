@@ -1,8 +1,8 @@
 import { jsonObject, jsonMember } from 'typedjson';
-import { concat } from '@ethersproject/bytes';
 
 import { PublicKey } from './keypair';
 import { AccountHash } from './key';
+import { CalltableSerialization } from './CalltableSerialization';
 
 /**
  * Represents an address for an initiator, which can either be a public key or an account hash.
@@ -45,20 +45,23 @@ export class InitiatorAddr {
    * @returns A `Uint8Array` representing the initiator address.
    */
   public toBytes(): Uint8Array {
-    let result: Uint8Array;
-
     if (this.accountHash) {
-      const prefix = new Uint8Array([1]);
-      result = concat([prefix, this.accountHash.toBytes()]);
+      const calltableSerialization = new CalltableSerialization();
+
+      calltableSerialization.addField(0, Uint8Array.of(1));
+      calltableSerialization.addField(1, this.accountHash.toBytes());
+
+      return calltableSerialization.toBytes();
     } else if (this.publicKey) {
-      const prefix = new Uint8Array([0]);
-      const publicKeyBytes = this.publicKey.bytes() || new Uint8Array(0);
-      result = concat([prefix, publicKeyBytes]);
-    } else {
-      result = new Uint8Array(0);
+      const calltableSerialization = new CalltableSerialization();
+
+      calltableSerialization.addField(0, Uint8Array.of(0));
+      calltableSerialization.addField(1, this.publicKey.bytes());
+
+      return calltableSerialization.toBytes();
     }
 
-    return result;
+    throw new Error('Unable to serialize InitiatorAddr');
   }
 
   /**

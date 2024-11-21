@@ -1,37 +1,24 @@
 import isNull from 'lodash/isNull';
-import { concat } from '@ethersproject/bytes';
+import { BigNumber } from '@ethersproject/bignumber';
 
-import { jsonMember, jsonObject } from 'typedjson';
-import { getRuntimeTag, TransactionRuntime } from './AddressableEntity';
+import { jsonMember, jsonObject, TypedJSON } from 'typedjson';
+import { TransactionRuntime } from './AddressableEntity';
 import { Hash } from './key';
-import { CLValueString } from './clvalue';
+import {
+  CLTypeOption,
+  CLTypeUInt32,
+  CLValueBool,
+  CLValueOption,
+  CLValueString,
+  CLValueUInt32,
+  CLValueUInt64
+} from './clvalue';
 import { ExecutableDeployItem } from './ExecutableDeployItem';
-
-/**
- * Enum representing different types of transaction targets.
- */
-enum TransactionTargetType {
-  /** Native target type, used for transactions without a specific target. */
-  Native = 0,
-  /** Stored target type, used for contracts or stored items. */
-  Stored = 1,
-  /** Session target type, used for session-based transactions. */
-  Session = 2
-}
-
-/**
- * Enum representing different invocation target tags for identifying transaction target types.
- */
-enum InvocationTargetTag {
-  /** Invocation target by hash. */
-  ByHash = 0,
-  /** Invocation target by name. */
-  ByName = 1,
-  /** Invocation target by package hash. */
-  ByPackageHash = 2,
-  /** Invocation target by package name. */
-  ByPackageName = 3
-}
+import { CalltableSerialization } from './CalltableSerialization';
+import {
+  byteArrayJsonDeserializer,
+  byteArrayJsonSerializer
+} from './SerializationUtils';
 
 /**
  * Represents the invocation target for a transaction identified by a package hash.
@@ -54,6 +41,22 @@ export class ByPackageHashInvocationTarget {
    */
   @jsonMember({ name: 'version', isRequired: false, constructor: Number })
   version?: number;
+
+  public toBytes(): Uint8Array {
+    const calltableSerialization = new CalltableSerialization();
+
+    const versionBytes = this.version
+      ? CLValueOption.newCLOption(
+          CLValueUInt32.newCLUInt32(BigNumber.from(this.version))
+        ).bytes()
+      : new CLValueOption(null, new CLTypeOption(CLTypeUInt32)).bytes();
+
+    calltableSerialization.addField(0, Uint8Array.of(2));
+    calltableSerialization.addField(1, this.addr.toBytes());
+    calltableSerialization.addField(2, versionBytes);
+
+    return calltableSerialization.toBytes();
+  }
 }
 
 /**
@@ -72,6 +75,25 @@ export class ByPackageNameInvocationTarget {
    */
   @jsonMember({ name: 'version', isRequired: false, constructor: Number })
   version?: number;
+
+  public toBytes(): Uint8Array {
+    const calltableSerialization = new CalltableSerialization();
+
+    const versionBytes = this.version
+      ? CLValueOption.newCLOption(
+          CLValueUInt32.newCLUInt32(BigNumber.from(this.version))
+        ).bytes()
+      : new CLValueOption(null, new CLTypeOption(CLTypeUInt32)).bytes();
+
+    calltableSerialization.addField(0, Uint8Array.of(3));
+    calltableSerialization.addField(
+      1,
+      CLValueString.newCLString(this.name).bytes()
+    );
+    calltableSerialization.addField(2, versionBytes);
+
+    return calltableSerialization.toBytes();
+  }
 }
 
 /**
@@ -126,6 +148,31 @@ export class TransactionInvocationTarget {
     constructor: ByPackageNameInvocationTarget
   })
   byPackageName?: ByPackageNameInvocationTarget;
+
+  public toBytes(): Uint8Array {
+    if (this.byHash) {
+      const calltableSerializer = new CalltableSerialization();
+      calltableSerializer.addField(0, Uint8Array.of(0));
+      calltableSerializer.addField(1, this.byHash.toBytes());
+      return calltableSerializer.toBytes();
+    } else if (this.byName) {
+      const calltableSerializer = new CalltableSerialization();
+      calltableSerializer.addField(0, Uint8Array.of(1));
+      calltableSerializer.addField(
+        1,
+        CLValueString.newCLString(this.byName).bytes()
+      );
+      return calltableSerializer.toBytes();
+    } else if (this.byPackageHash) {
+      return this.byPackageHash.toBytes();
+    } else if (this.byPackageName) {
+      return this.byPackageName.toBytes();
+    }
+
+    throw new Error(
+      'Can not convert TransactionInvocationTarget to bytes. Missing values from initialization'
+    );
+  }
 }
 
 /**
@@ -144,6 +191,28 @@ export class StoredTarget {
    */
   @jsonMember({ name: 'runtime', constructor: String })
   runtime: TransactionRuntime;
+
+  /**
+   * The runtime associated with the stored transaction.
+   */
+  @jsonMember({ name: 'transferred_value', constructor: Number })
+  transferredValue: number;
+
+  public toBytes() {
+    const calltableSerializer = new CalltableSerialization();
+    calltableSerializer.addField(0, Uint8Array.of(1));
+    calltableSerializer.addField(1, this.id.toBytes());
+    calltableSerializer.addField(
+      2,
+      CLValueString.newCLString(this.runtime).bytes()
+    );
+    calltableSerializer.addField(
+      3,
+      CLValueUInt64.newCLUint64(this.transferredValue).bytes()
+    );
+
+    return calltableSerializer.toBytes();
+  }
 }
 
 /**
@@ -154,14 +223,63 @@ export class SessionTarget {
   /**
    * The module bytes associated with the session target.
    */
-  @jsonMember({ name: 'module_bytes', constructor: String })
-  moduleBytes: string;
+  @jsonMember({
+    name: 'module_bytes',
+    constructor: Uint8Array,
+    deserializer: byteArrayJsonDeserializer,
+    serializer: byteArrayJsonSerializer
+  })
+  moduleBytes: Uint8Array;
 
   /**
    * The runtime associated with the session target.
    */
   @jsonMember({ name: 'runtime', constructor: String })
   runtime: TransactionRuntime;
+
+  /**
+   * The runtime associated with the session target.
+   */
+  @jsonMember({ name: 'is_install_upgrade', constructor: Boolean })
+  isInstallUpgrade: boolean;
+
+  /**
+   * The runtime associated with the stored transaction.
+   */
+  @jsonMember({ name: 'transferred_value', constructor: Number })
+  transferredValue: number;
+
+  /**
+   * The runtime associated with the stored transaction.
+   */
+  @jsonMember({
+    name: 'seed',
+    constructor: Hash,
+    deserializer: json => Hash.fromJSON(json),
+    serializer: value => value.toJSON()
+  })
+  seed: Hash;
+
+  public toBytes(): Uint8Array {
+    const calltableSerializer = new CalltableSerialization();
+    calltableSerializer.addField(0, Uint8Array.of(2));
+    calltableSerializer.addField(
+      1,
+      CLValueBool.fromBoolean(this.isInstallUpgrade).bytes()
+    );
+    calltableSerializer.addField(
+      2,
+      CLValueString.newCLString(this.runtime).bytes()
+    );
+    calltableSerializer.addField(3, this.moduleBytes);
+    calltableSerializer.addField(
+      4,
+      CLValueUInt64.newCLUint64(this.transferredValue).bytes()
+    );
+    calltableSerializer.addField(5, this.seed.toBytes());
+
+    return calltableSerializer.toBytes();
+  }
 }
 
 /**
@@ -204,104 +322,25 @@ export class TransactionTarget {
   }
 
   /**
-   * Converts a 32-bit unsigned integer to a byte array.
-   *
-   * @param value The 32-bit unsigned integer to convert.
-   * @returns A `Uint8Array` representing the value.
-   */
-  private uint32ToBytes(value: number): Uint8Array {
-    const buffer = new ArrayBuffer(4);
-    new DataView(buffer).setUint32(0, value, true);
-    return new Uint8Array(buffer);
-  }
-
-  /**
-   * Converts a hexadecimal string to a byte array.
-   *
-   * @param hexString The hexadecimal string to convert.
-   * @returns A `Uint8Array` representing the hexadecimal string.
-   */
-  private hexStringToBytes(hexString: string): Uint8Array {
-    return Uint8Array.from(Buffer.from(hexString, 'hex'));
-  }
-
-  /**
    * Serializes the `TransactionTarget` into a byte array.
    *
    * @returns A `Uint8Array` representing the serialized transaction target.
    */
   toBytes(): Uint8Array {
-    let result: Uint8Array = new Uint8Array();
+    if (this.native) {
+      const calltableSerializer = new CalltableSerialization();
+      calltableSerializer.addField(0, Uint8Array.of(0));
 
-    if (this.native !== undefined) {
-      result = concat([result, Uint8Array.of(TransactionTargetType.Native)]);
-    } else if (this.stored !== undefined) {
-      result = concat([result, Uint8Array.of(TransactionTargetType.Stored)]);
-
-      if (this.stored.id.byHash !== undefined) {
-        result = concat([
-          result,
-          Uint8Array.of(InvocationTargetTag.ByHash),
-          this.stored.id.byHash.toBytes()
-        ]);
-      } else if (this.stored.id.byName !== undefined) {
-        const nameBytes = new CLValueString(this.stored.id.byName).bytes();
-        result = concat([
-          result,
-          Uint8Array.of(InvocationTargetTag.ByName),
-          nameBytes
-        ]);
-      } else if (this.stored.id.byPackageHash !== undefined) {
-        result = concat([
-          result,
-          Uint8Array.of(InvocationTargetTag.ByPackageHash),
-          this.stored.id.byPackageHash.addr.toBytes()
-        ]);
-
-        if (this.stored.id.byPackageHash.version !== undefined) {
-          const versionBytes = this.uint32ToBytes(
-            this.stored.id.byPackageHash.version
-          );
-          result = concat([result, Uint8Array.of(1), versionBytes]);
-        } else {
-          result = concat([result, Uint8Array.of(0)]);
-        }
-      } else if (this.stored.id.byPackageName !== undefined) {
-        const nameBytes = new CLValueString(
-          this.stored.id.byPackageName.name
-        ).bytes();
-        result = concat([
-          result,
-          Uint8Array.of(InvocationTargetTag.ByPackageName),
-          nameBytes
-        ]);
-
-        if (this.stored.id.byPackageName.version !== undefined) {
-          const versionBytes = this.uint32ToBytes(
-            this.stored.id.byPackageName.version
-          );
-          result = concat([result, Uint8Array.of(1), versionBytes]);
-        } else {
-          result = concat([result, Uint8Array.of(0)]);
-        }
-      }
-
-      const runtimeTag = getRuntimeTag(this.stored.runtime);
-      result = concat([result, Uint8Array.of(runtimeTag)]);
-    } else if (this.session !== undefined) {
-      result = concat([result, Uint8Array.of(TransactionTargetType.Session)]);
-
-      const moduleBytes = this.session.moduleBytes
-        ? this.hexStringToBytes(this.session.moduleBytes)
-        : new Uint8Array([0]);
-      const moduleLengthBytes = this.uint32ToBytes(moduleBytes.length);
-      result = concat([result, moduleLengthBytes, moduleBytes]);
-
-      const runtimeTag = getRuntimeTag(this.session.runtime);
-      result = concat([result, Uint8Array.of(runtimeTag)]);
+      return calltableSerializer.toBytes();
+    } else if (this.stored) {
+      return this.stored.toBytes();
+    } else if (this.session) {
+      return this.session.toBytes();
     }
 
-    return result;
+    throw new Error(
+      'Can not convert TransactionTarget to bytes. Missing values ( native | stored | session ) from initialization'
+    );
   }
 
   /**
@@ -317,35 +356,11 @@ export class TransactionTarget {
     if (typeof json === 'string' && json === 'Native') {
       target.native = {};
     } else if (json.Stored) {
-      const storedTarget = new StoredTarget();
-      storedTarget.runtime = json.Stored.runtime;
-
-      const invocationTarget = new TransactionInvocationTarget();
-      if (json.Stored.id.byHash) {
-        invocationTarget.byHash = Hash.fromHex(json.Stored.id.byHash);
-      } else if (json.Stored.id.byName) {
-        invocationTarget.byName = json.Stored.id.byName;
-      } else if (json.Stored.id.byPackageHash) {
-        invocationTarget.byPackageHash = new ByPackageHashInvocationTarget();
-        invocationTarget.byPackageHash.addr = Hash.fromHex(
-          json.Stored.id.byPackageHash.addr
-        );
-        invocationTarget.byPackageHash.version =
-          json.Stored.id.byPackageHash.version;
-      } else if (json.Stored.id.byPackageName) {
-        invocationTarget.byPackageName = new ByPackageNameInvocationTarget();
-        invocationTarget.byPackageName.name = json.Stored.id.byPackageName.name;
-        invocationTarget.byPackageName.version =
-          json.Stored.id.byPackageName.version;
-      }
-
-      storedTarget.id = invocationTarget;
-      target.stored = storedTarget;
+      const serializer = new TypedJSON(StoredTarget);
+      target.stored = serializer.parse(json.Stored);
     } else if (json.Session) {
-      const sessionTarget = new SessionTarget();
-      sessionTarget.runtime = json.Session.runtime;
-      sessionTarget.moduleBytes = json.Session.module_bytes;
-      target.session = sessionTarget;
+      const serializer = new TypedJSON(SessionTarget);
+      target.session = serializer.parse(json.Session);
     }
 
     return target;
@@ -361,19 +376,11 @@ export class TransactionTarget {
     if (this.native !== undefined) {
       return 'Native';
     } else if (this.stored !== undefined) {
-      return {
-        Stored: {
-          id: this.stored.id,
-          runtime: this.stored.runtime
-        }
-      };
+      const serializer = new TypedJSON(StoredTarget);
+      return serializer.toPlainJson(this.stored);
     } else if (this.session !== undefined) {
-      return {
-        Session: {
-          module_bytes: this.session.moduleBytes,
-          runtime: this.session.runtime
-        }
-      };
+      const serializer = new TypedJSON(SessionTarget);
+      return serializer.toPlainJson(this.session);
     } else {
       throw new Error('unknown target type');
     }
@@ -406,8 +413,7 @@ export class TransactionTarget {
     if (session.storedContractByHash !== undefined) {
       const storedTarget = new StoredTarget();
       const invocationTarget = new TransactionInvocationTarget();
-      const hash = session.storedContractByHash.hash.hash;
-      invocationTarget.byHash = hash;
+      invocationTarget.byHash = session.storedContractByHash.hash.hash;
       storedTarget.runtime = 'VmCasperV1';
       storedTarget.id = invocationTarget;
 
