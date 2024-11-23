@@ -228,4 +228,37 @@ export class CLValueParser {
         throw ErrUnsupportedCLType;
     }
   }
+
+  /**
+   * Parses a `Uint8Array` to extract a `CLValue` with its corresponding type.
+   *
+   * This method takes a byte array and interprets it as a `CLValue` by first extracting
+   * the length of the value, then splitting the bytes into the value's data and its type.
+   *
+   * @param bytes - The byte array to be parsed.
+   * @returns An `IResultWithBytes<CLValue>` containing the parsed `CLValue` and its remaining bytes.
+   * @throws Error - If the length of the value extracted from the bytes is invalid.
+   *
+   * ### Example
+   * ```typescript
+   * const bytes = new Uint8Array([...]); // Provide valid CLValue bytes
+   * const result = CLValueParser.fromBytesWithType(bytes);
+   * console.log(result.result); // Parsed CLValue
+   * ```
+   */
+  public static fromBytesWithType(
+    bytes: Uint8Array
+  ): IResultWithBytes<CLValue> {
+    const u32 = CLValueUInt32.fromBytes(bytes);
+    const length = u32.result.getValue().toNumber();
+
+    if (!length) {
+      throw new Error(`Invalid length for bytes: ${length}`);
+    }
+
+    const valueBytes = u32.bytes.subarray(0, length);
+    const typeBytes = u32.bytes.subarray(length);
+    const clType = CLTypeParser.matchBytesToCLType(typeBytes);
+    return this.fromBytesByType(valueBytes, clType.result);
+  }
 }

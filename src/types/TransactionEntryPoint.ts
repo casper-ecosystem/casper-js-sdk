@@ -1,5 +1,4 @@
 import { jsonObject, jsonMember } from 'typedjson';
-
 import { CLValueString } from './clvalue';
 import { CalltableSerialization } from './CalltableSerialization';
 
@@ -22,163 +21,94 @@ export enum TransactionEntryPointEnum {
 }
 
 /**
- * Enum representing the tags for different transaction entry points. This is used for efficient storage and comparison.
+ * Enum representing the unique tags associated with each transaction entry point.
+ * These tags are used to simplify storage and facilitate efficient comparison of entry points.
  */
 export enum TransactionEntryPointTag {
+  Custom = 0,
   Call = 1,
-  Transfer,
-  AddBid,
-  WithdrawBid,
-  Delegate,
-  Undelegate,
-  Redelegate,
-  ActivateBid,
-  ChangeBidPublicKey,
-  AddReservations,
-  CancelReservations
+  Transfer = 2,
+  AddBid = 3,
+  WithdrawBid = 4,
+  Delegate = 5,
+  Undelegate = 6,
+  Redelegate = 7,
+  ActivateBid = 8,
+  ChangeBidPublicKey = 9,
+  AddReservations = 10,
+  CancelReservations = 11
 }
 
 /**
- * Represents a transaction entry point, which can be one of several predefined actions or a custom action.
- * This class contains multiple fields that correspond to different transaction actions.
+ * Represents a transaction entry point, which defines an action to be executed within the system.
+ * This class supports predefined entry points as well as custom-defined actions.
  */
 @jsonObject
 export class TransactionEntryPoint {
   /**
-   * Custom entry point, where the value can be a string representing a custom action.
+   * The type of transaction entry point, represented as an enum.
    */
-  @jsonMember({ constructor: String, name: 'Custom' })
-  custom?: string;
+  @jsonMember({ constructor: String })
+  type: TransactionEntryPointEnum;
 
   /**
-   * The transfer action as a generic object.
+   * Custom entry point identifier, used when the `type` is `Custom`.
    */
-  @jsonMember({ constructor: Object, name: 'Transfer' })
-  transfer?: Record<string, unknown>;
+  @jsonMember({ constructor: String })
+  customEntryPoint?: string;
 
   /**
-   * The add bid action as a generic object.
-   */
-  @jsonMember({ constructor: Object, name: 'AddBid' })
-  addBid?: Record<string, unknown>;
-
-  /**
-   * The withdraw bid action as a generic object.
-   */
-  @jsonMember({ constructor: Object, name: 'WithdrawBid' })
-  withdrawBid?: Record<string, unknown>;
-
-  /**
-   * The delegate action as a generic object.
-   */
-  @jsonMember({ constructor: Object, name: 'Delegate' })
-  delegate?: Record<string, unknown>;
-
-  /**
-   * The undelegate action as a generic object.
-   */
-  @jsonMember({ constructor: Object, name: 'Undelegate' })
-  undelegate?: Record<string, unknown>;
-
-  /**
-   * The redelegate action as a generic object.
-   */
-  @jsonMember({ constructor: Object, name: 'Redelegate' })
-  redelegate?: Record<string, unknown>;
-
-  /**
-   * The activate bid action as a generic object.
-   */
-  @jsonMember({ constructor: Object, name: 'ActivateBid' })
-  activateBid?: Record<string, unknown>;
-
-  /**
-   * The change bid public key action as a generic object.
-   */
-  @jsonMember({ constructor: Object, name: 'ChangeBidPublicKey' })
-  changeBidPublicKey?: Record<string, unknown>;
-
-  /**
-   * The call action as a generic object.
-   */
-  @jsonMember({ constructor: Object, name: 'Call' })
-  call?: Record<string, unknown>;
-
-  /**
-   * The call action as a generic object.
-   */
-  @jsonMember({ constructor: Object, name: 'AddReservations' })
-  addReservations?: Record<string, unknown>;
-
-  /**
-   * The call action as a generic object.
-   */
-  @jsonMember({ constructor: Object, name: 'CancelReservations' })
-  cancelReservations?: Record<string, unknown>;
-
-  /**
-   * Creates a new `TransactionEntryPoint` instance, where each parameter corresponds to a specific entry point action.
+   * Initializes a new `TransactionEntryPoint` instance.
    *
-   * @param custom A custom entry point action represented as a string.
-   * @param transfer The transfer action, represented as a generic object.
-   * @param addBid The add bid action, represented as a generic object.
-   * @param withdrawBid The withdraw bid action, represented as a generic object.
-   * @param delegate The delegate action, represented as a generic object.
-   * @param undelegate The undelegate action, represented as a generic object.
-   * @param redelegate The redelegate action, represented as a generic object.
-   * @param activateBid The activate bid action, represented as a generic object.
-   * @param changeBidPublicKey The change bid public key action, represented as a generic object.
-   * @param call The call action, represented as a generic object.
+   * @param type - The type of transaction entry point.
+   * @param customEntryPoint - An optional identifier for custom entry points.
    */
-  constructor(
-    custom?: string,
-    transfer?: Record<string, unknown>,
-    addBid?: Record<string, unknown>,
-    withdrawBid?: Record<string, unknown>,
-    delegate?: Record<string, unknown>,
-    undelegate?: Record<string, unknown>,
-    redelegate?: Record<string, unknown>,
-    activateBid?: Record<string, unknown>,
-    changeBidPublicKey?: Record<string, unknown>,
-    call?: Record<string, unknown>,
-    addReservations?: Record<string, unknown>,
-    cancelReservations?: Record<string, unknown>
-  ) {
-    this.custom = custom;
-    this.transfer = transfer;
-    this.addBid = addBid;
-    this.withdrawBid = withdrawBid;
-    this.delegate = delegate;
-    this.undelegate = undelegate;
-    this.redelegate = redelegate;
-    this.activateBid = activateBid;
-    this.changeBidPublicKey = changeBidPublicKey;
-    this.call = call;
-    this.addReservations = addReservations;
-    this.cancelReservations = cancelReservations;
+  constructor(type: TransactionEntryPointEnum, customEntryPoint?: string) {
+    if (type === TransactionEntryPointEnum.Custom && !customEntryPoint) {
+      throw new Error(
+        'When specifying Custom entry point, customEntryPoint must be provided'
+      );
+    }
+    this.type = type;
+    this.customEntryPoint = customEntryPoint;
   }
 
   /**
-   * Returns the tag corresponding to the transaction entry point. This helps identify the entry point in a compact manner.
+   * Retrieves the unique tag associated with the transaction entry point.
+   * Tags are used to identify entry points in a compact and efficient manner.
    *
-   * @returns The tag number associated with the entry point.
+   * @returns The tag number for the entry point.
+   * @throws An error if the entry point is unknown.
    */
-  private tag(): number {
-    if (this.transfer) return TransactionEntryPointTag.Transfer;
-    if (this.addBid) return TransactionEntryPointTag.AddBid;
-    if (this.withdrawBid) return TransactionEntryPointTag.WithdrawBid;
-    if (this.delegate) return TransactionEntryPointTag.Delegate;
-    if (this.undelegate) return TransactionEntryPointTag.Undelegate;
-    if (this.redelegate) return TransactionEntryPointTag.Redelegate;
-    if (this.activateBid) return TransactionEntryPointTag.ActivateBid;
-    if (this.changeBidPublicKey)
-      return TransactionEntryPointTag.ChangeBidPublicKey;
-    if (this.call) return TransactionEntryPointTag.Call;
-    if (this.addReservations) return TransactionEntryPointTag.AddReservations;
-    if (this.cancelReservations)
-      return TransactionEntryPointTag.CancelReservations;
-
-    throw new Error('Unknown TransactionEntryPointTag');
+  public tag(): number {
+    switch (this.type) {
+      case TransactionEntryPointEnum.Transfer:
+        return TransactionEntryPointTag.Transfer;
+      case TransactionEntryPointEnum.AddBid:
+        return TransactionEntryPointTag.AddBid;
+      case TransactionEntryPointEnum.WithdrawBid:
+        return TransactionEntryPointTag.WithdrawBid;
+      case TransactionEntryPointEnum.Delegate:
+        return TransactionEntryPointTag.Delegate;
+      case TransactionEntryPointEnum.Undelegate:
+        return TransactionEntryPointTag.Undelegate;
+      case TransactionEntryPointEnum.Redelegate:
+        return TransactionEntryPointTag.Redelegate;
+      case TransactionEntryPointEnum.ActivateBid:
+        return TransactionEntryPointTag.ActivateBid;
+      case TransactionEntryPointEnum.ChangeBidPublicKey:
+        return TransactionEntryPointTag.ChangeBidPublicKey;
+      case TransactionEntryPointEnum.Call:
+        return TransactionEntryPointTag.Call;
+      case TransactionEntryPointEnum.AddReservations:
+        return TransactionEntryPointTag.AddReservations;
+      case TransactionEntryPointEnum.CancelReservations:
+        return TransactionEntryPointTag.CancelReservations;
+      case TransactionEntryPointEnum.Custom:
+        return TransactionEntryPointTag.Custom;
+      default:
+        throw new Error('Unknown TransactionEntryPointTag');
+    }
   }
 
   /**
@@ -188,98 +118,177 @@ export class TransactionEntryPoint {
    */
   bytes(): Uint8Array {
     const calltableSerialization = new CalltableSerialization();
-    calltableSerialization.addField(0, Uint8Array.of(this.tag()));
+    const tag = this.tag();
+    calltableSerialization.addField(0, Uint8Array.from([tag]));
 
-    if (this.custom) {
-      const calltableSerialization = new CalltableSerialization();
-      calltableSerialization.addField(0, Uint8Array.of(1));
-      calltableSerialization.addField(
+    if (
+      this.type === TransactionEntryPointEnum.Custom &&
+      this.customEntryPoint
+    ) {
+      const customSerialization = new CalltableSerialization();
+      customSerialization.addField(0, Uint8Array.from([1]));
+      customSerialization.addField(
         1,
-        CLValueString.newCLString(this.custom).bytes()
+        CLValueString.newCLString(this.customEntryPoint).bytes()
       );
 
-      return calltableSerialization.toBytes();
+      calltableSerialization.addField(1, customSerialization.toBytes());
     }
+
     return calltableSerialization.toBytes();
   }
 
   /**
    * Converts the transaction entry point to a JSON-compatible format.
    *
-   * @returns A JSON-compatible representation of the transaction entry point.
-   * @throws An error if the entry point is unknown.
+   * @returns A JSON object representing the transaction entry point.
    */
   toJSON(): unknown {
-    if (this.custom) {
-      return { Custom: this.custom };
+    if (
+      this.type === TransactionEntryPointEnum.Custom &&
+      this.customEntryPoint
+    ) {
+      return { Custom: this.customEntryPoint };
     }
 
-    if (this.transfer) return TransactionEntryPointEnum.Transfer;
-    if (this.addBid) return TransactionEntryPointEnum.AddBid;
-    if (this.withdrawBid) return TransactionEntryPointEnum.WithdrawBid;
-    if (this.delegate) return TransactionEntryPointEnum.Delegate;
-    if (this.undelegate) return TransactionEntryPointEnum.Undelegate;
-    if (this.redelegate) return TransactionEntryPointEnum.Redelegate;
-    if (this.activateBid) return TransactionEntryPointEnum.ActivateBid;
-    if (this.changeBidPublicKey)
-      return TransactionEntryPointEnum.ChangeBidPublicKey;
-    if (this.call) return TransactionEntryPointEnum.Call;
-
-    throw new Error('Unknown entry point');
+    return this.type;
   }
 
   /**
    * Creates a `TransactionEntryPoint` instance from a JSON representation.
    *
-   * @param json The JSON representation of the entry point.
+   * @param json - The JSON representation of the transaction entry point.
    * @returns A `TransactionEntryPoint` instance.
-   * @throws An error if the entry point is unknown.
+   * @throws An error if the JSON is invalid or the entry point is unknown.
    */
   static fromJSON(json: any): TransactionEntryPoint {
-    const entryPoint = new TransactionEntryPoint();
     if (json instanceof Object && json.Custom) {
-      entryPoint.custom = json.Custom;
-      return entryPoint;
+      return new TransactionEntryPoint(
+        TransactionEntryPointEnum.Custom,
+        json.Custom
+      );
     }
 
     switch (json) {
       case TransactionEntryPointEnum.Transfer:
-        entryPoint.transfer = {};
-        break;
+        return new TransactionEntryPoint(TransactionEntryPointEnum.Transfer);
       case TransactionEntryPointEnum.AddBid:
-        entryPoint.addBid = {};
-        break;
+        return new TransactionEntryPoint(TransactionEntryPointEnum.AddBid);
       case TransactionEntryPointEnum.WithdrawBid:
-        entryPoint.withdrawBid = {};
-        break;
+        return new TransactionEntryPoint(TransactionEntryPointEnum.WithdrawBid);
       case TransactionEntryPointEnum.Delegate:
-        entryPoint.delegate = {};
-        break;
+        return new TransactionEntryPoint(TransactionEntryPointEnum.Delegate);
       case TransactionEntryPointEnum.Undelegate:
-        entryPoint.undelegate = {};
-        break;
+        return new TransactionEntryPoint(TransactionEntryPointEnum.Undelegate);
       case TransactionEntryPointEnum.Redelegate:
-        entryPoint.redelegate = {};
-        break;
+        return new TransactionEntryPoint(TransactionEntryPointEnum.Redelegate);
       case TransactionEntryPointEnum.ActivateBid:
-        entryPoint.activateBid = {};
-        break;
+        return new TransactionEntryPoint(TransactionEntryPointEnum.ActivateBid);
       case TransactionEntryPointEnum.ChangeBidPublicKey:
-        entryPoint.changeBidPublicKey = {};
-        break;
+        return new TransactionEntryPoint(
+          TransactionEntryPointEnum.ChangeBidPublicKey
+        );
       case TransactionEntryPointEnum.Call:
-        entryPoint.call = {};
-        break;
-      case TransactionEntryPointEnum.CancelReservations:
-        entryPoint.cancelReservations = {};
-        break;
+        return new TransactionEntryPoint(TransactionEntryPointEnum.Call);
       case TransactionEntryPointEnum.AddReservations:
-        entryPoint.addReservations = {};
-        break;
+        return new TransactionEntryPoint(
+          TransactionEntryPointEnum.AddReservations
+        );
+      case TransactionEntryPointEnum.CancelReservations:
+        return new TransactionEntryPoint(
+          TransactionEntryPointEnum.CancelReservations
+        );
       default:
         throw new Error('Unknown entry point');
     }
+  }
 
-    return entryPoint;
+  /**
+   * Deserializes a `TransactionEntryPoint` from its byte representation.
+   *
+   * This method takes a serialized byte array and reconstructs a `TransactionEntryPoint` object.
+   * It supports multiple entry point types, including both predefined and custom entry points.
+   *
+   * @param bytes - The byte array representing the serialized `TransactionEntryPoint`.
+   * @returns A deserialized `TransactionEntryPoint` instance.
+   * @throws Will throw an error if the byte array is invalid or has missing fields.
+   *
+   * ### Example
+   * ```typescript
+   * const serializedBytes = new Uint8Array([0, 1, 2, 3, ...]);
+   * const entryPoint = TransactionEntryPoint.fromBytes(serializedBytes);
+   * console.log(entryPoint.type); // Logs the entry point type
+   * ```
+   */
+  static fromBytes(bytes: Uint8Array): TransactionEntryPoint {
+    const calltableSerialization = CalltableSerialization.fromBytes(bytes);
+    const tagBytes = calltableSerialization.getField(0);
+
+    if (!tagBytes || tagBytes.length !== 1) {
+      throw new Error('Invalid tag bytes');
+    }
+
+    const tag = tagBytes[0];
+
+    const type = (() => {
+      switch (tag) {
+        case TransactionEntryPointTag.Transfer:
+          return TransactionEntryPointEnum.Transfer;
+        case TransactionEntryPointTag.AddBid:
+          return TransactionEntryPointEnum.AddBid;
+        case TransactionEntryPointTag.WithdrawBid:
+          return TransactionEntryPointEnum.WithdrawBid;
+        case TransactionEntryPointTag.Delegate:
+          return TransactionEntryPointEnum.Delegate;
+        case TransactionEntryPointTag.Undelegate:
+          return TransactionEntryPointEnum.Undelegate;
+        case TransactionEntryPointTag.Redelegate:
+          return TransactionEntryPointEnum.Redelegate;
+        case TransactionEntryPointTag.ActivateBid:
+          return TransactionEntryPointEnum.ActivateBid;
+        case TransactionEntryPointTag.ChangeBidPublicKey:
+          return TransactionEntryPointEnum.ChangeBidPublicKey;
+        case TransactionEntryPointTag.Call:
+          return TransactionEntryPointEnum.Call;
+        case TransactionEntryPointTag.AddReservations:
+          return TransactionEntryPointEnum.AddReservations;
+        case TransactionEntryPointTag.CancelReservations:
+          return TransactionEntryPointEnum.CancelReservations;
+        case TransactionEntryPointTag.Custom:
+          return TransactionEntryPointEnum.Custom;
+        default:
+          throw new Error('Unknown tag');
+      }
+    })();
+
+    if (type === TransactionEntryPointEnum.Custom) {
+      const customBytes = calltableSerialization.getField(1);
+
+      if (!customBytes) {
+        throw new Error('Missing custom entry point bytes for Custom type');
+      }
+
+      const customSerialization = CalltableSerialization.fromBytes(customBytes);
+
+      const customFlag = customSerialization.getField(0);
+
+      if (!customFlag || customFlag[0] !== 1) {
+        throw new Error('Invalid flag for Custom type');
+      }
+
+      const customEntryPointBytes = customSerialization.getField(1);
+
+      if (!customEntryPointBytes) {
+        throw new Error('Invalid custom entry point bytes');
+      }
+
+      const customEntryPoint = CLValueString.fromBytes(
+        customEntryPointBytes
+      ).result.toString();
+
+      return new TransactionEntryPoint(type, customEntryPoint);
+    }
+
+    return new TransactionEntryPoint(type);
   }
 }

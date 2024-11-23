@@ -75,6 +75,12 @@ export class ValidatorBid {
   maximumDelegationAmount: number;
 
   /**
+   * Number of slots reserved for specific delegators
+   */
+  @jsonMember({ name: 'reserved_slots', constructor: Number })
+  reservedSlots: number;
+
+  /**
    * The vesting schedule for this validator’s stake.
    */
   @jsonMember({ name: 'vesting_schedule', constructor: VestingSchedule })
@@ -300,4 +306,42 @@ export class Bridge {
     serializer: value => value.toJSON()
   })
   newValidatorPublicKey: PublicKey;
+}
+
+@jsonObject
+/**
+ * Represents a reservation in the blockchain system, including delegation details and associated public keys.
+ */
+export class Reservation {
+  /**
+   * The delegation rate, representing the percentage of rewards allocated to the delegator.
+   */
+  @jsonMember({ name: 'delegation_rate', constructor: Number })
+  delegationRate: number;
+
+  /**
+   * The public key of the validator associated with this reservation.
+   *
+   * This key is used to identify the validator in the blockchain system.
+   */
+  @jsonMember({
+    name: 'validator_public_key',
+    constructor: PublicKey,
+    deserializer: json => PublicKey.fromJSON(json),
+    serializer: value => value.toJSON()
+  })
+  validatorPublicKey: PublicKey;
+
+  /**
+   * The public key of the delegator associated with this reservation.
+   *
+   * This key is used to identify the delegator who initiated the reservation.
+   */
+  @jsonMember({
+    name: 'delegator_public_key',
+    constructor: PublicKey,
+    deserializer: json => PublicKey.fromJSON(json),
+    serializer: value => value.toJSON()
+  })
+  delegatorPublicKey: PublicKey;
 }

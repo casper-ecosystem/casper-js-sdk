@@ -9,7 +9,10 @@ import { FixedMode, PricingMode } from './PricingMode';
 import { KeyAlgorithm } from './keypair/Algorithm';
 
 import { SessionTarget, TransactionTarget } from './TransactionTarget';
-import { TransactionEntryPoint } from './TransactionEntryPoint';
+import {
+  TransactionEntryPoint,
+  TransactionEntryPointEnum
+} from './TransactionEntryPoint';
 import { TransactionScheduling } from './TransactionScheduling';
 import { Args } from './Args';
 import {
@@ -19,7 +22,9 @@ import {
   CLValueUInt64
 } from './clvalue';
 import { PublicKey } from './keypair';
-import { TransactionV1Payload } from './TransactionPayload';
+import { TransactionV1Payload } from './TransactionV1Payload';
+import { Hash } from './key';
+import { assert, expect } from 'chai';
 
 describe('Test Transaction', () => {
   it('should create a Transaction from TransactionV1', async () => {
@@ -42,15 +47,29 @@ describe('Test Transaction', () => {
       id: CLValueOption.newCLOption(CLValueUInt64.newCLUint64(3))
     });
 
+    const sessionTarget = new SessionTarget();
+
+    sessionTarget.runtime = 'VmCasperV1';
+    sessionTarget.transferredValue = 1000;
+    sessionTarget.moduleBytes = Uint8Array.from([1]);
+    sessionTarget.isInstallUpgrade = false;
+    sessionTarget.seed = Hash.fromHex(
+      '8bf9d406ab901428d43ecd3a6f214b864e7ef8316934e5e0f049650a65b40d73'
+    );
+
     const transactionPayload = TransactionV1Payload.build({
       initiatorAddr: new InitiatorAddr(keys.publicKey),
       ttl: new Duration(1800000),
       args,
       timestamp: new Timestamp(new Date()),
       category: 2,
-      entryPoint: new TransactionEntryPoint(undefined, {}),
+      entryPoint: new TransactionEntryPoint(TransactionEntryPointEnum.Call),
       scheduling: new TransactionScheduling({}),
-      transactionTarget: new TransactionTarget(new SessionTarget()),
+      transactionTarget: new TransactionTarget(
+        undefined,
+        undefined,
+        sessionTarget
+      ),
       chainName: 'casper-net-1',
       pricingMode
     });
@@ -59,17 +78,14 @@ describe('Test Transaction', () => {
     await transaction.sign(keys);
 
     const toJson = TransactionV1.toJson(transaction);
-    console.log(toJson);
+    const parsed = TransactionV1.fromJSON(toJson);
 
-    // const parsed = TransactionV1.fromJSON(toJson);
+    const transactionPaymentAmount = parsed.payload.args.args
+      .get('amount')!
+      .toString();
 
-    // const transactionPaymentAmount = parsed.body.args.args
-    //   .get('amount')!
-    //   .toString();
-    //
-    // assert.deepEqual(parsed.approvals[0].signer, keys.publicKey);
-    // expect(transaction.body).to.deep.equal(transactionBody);
-    // expect(transaction.header).to.deep.equal(transactionHeader);
-    // assert.deepEqual(parseInt(transactionPaymentAmount, 10), paymentAmount);
+    assert.deepEqual(parsed.approvals[0].signer, keys.publicKey);
+    expect(transaction.payload).to.deep.equal(transactionPayload);
+    assert.deepEqual(parseInt(transactionPaymentAmount, 10), paymentAmount);
   });
 });

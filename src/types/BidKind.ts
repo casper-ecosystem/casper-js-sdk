@@ -1,5 +1,12 @@
 import { jsonObject, jsonMember } from 'typedjson';
-import { Bid, Bridge, Credit, Delegator, ValidatorBid } from './Bid';
+import {
+  Bid,
+  Bridge,
+  Credit,
+  Delegator,
+  Reservation,
+  ValidatorBid
+} from './Bid';
 
 /**
  * Represents a polymorphic bid kind, allowing for different types of bid-related entities.
@@ -37,4 +44,10 @@ export class BidKind {
    */
   @jsonMember({ name: 'Credit', constructor: Credit })
   credit?: Credit;
+
+  /**
+   *  Represents a validator reserving a slot for specific delegator
+   */
+  @jsonMember({ name: 'Reservation', constructor: Reservation })
+  reservation?: Reservation;
 }

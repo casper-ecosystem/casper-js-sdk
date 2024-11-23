@@ -23,7 +23,7 @@ export * from './MinimalBlockInfo';
 export * from './NamedKey';
 export * from './Package';
 export * from './PricingMode';
-export * from './Reservation';
+export * from './Prepayment';
 export * from './StoredValue';
 export * from './Time';
 export * from './Transaction';

@@ -19,6 +19,7 @@ import {
   byteArrayJsonDeserializer,
   byteArrayJsonSerializer
 } from './SerializationUtils';
+import { fromBytesU64 } from './ByteConverters';
 
 /**
  * Represents the invocation target for a transaction identified by a package hash.
@@ -172,6 +173,107 @@ export class TransactionInvocationTarget {
     throw new Error(
       'Can not convert TransactionInvocationTarget to bytes. Missing values from initialization'
     );
+  }
+
+  /**
+   * Deserializes a `Uint8Array` into a `TransactionInvocationTarget` instance.
+   *
+   * This method reconstructs a `TransactionInvocationTarget` object from its serialized byte array representation.
+   * The type of invocation target is determined by the tag extracted from the serialized data.
+   *
+   * @param bytes - The serialized byte array representing a `TransactionInvocationTarget`.
+   * @returns A deserialized `TransactionInvocationTarget` instance.
+   * @throws Error - If the byte array is invalid, missing required fields, or contains an unrecognized tag.
+   *
+   * ### Tags and Their Associated Targets:
+   * - `0`: Represents an invocation target identified by a hash (`ByHash`).
+   * - `1`: Represents an invocation target identified by a name (`ByName`).
+   * - `2`: Represents an invocation target identified by a package hash and an optional version (`ByPackageHash`).
+   * - `3`: Represents an invocation target identified by a package name and an optional version (`ByPackageName`).
+   *
+   * ### Example
+   * ```typescript
+   * const bytes = new Uint8Array([...]); // Provide valid TransactionInvocationTarget bytes
+   * const invocationTarget = TransactionInvocationTarget.fromBytes(bytes);
+   * console.log(invocationTarget); // Parsed TransactionInvocationTarget instance
+   * ```
+   */
+  static fromBytes(bytes: Uint8Array): TransactionInvocationTarget {
+    const calltable = CalltableSerialization.fromBytes(bytes);
+
+    const tagBytes = calltable.getField(0);
+    if (!tagBytes || tagBytes.length !== 1) {
+      throw new Error(
+        'Invalid or missing tag in serialized TransactionInvocationTarget'
+      );
+    }
+    const tag = tagBytes[0];
+    const invocationTarget = new TransactionInvocationTarget();
+
+    switch (tag) {
+      case 0: {
+        const hashBytes = calltable.getField(1);
+        if (!hashBytes) {
+          throw new Error('Missing hash field for ByHash target');
+        }
+        invocationTarget.byHash = Hash.fromBytes(hashBytes).result;
+        return invocationTarget;
+      }
+
+      case 1: {
+        const nameBytes = calltable.getField(1);
+        if (!nameBytes) {
+          throw new Error('Missing name field for ByName target');
+        }
+        invocationTarget.byName = CLValueString.fromBytes(
+          nameBytes
+        ).result.toString();
+        return invocationTarget;
+      }
+
+      case 2: {
+        const packageHashBytes = calltable.getField(1);
+        const versionBytes = calltable.getField(2);
+
+        if (!packageHashBytes || !versionBytes) {
+          throw new Error('Missing fields for ByPackageHash target');
+        }
+
+        const packageHash = Hash.fromBytes(packageHashBytes);
+        const version = CLValueOption.fromBytes(
+          versionBytes,
+          new CLTypeOption(CLTypeUInt32)
+        ).result.toString();
+        const byPackageHash = new ByPackageHashInvocationTarget();
+        byPackageHash.addr = packageHash.result;
+        byPackageHash.version = BigNumber.from(version).toNumber();
+        invocationTarget.byPackageHash = byPackageHash;
+        return invocationTarget;
+      }
+
+      case 3: {
+        const nameBytes = calltable.getField(1);
+        const versionBytes = calltable.getField(2);
+
+        if (!nameBytes || !versionBytes) {
+          throw new Error('Missing fields for ByPackageName target');
+        }
+
+        const name = CLValueString.fromBytes(nameBytes).result.toString();
+        const version = CLValueOption.fromBytes(
+          versionBytes,
+          new CLTypeOption(CLTypeUInt32)
+        ).result.toString();
+        const byPackageName = new ByPackageNameInvocationTarget();
+        byPackageName.version = BigNumber.from(version).toNumber();
+        byPackageName.name = name;
+        invocationTarget.byPackageName = byPackageName;
+        return invocationTarget;
+      }
+
+      default:
+        throw new Error(`Unknown TransactionInvocationTarget tag: ${tag}`);
+    }
   }
 }
 
@@ -499,5 +601,99 @@ export class TransactionTarget {
     }
 
     return new TransactionTarget();
+  }
+
+  /**
+   * Deserializes a `Uint8Array` into a `TransactionTarget` instance.
+   *
+   * This method reconstructs a `TransactionTarget` object from its serialized byte array representation.
+   * The type of transaction target is determined by the tag extracted from the serialized data.
+   *
+   * @param bytes - The serialized byte array representing a `TransactionTarget`.
+   * @returns A deserialized `TransactionTarget` instance.
+   * @throws Error - If the byte array is invalid, missing required fields, or contains an unrecognized tag.
+   *
+   * ### Tags and Their Associated Targets:
+   * - `0`: Represents a Native target.
+   * - `1`: Represents a Stored target, including an invocation target, runtime, and transferred value.
+   * - `2`: Represents a Session target, including module bytes, runtime, transferred value, install upgrade flag, and seed.
+   *
+   * ### Example
+   * ```typescript
+   * const bytes = new Uint8Array([...]); // Provide valid TransactionTarget bytes
+   * const transactionTarget = TransactionTarget.fromBytes(bytes);
+   * console.log(transactionTarget); // Parsed TransactionTarget instance
+   * ```
+   */
+  static fromBytes(bytes: Uint8Array): TransactionTarget {
+    const calltable = CalltableSerialization.fromBytes(bytes);
+
+    const tagBytes = calltable.getField(0);
+    if (!tagBytes || tagBytes.length !== 1) {
+      throw new Error('Invalid or missing tag in serialized TransactionTarget');
+    }
+
+    const tag = tagBytes[0];
+    switch (tag) {
+      case 0:
+        return new TransactionTarget({});
+
+      case 1: {
+        const storedBytes = calltable.getField(1);
+        const runtimeBytes = calltable.getField(2);
+        const transferredValueBytes = calltable.getField(3);
+
+        if (!storedBytes || !runtimeBytes || !transferredValueBytes) {
+          throw new Error('Incomplete serialized data for Stored target');
+        }
+
+        const storedTarget = new StoredTarget();
+        storedTarget.id = TransactionInvocationTarget.fromBytes(storedBytes);
+        storedTarget.runtime = CLValueString.fromBytes(
+          runtimeBytes
+        ).result.toString() as TransactionRuntime;
+        storedTarget.transferredValue = fromBytesU64(
+          transferredValueBytes
+        ).toNumber();
+
+        return new TransactionTarget(undefined, storedTarget);
+      }
+
+      case 2: {
+        const moduleBytes = calltable.getField(3);
+        const runtimeBytesSession = calltable.getField(2);
+        const transferredValueBytesSession = calltable.getField(4);
+        const isInstallUpgradeBytes = calltable.getField(1);
+        const seedBytes = calltable.getField(5);
+
+        if (
+          !moduleBytes ||
+          !runtimeBytesSession ||
+          !transferredValueBytesSession ||
+          !isInstallUpgradeBytes ||
+          !seedBytes
+        ) {
+          throw new Error('Incomplete serialized data for Session target');
+        }
+
+        const sessionTarget = new SessionTarget();
+        sessionTarget.moduleBytes = moduleBytes;
+        sessionTarget.runtime = CLValueString.fromBytes(
+          runtimeBytesSession
+        ).result.toString() as TransactionRuntime;
+        sessionTarget.transferredValue = fromBytesU64(
+          transferredValueBytesSession
+        ).toNumber();
+        sessionTarget.isInstallUpgrade = CLValueBool.fromBytes(
+          isInstallUpgradeBytes
+        ).result.getValue();
+        sessionTarget.seed = Hash.fromBytes(seedBytes).result;
+
+        return new TransactionTarget(undefined, undefined, sessionTarget);
+      }
+
+      default:
+        throw new Error(`Unknown TransactionTarget tag: ${tag}`);
+    }
   }
 }
