@@ -132,3 +132,44 @@ export function toBytesArrayU8(arr: Uint8Array): Uint8Array {
 export function byteHash(x: Uint8Array): Uint8Array {
   return blake2b(x, { dkLen: 32 });
 }
+
+/**
+ * Parses a 16-bit unsigned integer (`u16`) from a little-endian byte array.
+ * @param bytes - The byte array containing the `u16` value.
+ * @returns The parsed 16-bit unsigned integer.
+ */
+export function parseU16(bytes: Uint8Array): number {
+  if (bytes.length < 2) {
+    throw new Error('Invalid byte array for u16 parsing');
+  }
+  return bytes[0] | (bytes[1] << 8);
+}
+
+/**
+ * Parses a 32-bit unsigned integer (`u32`) from a little-endian byte array.
+ * @param bytes - The byte array containing the `u32` value.
+ * @returns The parsed 32-bit unsigned integer.
+ */
+export function parseU32(bytes: Uint8Array): number {
+  if (bytes.length < 4) {
+    throw new Error('Invalid byte array for u32 parsing');
+  }
+
+  return bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24);
+}
+
+/**
+ * Parses a 64-bit unsigned integer (`u64`) from a little-endian byte array.
+ * @param bytes - A `Uint8Array` containing the serialized 64-bit unsigned integer.
+ * @returns A `BigNumber` representing the parsed value.
+ */
+export const fromBytesU64 = (bytes: Uint8Array): BigNumber => {
+  if (bytes.length !== 8) {
+    throw new Error(
+      `Invalid input length for u64: expected 8 bytes, got ${bytes.length}`
+    );
+  }
+
+  // Convert the little-endian bytes into a BigNumber
+  return BigNumber.from(bytes.reverse());
+};

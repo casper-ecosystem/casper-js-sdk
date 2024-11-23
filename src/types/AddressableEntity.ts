@@ -152,21 +152,3 @@ export class NamedEntryPoint {
   @jsonMember({ name: 'name', constructor: String })
   name: string;
 }
-
-/**
- * Returns the numeric tag associated with a given transaction runtime version.
- * Useful for distinguishing between different virtual machine versions.
- *
- * @param runtime - The transaction runtime to retrieve the tag for.
- * @returns A number representing the tag for the given runtime.
- */
-export function getRuntimeTag(runtime: TransactionRuntime): number {
-  switch (runtime) {
-    case 'VmCasperV1':
-      return 0;
-    case 'VmCasperV2':
-      return 1;
-    default:
-      return 0;
-  }
-}

@@ -14,17 +14,12 @@ import { PrivateKey } from './keypair/PrivateKey';
 import { Args } from './Args';
 import { deserializeArgs, serializeArgs } from './SerializationUtils';
 import { byteHash } from './ByteConverters';
-import { TransactionV1Payload } from './TransactionPayload';
+import { TransactionV1Payload } from './TransactionV1Payload';
 
 /**
  * Custom error class for handling transaction-related errors.
  */
 export class TransactionError extends Error {}
-
-/**
- * Error to indicate an invalid body hash in a transaction.
- */
-export const ErrInvalidBodyHash = new TransactionError('invalid body hash');
 
 /**
  * Error to indicate an invalid transaction hash.
@@ -124,7 +119,14 @@ export class TransactionV1 {
   /**
    * The header of the transaction.
    */
-  @jsonMember({ name: 'payload', constructor: TransactionV1Payload })
+  @jsonMember({
+    name: 'payload',
+    constructor: TransactionV1Payload,
+    deserializer: json => {
+      if (!json) return;
+      return TransactionV1Payload.fromJSON(json);
+    }
+  })
   public payload: TransactionV1Payload;
 
   /**

@@ -12,7 +12,7 @@ import { Package } from './Package';
 import { MessageChecksum, MessageTopicSummary } from './MessageTopic';
 import { NamedKeyValue } from './NamedKey';
 import { EntryPointValue } from './EntryPoint';
-import { ReservationKind } from './Reservation';
+import { PrepaymentKind } from './Prepayment';
 import { Contract } from './Contract';
 import { ContractPackage } from './ContractPackage';
 import { CLValue, CLValueParser } from './clvalue';
@@ -152,10 +152,10 @@ export class StoredValue {
   namedKey?: NamedKeyValue;
 
   /**
-   * The reservation information related to this stored value.
+   * Stores location, type and data for a gas pre-payment.
    */
-  @jsonMember({ name: 'Reservation', constructor: ReservationKind })
-  reservation?: ReservationKind;
+  @jsonMember({ name: 'Prepaid', constructor: PrepaymentKind })
+  prepaid?: PrepaymentKind;
 
   /**
    * The stored entry point value, typically representing an entry point in a smart contract.

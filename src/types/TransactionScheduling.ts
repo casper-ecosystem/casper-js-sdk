@@ -3,7 +3,7 @@ import { jsonObject, jsonMember } from 'typedjson';
 import { Timestamp } from './Time';
 import { CLValueUInt64 } from './clvalue';
 import { CalltableSerialization } from './CalltableSerialization';
-import { toBytesU64 } from './ByteConverters';
+import { fromBytesU64, toBytesU64 } from './ByteConverters';
 
 /**
  * Enum representing the scheduling tags for transaction scheduling types.
@@ -21,7 +21,7 @@ export enum TransactionSchedulingTag {
  * Represents the scheduling for a transaction in a future era.
  */
 @jsonObject
-class FutureEraScheduling {
+export class FutureEraScheduling {
   /**
    * The ID of the future era when the transaction is scheduled to occur.
    */
@@ -53,7 +53,7 @@ class FutureEraScheduling {
  * Represents the scheduling for a transaction in a future timestamp.
  */
 @jsonObject
-class FutureTimestampScheduling {
+export class FutureTimestampScheduling {
   /**
    * The timestamp when the transaction is scheduled to occur.
    */
@@ -208,5 +208,77 @@ export class TransactionScheduling {
       return { FutureEra: this.futureEra.eraID };
     }
     throw new Error('Unknown scheduling type');
+  }
+
+  /**
+   * Deserializes a `Uint8Array` into a `TransactionScheduling` instance.
+   *
+   * This method parses a byte array representation of a `TransactionScheduling`
+   * object, determines the type of scheduling based on the tag, and reconstructs
+   * the appropriate instance.
+   *
+   * @param bytes - The byte array to be deserialized.
+   * @returns A `TransactionScheduling` instance based on the serialized data.
+   * @throws Error - If the byte array is invalid, missing required fields, or contains
+   *                 an unrecognized scheduling tag.
+   *
+   * ### Tags and Their Associated Schedulers:
+   * - `TransactionSchedulingTag.Native`: Represents a native scheduling target.
+   * - `TransactionSchedulingTag.FutureEra`: Represents a scheduling target tied to a future era.
+   * - `TransactionSchedulingTag.FutureTimestamp`: Represents a scheduling target tied to a future timestamp.
+   *
+   * ### Example
+   * ```typescript
+   * const bytes = new Uint8Array([...]); // Provide valid TransactionScheduling bytes
+   * const scheduling = TransactionScheduling.fromBytes(bytes);
+   * console.log(scheduling); // Parsed TransactionScheduling instance
+   * ```
+   */
+  static fromBytes(bytes: Uint8Array): TransactionScheduling {
+    const calltable = CalltableSerialization.fromBytes(bytes);
+
+    const tagBytes = calltable.getField(0);
+    if (!tagBytes || tagBytes.length !== 1) {
+      throw new Error(
+        'Invalid or missing tag in serialized TransactionScheduling'
+      );
+    }
+    const tag = tagBytes[0];
+
+    switch (tag) {
+      case TransactionSchedulingTag.Native:
+        return new TransactionScheduling({});
+
+      case TransactionSchedulingTag.FutureEra: {
+        const eraIDBytes = calltable.getField(1);
+        if (!eraIDBytes) {
+          throw new Error('Missing eraID field for FutureEra scheduling');
+        }
+        const eraID = fromBytesU64(eraIDBytes).toNumber();
+        return new TransactionScheduling(
+          undefined,
+          new FutureEraScheduling(eraID)
+        );
+      }
+
+      case TransactionSchedulingTag.FutureTimestamp: {
+        const timestampBytes = calltable.getField(1);
+        if (!timestampBytes) {
+          throw new Error(
+            'Missing timestamp field for FutureTimestamp scheduling'
+          );
+        }
+        const timestampMs = fromBytesU64(timestampBytes).toNumber();
+        const timestamp = new Timestamp(new Date(timestampMs));
+        return new TransactionScheduling(
+          undefined,
+          undefined,
+          new FutureTimestampScheduling(timestamp)
+        );
+      }
+
+      default:
+        throw new Error(`Unknown TransactionSchedulingTag: ${tag}`);
+    }
   }
 }
