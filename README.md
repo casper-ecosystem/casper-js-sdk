@@ -112,15 +112,14 @@ import {
   PrivateKey,
   PublicKey,
   RpcClient,
-  SessionTarget,
   Timestamp,
   TransactionEntryPoint,
   TransactionScheduling,
   TransactionTarget,
   TransactionV1,
-  TransactionV1Body,
-  TransactionV1Header
-} from 'casper-js-sdk-new';
+  TransactionV1Payload,
+  TransactionEntryPointEnum
+} from 'casper-js-sdk';
 
 const rpcHandler = new HttpHandler('http://<Node Address>:7777/rpc');
 const rpcClient = new RpcClient(rpcHandler);
@@ -132,15 +131,8 @@ const paymentAmount = '20000000000000';
 const pricingMode = new PricingMode();
 const fixedMode = new FixedMode();
 fixedMode.gasPriceTolerance = 3;
+fixedMode.additionalComputationFactor = 1;
 pricingMode.fixed = fixedMode;
-
-const transactionHeader = TransactionV1Header.build({
-  chainName: 'casper-net-1',
-  timestamp,
-  ttl: new Duration(1800000),
-  initiatorAddr: new InitiatorAddr(privateKey.publicKey),
-  pricingMode
-});
 
 const args = Args.fromMap({
   target: CLValue.newCLPublicKey(
@@ -152,21 +144,26 @@ const args = Args.fromMap({
   id: CLValueOption.newCLOption(CLValueUInt64.newCLUint64(3))
 });
 
-const transactionTarget = new TransactionTarget(new SessionTarget());
-const entryPoint = new TransactionEntryPoint(undefined, {});
-const scheduling = new TransactionScheduling({});
+const transactionTarget = new TransactionTarget({}); // Native target;
+const entryPoint = new TransactionEntryPoint(
+  TransactionEntryPointEnum.Transfer
+);
+const scheduling = new TransactionScheduling({}); // Standard;
 
-const transactionBody = TransactionV1Body.build({
-  args: args,
-  target: transactionTarget,
-  transactionEntryPoint: entryPoint,
-  transactionScheduling: scheduling,
-  transactionCategory: 2
+const transactionPayload = TransactionV1Payload.build({
+  initiatorAddr: new InitiatorAddr(privateKey.publicKey),
+  ttl: new Duration(1800000),
+  args,
+  timestamp,
+  entryPoint,
+  scheduling,
+  transactionTarget,
+  chainName: 'casper-net-1',
+  pricingMode
 });
 
 const transaction = TransactionV1.makeTransactionV1(
-  transactionHeader,
-  transactionBody
+  transactionPayload
 );
 await transaction.sign(privateKey);
 
