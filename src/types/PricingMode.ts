@@ -4,7 +4,7 @@ import { CLValueBool, CLValueUInt64, CLValueUInt8 } from './clvalue';
 import { CalltableSerialization } from './CalltableSerialization';
 
 /**
- * Represents the classic pricing mode, including parameters for gas price tolerance,
+ * Represents the payment limited ( classic before ) pricing mode, including parameters for gas price tolerance,
  * payment amount, and standard payment.
  */
 @jsonObject
@@ -90,7 +90,7 @@ export class FixedMode {
 }
 
 /**
- * Represents the reserved pricing mode, which includes a receipt hash.
+ * Represents the prepair ( reserved before ) pricing mode, which includes a receipt hash.
  */
 @jsonObject
 export class PrepaidMode {
@@ -115,12 +115,12 @@ export class PrepaidMode {
 }
 
 /**
- * Represents the pricing mode, which can be one of the following: Classic, Fixed, or Reserved.
+ * Represents the pricing mode, which can be one of the following: PaymentLimited, Fixed, or Prepaid.
  */
 @jsonObject
 export class PricingMode {
   /**
-   * The classic pricing mode, if applicable.
+   * The PaymentLimited pricing mode, if applicable.
    */
   @jsonMember({ name: 'PaymentLimited', constructor: PaymentLimitedMode })
   paymentLimited?: PaymentLimitedMode;
@@ -132,7 +132,7 @@ export class PricingMode {
   fixed?: FixedMode;
 
   /**
-   * The reserved pricing mode, if applicable.
+   * The Prepaid pricing mode, if applicable.
    */
   @jsonMember({ name: 'Prepaid', constructor: PrepaidMode })
   prepaid?: PrepaidMode;

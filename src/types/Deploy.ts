@@ -404,10 +404,10 @@ export class Deploy {
     const standardPayment = paymentAmount === 0 && !deploy.payment.moduleBytes;
 
     const pricingMode = new PricingMode();
-    const classicMode = new PaymentLimitedMode();
-    classicMode.gasPriceTolerance = 1;
-    classicMode.paymentAmount = paymentAmount;
-    classicMode.standardPayment = standardPayment;
+    const paymentLimitedMode = new PaymentLimitedMode();
+    paymentLimitedMode.gasPriceTolerance = 1;
+    paymentLimitedMode.paymentAmount = paymentAmount;
+    paymentLimitedMode.standardPayment = standardPayment;
 
     return new Transaction(
       deploy.hash,
