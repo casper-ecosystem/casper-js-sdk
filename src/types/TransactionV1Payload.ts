@@ -15,78 +15,226 @@ import { TransactionEntryPoint } from './TransactionEntryPoint';
 import { TransactionScheduling } from './TransactionScheduling';
 import { CalltableSerialization } from './CalltableSerialization';
 import {
-  byteArrayJsonDeserializer,
-  byteArrayJsonSerializer
+  byteArrayJsonSerializer,
+  deserializeArgs,
+  serializeArgs
 } from './SerializationUtils';
 
 /**
  * Interface representing the parameters required to build a `TransactionV1Payload`.
+ * Contains all necessary data to construct a valid V1 transaction payload.
  */
 interface ITransactionPayloadBuildParams {
+  /**
+   * The address of the transaction initiator.
+   */
   initiatorAddr: InitiatorAddr;
+
+  /**
+   * Arguments for the transaction.
+   */
   args: Args;
+
+  /**
+   * The time-to-live (TTL) duration of the transaction.
+   */
   ttl: Duration;
+
+  /**
+   * Entry point for the transaction execution.
+   */
   entryPoint: TransactionEntryPoint;
+
+  /**
+   * Pricing mode for the transaction.
+   */
   pricingMode: PricingMode;
+
+  /**
+   * Timestamp indicating when the transaction was created.
+   */
   timestamp: Timestamp;
-  category?: number;
+
+  /**
+   * Target destination of the transaction.
+   */
   transactionTarget: TransactionTarget;
+
+  /**
+   * Scheduling details for the transaction.
+   */
   scheduling: TransactionScheduling;
+
+  /**
+   * Name of the chain the transaction should be executed on.
+   */
   chainName: string;
 }
 
 /**
- * Class representing a collection of payload fields used in transaction serialization.
+ * Class representing a collection of fields used in transaction serialization.
+ * This class handles serialization and deserialization of transaction data fields.
  */
+@jsonObject
 export class PayloadFields {
   /**
-   * Map storing the fields of the payload where the key is the field identifier and the value is the serialized data.
+   * Arguments for the transaction.
    */
-  public fields: Map<number, Uint8Array> = new Map();
+  @jsonMember(() => Args, {
+    deserializer: deserializeArgs,
+    serializer: serializeArgs
+  })
+  public args: Args;
 
   /**
-   * Adds a field to the payload.
-   *
-   * @param field - The identifier of the field.
-   * @param value - The serialized value of the field.
+   * Target destination of the transaction.
    */
-  addField(field: number, value: Uint8Array): void {
+  @jsonMember({
+    name: 'target',
+    constructor: TransactionTarget,
+    deserializer: json => TransactionTarget.fromJSON(json),
+    serializer: value => value.toJSON()
+  })
+  public target: TransactionTarget;
+
+  /**
+   * Entry point for the transaction execution.
+   */
+  @jsonMember({
+    name: 'entry_point',
+    constructor: TransactionEntryPoint,
+    deserializer: json => TransactionEntryPoint.fromJSON(json),
+    serializer: value => value.toJSON()
+  })
+  public entryPoint: TransactionEntryPoint;
+
+  /**
+   * Scheduling details for the transaction execution.
+   */
+  @jsonMember({
+    name: 'scheduling',
+    constructor: TransactionScheduling,
+    deserializer: json => TransactionScheduling.fromJSON(json),
+    serializer: value => value.toJSON()
+  })
+  public scheduling: TransactionScheduling;
+
+  /**
+   * Internal map to store serialized fields, where the key is the field identifier.
+   */
+  private fields: Map<number, Uint8Array> = new Map();
+
+  /**
+   * Utility method to map field identifiers to serialized values.
+   * Ensures that all fields are properly initialized before serialization.
+   * @returns A map of field identifiers to their serialized values.
+   * @throws Error if any required field is uninitialized or invalid.
+   */
+  private toSerializedFields(): Map<number, Uint8Array> {
+    if (!this.args) throw new Error('args field is uninitialized.');
+    if (!this.target) throw new Error('target field is uninitialized.');
+    if (!this.entryPoint) throw new Error('entryPoint field is uninitialized.');
+    if (!this.scheduling) throw new Error('scheduling field is uninitialized.');
+
+    return new Map([
+      [0, this.args.toBytes()],
+      [1, this.target.toBytes()],
+      [2, this.entryPoint.bytes()],
+      [3, this.scheduling.bytes()]
+    ]);
+  }
+
+  /**
+   * Builds a `PayloadFields` instance from provided transaction details.
+   *
+   * @param args - Transaction arguments.
+   * @param transactionTarget - Transaction target.
+   * @param transactionEntryPoint - Transaction entry point.
+   * @param transactionScheduling - Scheduling information for the transaction.
+   * @returns A new `PayloadFields` instance.
+   * @throws Error if any of the required parameters are missing or invalid.
+   */
+  public static build(
+    args: Args,
+    transactionTarget: TransactionTarget,
+    transactionEntryPoint: TransactionEntryPoint,
+    transactionScheduling: TransactionScheduling
+  ): PayloadFields {
+    const missingFields = [];
+    if (!args) missingFields.push('args');
+    if (!transactionTarget) missingFields.push('transactionTarget');
+    if (!transactionEntryPoint) missingFields.push('transactionEntryPoint');
+    if (!transactionScheduling) missingFields.push('transactionScheduling');
+
+    if (missingFields.length > 0) {
+      throw new Error(
+        `Failed to build PayloadFields: Missing or invalid fields: ${missingFields.join(
+          ', '
+        )}.`
+      );
+    }
+
+    const payloadFields = new PayloadFields();
+    payloadFields.args = args;
+    payloadFields.target = transactionTarget;
+    payloadFields.entryPoint = transactionEntryPoint;
+    payloadFields.scheduling = transactionScheduling;
+
+    payloadFields.fields = payloadFields.toSerializedFields();
+
+    return payloadFields;
+  }
+
+  /**
+   * Adds a serialized field to the payload.
+   *
+   * @param field - Field identifier.
+   * @param value - Serialized value of the field.
+   */
+  public addField(field: number, value: Uint8Array): void {
     this.fields.set(field, value);
   }
 
-  getFieldValue(fieldIndex: number) {
+  /**
+   * Retrieves the value of a specific field.
+   *
+   * @param fieldIndex - Identifier of the field.
+   * @returns Serialized value of the field.
+   */
+  public getFieldValue(fieldIndex: number): Uint8Array | undefined {
     return this.fields.get(fieldIndex);
   }
 
   /**
-   * Serializes the payload fields into a `Uint8Array`.
+   * Serializes all fields into a `Uint8Array`.
    *
-   * @returns A `Uint8Array` containing the serialized payload fields.
+   * @returns Serialized fields as a `Uint8Array`.
    */
-  toBytes(): Uint8Array {
+  public toBytes(): Uint8Array {
     const fieldsCount = toBytesU32(this.fields.size);
-    const fieldEntries = Array.from(this.fields.entries()).map(([key, value]) =>
-      concat([toBytesU16(key), value])
-    );
+    const serializedFields = Array.from(
+      this.fields.entries()
+    ).map(([key, value]) => concat([toBytesU16(key), value]));
 
-    return concat([fieldsCount, ...fieldEntries]);
+    return concat([fieldsCount, ...serializedFields]);
   }
 
   /**
-   * Deserializes a JSON object into a `PayloadFields` instance.
+   * Deserializes JSON data into a `PayloadFields` instance.
    *
-   * @param json - The JSON representation of the payload fields.
+   * @param json - JSON representation of the payload fields.
    * @returns A `PayloadFields` instance.
    */
-  static fromJSON(json: Record<string, string>): PayloadFields {
-    const payload = new PayloadFields();
-    for (const [key, value] of Object.entries(json)) {
-      const field = parseInt(key);
-      if (!isNaN(field)) {
-        payload.addField(field, byteArrayJsonDeserializer(value));
-      }
+  public static fromJSON(json: any): PayloadFields {
+    const deserialized = new TypedJSON(PayloadFields).parse(json);
+
+    if (!deserialized) {
+      throw new Error('Failed to deserialize PayloadFields.');
     }
-    return payload;
+
+    deserialized.fields = deserialized.toSerializedFields();
+
+    return deserialized;
   }
 
   /**
@@ -94,7 +242,7 @@ export class PayloadFields {
    *
    * @returns A JSON representation of the payload fields.
    */
-  toJSON(): Record<string, string> {
+  public toJSON(): Record<string, string> {
     const result: Record<string, string> = {};
     const fieldEntries = Array.from(this.fields.entries());
     for (const [key, value] of fieldEntries) {
@@ -110,7 +258,7 @@ export class PayloadFields {
 @jsonObject
 export class TransactionV1Payload {
   /**
-   * The address of the transaction initiator.
+   * Address of the transaction initiator.
    */
   @jsonMember({
     name: 'initiator_addr',
@@ -121,7 +269,7 @@ export class TransactionV1Payload {
   public initiatorAddr: InitiatorAddr;
 
   /**
-   * The timestamp of the transaction.
+   * Timestamp when the transaction was created.
    */
   @jsonMember({
     name: 'timestamp',
@@ -132,7 +280,7 @@ export class TransactionV1Payload {
   public timestamp: Timestamp;
 
   /**
-   * The time-to-live (TTL) duration of the transaction.
+   * Time-to-live (TTL) duration of the transaction.
    */
   @jsonMember({
     name: 'ttl',
@@ -143,19 +291,19 @@ export class TransactionV1Payload {
   public ttl: Duration;
 
   /**
-   * The pricing mode used for the transaction.
+   * Pricing mode used for the transaction.
    */
   @jsonMember({ name: 'pricing_mode', constructor: PricingMode })
   public pricingMode: PricingMode;
 
   /**
-   * The name of the blockchain on which the transaction is executed.
+   * Name of the chain the transaction should be executed on.
    */
   @jsonMember({ name: 'chain_name', constructor: String })
   public chainName: string;
 
   /**
-   * Additional serialized fields associated with the transaction.
+   * Serialized fields associated with the transaction.
    */
   @jsonMember({
     name: 'fields',
@@ -165,60 +313,27 @@ export class TransactionV1Payload {
   public fields: PayloadFields;
 
   /**
-   * Arguments associated with the transaction.
-   */
-  public args: Args;
-
-  /**
-   * The target of the transaction.
-   */
-  public target: TransactionTarget;
-
-  /**
-   * The entry point of the transaction.
-   */
-  public entryPoint: TransactionEntryPoint;
-
-  /**
-   * The scheduling information for the transaction.
-   */
-  public scheduling: TransactionScheduling;
-
-  /**
-   * Optional category of the transaction.
-   */
-  public category?: number;
-
-  /**
    * Serializes the transaction payload into a `Uint8Array`.
    *
    * @returns A `Uint8Array` representing the serialized transaction payload.
    */
   public toBytes(): Uint8Array {
-    const calltableSerialization = new CalltableSerialization();
-    const fields = new PayloadFields();
-    fields.addField(0, this.args.toBytes());
-    fields.addField(1, this.target.toBytes());
-    fields.addField(2, this.entryPoint.bytes());
-    fields.addField(3, this.scheduling.bytes());
+    const calltable = new CalltableSerialization();
 
-    calltableSerialization.addField(0, this.initiatorAddr.toBytes());
-    calltableSerialization.addField(
-      1,
-      toBytesU64(Date.parse(this.timestamp.toJSON()))
-    );
-    calltableSerialization.addField(2, toBytesU64(this.ttl.duration));
-    calltableSerialization.addField(3, toBytesString(this.chainName));
-    calltableSerialization.addField(4, this.pricingMode.toBytes());
-    calltableSerialization.addField(5, fields.toBytes());
+    calltable.addField(0, this.initiatorAddr.toBytes());
+    calltable.addField(1, toBytesU64(Date.parse(this.timestamp.toJSON())));
+    calltable.addField(2, toBytesU64(this.ttl.duration));
+    calltable.addField(3, toBytesString(this.chainName));
+    calltable.addField(4, this.pricingMode.toBytes());
+    calltable.addField(5, this.fields.toBytes());
 
-    return calltableSerialization.toBytes();
+    return calltable.toBytes();
   }
 
   /**
-   * Creates a `TransactionV1Payload` instance from the provided parameters.
+   * Constructs a `TransactionV1Payload` instance with specified parameters.
    *
-   * @param params - The parameters for building the transaction payload.
+   * @param params - Parameters for building the transaction payload.
    * @returns A new `TransactionV1Payload` instance.
    */
   public static build({
@@ -228,87 +343,25 @@ export class TransactionV1Payload {
     entryPoint,
     pricingMode,
     timestamp,
-    category,
     transactionTarget,
     scheduling,
     chainName
   }: ITransactionPayloadBuildParams): TransactionV1Payload {
-    const payloadFields = new PayloadFields();
-    payloadFields.addField(0, args.toBytes());
-    payloadFields.addField(1, transactionTarget.toBytes());
-    payloadFields.addField(2, entryPoint.bytes());
-    payloadFields.addField(3, scheduling.bytes());
+    const payloadFields = PayloadFields.build(
+      args,
+      transactionTarget,
+      entryPoint,
+      scheduling
+    );
 
-    const transactionPayload = new TransactionV1Payload();
-    transactionPayload.initiatorAddr = initiatorAddr;
-    transactionPayload.ttl = ttl;
-    transactionPayload.args = args;
-    transactionPayload.entryPoint = entryPoint;
-    transactionPayload.pricingMode = pricingMode;
-    transactionPayload.timestamp = timestamp;
-    transactionPayload.category = category;
-    transactionPayload.target = transactionTarget;
-    transactionPayload.scheduling = scheduling;
-    transactionPayload.chainName = chainName;
-    transactionPayload.fields = payloadFields;
+    const payload = new TransactionV1Payload();
+    payload.initiatorAddr = initiatorAddr;
+    payload.ttl = ttl;
+    payload.pricingMode = pricingMode;
+    payload.timestamp = timestamp;
+    payload.chainName = chainName;
+    payload.fields = payloadFields;
 
-    return transactionPayload;
-  }
-
-  /**
-   * Deserializes a JSON object into a `TransactionV1Payload` instance.
-   *
-   * This method parses a JSON object to create a `TransactionV1Payload` instance.
-   * Additionally, it deserializes nested fields such as `args`, `target`, `entryPoint`,
-   * and `scheduling` from their respective byte representations if they are present.
-   *
-   * @param json - The JSON object representing a serialized `TransactionV1Payload`.
-   * @returns A deserialized `TransactionV1Payload` instance, or `undefined` if parsing fails.
-   *
-   * ### Example
-   * ```typescript
-   * const json = {
-   *   fields: {
-   *     // Provide serialized fields in JSON format
-   *   }
-   * };
-   * const transactionPayload = TransactionV1Payload.fromJSON(json);
-   * console.log(transactionPayload); // Parsed TransactionV1Payload instance or undefined
-   * ```
-   */
-  public static fromJSON(json: any): TransactionV1Payload | undefined {
-    const serializer = new TypedJSON(TransactionV1Payload);
-    const transactionPayload = serializer.parse(json);
-
-    if (!transactionPayload) {
-      return undefined;
-    }
-
-    const argsBytes = transactionPayload.fields.getFieldValue(0);
-    const targetBytes = transactionPayload.fields.getFieldValue(1);
-    const entryPointBytes = transactionPayload.fields.getFieldValue(2);
-    const schedulingBytes = transactionPayload.fields.getFieldValue(3);
-
-    if (argsBytes) {
-      transactionPayload.args = Args.fromBytes(argsBytes);
-    }
-
-    if (targetBytes) {
-      transactionPayload.target = TransactionTarget.fromBytes(targetBytes);
-    }
-
-    if (entryPointBytes) {
-      transactionPayload.entryPoint = TransactionEntryPoint.fromBytes(
-        entryPointBytes
-      );
-    }
-
-    if (schedulingBytes) {
-      transactionPayload.scheduling = TransactionScheduling.fromBytes(
-        schedulingBytes
-      );
-    }
-
-    return transactionPayload;
+    return payload;
   }
 }

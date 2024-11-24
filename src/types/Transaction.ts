@@ -117,15 +117,12 @@ export class TransactionV1 {
   public hash: Hash;
 
   /**
-   * The header of the transaction.
+   * The payload of the transaction.
+   * A merge of header and body concepts from before.
    */
   @jsonMember({
     name: 'payload',
-    constructor: TransactionV1Payload,
-    deserializer: json => {
-      if (!json) return;
-      return TransactionV1Payload.fromJSON(json);
-    }
+    constructor: TransactionV1Payload
   })
   public payload: TransactionV1Payload;
 
@@ -146,7 +143,7 @@ export class TransactionV1 {
   }
 
   /**
-   * Validates the transaction by checking the body hash and the approval signatures.
+   * Validates the transaction by checking the transaction hash and the approval signatures.
    * @throws {TransactionError} Throws errors if validation fails.
    */
   public validate(): boolean {
@@ -205,8 +202,7 @@ export class TransactionV1 {
   /**
    * Creates a new `TransactionV1` instance.
    * @param hash The hash of the transaction.
-   * @param header The header of the transaction.
-   * @param body The body of the transaction.
+   * @param payload The payload of the transaction. A merge of header and body concepts from before.
    * @param approvals The approvals for the transaction.
    * @returns A new `TransactionV1` instance.
    */
@@ -220,8 +216,7 @@ export class TransactionV1 {
 
   /**
    * Creates a new `TransactionV1` instance with a header and body.
-   * @param transactionHeader The header of the transaction.
-   * @param transactionBody The body of the transaction.
+   * @param payload The payload of the transaction. A merge of header and body concepts from before.
    * @returns A new `TransactionV1` instance.
    */
   static makeTransactionV1(payload: TransactionV1Payload): TransactionV1 {
@@ -531,11 +526,10 @@ export class Transaction {
         v1.payload.pricingMode
       ),
       new TransactionBody(
-        v1.payload.args,
-        v1.payload.target,
-        v1.payload.entryPoint,
-        v1.payload.scheduling,
-        v1.payload.category
+        v1.payload.fields.args,
+        v1.payload.fields.target,
+        v1.payload.fields.entryPoint,
+        v1.payload.fields.scheduling
       ),
       v1.approvals,
       v1

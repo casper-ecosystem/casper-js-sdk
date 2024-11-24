@@ -27,6 +27,7 @@ export * from './Prepayment';
 export * from './StoredValue';
 export * from './Time';
 export * from './Transaction';
+export * from './TransactionV1Payload';
 export * from './TransactionEntryPoint';
 export * from './TransactionScheduling';
 export * from './TransactionTarget';
