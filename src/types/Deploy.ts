@@ -2,17 +2,10 @@ import { jsonArrayMember, jsonMember, jsonObject, TypedJSON } from 'typedjson';
 import { concat } from '@ethersproject/bytes';
 
 import { Hash } from './key';
-import { PrivateKey } from './keypair/PrivateKey';
 import { HexBytes } from './HexBytes';
-import { PublicKey } from './keypair';
+import { PublicKey, PrivateKey } from './keypair';
 import { Duration, Timestamp } from './Time';
-import {
-  Approval,
-  Transaction,
-  TransactionBody,
-  TransactionCategory,
-  TransactionHeader
-} from './Transaction';
+import { Approval, Transaction, TransactionCategory } from './Transaction';
 import {
   TransactionEntryPoint,
   TransactionEntryPointEnum
@@ -411,21 +404,17 @@ export class Deploy {
 
     return new Transaction(
       deploy.hash,
-      new TransactionHeader(
-        deploy.header.chainName,
-        deploy.header.timestamp,
-        deploy.header.ttl,
-        new InitiatorAddr(deploy.header.account),
-        pricingMode
-      ),
-      new TransactionBody(
-        deploy.session.getArgs(),
-        TransactionTarget.newTransactionTargetFromSession(deploy.session),
-        transactionEntryPoint,
-        new TransactionScheduling({ standard: {} }),
-        transactionCategory
-      ),
+      deploy.header.chainName,
+      deploy.header.timestamp,
+      deploy.header.ttl,
+      new InitiatorAddr(deploy.header.account),
+      pricingMode,
+      deploy.session.getArgs(),
+      TransactionTarget.newTransactionTargetFromSession(deploy.session),
+      transactionEntryPoint,
+      new TransactionScheduling({ standard: {} }),
       deploy.approvals,
+      transactionCategory,
       undefined,
       deploy
     );

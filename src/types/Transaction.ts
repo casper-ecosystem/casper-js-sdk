@@ -8,9 +8,8 @@ import { PricingMode } from './PricingMode';
 import { TransactionTarget } from './TransactionTarget';
 import { TransactionEntryPoint } from './TransactionEntryPoint';
 import { TransactionScheduling } from './TransactionScheduling';
-import { PublicKey } from './keypair';
+import { PublicKey, PrivateKey } from './keypair';
 import { HexBytes } from './HexBytes';
-import { PrivateKey } from './keypair/PrivateKey';
 import { Args } from './Args';
 import { deserializeArgs, serializeArgs } from './SerializationUtils';
 import { byteHash } from './ByteConverters';
@@ -101,7 +100,7 @@ export class Approval {
 }
 
 /**
- * Represents a TransactionV1 object, including its header, body, and approvals.
+ * Represents a TransactionV1 object, including its hash, payload, and approvals.
  */
 @jsonObject
 export class TransactionV1 {
@@ -272,11 +271,21 @@ export class TransactionV1 {
 }
 
 /**
- * Represents the header of a transaction, including details like chain name, timestamp,
- * time-to-live (TTL), initiator address, and pricing mode.
+ * A wrapper for a TransactionV1 or Deploy.
  */
 @jsonObject
-export class TransactionHeader {
+export class Transaction {
+  /**
+   * The hash of the transaction.
+   */
+  @jsonMember({
+    name: 'hash',
+    constructor: Hash,
+    deserializer: json => Hash.fromJSON(json),
+    serializer: value => value.toJSON()
+  })
+  public hash: Hash;
+
   /**
    * The name of the blockchain chain associated with this transaction.
    */
@@ -323,35 +332,6 @@ export class TransactionHeader {
   public pricingMode: PricingMode;
 
   /**
-   * Creates a new `TransactionHeader` instance with the given properties.
-   * @param chainName The name of the blockchain chain.
-   * @param timestamp The timestamp of the transaction.
-   * @param ttl The TTL (Time-To-Live) for the transaction.
-   * @param initiatorAddr The address of the transaction initiator.
-   * @param pricingMode The pricing mode for the transaction.
-   */
-  constructor(
-    chainName: string,
-    timestamp: Timestamp,
-    ttl: Duration,
-    initiatorAddr: InitiatorAddr,
-    pricingMode: PricingMode
-  ) {
-    this.chainName = chainName;
-    this.timestamp = timestamp;
-    this.ttl = ttl;
-    this.initiatorAddr = initiatorAddr;
-    this.pricingMode = pricingMode;
-  }
-}
-
-/**
- * Represents the body of a transaction, containing the arguments, target,
- * entry point, scheduling information, and transaction category.
- */
-@jsonObject
-export class TransactionBody {
-  /**
    * The arguments for the transaction, which can be a map of values required by the entry point.
    */
   @jsonMember(() => Args, {
@@ -395,61 +375,10 @@ export class TransactionBody {
 
   /**
    * The category of the transaction, indicating its type (e.g., minting, auction).
+   * Using TransactionCategory as enum
    */
   @jsonMember({ name: 'transaction_category', constructor: Number })
   public category?: number;
-
-  /**
-   * Constructs a `TransactionBody` with the given arguments, target, entry point, scheduling, and category.
-   * @param args The arguments for the transaction.
-   * @param target The target of the transaction (e.g., a contract or account).
-   * @param entryPoint The entry point to specify the method or action of the transaction.
-   * @param scheduling The scheduling information for the transaction's execution.
-   * @param category The category/type of the transaction (e.g., mint, auction).
-   */
-  constructor(
-    args: Args,
-    target: TransactionTarget,
-    entryPoint: TransactionEntryPoint,
-    scheduling: TransactionScheduling,
-    category?: number
-  ) {
-    this.args = args;
-    this.target = target;
-    this.entryPoint = entryPoint;
-    this.scheduling = scheduling;
-    this.category = category;
-  }
-}
-
-/**
- * Represents a transaction in the system, containing information such as its hash,
- * header, body, approvals, and optionally its associated deployment and transaction details.
- */
-@jsonObject
-export class Transaction {
-  /**
-   * The hash of the transaction.
-   */
-  @jsonMember({
-    name: 'hash',
-    constructor: Hash,
-    deserializer: json => Hash.fromJSON(json),
-    serializer: value => value.toJSON()
-  })
-  public hash: Hash;
-
-  /**
-   * The header of the transaction, which includes metadata about the transaction.
-   */
-  @jsonMember({ name: 'header', constructor: TransactionHeader })
-  public header: TransactionHeader;
-
-  /**
-   * The body of the transaction, containing details such as the target, entry point, and arguments.
-   */
-  @jsonMember({ name: 'body', constructor: TransactionBody })
-  public body: TransactionBody;
 
   /**
    * The list of approvals for this transaction.
@@ -472,24 +401,49 @@ export class Transaction {
   /**
    * Creates a new `Transaction` instance with the specified values.
    * @param hash The hash of the transaction.
-   * @param header The header of the transaction.
-   * @param body The body of the transaction.
+   * @param chainName The blockchain chain name associated with this transaction.
+   * @param timestamp The timestamp of transaction creation.
+   * @param ttl The time-to-live duration of the transaction.
+   * @param initiatorAddr The address of the transaction initiator.
+   * @param pricingMode The pricing mode for this transaction.
+   * @param args The arguments for the transaction.
+   * @param target The target of the transaction.
+   * @param entryPoint The entry point of the transaction.
+   * @param scheduling The scheduling information for the transaction.
    * @param approvals The list of approvals for this transaction.
+   * @param category The category of the transaction, indicating its type (e.g., minting, auction).
    * @param originTransactionV1 The original TransactionV1, if applicable.
    * @param originDeployV1 The original deploy, if applicable.
    */
   constructor(
     hash: Hash,
-    header: TransactionHeader,
-    body: TransactionBody,
+    chainName: string,
+    timestamp: Timestamp,
+    ttl: Duration,
+    initiatorAddr: InitiatorAddr,
+    pricingMode: PricingMode,
+    args: Args,
+    target: TransactionTarget,
+    entryPoint: TransactionEntryPoint,
+    scheduling: TransactionScheduling,
     approvals: Approval[],
+    category?: TransactionCategory,
     originTransactionV1?: TransactionV1,
     originDeployV1?: Deploy
   ) {
     this.hash = hash;
-    this.header = header;
-    this.body = body;
+    this.chainName = chainName;
+    this.timestamp = timestamp;
+    this.ttl = ttl;
+    this.initiatorAddr = initiatorAddr;
+    this.pricingMode = pricingMode;
+    this.args = args;
+    this.target = target;
+    this.entryPoint = entryPoint;
+    this.scheduling = scheduling;
     this.approvals = approvals;
+    this.category = category;
+
     this.originDeployV1 = originDeployV1;
     this.originTransactionV1 = originTransactionV1;
   }
@@ -518,21 +472,19 @@ export class Transaction {
   static fromTransactionV1(v1: TransactionV1): Transaction {
     return new Transaction(
       v1.hash,
-      new TransactionHeader(
-        v1.payload.chainName,
-        v1.payload.timestamp,
-        v1.payload.ttl,
-        v1.payload.initiatorAddr,
-        v1.payload.pricingMode
-      ),
-      new TransactionBody(
-        v1.payload.fields.args,
-        v1.payload.fields.target,
-        v1.payload.fields.entryPoint,
-        v1.payload.fields.scheduling
-      ),
+      v1.payload.chainName,
+      v1.payload.timestamp,
+      v1.payload.ttl,
+      v1.payload.initiatorAddr,
+      v1.payload.pricingMode,
+      v1.payload.fields.args,
+      v1.payload.fields.target,
+      v1.payload.fields.entryPoint,
+      v1.payload.fields.scheduling,
       v1.approvals,
-      v1
+      undefined,
+      v1, // originTransactionV1
+      undefined // originDeployV1 is not applicable for this method
     );
   }
 }

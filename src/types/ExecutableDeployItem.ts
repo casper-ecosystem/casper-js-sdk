@@ -365,7 +365,7 @@ export class TransferDeployItem {
     amount: BigNumber | string,
     target: URef | PublicKey,
     sourcePurse: URef | null = null,
-    id?: BigNumberish,
+    id?: BigNumberish
   ): TransferDeployItem {
     const runtimeArgs = Args.fromMap({});
     runtimeArgs.insert('amount', CLValueUInt512.newCLUInt512(amount));
@@ -386,7 +386,9 @@ export class TransferDeployItem {
 
     runtimeArgs.insert(
       'id',
-      id ? CLValueOption.newCLOption(CLValueUInt64.newCLUint64(id)) : defaultClValue
+      id
+        ? CLValueOption.newCLOption(CLValueUInt64.newCLUint64(id))
+        : defaultClValue
     );
 
     return new TransferDeployItem(runtimeArgs);
