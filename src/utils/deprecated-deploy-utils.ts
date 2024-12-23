@@ -346,7 +346,7 @@ export const setSignature = (
 export const standardPayment = ExecutableDeployItem.standardPayment;
 
 /**
- * @deprecated use {@link Deploy.toJson}
+ * @deprecated use {@link Deploy.toJSON}
  * Convert the deploy object to a JSON representation
  *
  * @param deploy The `Deploy` object to convert to JSON
@@ -354,7 +354,7 @@ export const standardPayment = ExecutableDeployItem.standardPayment;
  */
 export const deployToJson = (deploy: Deploy) => {
   return {
-    deploy: Deploy.toJson(deploy)
+    deploy: Deploy.toJSON(deploy)
   };
 };
 
