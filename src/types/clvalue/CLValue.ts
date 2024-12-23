@@ -8,15 +8,17 @@ import {
 } from './cltype';
 import { URef, Key } from '../key';
 import { PublicKey } from '../keypair';
-import { CLValueUInt8 } from './Uint8';
-import { CLValueInt64 } from './Int64';
-import { CLValueInt32 } from './Int32';
+import {
+  CLValueUInt8,
+  CLValueInt64,
+  CLValueInt32,
+  CLValueUInt32,
+  CLValueUInt64,
+  CLValueUInt128,
+  CLValueUInt256,
+  CLValueUInt512
+} from './Numeric';
 import { CLValueBool } from './Bool';
-import { CLValueUInt32 } from './Uint32';
-import { CLValueUInt64 } from './Uint64';
-import { CLValueUInt128 } from './Uint128';
-import { CLValueUInt256 } from './Uint256';
-import { CLValueUInt512 } from './Uint512';
 import { CLValueUnit } from './Unit';
 import { CLValueOption } from './Option';
 import { CLValueList } from './List';

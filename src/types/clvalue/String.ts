@@ -2,7 +2,7 @@ import { concat } from '@ethersproject/bytes';
 
 import { CLTypeString } from './cltype';
 import { CLValue, IResultWithBytes } from './CLValue';
-import { CLValueUInt32 } from './Uint32';
+import { CLValueUInt32 } from './Numeric';
 import { fromBytesString } from '../ByteConverters';
 
 /**
@@ -78,7 +78,7 @@ export class CLValueString {
    */
   public static fromBytes(source: Uint8Array): IResultWithBytes<CLValueString> {
     const uint32Value = CLValueUInt32.fromBytes(source);
-    const size = uint32Value?.result?.getValue()?.toNumber();
+    const size = uint32Value?.result?.toNumber();
     const value = fromBytesString(uint32Value?.bytes?.subarray(0, size));
 
     return {

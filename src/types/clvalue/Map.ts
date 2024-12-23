@@ -3,7 +3,7 @@ import { concat } from '@ethersproject/bytes';
 import { CLType, CLTypeMap } from './cltype';
 import { CLValue, IResultWithBytes } from './CLValue';
 import { CLValueTuple2 } from './Tuple2';
-import { CLValueUInt32 } from './Uint32';
+import { CLValueUInt32 } from './Numeric';
 import { CLValueParser } from './Parser';
 import { toBytesU32 } from '../ByteConverters';
 
@@ -194,7 +194,7 @@ export class CLValueMap {
     const mapResult = new CLValueMap(mapType);
 
     const { result: u32, bytes: u32Bytes } = CLValueUInt32.fromBytes(bytes);
-    const size = u32.getValue().toNumber();
+    const size = u32.toNumber();
     const remainder = u32Bytes;
 
     if (size === 0) {

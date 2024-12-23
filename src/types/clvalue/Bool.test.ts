@@ -31,7 +31,7 @@ describe('CLBool', () => {
   });
 
   it('toJSON() / fromJSON() do proper bytes serialization', () => {
-    const myBool = CLValueBool.fromBoolean(false);
+    const myBool = CLValueBool.newCLValueBool(false);
     const json = CLValueParser.toJSON(myBool);
     const expectedJson = JSON.parse('{"bytes":"00","cl_type":"Bool"}');
 

@@ -464,7 +464,7 @@ export class Deploy {
    * @param deploy The deploy object to convert to JSON.
    * @returns A JSON representation of the deploy.
    */
-  public static toJson = (deploy: Deploy) => {
+  public static toJSON = (deploy: Deploy) => {
     const serializer = new TypedJSON(Deploy);
     return serializer.toPlainJson(deploy);
   };

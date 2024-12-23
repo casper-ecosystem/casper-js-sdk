@@ -1,22 +1,17 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 
-import { CLTypeInt32, Int32ByteSize } from './cltype';
-import { CLValue, IResultWithBytes } from './CLValue';
-import { toBytesI32 } from '../ByteConverters';
+import { CLTypeInt32, Int32ByteSize } from '../cltype';
+import { CLValue, IResultWithBytes } from '../CLValue';
+import { toBytesI32 } from '../../ByteConverters';
+import { CLValueNumeric } from './Abstract';
 
 /**
  * Represents a 32-bit signed integer value in the Casper type system.
  * This class provides methods for handling 32-bit integers, including byte conversion and CLValue integration.
  */
-export class CLValueInt32 {
-  private value: BigNumberish;
-
-  /**
-   * Initializes a new instance of the CLValueInt32 class.
-   * @param value - The 32-bit integer value to be stored in the CLValueInt32.
-   */
+export class CLValueInt32 extends CLValueNumeric {
   constructor(value: BigNumberish) {
-    this.value = value;
+    super(value);
   }
 
   /**
@@ -25,31 +20,6 @@ export class CLValueInt32 {
    */
   public bytes(): Uint8Array {
     return toBytesI32(this.value);
-  }
-
-  /**
-   * Provides a string representation of the Int32 value.
-   * @returns The string representation of the stored value.
-   */
-  public toString(): string {
-    return this.value.toString();
-  }
-
-  /**
-   * Converts the instance to a JSON-compatible string.
-   *
-   * @returns {string} The string representation of the instance.
-   */
-  public toJSON(): string {
-    return this.toString();
-  }
-
-  /**
-   * Retrieves the numeric value of the Int32.
-   * @returns The numeric representation of the value.
-   */
-  public getValue(): BigNumberish {
-    return this.value;
   }
 
   /**

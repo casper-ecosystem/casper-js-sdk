@@ -2,7 +2,7 @@ import { concat } from '@ethersproject/bytes';
 
 import { CLType, CLTypeList } from './cltype';
 import { CLValue, IResultWithBytes } from './CLValue';
-import { CLValueUInt32 } from './Uint32';
+import { CLValueUInt32 } from './Numeric';
 import { CLValueParser } from './Parser';
 import { toBytesU32 } from '../ByteConverters';
 
@@ -152,7 +152,7 @@ export class CLValueList {
     clType: CLTypeList
   ): IResultWithBytes<CLValueList> {
     const { result: u32, bytes: u32Bytes } = CLValueUInt32.fromBytes(source);
-    const size = u32.getValue().toNumber();
+    const size = u32.toNumber();
     let remainder = u32Bytes;
     const elements: CLValue[] = [];
 

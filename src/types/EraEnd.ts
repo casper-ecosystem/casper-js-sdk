@@ -6,11 +6,8 @@ import {
 } from 'typedjson';
 import { PublicKey } from './keypair';
 import { ValidatorWeightEraEnd } from './ValidatorWeight';
-import {
-  CLValueUInt512,
-  deserializeRewards,
-  serializeRewards
-} from './clvalue';
+import { CLValueUInt512 } from './clvalue';
+import { deserializeRewards, serializeRewards } from './SerializationUtils';
 
 /**
  * Class representing the rewards associated with a validator in a given era.
@@ -252,7 +249,7 @@ export class EraEnd {
   @jsonMapMember(String, CLValueUInt512, {
     name: 'rewards',
     deserializer: deserializeRewards,
-    serializer: (map: Map<string, CLValueUInt512[]>) => serializeRewards(map),
+    serializer: (map: Map<string, CLValueUInt512[]>) => serializeRewards(map)
   })
   public rewards: Map<string, CLValueUInt512[]>;
 

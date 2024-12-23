@@ -1,8 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 
-import { CLValueUInt128 } from './Uint128';
-import { CLValueUInt256 } from './Uint256';
-import { CLValueUInt512 } from './Uint512';
+import { CLValueUInt128, CLValueUInt256, CLValueUInt512 } from './Numeric';
 import { IResultWithBytes } from './CLValue';
 
 /**

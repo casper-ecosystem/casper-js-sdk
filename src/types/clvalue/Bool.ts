@@ -54,7 +54,7 @@ export class CLValueBool {
    * @param val - The boolean value to be stored in the CLValue.
    * @returns A new CLValue instance encapsulating the boolean value.
    */
-  public static fromBoolean(val: boolean): CLValue {
+  public static newCLValueBool(val: boolean): CLValue {
     const res = new CLValue(CLTypeBool);
     res.bool = new CLValueBool(val);
     return res;

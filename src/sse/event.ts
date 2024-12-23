@@ -114,14 +114,14 @@ export class RawEvent {
   parseAsTransactionProcessedEvent(): TransactionProcessedEvent {
     return this.parseEvent(
       TransactionProcessedEvent,
-      TransactionProcessedEvent.fromJson
+      TransactionProcessedEvent.fromJSON
     );
   }
 
   parseAsTransactionAcceptedEvent(): TransactionAcceptedEvent {
     return this.parseEvent(
       TransactionAcceptedEvent,
-      TransactionAcceptedEvent.fromJson
+      TransactionAcceptedEvent.fromJSON
     );
   }
 
@@ -340,7 +340,7 @@ export class TransactionAcceptedEvent {
   })
   transactionAcceptedPayload: TransactionAcceptedPayload;
 
-  public static fromJson(data: unknown): TransactionAcceptedEvent | Error {
+  public static fromJSON(data: unknown): TransactionAcceptedEvent | Error {
     try {
       const transactionEvent = TypedJSON.parse(data, TransactionAcceptedEvent);
       if (!transactionEvent) throw new Error('TransactionAcceptedEvent is nil');
@@ -475,7 +475,7 @@ export class TransactionProcessedEvent {
   })
   transactionProcessedPayload: TransactionProcessedPayload;
 
-  public static fromJson(data: any): TransactionProcessedEvent | Error {
+  public static fromJSON(data: any): TransactionProcessedEvent | Error {
     try {
       const transactionEvent = TypedJSON.parse(data, TransactionProcessedEvent);
       if (!transactionEvent)

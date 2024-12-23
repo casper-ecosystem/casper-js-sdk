@@ -7,19 +7,21 @@ import {
   Deploy,
   DeployHeader,
   Duration,
-  ExecutableDeployItem, Key, KeyTypeID,
+  ExecutableDeployItem,
+  Key,
+  KeyTypeID,
   PublicKey,
   StoredContractByHash
 } from '../types';
 import { CasperNetworkName } from '../@types';
 
 export interface IMakeCep18TransferDeployParams {
-  contractHash: string,
+  contractHash: string;
   senderPublicKeyHex: string;
   recipientPublicKeyHex: string;
   transferAmount: string;
-  paymentAmount: string,
-  chainName?: CasperNetworkName;
+  paymentAmount: string;
+  chainName?: string;
   ttl?: number;
 }
 
@@ -36,8 +38,7 @@ export interface IMakeCep18TransferDeployParams {
  *                                For example, to transfer 2.5 CSPR, provide the value `2500000000` (2.5 * 10^9 motes).
  * @param params.paymentAmount - The amount of CSPR to pay a network fee.
  *                               This value must be represented in its smallest unit (motes).
- * @param params.chainName - (Optional) The name of the Casper network chain - {CasperNetworkName}.
- *                           Must be either `'casper'` (mainnet) or `'casper-test'` (testnet).
+ * @param params.chainName - (Optional) The name of the Casper network chain.
  *                           Defaults to `'CasperNetworkName.Mainnet'` if not specified.
  * @param params.ttl - (Optional) The time-to-live (TTL) for the `Deploy` in milliseconds.
  *                      Specifies how long the `Deploy` is valid before it expires.
@@ -59,6 +60,7 @@ export interface IMakeCep18TransferDeployParams {
  * console.log('Created Deploy:', deploy);
  * ```
  */
+
 export const makeCep18TransferDeploy = ({
   contractHash,
   senderPublicKeyHex,
@@ -66,7 +68,7 @@ export const makeCep18TransferDeploy = ({
   transferAmount,
   paymentAmount,
   chainName = CasperNetworkName.Mainnet,
-  ttl = DEFAULT_DEPLOY_TTL,
+  ttl = DEFAULT_DEPLOY_TTL
 }: IMakeCep18TransferDeployParams): Deploy => {
   const senderPublicKey = PublicKey.newPublicKey(senderPublicKeyHex);
   const recipientPublicKey = PublicKey.newPublicKey(recipientPublicKeyHex);
@@ -77,7 +79,12 @@ export const makeCep18TransferDeploy = ({
     ContractHash.newContract(contractHash),
     'transfer',
     Args.fromMap({
-      recipient: CLValue.newCLKey(Key.createByType(recipientPublicKey.accountHash().toPrefixedString(), KeyTypeID.Account)),
+      recipient: CLValue.newCLKey(
+        Key.createByType(
+          recipientPublicKey.accountHash().toPrefixedString(),
+          KeyTypeID.Account
+        )
+      ),
       amount: CLValueUInt256.newCLUInt256(transferAmount)
     })
   );

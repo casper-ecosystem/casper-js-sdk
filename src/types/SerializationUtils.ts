@@ -2,6 +2,7 @@ import { TypedJSON } from 'typedjson';
 import humanizeDuration from 'humanize-duration';
 import { Args } from './Args';
 import { Conversions } from './Conversions';
+import { CLValueUInt512 } from './clvalue';
 
 /**
  * Serializes a `Uint8Array` into a hexadecimal string.
@@ -171,4 +172,39 @@ export const serializeArgs = (ra: Args, asNamed = false) => {
   }
 
   return argsArray;
+};
+
+/**
+ * Deserializes an array of rewards into a Map.
+ * @param arr - The array to be deserialized, where each element is a tuple containing a key and an array of rewards.
+ * @returns A Map where each key corresponds to an array of CLValueUInt512 rewards.
+ * @throws Will throw an error if duplicate keys are detected.
+ */
+export const deserializeRewards = (arr: any) => {
+  const parsed = new Map(
+    Array.from(arr, ([key, value]) => {
+      const valuesArray = value.map((item: any) =>
+        CLValueUInt512.fromJSON(item)
+      );
+      return [key, valuesArray];
+    })
+  );
+
+  if (parsed.size !== Array.from(arr).length) {
+    throw Error(`Duplicate key exists.`);
+  }
+
+  return parsed;
+};
+
+/**
+ * Serializes a Map of rewards into an array format suitable for JSON storage.
+ * @param map - A Map where each key corresponds to an array of CLValueUInt512 rewards.
+ * @returns An array where each element is a tuple containing a key and an array of rewards in JSON format.
+ */
+export const serializeRewards = (map: Map<string, CLValueUInt512[]>) => {
+  return Array.from(map, ([key, value]) => {
+    const serializedValue = value.map(item => item.toJSON());
+    return [key, serializedValue];
+  });
 };

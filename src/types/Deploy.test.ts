@@ -6,8 +6,7 @@ import {
   TransferDeployItem
 } from './ExecutableDeployItem';
 import { Deploy, DeployHeader } from './Deploy';
-import { PrivateKey } from './keypair/PrivateKey';
-import { KeyAlgorithm } from './keypair/Algorithm';
+import { KeyAlgorithm, PrivateKey } from './keypair';
 import { Duration, Timestamp } from './Time';
 import { Hash } from './key';
 import { dehumanizerTTL, humanizerTTL } from './SerializationUtils';
@@ -63,7 +62,7 @@ describe('Deploy', () => {
     deploy.sign(senderKey);
     deploy.sign(recipientKey);
 
-    const json = Deploy.toJson(deploy);
+    const json = Deploy.toJSON(deploy);
 
     deploy = Deploy.fromJSON(json);
 

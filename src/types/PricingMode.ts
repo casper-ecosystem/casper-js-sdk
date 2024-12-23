@@ -40,7 +40,7 @@ export class PaymentLimitedMode {
     );
     calltableSerializer.addField(
       3,
-      CLValueBool.fromBoolean(this.standardPayment).bytes()
+      CLValueBool.newCLValueBool(this.standardPayment).bytes()
     );
 
     return calltableSerializer.toBytes();

@@ -11,7 +11,9 @@ import {
   Deploy,
   DeployHeader,
   Duration,
-  ExecutableDeployItem, Key, KeyTypeID,
+  ExecutableDeployItem,
+  Key,
+  KeyTypeID,
   PublicKey,
   StoredVersionedContractByHash
 } from '../types';
@@ -23,7 +25,7 @@ export interface IMakeNftTransferDeployParams {
   senderPublicKeyHex: string;
   recipientPublicKeyHex: string;
   paymentAmount: string;
-  chainName?: CasperNetworkName;
+  chainName?: string;
   ttl?: number;
   tokenId?: string;
   tokenHash?: string;
@@ -76,17 +78,17 @@ export const makeNftTransferDeploy = ({
   const senderPublicKey = PublicKey.newPublicKey(senderPublicKeyHex);
 
   if (!(tokenId || tokenHash)) {
-    throw new Error('Specify either tokenId or tokenHash to make a transfer')
+    throw new Error('Specify either tokenId or tokenHash to make a transfer');
   }
 
   let args: Args | null = null;
 
   if (nftStandard === NFTTokenStandard.CEP47) {
     if (!tokenId) {
-      throw new Error('TokenId is required for CEP-47 transfer')
+      throw new Error('TokenId is required for CEP-47 transfer');
     }
 
-    args = getRuntimeArgsForCep47Transfer({ tokenId, recipientPublicKeyHex })
+    args = getRuntimeArgsForCep47Transfer({ tokenId, recipientPublicKeyHex });
   }
 
   if (nftStandard === NFTTokenStandard.CEP78) {
@@ -99,7 +101,7 @@ export const makeNftTransferDeploy = ({
   }
 
   if (!args) {
-    throw new Error('Deploy arguments error. Check provided token data')
+    throw new Error('Deploy arguments error. Check provided token data');
   }
 
   const session = new ExecutableDeployItem();
@@ -130,14 +132,28 @@ export const getRuntimeArgsForCep78Transfer = ({
   'tokenId' | 'recipientPublicKeyHex' | 'tokenHash' | 'senderPublicKeyHex'
 >) => {
   const runtimeArgs = Args.fromMap({
-    target_key: CLValue.newCLKey(Key.createByType(PublicKey.fromHex(recipientPublicKeyHex).accountHash().toPrefixedString(), KeyTypeID.Account)),
-    source_key: CLValue.newCLKey(Key.createByType(PublicKey.fromHex(senderPublicKeyHex).accountHash().toPrefixedString(), KeyTypeID.Account))
+    target_key: CLValue.newCLKey(
+      Key.createByType(
+        PublicKey.fromHex(recipientPublicKeyHex)
+          .accountHash()
+          .toPrefixedString(),
+        KeyTypeID.Account
+      )
+    ),
+    source_key: CLValue.newCLKey(
+      Key.createByType(
+        PublicKey.fromHex(senderPublicKeyHex)
+          .accountHash()
+          .toPrefixedString(),
+        KeyTypeID.Account
+      )
+    )
   });
 
   if (tokenId) {
     runtimeArgs.insert(
       'is_hash_identifier_mode',
-      CLValueBool.fromBoolean(false)
+      CLValueBool.newCLValueBool(false)
     );
     runtimeArgs.insert('token_id', CLValueUInt64.newCLUint64(tokenId));
   }
@@ -145,7 +161,7 @@ export const getRuntimeArgsForCep78Transfer = ({
   if (tokenHash) {
     runtimeArgs.insert(
       'is_hash_identifier_mode',
-      CLValueBool.fromBoolean(true)
+      CLValueBool.newCLValueBool(true)
     );
     runtimeArgs.insert('token_id', CLValueUInt64.newCLUint64(tokenHash));
   }
@@ -160,7 +176,14 @@ export function getRuntimeArgsForCep47Transfer({
   Pick<IMakeNftTransferDeployParams, 'tokenId' | 'recipientPublicKeyHex'>
 >) {
   return Args.fromMap({
-    recipient: CLValue.newCLKey(Key.createByType(PublicKey.fromHex(recipientPublicKeyHex).accountHash().toPrefixedString(), KeyTypeID.Account)),
+    recipient: CLValue.newCLKey(
+      Key.createByType(
+        PublicKey.fromHex(recipientPublicKeyHex)
+          .accountHash()
+          .toPrefixedString(),
+        KeyTypeID.Account
+      )
+    ),
     token_ids: CLValueList.newCLList(CLTypeUInt256, [
       CLValueUInt256.newCLUInt256(tokenId)
     ])

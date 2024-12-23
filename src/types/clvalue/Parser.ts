@@ -16,18 +16,20 @@ import {
   CLTypeTuple3,
   TypeID
 } from './cltype';
-import { CLValueUInt32 } from './Uint32';
+import {
+  CLValueUInt32,
+  CLValueUInt512,
+  CLValueUInt256,
+  CLValueUInt128,
+  CLValueUInt64,
+  CLValueUInt8,
+  CLValueInt32,
+  CLValueInt64
+} from './Numeric';
 import { CLValueBool } from './Bool';
 import { CLValueAny } from './Any';
 import { CLValueUnit } from './Unit';
 import { CLValueString } from './String';
-import { CLValueUInt512 } from './Uint512';
-import { CLValueUInt256 } from './Uint256';
-import { CLValueUInt128 } from './Uint128';
-import { CLValueUInt64 } from './Uint64';
-import { CLValueUInt8 } from './Uint8';
-import { CLValueInt32 } from './Int32';
-import { CLValueInt64 } from './Int64';
 import { CLValueOption } from './Option';
 import { CLValueList } from './List';
 import { CLValueByteArray } from './ByteArray';
@@ -250,7 +252,7 @@ export class CLValueParser {
     bytes: Uint8Array
   ): IResultWithBytes<CLValue> {
     const u32 = CLValueUInt32.fromBytes(bytes);
-    const length = u32.result.getValue().toNumber();
+    const length = u32.result.toNumber();
 
     if (!length) {
       throw new Error(`Invalid length for bytes: ${length}`);

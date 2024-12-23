@@ -13,7 +13,7 @@ export interface IMakeCsprTransferDeployParams {
   senderPublicKeyHex: string;
   recipientPublicKeyHex: string;
   transferAmount: string;
-  chainName?: CasperNetworkName;
+  chainName?: string;
   memo?: string;
   ttl?: number;
 }
@@ -29,8 +29,7 @@ export interface IMakeCsprTransferDeployParams {
  * @param params.transferAmount - The amount of CSPR to transfer.
  *                                This value must be represented in its smallest unit (motes).
  *                                For example, to transfer 2.5 CSPR, provide the value `2500000000` (2.5 * 10^9 motes).
- * @param params.chainName - (Optional) The name of the Casper network chain - {CasperNetworkName}.
- *                           Must be either `'casper'` (mainnet) or `'casper-test'` (testnet).
+ * @param params.chainName - (Optional) The name of the Casper network chain.
  *                           Defaults to `'CasperNetworkName.Mainnet'` if not specified.
  * @param params.memo - (Optional) Tag/Memo (Comment/Note/Remark)
  *                      Most exchanges require a Tag/Memo for CSPR deposits to be credited correctly.

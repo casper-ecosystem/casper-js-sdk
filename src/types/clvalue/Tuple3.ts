@@ -1,13 +1,14 @@
-import { CLTypeTuple3, CLType } from './cltype';
+import { concat } from '@ethersproject/bytes';
+
+import { CLTypeTuple3 } from './cltype';
 import { CLValueParser } from './Parser';
 import { CLValue, IResultWithBytes } from './CLValue';
-import { concat } from '@ethersproject/bytes';
 
 /**
  * Represents a tuple containing three CLValues in the Casper type system.
  */
 export class CLValueTuple3 {
-  public innerType: CLType;
+  public innerType: CLTypeTuple3;
   public inner1: CLValue;
   public inner2: CLValue;
   public inner3: CLValue;
@@ -20,7 +21,7 @@ export class CLValueTuple3 {
    * @param inner3 - The third CLValue in the tuple.
    */
   constructor(
-    innerType: CLType,
+    innerType: CLTypeTuple3,
     inner1: CLValue,
     inner2: CLValue,
     inner3: CLValue

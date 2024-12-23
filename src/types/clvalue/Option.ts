@@ -3,7 +3,7 @@ import { concat } from '@ethersproject/bytes';
 import { CLType, CLTypeAny, CLTypeOption } from './cltype';
 import { CLValue, IResultWithBytes } from './CLValue';
 import { CLValueParser } from './Parser';
-import { CLValueUInt8 } from './Uint8';
+import { CLValueUInt8 } from './Numeric';
 
 /**
  * Represents an optional value in the Casper type system.
@@ -125,7 +125,7 @@ export class CLValueOption {
     clType: CLTypeOption
   ): IResultWithBytes<CLValueOption> {
     const { result: u8, bytes: u8Bytes } = CLValueUInt8.fromBytes(source);
-    const optionTag = u8.getValue();
+    const optionTag = u8.toNumber();
 
     if (optionTag === 0) {
       return { result: new CLValueOption(null, clType), bytes: u8Bytes };

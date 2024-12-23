@@ -3,7 +3,7 @@ import { concat } from '@ethersproject/bytes';
 import { CLType, CLTypeResult } from './cltype';
 import { CLValue, IResultWithBytes } from './CLValue';
 import { CLValueParser } from './Parser';
-import { CLValueUInt8 } from './Uint8';
+import { CLValueUInt8 } from './Numeric';
 
 /**
  * Represents a Result type in the Casper type system.

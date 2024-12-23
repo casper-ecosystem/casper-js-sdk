@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import { CLTypeBool, CLTypeList, CLTypeUInt32 } from './cltype';
 import { concat } from '@ethersproject/bytes';
 import { toBytesU32 } from '../ByteConverters';
-import { CLValueUInt32 } from './Uint32';
+import { CLValueUInt32 } from './Numeric/Uint32';
 import { CLValueList } from './List';
 import { BigNumber } from '@ethersproject/bignumber';
 import { CLValue } from './CLValue';
@@ -108,8 +108,8 @@ describe('CLValueList with boolean values', () => {
 
   beforeEach(() => {
     boolTypeList = new CLTypeList(CLTypeBool);
-    trueElement = CLValueBool.fromBoolean(true);
-    falseElement = CLValueBool.fromBoolean(false);
+    trueElement = CLValueBool.newCLValueBool(true);
+    falseElement = CLValueBool.newCLValueBool(false);
     clValueBoolList = new CLValueList(boolTypeList, [
       trueElement,
       falseElement
@@ -135,7 +135,7 @@ describe('CLValueList with boolean values', () => {
   });
 
   it('should add a boolean element to the list when calling append()', () => {
-    const newElement = CLValueBool.fromBoolean(true);
+    const newElement = CLValueBool.newCLValueBool(true);
     clValueBoolList.append(newElement);
     expect(clValueBoolList.elements).to.deep.equal([
       trueElement,
@@ -151,7 +151,7 @@ describe('CLValueList with boolean values', () => {
   });
 
   it('should throw error if index is out of bounds in set() for boolean list', () => {
-    const newElement = CLValueBool.fromBoolean(false);
+    const newElement = CLValueBool.newCLValueBool(false);
     expect(() => clValueBoolList.set(2, newElement)).to.throw(
       'List index out of bounds.'
     );

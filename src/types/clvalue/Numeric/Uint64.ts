@@ -1,20 +1,16 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
-import { CLTypeUInt64, Int64ByteSize } from './cltype';
-import { CLValue, IResultWithBytes } from './CLValue';
-import { toBytesU64 } from '../ByteConverters';
+
+import { CLTypeUInt64, Int64ByteSize } from '../cltype';
+import { CLValue, IResultWithBytes } from '../CLValue';
+import { toBytesU64 } from '../../ByteConverters';
+import { CLValueNumeric } from './Abstract';
 
 /**
  * Represents a 64-bit unsigned integer value in the Casper type system.
  */
-export class CLValueUInt64 {
-  private value: BigNumberish;
-
-  /**
-   * Initializes a new instance of the CLValueUInt64 class.
-   * @param value - The value to initialize the CLValueUInt64 with. Can be any BigNumberish type.
-   */
+export class CLValueUInt64 extends CLValueNumeric {
   constructor(value: BigNumberish) {
-    this.value = value;
+    super(value);
   }
 
   /**
@@ -23,31 +19,6 @@ export class CLValueUInt64 {
    */
   public bytes(): Uint8Array {
     return toBytesU64(this.value);
-  }
-
-  /**
-   * Provides a string representation of the UInt64 value.
-   * @returns The string representation of the value.
-   */
-  public toString(): string {
-    return this.value.toString();
-  }
-
-  /**
-   * Retrieves the BigNumberish value of the UInt64.
-   * @returns The BigNumberish representation of the value.
-   */
-  public getValue(): BigNumberish {
-    return this.value;
-  }
-
-  /**
-   * Converts the instance to a JSON-compatible string.
-   *
-   * @returns {string} The string representation of the instance.
-   */
-  public toJSON(): string {
-    return this.toString();
   }
 
   /**
