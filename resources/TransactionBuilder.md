@@ -20,7 +20,7 @@ TransactionBuilder contains classes and methods for building and managing Casper
 
 ## Overview
 
-The provided classes allow developers to build, customize, and execute transactions on the Casper blockchain. By using builder patterns, developers can chain methods to configure each aspect of the transaction before calling `build()` to create the final [Transaction](./Transaction.ts) instance.
+The provided classes allow developers to build, customize, and execute transactions on the Casper blockchain. By using builder patterns, developers can chain methods to configure each aspect of the transaction before calling `build()` to create the final [Transaction](../src/types/Transaction.ts) instance.
 
 ## Classes
 

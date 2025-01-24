@@ -148,7 +148,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
-- Basic documentation for Casper 2.0 (Condor)
+- Basic documentation for Casper 2.0
 - **Enhanced `CLValue.newCLOption` Method**:
   - Automatic resolution of the option type from `inner` when provided.
   - Optional `clType` parameter when `inner` is present.

@@ -1,6 +1,6 @@
 # V2 to V5 Migration Guide
 
-`Casper JS SDK V5` introduces significant **breaking changes**, essentially rewriting the SDK from the ground up to enhance usability, align it with Casper SDKs in other languages, and incorporate new features for the Casper 2.0 (Condor) update.
+`Casper JS SDK V5` introduces significant **breaking changes**, essentially rewriting the SDK from the ground up to enhance usability, align it with Casper SDKs in other languages, and incorporate new features for the Casper 2.0 update.
 
 This guide will walk you through the key changes and provide detailed examples to help you transition your code seamlessly.
 
@@ -40,11 +40,11 @@ const stateRootHash = await client.getStateRootHash();
 ```typescript
 import { HttpHandler, RpcClient } from 'casper-js-sdk';
 
-const rpcHandler = new HttpHandler('http://<Node Address>:7777/rpc');
-const rpcClient = new RpcClient(rpcHandler);
+const httpHandler = new HttpHandler('http://<Node Address>:7777/rpc');
+const rpcClient = new RpcClient(httpHandler);
 
 try {
-  const stateRootHash = await rpcClient.getLatestBlock();
+  const stateRootHash = await rpcClient.getStateRootHashLatest();
   console.log(stateRootHash);
 } catch (error) {
   console.error(error);
@@ -116,50 +116,21 @@ Detailed documentation is available [here](https://github.com/casper-ecosystem/c
 
 ---
 
-### 4. **Changes to Deploy Management**
+### 4. **Key Management Overhaul**
 
 #### Overview
 
-- The `DeployUtil` module is now replaced by the `Deploy` class with static methods.
-- Serialization/deserialization now uses `TypedJSON`.
-
-#### Migration Example
-
-##### Old Syntax (2.x)
-
-```typescript
-const deploy = DeployUtil.makeDeploy(deployHeader, payment, session);
-DeployUtil.signDeploy(deploy, keyPair);
-```
-
-##### New Syntax (5.x)
-
-```typescript
-import { Deploy } from 'casper-js-sdk';
-
-const deploy = Deploy.makeDeploy(deployHeader, payment, session);
-deploy.sign(privateKey);
-```
-
-For details, refer to the [Deploy class documentation](https://github.com/casper-ecosystem/casper-js-sdk/blob/feat-5.0.0/src/types/Deploy.ts).
-
----
-
-### 5. **Key Management Overhaul**
-
-#### Overview
-
-- The `Keys` class from the old SDK (located in src/lib/Keys.ts) has been replaced with separate classes for `PublicKey` and `PrivateKey`, each based on the specific cryptographic algorithm.
+- The `Keys` class from the old SDK (located in `src/lib/Keys.ts`) has been replaced with separate classes for `PublicKey` and `PrivateKey`, each tailored to specific cryptographic algorithms.
 - These new classes are located in the [keypair folder](https://github.com/casper-ecosystem/casper-js-sdk/tree/feat-5.0.0/src/types/keypair).
-- AsymmetricKey was splitted into to classes [PrivateKey](../src/types/keypair/PrivateKey.ts) and [PublicKey](../src/types/keypair/PublicKey.ts).
+- AsymmetricKey was split into two classes: [PrivateKey](../src/types/keypair/PrivateKey.ts) and [PublicKey](../src/types/keypair/PublicKey.ts).
 
 #### Key Differences
 
 1. **Structure**:
-   - Old Keys class included functionality for both public and private keys in a single class.
-   - New structure separates concerns into distinct PublicKey and PrivateKey classes.
+   - Old `Keys` class included functionality for both public and private keys in a single class.
+   - New structure separates concerns into distinct `PublicKey` and `PrivateKey` classes.
 2. **Enhanced Features**:
-   - The new classes provide extended functionality and better alignment with modern cryptographic standards.
+   - The new classes provide extended functionality, and better alignment with modern cryptographic standards.
    - Includes support for additional key generation, validation, and serialization methods.
 
 #### Migration Example
@@ -192,7 +163,7 @@ Refer to the [keypair folder](https://github.com/casper-ecosystem/casper-js-sdk/
 
 ---
 
-### 6. **`PurseIdentifier` Enum Replaced with a Class**
+### 5. **`PurseIdentifier` Enum Replaced with a Class**
 
 ### Changes
 
@@ -226,8 +197,8 @@ import {
   HttpHandler
 } from 'casper-js-sdk';
 
-const rpcHandler = new HttpHandler('http://<Node Address>:7777/rpc');
-const rpcClient = new RpcClient(rpcHandler);
+const httpHandler = new HttpHandler('http://<Node Address>:7777/rpc');
+const rpcClient = new RpcClient(httpHandler);
 
 try {
   const balanceByPublicKey = await rpcClient.queryLatestBalance(
@@ -246,35 +217,111 @@ Explore the new PurseIdentifier class [here](https://github.com/casper-ecosystem
 
 ---
 
-### 7. **`DeployUtil` to `Deploy`**
+### 6. **`DeployUtil` to `Deploy`**
 
 The `DeployUtil` module in the previous versions of casper-js-sdk has been replaced with the `Deploy` class in version 5.x. Functionality for deploy creation `DeployUtil` become [Deploy](../src/types/Deploy.ts) class with static methods. [See how to create Deploy here](../README.md#creating-a-legacy-deploy-1)
 
 ### Key Differences
 
 1. **Module Structure**:
-   - The old DeployUtil module had multiple static utility methods.
-   - The new Deploy class organizes these functionalities as methods on a single object.
+   - The old `DeployUtil` module had multiple static utility methods.
+   - The new `Deploy` class organizes these functionalities as methods on a single object.
 2. **Serialization and Deserialization**:
-   - The new module uses TypedJSON for serialization/deserialization, ensuring type safety.
+   - The new module uses `TypedJSON` for serialization/deserialization, ensuring type safety.
 3. **Improved Method Organization**:
    - Methods are grouped logically, providing a cleaner and more intuitive API.
 
+#### Migration Examples
+
+##### Old Syntax: Creating a Deploy (2.x)
+
+```typescript
+import { DeployUtil } from 'casper-js-sdk';
+
+const deployParams = new DeployUtil.DeployParams(
+  senderKey.publicKey,
+  'casper-test'
+);
+const session = DeployUtil.ExecutableDeployItem.newTransfer(
+  10,
+  recipientKey.publicKey,
+  undefined,
+  1
+);
+const payment = DeployUtil.standardPayment(10000000000000);
+let deploy = DeployUtil.makeDeploy(deployParams, session, payment);
+deploy = DeployUtil.signDeploy(deploy, senderKey);
+
+return deploy;
+```
+
+##### New Syntax: Creating a Deploy (5.x)
+
+```typescript
+import {
+  Deploy,
+  DeployHeader,
+  ExecutableDeployItem
+} from 'casper-js-sdk';
+
+const session = new ExecutableDeployItem();
+
+session.transfer = TransferDeployItem.newTransfer(
+  10,
+  recipientKey.publicKey,
+  undefined,
+  1
+);
+
+const deployHeader = DeployHeader.default();
+deployHeader.account = senderKey.publicKey;
+deployHeader.chainName = 'casper-test';
+
+const payment = ExecutableDeployItem.standardPayment(10000000000000);
+const deploy = Deploy.makeDeploy(deployHeader, payment, session);
+deploy.sign(senderKey);
+```
+
+##### Old Syntax: Serialization and Deserialization (2.x)
+
+```typescript
+import { DeployUtil } from 'casper-js-sdk';
+
+const deployJson = DeployUtil.deployToJson(deploy);
+const deployFromJson = DeployUtil.deployFromJson(deployJson);
+```
+
+##### New Syntax: Serialization and Deserialization (5.x)
+
+```typescript
+import { Deploy } from 'casper-js-sdk';
+
+const deployJson = Deploy.toJSON(deploy);
+const deployFromJson = Deploy.fromJSON(deployJson);
+```
+
 ### Additional Notes
 
-- The new Deploy class provides a more type-safe and modular approach, reducing errors and improving code readability.
-- Refer to the [Deploy Class Documentation](https://github.com/casper-ecosystem/casper-js-sdk/blob/feat-5.0.0/src/types/Deploy.ts) for a complete list of available methods.
+- The new `Deploy` class provides a more type-safe and modular approach, reducing errors and improving code readability.
+- Refer to the [Deploy Class Documentation](../src/types/Deploy.ts) for a complete list of available methods.
 - Ensure that you update your dependencies and verify compatibility with the 5.x SDK before migrating.
 
 ---
 
-### 8. **`Contracts` Abstraction Removed**
+### 7. **`Contracts` Abstraction Removed**
 
-In the newer version of `casper-js-sdk`, we’ve removed the abstraction previously used for interacting with smart contracts. To provide greater flexibility and clarity, we have introduced two distinct classes: `ContractHash` and `ContractPackageHash`. These allow developers to directly install and call smart contracts with greater control. Below are two popular examples to help you transition smoothly:
+With the release of version 5.0 of the `casper-js-sdk`, we removed the old abstraction for creating and interacting with deploys, including the functions `install` and `callEntrypoint`. This guide provides detailed steps for migrating from the old abstraction to the new approach using the SDK's updated API.
+
+#### Key Changes:
+
+- Removed Custom Abstractions: Functions like `install` and `callEntrypoint` are no longer provided as utilities. Instead, the updated SDK expects developers to directly work with the core primitives of the SDK, offering more flexibility and transparency.
+- Direct Use of Deploy Utilities: Developers now work directly with the SDK's deploy and contract management primitives, such as `DeployHeader`, `ExecutableDeployItem`, and `Deploy`.
+
+Below are examples to help you transition smoothly:
 
 **Example 1: Installing a Smart Contract on the Casper Network.**
 
-This example demonstrates how to install a new smart contract using the new SDK structure. You can now directly work with `ExecutableDeployItem.newModuleBytes()` to include your `.wasm` file and deployment arguments.
+The install function, used for deploying a smart contract to the Casper Network, can be replaced by following these steps:
 
 ```tsx
 import {
@@ -302,25 +349,23 @@ export const install = (
   deployHeader.account = sender;
   deployHeader.chainName = chainName;
 
+  const session = ExecutableDeployItem.newModuleBytes(wasm, args);
   const payment = ExecutableDeployItem.standardPayment(paymentAmount);
-  const deploy = Deploy.makeDeploy(
-    deployHeader,
-    payment,
-    ExecutableDeployItem.newModuleBytes(wasm, args)
-  );
-  const signedDeploy = deploy.sign(signingKeys);
+  const deploy = Deploy.makeDeploy(deployHeader, payment, session);
 
-  return signedDeploy;
+  deploy.sign(signingKey);
+
+  return deploy;
 };
 ```
 
 **Example 2: Calling a Smart Contract Entrypoint.**
 
-In this example, you can see how to call an entrypoint of a smart contract using the new `ContractHash` class. This approach removes the dependency on previous abstractions, making your code easier to manage and more explicit.
+The `callEntrypoint` function, used for invoking an entry point in a stored contract, can be replaced using the updated API as shown below:
 
 Key Changes
 
-- Removed Abstraction: The Contracts abstraction has been replaced with the explicit use of ContractHash and ContractPackageHash.
+- `ExecutableDeployItem` used with additional wrapper classes (`StoredContractByHash`, etc.).
 - Direct Control: Developers now have full control over contract installation and entry point calls.
 - Improved Clarity: The separation of logic enhances readability and reduces confusion.
 
@@ -364,30 +409,27 @@ export const callEntrypoint = (
 
   const payment = ExecutableDeployItem.standardPayment(paymentAmount);
   const deploy = Deploy.makeDeploy(deployHeader, payment, session);
-  const signedDeploy = deploy.sign(signingKeys);
 
-  return signedDeploy;
+  deploy.sign(signingKeys);
+
+  return deploy;
 };
+```
+
+#### Once you have created and signed a deploy, you can send it to the network using the new RpcClient API.
+
+```tsx
+const httpHandler = new HttpHandler('http://<Node Address>:7777/rpc');
+const rpcClient = new RpcClient(httpHandler);
+
+const result = await rpcClient.putDeploy(deploy);
+
+console.log(`Deploy Hash: ${result.deployHash}`);
 ```
 
 ---
 
-### 9. **Introduction of Casper 2.0 Transactions**
-
-#### Overview
-
-Casper 2.0 replaces deploys with a robust transaction-based system. Key components include:
-
-- `TransactionEntryPoint`
-- `TransactionTarget`
-- `TransactionScheduling`
-- `PricingMode`
-
-Refer to the [full guide](./casper-2.0.md) for detailed examples and explanations.
-
----
-
-### 10. **Miscellaneous Changes**
+### 8. **Miscellaneous Changes**
 
 - `EventStream` become [SseClient](../src/sse/client.ts). The `SseClient` is the main place to interact with Casper events. [See more details here](../src/sse/README.md)
 - `RuntimeArgs` become [Args](../src/types/Args.ts)
