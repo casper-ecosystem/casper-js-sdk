@@ -24,7 +24,7 @@ CLValue is a container for various types of values used in smart contracts.</p>
 <ul class="tsd-hierarchy">
 <li><span class="target">CLValue</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L52">src/types/clvalue/CLValue.ts:52</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L74">src/types/clvalue/CLValue.ts:74</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -69,9 +69,29 @@ CLValue is a container for various types of values used in smart contracts.</p>
 <a href="CLValue.html#getValueByType" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>get<wbr/>Value<wbr/>By<wbr/>Type</span></a>
 <a href="CLValue.html#toJSON" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>toJSON</span></a>
 <a href="CLValue.html#toString" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>to<wbr/>String</span></a>
+<a href="CLValue.html#newCLAny" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLAny</span></a>
+<a href="CLValue.html#newCLByteArray" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLByte<wbr/>Array</span></a>
+<a href="CLValue.html#newCLInt32" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLInt32</span></a>
+<a href="CLValue.html#newCLInt64" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLInt64</span></a>
 <a href="CLValue.html#newCLKey" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLKey</span></a>
+<a href="CLValue.html#newCLList" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLList</span></a>
+<a href="CLValue.html#newCLMap" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLMap</span></a>
+<a href="CLValue.html#newCLOption" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLOption</span></a>
 <a href="CLValue.html#newCLPublicKey" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLPublic<wbr/>Key</span></a>
+<a href="CLValue.html#newCLResult" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLResult</span></a>
+<a href="CLValue.html#newCLString" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLString</span></a>
+<a href="CLValue.html#newCLTuple1" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLTuple1</span></a>
+<a href="CLValue.html#newCLTuple2" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLTuple2</span></a>
+<a href="CLValue.html#newCLTuple3" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLTuple3</span></a>
+<a href="CLValue.html#newCLUInt128" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLUInt128</span></a>
+<a href="CLValue.html#newCLUInt256" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLUInt256</span></a>
+<a href="CLValue.html#newCLUInt32" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLUInt32</span></a>
+<a href="CLValue.html#newCLUInt512" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLUInt512</span></a>
+<a href="CLValue.html#newCLUint64" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLUint64</span></a>
+<a href="CLValue.html#newCLUint8" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLUint8</span></a>
+<a href="CLValue.html#newCLUnit" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLUnit</span></a>
 <a href="CLValue.html#newCLUref" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLUref</span></a>
+<a href="CLValue.html#newCLValueBool" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>newCLValue<wbr/>Bool</span></a>
 </div></section></div></details></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Constructors</h2>
@@ -91,129 +111,129 @@ CLValue is a container for various types of values used in smart contracts.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L82">src/types/clvalue/CLValue.ts:82</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L104">src/types/clvalue/CLValue.ts:104</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="any" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>any</span><a href="#any" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">any<span class="tsd-signature-symbol">?:</span> <a href="CLValueAny.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueAny</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L75">src/types/clvalue/CLValue.ts:75</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L97">src/types/clvalue/CLValue.ts:97</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="bool" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>bool</span><a href="#bool" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">bool<span class="tsd-signature-symbol">?:</span> <a href="CLValueBool.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueBool</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L54">src/types/clvalue/CLValue.ts:54</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L76">src/types/clvalue/CLValue.ts:76</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="byteArray" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>byte<wbr/>Array</span><a href="#byteArray" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">byte<wbr/>Array<span class="tsd-signature-symbol">?:</span> <a href="CLValueByteArray.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueByteArray</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L68">src/types/clvalue/CLValue.ts:68</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L90">src/types/clvalue/CLValue.ts:90</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="i32" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>i32</span><a href="#i32" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">i32<span class="tsd-signature-symbol">?:</span> <a href="CLValueInt32.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueInt32</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L55">src/types/clvalue/CLValue.ts:55</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L77">src/types/clvalue/CLValue.ts:77</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="i64" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>i64</span><a href="#i64" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">i64<span class="tsd-signature-symbol">?:</span> <a href="CLValueInt64.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueInt64</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L56">src/types/clvalue/CLValue.ts:56</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L78">src/types/clvalue/CLValue.ts:78</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="key" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>key</span><a href="#key" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">key<span class="tsd-signature-symbol">?:</span> <a href="Key.html" class="tsd-signature-type" data-tsd-kind="Class">Key</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L65">src/types/clvalue/CLValue.ts:65</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L87">src/types/clvalue/CLValue.ts:87</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="list" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>list</span><a href="#list" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">list<span class="tsd-signature-symbol">?:</span> <a href="CLValueList.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueList</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L67">src/types/clvalue/CLValue.ts:67</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L89">src/types/clvalue/CLValue.ts:89</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="map" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>map</span><a href="#map" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">map<span class="tsd-signature-symbol">?:</span> <a href="CLValueMap.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueMap</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L71">src/types/clvalue/CLValue.ts:71</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L93">src/types/clvalue/CLValue.ts:93</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="option" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>option</span><a href="#option" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">option<span class="tsd-signature-symbol">?:</span> <a href="CLValueOption.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueOption</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L66">src/types/clvalue/CLValue.ts:66</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L88">src/types/clvalue/CLValue.ts:88</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="publicKey" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>public<wbr/>Key</span><a href="#publicKey" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">public<wbr/>Key<span class="tsd-signature-symbol">?:</span> <a href="PublicKey.html" class="tsd-signature-type" data-tsd-kind="Class">PublicKey</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L76">src/types/clvalue/CLValue.ts:76</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L98">src/types/clvalue/CLValue.ts:98</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="result" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>result</span><a href="#result" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">result<span class="tsd-signature-symbol">?:</span> <a href="CLValueResult.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueResult</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L69">src/types/clvalue/CLValue.ts:69</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L91">src/types/clvalue/CLValue.ts:91</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="stringVal" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>string<wbr/>Val</span><a href="#stringVal" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">string<wbr/>Val<span class="tsd-signature-symbol">?:</span> <a href="CLValueString.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueString</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L70">src/types/clvalue/CLValue.ts:70</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L92">src/types/clvalue/CLValue.ts:92</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="tuple1" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>tuple1</span><a href="#tuple1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">tuple1<span class="tsd-signature-symbol">?:</span> <a href="CLValueTuple1.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueTuple1</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L72">src/types/clvalue/CLValue.ts:72</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L94">src/types/clvalue/CLValue.ts:94</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="tuple2" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>tuple2</span><a href="#tuple2" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">tuple2<span class="tsd-signature-symbol">?:</span> <a href="CLValueTuple2.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueTuple2</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L73">src/types/clvalue/CLValue.ts:73</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L95">src/types/clvalue/CLValue.ts:95</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="tuple3" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>tuple3</span><a href="#tuple3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">tuple3<span class="tsd-signature-symbol">?:</span> <a href="CLValueTuple3.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueTuple3</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L74">src/types/clvalue/CLValue.ts:74</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L96">src/types/clvalue/CLValue.ts:96</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="type" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>type</span><a href="#type" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">type<span class="tsd-signature-symbol">:</span> <a href="../interfaces/CLType.html" class="tsd-signature-type" data-tsd-kind="Interface">CLType</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L53">src/types/clvalue/CLValue.ts:53</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L75">src/types/clvalue/CLValue.ts:75</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="ui128" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>ui128</span><a href="#ui128" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">ui128<span class="tsd-signature-symbol">?:</span> <a href="CLValueUInt128.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueUInt128</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L60">src/types/clvalue/CLValue.ts:60</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L82">src/types/clvalue/CLValue.ts:82</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="ui256" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>ui256</span><a href="#ui256" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">ui256<span class="tsd-signature-symbol">?:</span> <a href="CLValueUInt256.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueUInt256</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L61">src/types/clvalue/CLValue.ts:61</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L83">src/types/clvalue/CLValue.ts:83</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="ui32" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>ui32</span><a href="#ui32" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">ui32<span class="tsd-signature-symbol">?:</span> <a href="CLValueUInt32.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueUInt32</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L58">src/types/clvalue/CLValue.ts:58</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L80">src/types/clvalue/CLValue.ts:80</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="ui512" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>ui512</span><a href="#ui512" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">ui512<span class="tsd-signature-symbol">?:</span> <a href="CLValueUInt512.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueUInt512</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L62">src/types/clvalue/CLValue.ts:62</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L84">src/types/clvalue/CLValue.ts:84</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="ui64" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>ui64</span><a href="#ui64" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">ui64<span class="tsd-signature-symbol">?:</span> <a href="CLValueUInt64.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueUInt64</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L59">src/types/clvalue/CLValue.ts:59</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L81">src/types/clvalue/CLValue.ts:81</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="ui8" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>ui8</span><a href="#ui8" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">ui8<span class="tsd-signature-symbol">?:</span> <a href="CLValueUInt8.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueUInt8</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L57">src/types/clvalue/CLValue.ts:57</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L79">src/types/clvalue/CLValue.ts:79</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="unit" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>unit</span><a href="#unit" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">unit<span class="tsd-signature-symbol">?:</span> <a href="CLValueUnit.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueUnit</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L63">src/types/clvalue/CLValue.ts:63</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L85">src/types/clvalue/CLValue.ts:85</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="uref" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagOptional">Optional</code> <span>uref</span><a href="#uref" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">uref<span class="tsd-signature-symbol">?:</span> <a href="URef.html" class="tsd-signature-type" data-tsd-kind="Class">URef</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L64">src/types/clvalue/CLValue.ts:64</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L86">src/types/clvalue/CLValue.ts:86</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="bytes" class="tsd-anchor"></a>
@@ -227,7 +247,7 @@ CLValue is a container for various types of values used in smart contracts.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Uint8Array</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L110">src/types/clvalue/CLValue.ts:110</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L132">src/types/clvalue/CLValue.ts:132</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getKey" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Key</span><a href="#getKey" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -241,7 +261,7 @@ CLValue is a container for various types of values used in smart contracts.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <a href="Key.html" class="tsd-signature-type" data-tsd-kind="Class">Key</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L179">src/types/clvalue/CLValue.ts:179</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L201">src/types/clvalue/CLValue.ts:201</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="getType" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>get<wbr/>Type</span><a href="#getType" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -253,7 +273,7 @@ CLValue is a container for various types of values used in smart contracts.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <a href="../interfaces/CLType.html" class="tsd-signature-type" data-tsd-kind="Interface">CLType</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L90">src/types/clvalue/CLValue.ts:90</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L112">src/types/clvalue/CLValue.ts:112</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private"><a id="getValueByType" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>get<wbr/>Value<wbr/>By<wbr/>Type</span><a href="#getValueByType" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
@@ -267,7 +287,7 @@ CLValue is a container for various types of values used in smart contracts.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">IValue</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L119">src/types/clvalue/CLValue.ts:119</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L141">src/types/clvalue/CLValue.ts:141</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="toJSON" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>toJSON</span><a href="#toJSON" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -275,7 +295,7 @@ CLValue is a container for various types of values used in smart contracts.</p>
 <li class="tsd-description">
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L102">src/types/clvalue/CLValue.ts:102</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L124">src/types/clvalue/CLValue.ts:124</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="toString" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>to<wbr/>String</span><a href="#toString" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -287,7 +307,83 @@ CLValue is a container for various types of values used in smart contracts.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L98">src/types/clvalue/CLValue.ts:98</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L120">src/types/clvalue/CLValue.ts:120</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLAny" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLAny</span><a href="#newCLAny" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLAny.newCLAny-1">newCLAny<span class="tsd-signature-symbol">(</span>data<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLAny.newCLAny-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance containing an &#39;Any&#39; value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance encapsulating the &#39;Any&#39; value.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>data: <span class="tsd-signature-type">Uint8Array</span></h5>
+<div class="tsd-comment tsd-typography"><p>The Uint8Array to be stored within the CLValue.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L248">src/types/clvalue/CLValue.ts:248</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLByteArray" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLByte<wbr/>Array</span><a href="#newCLByteArray" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLByteArray.newCLByteArray-1">newCLByte<wbr/>Array<span class="tsd-signature-symbol">(</span>val<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Uint8Array</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLByteArray.newCLByteArray-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance containing a ByteArray value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance encapsulating the ByteArray.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>val: <span class="tsd-signature-type">Uint8Array</span></h5>
+<div class="tsd-comment tsd-typography"><p>The Uint8Array to be stored within the CLValue.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L270">src/types/clvalue/CLValue.ts:270</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLInt32" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLInt32</span><a href="#newCLInt32" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLInt32.newCLInt32-1">newCLInt32<span class="tsd-signature-symbol">(</span>val<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">BigNumberish</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLInt32.newCLInt32-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance with an Int32 value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance containing CLTypeInt32 and a CLValueInt32.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>val: <span class="tsd-signature-type">BigNumberish</span></h5>
+<div class="tsd-comment tsd-typography"><p>The 32-bit integer to be encapsulated in a CLValue.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L437">src/types/clvalue/CLValue.ts:437</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLInt64" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLInt64</span><a href="#newCLInt64" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLInt64.newCLInt64-1">newCLInt64<span class="tsd-signature-symbol">(</span>val<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">BigNumberish</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLInt64.newCLInt64-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance with an Int64 value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance containing CLTypeInt64 and a CLValueInt64.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>val: <span class="tsd-signature-type">BigNumberish</span></h5>
+<div class="tsd-comment tsd-typography"><p>The value to be stored in the Int64. Accepts any BigNumberish type.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L448">src/types/clvalue/CLValue.ts:448</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLKey" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLKey</span><a href="#newCLKey" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -306,7 +402,90 @@ CLValue is a container for various types of values used in smart contracts.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L193">src/types/clvalue/CLValue.ts:193</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L215">src/types/clvalue/CLValue.ts:215</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLList" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLList</span><a href="#newCLList" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLList.newCLList-1">newCLList<span class="tsd-signature-symbol">(</span>elementType<span class="tsd-signature-symbol">: </span><a href="../interfaces/CLType.html" class="tsd-signature-type" data-tsd-kind="Interface">CLType</a>, elements<span class="tsd-signature-symbol">?: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLList.newCLList-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance with a List value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance containing CLTypeList and a CLValueList.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>elementType: <a href="../interfaces/CLType.html" class="tsd-signature-type" data-tsd-kind="Interface">CLType</a></h5>
+<div class="tsd-comment tsd-typography"><p>The CLType for the elements of the list.</p>
+</div></li>
+<li>
+<h5>elements: <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> = []</span></h5>
+<div class="tsd-comment tsd-typography"><p>Optional array of CLValues to initialize the list with.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L284">src/types/clvalue/CLValue.ts:284</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLMap" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLMap</span><a href="#newCLMap" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLMap.newCLMap-1">newCLMap<span class="tsd-signature-symbol">(</span>keyType<span class="tsd-signature-symbol">: </span><a href="../interfaces/CLType.html" class="tsd-signature-type" data-tsd-kind="Interface">CLType</a>, valType<span class="tsd-signature-symbol">: </span><a href="../interfaces/CLType.html" class="tsd-signature-type" data-tsd-kind="Interface">CLType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLMap.newCLMap-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance with a Map value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance with CLTypeMap and a CLValueMap.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>keyType: <a href="../interfaces/CLType.html" class="tsd-signature-type" data-tsd-kind="Interface">CLType</a></h5>
+<div class="tsd-comment tsd-typography"><p>The CLType for the map keys.</p>
+</div></li>
+<li>
+<h5>valType: <a href="../interfaces/CLType.html" class="tsd-signature-type" data-tsd-kind="Interface">CLType</a></h5>
+<div class="tsd-comment tsd-typography"><p>The CLType for the map values.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L300">src/types/clvalue/CLValue.ts:300</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLOption" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLOption</span><a href="#newCLOption" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLOption.newCLOption-1">newCLOption<span class="tsd-signature-symbol">(</span>inner<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a>, clType<span class="tsd-signature-symbol">?: </span><a href="../interfaces/CLType.html" class="tsd-signature-type" data-tsd-kind="Interface">CLType</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLOption.newCLOption-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new <code>CLValue</code> instance that represents an optional value.</p>
+<p>This method allows you to wrap a given <code>CLValue</code> as an optional type (<code>Option</code>),
+which can either contain a value or be <code>null</code>. This is useful for scenarios where
+a value may or may not be present.</p>
+<p>If <code>inner</code> is <code>null</code>, the method will use the provided <code>clType</code> as the type of the option.
+If <code>clType</code> is not provided, it defaults to <code>CLTypeAny</code>. If <code>inner</code> is not <code>null</code>,
+its type is used instead of <code>clType</code>.</p>
+
+<h3>Returns</h3><p>A new <code>CLValue</code> instance containing:</p>
+<ul>
+<li>A <code>CLTypeOption</code> representing the type of the optional value.</li>
+<li>A <code>CLValueOption</code> that holds the inner value or <code>null</code>.</li>
+</ul>
+
+<h3>Example</h3><pre><code class="language-typescript"><span class="hl-0">// Example of an option containing a value</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">innerValue</span><span class="hl-1"> = </span><span class="hl-4">CLValue</span><span class="hl-1">.</span><span class="hl-7">fromU32</span><span class="hl-1">(</span><span class="hl-9">42</span><span class="hl-1">);</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">optionValue</span><span class="hl-1"> = </span><span class="hl-4">CLValue</span><span class="hl-1">.</span><span class="hl-7">newCLOption</span><span class="hl-1">(</span><span class="hl-4">innerValue</span><span class="hl-1">);</span><br/><br/><span class="hl-0">// Example of an empty option with an explicitly defined type</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">emptyOptionValue</span><span class="hl-1"> = </span><span class="hl-4">CLValue</span><span class="hl-1">.</span><span class="hl-7">newCLOption</span><span class="hl-1">(</span><span class="hl-5">null</span><span class="hl-1">, </span><span class="hl-4">CLType</span><span class="hl-1">.</span><span class="hl-6">U32</span><span class="hl-1">);</span><br/><br/><span class="hl-0">// Example of an empty option with no type provided (defaults to CLTypeAny)</span><br/><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">emptyOptionValueDefault</span><span class="hl-1"> = </span><span class="hl-4">CLValue</span><span class="hl-1">.</span><span class="hl-7">newCLOption</span><span class="hl-1">(</span><span class="hl-5">null</span><span class="hl-1">);</span>
+</code></pre>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>inner: <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h5>
+<div class="tsd-comment tsd-typography"><p>The <code>CLValue</code> to be wrapped in the option. Pass <code>null</code> if no value is present.</p>
+</div></li>
+<li>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> clType: <a href="../interfaces/CLType.html" class="tsd-signature-type" data-tsd-kind="Interface">CLType</a></h5>
+<div class="tsd-comment tsd-typography"><p>(Optional) The <code>CLType</code> representing the type of the value contained in the option.
+                This is required if <code>inner</code> is <code>null</code> to properly define the option type.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L339">src/types/clvalue/CLValue.ts:339</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLPublicKey" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLPublic<wbr/>Key</span><a href="#newCLPublicKey" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -325,7 +504,252 @@ CLValue is a container for various types of values used in smart contracts.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L215">src/types/clvalue/CLValue.ts:215</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L237">src/types/clvalue/CLValue.ts:237</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLResult" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLResult</span><a href="#newCLResult" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLResult.newCLResult-1">newCLResult<span class="tsd-signature-symbol">(</span>innerOk<span class="tsd-signature-symbol">: </span><a href="../interfaces/CLType.html" class="tsd-signature-type" data-tsd-kind="Interface">CLType</a>, innerErr<span class="tsd-signature-symbol">: </span><a href="../interfaces/CLType.html" class="tsd-signature-type" data-tsd-kind="Interface">CLType</a>, value<span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a>, isSuccess<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLResult.newCLResult-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance with a Result value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance containing CLTypeResult and a CLValueResult.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>innerOk: <a href="../interfaces/CLType.html" class="tsd-signature-type" data-tsd-kind="Interface">CLType</a></h5>
+<div class="tsd-comment tsd-typography"><p>The CLType for the success case.</p>
+</div></li>
+<li>
+<h5>innerErr: <a href="../interfaces/CLType.html" class="tsd-signature-type" data-tsd-kind="Interface">CLType</a></h5>
+<div class="tsd-comment tsd-typography"><p>The CLType for the error case.</p>
+</div></li>
+<li>
+<h5>value: <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h5>
+<div class="tsd-comment tsd-typography"><p>The CLValue to be contained in the Result.</p>
+</div></li>
+<li>
+<h5>isSuccess: <span class="tsd-signature-type">boolean</span></h5>
+<div class="tsd-comment tsd-typography"><p>A boolean indicating whether the Result is a success (true) or an error (false).</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L355">src/types/clvalue/CLValue.ts:355</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLString" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLString</span><a href="#newCLString" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLString.newCLString-1">newCLString<span class="tsd-signature-symbol">(</span>val<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLString.newCLString-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance with a string value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance containing CLTypeString and a CLValueString.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>val: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The string value to be represented.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L372">src/types/clvalue/CLValue.ts:372</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLTuple1" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLTuple1</span><a href="#newCLTuple1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLTuple1.newCLTuple1-1">newCLTuple1<span class="tsd-signature-symbol">(</span>val<span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLTuple1.newCLTuple1-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance with a Tuple1 value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance containing CLTypeTuple1 and a CLValueTuple1.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>val: <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h5>
+<div class="tsd-comment tsd-typography"><p>The CLValue to be contained in the tuple.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L383">src/types/clvalue/CLValue.ts:383</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLTuple2" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLTuple2</span><a href="#newCLTuple2" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLTuple2.newCLTuple2-1">newCLTuple2<span class="tsd-signature-symbol">(</span>val1<span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a>, val2<span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLTuple2.newCLTuple2-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance with a Tuple2 value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance containing CLTypeTuple2 and a CLValueTuple2.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>val1: <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h5>
+<div class="tsd-comment tsd-typography"><p>The first CLValue in the tuple.</p>
+</div></li>
+<li>
+<h5>val2: <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h5>
+<div class="tsd-comment tsd-typography"><p>The second CLValue in the tuple.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L396">src/types/clvalue/CLValue.ts:396</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLTuple3" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLTuple3</span><a href="#newCLTuple3" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLTuple3.newCLTuple3-1">newCLTuple3<span class="tsd-signature-symbol">(</span>val1<span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a>, val2<span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a>, val3<span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLTuple3.newCLTuple3-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance with a Tuple3 value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance containing CLTypeTuple3 and a CLValueTuple3.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>val1: <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h5>
+<div class="tsd-comment tsd-typography"><p>The first CLValue in the tuple.</p>
+</div></li>
+<li>
+<h5>val2: <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h5>
+<div class="tsd-comment tsd-typography"><p>The second CLValue in the tuple.</p>
+</div></li>
+<li>
+<h5>val3: <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h5>
+<div class="tsd-comment tsd-typography"><p>The third CLValue in the tuple.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L410">src/types/clvalue/CLValue.ts:410</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLUInt128" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLUInt128</span><a href="#newCLUInt128" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLUInt128.newCLUInt128-1">newCLUInt128<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">BigNumberish</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLUInt128.newCLUInt128-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance with a UInt128 value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance containing CLTypeUInt128 and a CLValueUInt128.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>value: <span class="tsd-signature-type">BigNumberish</span></h5>
+<div class="tsd-comment tsd-typography"><p>The value to initialize the UInt128 with.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L492">src/types/clvalue/CLValue.ts:492</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLUInt256" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLUInt256</span><a href="#newCLUInt256" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLUInt256.newCLUInt256-1">newCLUInt256<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">BigNumberish</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLUInt256.newCLUInt256-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance with a UInt256 value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance containing CLTypeUInt256 and a CLValueUInt256.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>value: <span class="tsd-signature-type">BigNumberish</span></h5>
+<div class="tsd-comment tsd-typography"><p>The value to initialize the UInt256 with.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L503">src/types/clvalue/CLValue.ts:503</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLUInt32" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLUInt32</span><a href="#newCLUInt32" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLUInt32.newCLUInt32-1">newCLUInt32<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">BigNumberish</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLUInt32.newCLUInt32-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance with a UInt32 value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance containing CLTypeUInt32 and a CLValueUInt32.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>value: <span class="tsd-signature-type">BigNumberish</span></h5>
+<div class="tsd-comment tsd-typography"><p>The value to initialize the UInt32 with.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L470">src/types/clvalue/CLValue.ts:470</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLUInt512" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLUInt512</span><a href="#newCLUInt512" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLUInt512.newCLUInt512-1">newCLUInt512<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">BigNumberish</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLUInt512.newCLUInt512-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance with a UInt512 value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance containing CLTypeUInt512 and a CLValueUInt512.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>value: <span class="tsd-signature-type">BigNumberish</span></h5>
+<div class="tsd-comment tsd-typography"><p>The value to initialize the UInt512 with.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L514">src/types/clvalue/CLValue.ts:514</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLUint64" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLUint64</span><a href="#newCLUint64" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLUint64.newCLUint64-1">newCLUint64<span class="tsd-signature-symbol">(</span>val<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">BigNumberish</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLUint64.newCLUint64-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance with a UInt64 value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance containing CLTypeUInt64 and a CLValueUInt64.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>val: <span class="tsd-signature-type">BigNumberish</span></h5>
+<div class="tsd-comment tsd-typography"><p>The value to initialize the UInt64 with. Can be any BigNumberish type.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L481">src/types/clvalue/CLValue.ts:481</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLUint8" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLUint8</span><a href="#newCLUint8" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLUint8.newCLUint8-1">newCLUint8<span class="tsd-signature-symbol">(</span>value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">BigNumberish</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLUint8.newCLUint8-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance with a UInt8 value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance containing CLTypeUInt8 and a CLValueUInt8.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>value: <span class="tsd-signature-type">BigNumberish</span></h5>
+<div class="tsd-comment tsd-typography"><p>The value to initialize the UInt8 with. Must be an integer between 0 and 255.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L459">src/types/clvalue/CLValue.ts:459</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLUnit" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLUnit</span><a href="#newCLUnit" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLUnit.newCLUnit-1">newCLUnit<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLUnit.newCLUnit-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance with a Unit value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance with CLTypeUnit and a CLValueUnit.</p>
+</div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L426">src/types/clvalue/CLValue.ts:426</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLUref" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLUref</span><a href="#newCLUref" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -344,7 +768,26 @@ CLValue is a container for various types of values used in smart contracts.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c7a132b/src/types/clvalue/CLValue.ts#L204">src/types/clvalue/CLValue.ts:204</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L226">src/types/clvalue/CLValue.ts:226</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newCLValueBool" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>newCLValue<wbr/>Bool</span><a href="#newCLValueBool" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="newCLValueBool.newCLValueBool-1">newCLValue<wbr/>Bool<span class="tsd-signature-symbol">(</span>val<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><a href="#newCLValueBool.newCLValueBool-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates a new CLValue instance containing a boolean value.</p>
+
+<h3>Returns</h3><p>A new CLValue instance encapsulating the boolean value.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>val: <span class="tsd-signature-type">boolean</span></h5>
+<div class="tsd-comment tsd-typography"><p>The boolean value to be stored in the CLValue.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/20c2238/src/types/clvalue/CLValue.ts#L259">src/types/clvalue/CLValue.ts:259</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
@@ -401,9 +844,29 @@ CLValue is a container for various types of values used in smart contracts.</p>
 <li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="CLValue.html#getValueByType" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>get<wbr/>Value<wbr/>By<wbr/>Type</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#toJSON" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>toJSON</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#toString" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>to<wbr/>String</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLAny" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLAny</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLByteArray" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLByte<wbr/>Array</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLInt32" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLInt32</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLInt64" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLInt64</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLKey" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLKey</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLList" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLList</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLMap" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLMap</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLOption" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLOption</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLPublicKey" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLPublic<wbr/>Key</a></li>
-<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLUref" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLUref</a></li></ul></li></ul></nav></div></div>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLResult" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLResult</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLString" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLString</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLTuple1" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLTuple1</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLTuple2" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLTuple2</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLTuple3" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLTuple3</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLUInt128" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLUInt128</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLUInt256" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLUInt256</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLUInt32" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLUInt32</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLUInt512" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLUInt512</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLUint64" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLUint64</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLUint8" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLUint8</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLUnit" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLUnit</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLUref" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLUref</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="CLValue.html#newCLValueBool" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>newCLValue<wbr/>Bool</a></li></ul></li></ul></nav></div></div>
 <div class="container tsd-generator">
 <p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div>
 <div class="overlay"></div><script src="../assets/main.js"></script></body></html>
