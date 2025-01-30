@@ -22,15 +22,7 @@ import { AccountHash, ContractHash, Hash } from './key';
 import { Transaction, TransactionV1 } from './Transaction';
 import { TransactionV1Payload } from './TransactionV1Payload';
 import { Duration, Timestamp } from './Time';
-import {
-  CLValue,
-  CLValueByteArray,
-  CLValueOption,
-  CLValueUInt32,
-  CLValueUInt512,
-  CLValueUInt64,
-  CLValueUInt8
-} from './clvalue';
+import { CLValue } from './clvalue';
 import {
   ExecutableDeployItem,
   StoredContractByHash,
@@ -56,6 +48,7 @@ abstract class TransactionBuilder<T extends TransactionBuilder<T>> {
   protected _entryPoint!: TransactionEntryPoint;
   protected _scheduling: TransactionScheduling = new TransactionScheduling({}); // Standard
   protected _runtimeArgs: Args;
+  protected _contractHash: string;
 
   /**
    * Sets the initiator address using a public key.
@@ -78,6 +71,14 @@ abstract class TransactionBuilder<T extends TransactionBuilder<T>> {
    */
   public chainName(chainName: string): T {
     this._chainName = chainName;
+    return (this as unknown) as T;
+  }
+
+  /**
+   * Sets the contract hash for the transaction.
+   */
+  public contractHash(contractHash: string): T {
+    this._contractHash = contractHash;
     return (this as unknown) as T;
   }
 
@@ -160,7 +161,7 @@ export class NativeTransferBuilder extends TransactionBuilder<
 > {
   private _target!: CLValue;
   private _publicKey: PublicKey;
-  private _amount: CLValue = CLValueUInt512.newCLUInt512('0');
+  private _amount: CLValue = CLValue.newCLUInt512('0');
   private _amountRow: BigNumber | string = '0';
   private _idTransfer?: number;
 
@@ -185,7 +186,7 @@ export class NativeTransferBuilder extends TransactionBuilder<
    * Sets the target account hash for the transfer.
    */
   public targetAccountHash(accountHashKey: AccountHash): NativeTransferBuilder {
-    this._target = CLValueByteArray.newCLByteArray(accountHashKey.toBytes());
+    this._target = CLValue.newCLByteArray(accountHashKey.toBytes());
     return this;
   }
 
@@ -194,7 +195,7 @@ export class NativeTransferBuilder extends TransactionBuilder<
    */
   public amount(amount: BigNumber | string): NativeTransferBuilder {
     this._amountRow = amount;
-    this._amount = CLValueUInt512.newCLUInt512(amount);
+    this._amount = CLValue.newCLUInt512(amount);
     return this;
   }
 
@@ -218,7 +219,7 @@ export class NativeTransferBuilder extends TransactionBuilder<
     if (this._idTransfer) {
       runtimeArgs.insert(
         'id',
-        CLValueOption.newCLOption(CLValueUInt64.newCLUint64(this._idTransfer))
+        CLValue.newCLOption(CLValue.newCLUint64(this._idTransfer))
       );
     }
 
@@ -274,19 +275,19 @@ export class NativeAddBidBuilder extends TransactionBuilder<
   }
 
   public amount(amount: BigNumber | string): NativeAddBidBuilder {
-    this._amount = CLValueUInt512.newCLUInt512(amount);
+    this._amount = CLValue.newCLUInt512(amount);
     return this;
   }
 
   public delegationRate(delegationRate: number): NativeAddBidBuilder {
-    this._delegationRate = CLValueUInt8.newCLUint8(delegationRate);
+    this._delegationRate = CLValue.newCLUint8(delegationRate);
     return this;
   }
 
   public minimumDelegationAmount(
     minimumDelegationAmount: BigNumberish
   ): NativeAddBidBuilder {
-    this._minimumDelegationAmount = CLValueUInt64.newCLUint64(
+    this._minimumDelegationAmount = CLValue.newCLUint64(
       minimumDelegationAmount
     );
     return this;
@@ -295,14 +296,14 @@ export class NativeAddBidBuilder extends TransactionBuilder<
   public maximumDelegationAmount(
     maximumDelegationAmount: BigNumberish
   ): NativeAddBidBuilder {
-    this._maximumDelegationAmount = CLValueUInt64.newCLUint64(
+    this._maximumDelegationAmount = CLValue.newCLUint64(
       maximumDelegationAmount
     );
     return this;
   }
 
   public reservedSlots(reservedSlots: BigNumber): NativeAddBidBuilder {
-    this._reservedSlots = CLValueUInt32.newCLUInt32(reservedSlots);
+    this._reservedSlots = CLValue.newCLUInt32(reservedSlots);
     return this;
   }
 
@@ -368,8 +369,15 @@ export class NativeAddBidBuilder extends TransactionBuilder<
     this._runtimeArgs = runtimeArgs;
 
     const contractHash =
+      this._contractHash ??
       AuctionManagerContractHashMap[this._chainName as CasperNetworkName] ??
       AuctionManagerContractHashMap.casper;
+
+    if (!contractHash) {
+      throw new Error(
+        `Contract hash is undefined. Check _contractHash or _chainName: ${this._chainName}`
+      );
+    }
 
     const session = new ExecutableDeployItem();
     session.storedContractByHash = new StoredContractByHash(
@@ -392,7 +400,7 @@ export class NativeWithdrawBidBuilder extends TransactionBuilder<
   NativeWithdrawBidBuilder
 > {
   private _validator!: CLValue;
-  private _amount: CLValue = CLValueUInt512.newCLUInt512('0');
+  private _amount: CLValue = CLValue.newCLUInt512('0');
 
   constructor() {
     super();
@@ -408,7 +416,7 @@ export class NativeWithdrawBidBuilder extends TransactionBuilder<
   }
 
   public amount(amount: BigNumber | string): NativeWithdrawBidBuilder {
-    this._amount = CLValueUInt512.newCLUInt512(amount);
+    this._amount = CLValue.newCLUInt512(amount);
     return this;
   }
 
@@ -428,8 +436,15 @@ export class NativeWithdrawBidBuilder extends TransactionBuilder<
     });
 
     const contractHash =
+      this._contractHash ??
       AuctionManagerContractHashMap[this._chainName as CasperNetworkName] ??
       AuctionManagerContractHashMap.casper;
+
+    if (!contractHash) {
+      throw new Error(
+        `Contract hash is undefined. Check _contractHash or _chainName: ${this._chainName}`
+      );
+    }
 
     const session = new ExecutableDeployItem();
     session.storedContractByHash = new StoredContractByHash(
@@ -452,7 +467,7 @@ export class NativeDelegateBuilder extends TransactionBuilder<
   NativeDelegateBuilder
 > {
   private _validator!: CLValue;
-  private _amount: CLValue = CLValueUInt512.newCLUInt512('0');
+  private _amount: CLValue = CLValue.newCLUInt512('0');
 
   constructor() {
     super();
@@ -468,7 +483,7 @@ export class NativeDelegateBuilder extends TransactionBuilder<
   }
 
   public amount(amount: BigNumber | string): NativeDelegateBuilder {
-    this._amount = CLValueUInt512.newCLUInt512(amount);
+    this._amount = CLValue.newCLUInt512(amount);
     return this;
   }
 
@@ -492,8 +507,15 @@ export class NativeDelegateBuilder extends TransactionBuilder<
     }
 
     const contractHash =
+      this._contractHash ??
       AuctionManagerContractHashMap[this._chainName as CasperNetworkName] ??
       AuctionManagerContractHashMap.casper;
+
+    if (!contractHash) {
+      throw new Error(
+        `Contract hash is undefined. Check _contractHash or _chainName: ${this._chainName}`
+      );
+    }
 
     const session = new ExecutableDeployItem();
     session.storedContractByHash = new StoredContractByHash(
@@ -520,7 +542,7 @@ export class NativeUndelegateBuilder extends TransactionBuilder<
   NativeUndelegateBuilder
 > {
   private _validator!: CLValue;
-  private _amount: CLValue = CLValueUInt512.newCLUInt512('0');
+  private _amount: CLValue = CLValue.newCLUInt512('0');
 
   constructor() {
     super();
@@ -536,7 +558,7 @@ export class NativeUndelegateBuilder extends TransactionBuilder<
   }
 
   public amount(amount: BigNumber | string): NativeUndelegateBuilder {
-    this._amount = CLValueUInt512.newCLUInt512(amount);
+    this._amount = CLValue.newCLUInt512(amount);
     return this;
   }
 
@@ -560,8 +582,15 @@ export class NativeUndelegateBuilder extends TransactionBuilder<
     }
 
     const contractHash =
+      this._contractHash ??
       AuctionManagerContractHashMap[this._chainName as CasperNetworkName] ??
       AuctionManagerContractHashMap.casper;
+
+    if (!contractHash) {
+      throw new Error(
+        `Contract hash is undefined. Check _contractHash or _chainName: ${this._chainName}`
+      );
+    }
 
     const session = new ExecutableDeployItem();
     session.storedContractByHash = new StoredContractByHash(
@@ -589,7 +618,7 @@ export class NativeRedelegateBuilder extends TransactionBuilder<
 > {
   private _validator!: CLValue;
   private _newValidator!: CLValue;
-  private _amount: CLValue = CLValueUInt512.newCLUInt512('0');
+  private _amount: CLValue = CLValue.newCLUInt512('0');
 
   constructor() {
     super();
@@ -610,7 +639,7 @@ export class NativeRedelegateBuilder extends TransactionBuilder<
   }
 
   public amount(amount: BigNumber | string): NativeRedelegateBuilder {
-    this._amount = CLValueUInt512.newCLUInt512(amount);
+    this._amount = CLValue.newCLUInt512(amount);
     return this;
   }
 
@@ -635,8 +664,15 @@ export class NativeRedelegateBuilder extends TransactionBuilder<
     }
 
     const contractHash =
+      this._contractHash ??
       AuctionManagerContractHashMap[this._chainName as CasperNetworkName] ??
       AuctionManagerContractHashMap.casper;
+
+    if (!contractHash) {
+      throw new Error(
+        `Contract hash is undefined. Check _contractHash or _chainName: ${this._chainName}`
+      );
+    }
 
     const session = new ExecutableDeployItem();
     session.storedContractByHash = new StoredContractByHash(
@@ -692,8 +728,15 @@ export class NativeActivateBidBuilder extends TransactionBuilder<
     });
 
     const contractHash =
+      this._contractHash ??
       AuctionManagerContractHashMap[this._chainName as CasperNetworkName] ??
       AuctionManagerContractHashMap.casper;
+
+    if (!contractHash) {
+      throw new Error(
+        `Contract hash is undefined. Check _contractHash or _chainName: ${this._chainName}`
+      );
+    }
 
     const session = new ExecutableDeployItem();
     session.storedContractByHash = new StoredContractByHash(

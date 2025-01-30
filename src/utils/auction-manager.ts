@@ -1,7 +1,6 @@
 import {
   Args,
   CLValue,
-  CLValueUInt512,
   ContractHash,
   DEFAULT_DEPLOY_TTL,
   Deploy,
@@ -15,7 +14,10 @@ import { AuctionManagerEntryPoint, CasperNetworkName } from '../@types';
 import { AuctionManagerContractHashMap } from './constants';
 
 export interface IMakeAuctionManagerDeployParams {
-  contractEntryPoint: AuctionManagerEntryPoint.delegate | AuctionManagerEntryPoint.undelegate | AuctionManagerEntryPoint.redelegate;
+  contractEntryPoint:
+    | AuctionManagerEntryPoint.delegate
+    | AuctionManagerEntryPoint.undelegate
+    | AuctionManagerEntryPoint.redelegate;
   delegatorPublicKeyHex: string;
   validatorPublicKeyHex: string;
   newValidatorPublicKeyHex?: string;
@@ -23,6 +25,7 @@ export interface IMakeAuctionManagerDeployParams {
   paymentAmount?: string;
   chainName?: CasperNetworkName;
   ttl?: number;
+  contractHash?: string;
 }
 
 /**
@@ -74,22 +77,31 @@ export const makeAuctionManagerDeploy = ({
   paymentAmount = '2500000000',
   chainName = CasperNetworkName.Mainnet,
   newValidatorPublicKeyHex,
-  ttl = DEFAULT_DEPLOY_TTL
+  ttl = DEFAULT_DEPLOY_TTL,
+  contractHash
 }: IMakeAuctionManagerDeployParams) => {
   const delegatorPublicKey = PublicKey.newPublicKey(delegatorPublicKeyHex);
   const validatorPublicKey = PublicKey.newPublicKey(validatorPublicKeyHex);
   const newValidatorValidatorPublicKey = newValidatorPublicKeyHex
     ? PublicKey.newPublicKey(newValidatorPublicKeyHex)
     : null;
+  const auctionContractHash =
+    contractHash ?? AuctionManagerContractHashMap[chainName];
+
+  if (!auctionContractHash) {
+    throw new Error(
+      `Auction contract hash is undefined for chain: ${chainName}`
+    );
+  }
 
   const session = new ExecutableDeployItem();
   session.storedContractByHash = new StoredContractByHash(
-    ContractHash.newContract(AuctionManagerContractHashMap[chainName]),
+    ContractHash.newContract(auctionContractHash),
     contractEntryPoint,
     Args.fromMap({
       validator: CLValue.newCLPublicKey(validatorPublicKey),
       delegator: CLValue.newCLPublicKey(delegatorPublicKey),
-      amount: CLValueUInt512.newCLUInt512(amount),
+      amount: CLValue.newCLUInt512(amount),
       ...(newValidatorValidatorPublicKey
         ? {
             new_validator: CLValue.newCLPublicKey(

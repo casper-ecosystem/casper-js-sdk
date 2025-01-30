@@ -1,5 +1,5 @@
 import { CLTypeByteArray } from './cltype';
-import { CLValue, IResultWithBytes } from './CLValue';
+import { IResultWithBytes } from './CLValue';
 
 /**
  * Represents a byte array value in the Casper type system.
@@ -42,19 +42,6 @@ export class CLValueByteArray {
     return Array.from(this.data, byte =>
       byte.toString(16).padStart(2, '0')
     ).join('');
-  }
-
-  /**
-   * Creates a new CLValue instance containing a ByteArray value.
-   * @param val - The Uint8Array to be stored within the CLValue.
-   * @returns A new CLValue instance encapsulating the ByteArray.
-   */
-  public static newCLByteArray(val: Uint8Array): CLValue {
-    const byteArrayType = new CLTypeByteArray(val.length);
-    const clValueByteArray = new CLValue(byteArrayType);
-
-    clValueByteArray.byteArray = new CLValueByteArray(val);
-    return clValueByteArray;
   }
 
   /**

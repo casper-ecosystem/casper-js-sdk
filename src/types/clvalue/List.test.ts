@@ -1,12 +1,11 @@
 import { expect } from 'chai';
-import { CLTypeBool, CLTypeList, CLTypeUInt32 } from './cltype';
-import { concat } from '@ethersproject/bytes';
-import { toBytesU32 } from '../ByteConverters';
-import { CLValueUInt32 } from './Numeric/Uint32';
-import { CLValueList } from './List';
 import { BigNumber } from '@ethersproject/bignumber';
+import { concat } from '@ethersproject/bytes';
+
+import { CLTypeBool, CLTypeList, CLTypeUInt32 } from './cltype';
+import { toBytesU32 } from '../ByteConverters';
+import { CLValueList } from './List';
 import { CLValue } from './CLValue';
-import { CLValueBool } from './Bool';
 
 describe('CLValueList', () => {
   let typeList: CLTypeList;
@@ -16,8 +15,8 @@ describe('CLValueList', () => {
 
   beforeEach(() => {
     typeList = new CLTypeList(new CLTypeList(CLTypeUInt32));
-    element1 = CLValueUInt32.newCLUInt32(BigNumber.from(1));
-    element2 = CLValueUInt32.newCLUInt32(BigNumber.from(2));
+    element1 = CLValue.newCLUInt32(BigNumber.from(1));
+    element2 = CLValue.newCLUInt32(BigNumber.from(2));
     clValueList = new CLValueList(typeList, [element1, element2]);
   });
 
@@ -49,7 +48,7 @@ describe('CLValueList', () => {
   });
 
   it('should add an element to the list when calling append()', () => {
-    const element3 = CLValueUInt32.newCLUInt32(BigNumber.from(3));
+    const element3 = CLValue.newCLUInt32(BigNumber.from(3));
     clValueList.append(element3);
     expect(clValueList.elements).to.deep.equal([element1, element2, element3]);
   });
@@ -70,13 +69,13 @@ describe('CLValueList', () => {
   });
 
   it('should set the element at specified index when calling set()', () => {
-    const element3 = CLValueUInt32.newCLUInt32(BigNumber.from(3));
+    const element3 = CLValue.newCLUInt32(BigNumber.from(3));
     clValueList.set(1, element3);
     expect(clValueList.elements[1]).to.equal(element3);
   });
 
   it('should throw error if index is out of bounds in set()', () => {
-    const element3 = CLValueUInt32.newCLUInt32(BigNumber.from(3));
+    const element3 = CLValue.newCLUInt32(BigNumber.from(3));
     expect(() => clValueList.set(2, element3)).to.throw(
       'List index out of bounds.'
     );
@@ -95,7 +94,7 @@ describe('CLValueList', () => {
   });
 
   it('should create a CLValue instance with a List value when calling newCLList()', () => {
-    const newList = CLValueList.newCLList(CLTypeUInt32);
+    const newList = CLValue.newCLList(CLTypeUInt32);
     expect(newList.list).to.be.instanceOf(CLValueList);
   });
 });
@@ -108,8 +107,8 @@ describe('CLValueList with boolean values', () => {
 
   beforeEach(() => {
     boolTypeList = new CLTypeList(CLTypeBool);
-    trueElement = CLValueBool.newCLValueBool(true);
-    falseElement = CLValueBool.newCLValueBool(false);
+    trueElement = CLValue.newCLValueBool(true);
+    falseElement = CLValue.newCLValueBool(false);
     clValueBoolList = new CLValueList(boolTypeList, [
       trueElement,
       falseElement
@@ -135,7 +134,7 @@ describe('CLValueList with boolean values', () => {
   });
 
   it('should add a boolean element to the list when calling append()', () => {
-    const newElement = CLValueBool.newCLValueBool(true);
+    const newElement = CLValue.newCLValueBool(true);
     clValueBoolList.append(newElement);
     expect(clValueBoolList.elements).to.deep.equal([
       trueElement,
@@ -151,7 +150,7 @@ describe('CLValueList with boolean values', () => {
   });
 
   it('should throw error if index is out of bounds in set() for boolean list', () => {
-    const newElement = CLValueBool.newCLValueBool(false);
+    const newElement = CLValue.newCLValueBool(false);
     expect(() => clValueBoolList.set(2, newElement)).to.throw(
       'List index out of bounds.'
     );

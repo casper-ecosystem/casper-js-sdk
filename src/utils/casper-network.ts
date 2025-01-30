@@ -1,3 +1,5 @@
+import { BigNumber } from '@ethersproject/bignumber';
+
 import {
   InfoGetTransactionResult,
   PutDeployResult,
@@ -7,7 +9,6 @@ import {
 import {
   Args,
   CLValue,
-  CLValueUInt512,
   ContractCallBuilder,
   NativeDelegateBuilder,
   NativeRedelegateBuilder,
@@ -18,7 +19,6 @@ import {
   Transaction,
   TransactionHash
 } from '../types';
-import { BigNumber } from '@ethersproject/bignumber';
 
 export class CasperNetwork {
   private rpcClient: RpcClient;
@@ -72,7 +72,7 @@ export class CasperNetwork {
           Args.fromMap({
             validator: CLValue.newCLPublicKey(validatorPublicKey),
             delegator: CLValue.newCLPublicKey(delegatorPublicKey),
-            amount: CLValueUInt512.newCLUInt512(amountMotes)
+            amount: CLValue.newCLUInt512(amountMotes)
           })
         )
         .ttl(ttl)
@@ -115,7 +115,7 @@ export class CasperNetwork {
           Args.fromMap({
             validator: CLValue.newCLPublicKey(validatorPublicKey),
             delegator: CLValue.newCLPublicKey(delegatorPublicKey),
-            amount: CLValueUInt512.newCLUInt512(amountMotes)
+            amount: CLValue.newCLUInt512(amountMotes)
           })
         )
         .buildFor1_5();
@@ -158,7 +158,7 @@ export class CasperNetwork {
           Args.fromMap({
             validator: CLValue.newCLPublicKey(validatorPublicKey),
             delegator: CLValue.newCLPublicKey(delegatorPublicKey),
-            amount: CLValueUInt512.newCLUInt512(amountMotes),
+            amount: CLValue.newCLUInt512(amountMotes),
             ...(newValidatorPublicKey
               ? {
                   new_validator: CLValue.newCLPublicKey(newValidatorPublicKey)

@@ -1,7 +1,7 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 
-import { CLTypeInt32, Int32ByteSize } from '../cltype';
-import { CLValue, IResultWithBytes } from '../CLValue';
+import { Int32ByteSize } from '../cltype';
+import { IResultWithBytes } from '../CLValue';
 import { toBytesI32 } from '../../ByteConverters';
 import { CLValueNumeric } from './Abstract';
 
@@ -20,17 +20,6 @@ export class CLValueInt32 extends CLValueNumeric {
    */
   public bytes(): Uint8Array {
     return toBytesI32(this.value);
-  }
-
-  /**
-   * Creates a new CLValue instance with an Int32 value.
-   * @param val - The 32-bit integer to be encapsulated in a CLValue.
-   * @returns A new CLValue instance containing CLTypeInt32 and a CLValueInt32.
-   */
-  public static newCLInt32(val: BigNumberish): CLValue {
-    const res = new CLValue(CLTypeInt32);
-    res.i32 = new CLValueInt32(val);
-    return res;
   }
 
   /**

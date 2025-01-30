@@ -1,10 +1,5 @@
 import { expect } from 'chai';
-import { CLValueBool } from './Bool';
 import { CLValueTuple2 } from './Tuple2';
-import { CLValueString } from './String';
-import { CLValueTuple1 } from './Tuple1';
-import { CLValueInt32 } from './Numeric';
-import { CLValueTuple3 } from './Tuple3';
 import { CLValueParser } from './Parser';
 import {
   CLTypeBool,
@@ -14,43 +9,43 @@ import {
   CLTypeTuple2,
   CLTypeTuple3
 } from './cltype';
-import { CLValueByteArray } from './ByteArray';
+import { CLValue } from './CLValue';
 
 describe('CLTuple', () => {
   it('Tuple2 should return proper clType', () => {
-    const myBool = CLValueBool.newCLValueBool(false);
-    const myStr = CLValueString.newCLString('ABC');
-    const myTup = CLValueTuple2.newCLTuple2(myBool, myStr);
+    const myBool = CLValue.newCLValueBool(false);
+    const myStr = CLValue.newCLString('ABC');
+    const myTup = CLValue.newCLTuple2(myBool, myStr);
 
     expect(myTup.getType().toString()).to.be.eq('Tuple2 (Bool, String)');
   });
 
   it('Should be able to create tuple with proper values - correct by construction', () => {
-    const myTup2 = CLValueTuple2.newCLTuple2(
-      CLValueBool.newCLValueBool(true),
-      CLValueBool.newCLValueBool(false)
+    const myTup2 = CLValue.newCLTuple2(
+      CLValue.newCLValueBool(true),
+      CLValue.newCLValueBool(false)
     );
 
     expect(myTup2.tuple2).to.be.an.instanceof(CLValueTuple2);
   });
 
   it('Should be able to return proper values by calling .value() on Tuple', () => {
-    const myBool = CLValueBool.newCLValueBool(false);
-    const myTuple = CLValueTuple1.newCLTuple1(myBool);
+    const myBool = CLValue.newCLValueBool(false);
+    const myTuple = CLValue.newCLTuple1(myBool);
 
     expect(myTuple.tuple1?.value()).to.be.deep.eq(myBool);
   });
 
   it('Should run toBytes() / fromBytes()', () => {
-    const myTup1 = CLValueTuple1.newCLTuple1(CLValueBool.newCLValueBool(true));
-    const myTup2 = CLValueTuple2.newCLTuple2(
-      CLValueBool.newCLValueBool(false),
-      CLValueInt32.newCLInt32(555)
+    const myTup1 = CLValue.newCLTuple1(CLValue.newCLValueBool(true));
+    const myTup2 = CLValue.newCLTuple2(
+      CLValue.newCLValueBool(false),
+      CLValue.newCLInt32(555)
     );
-    const myTup3 = CLValueTuple3.newCLTuple3(
-      CLValueInt32.newCLInt32(555),
-      CLValueString.newCLString('ABC'),
-      CLValueString.newCLString('XYZ')
+    const myTup3 = CLValue.newCLTuple3(
+      CLValue.newCLInt32(555),
+      CLValue.newCLString('ABC'),
+      CLValue.newCLString('XYZ')
     );
 
     const myTup1Bytes = myTup1.bytes();
@@ -78,8 +73,8 @@ describe('CLTuple', () => {
   });
 
   it('fromJSON() / toJSON()', () => {
-    const arr = CLValueByteArray.newCLByteArray(Uint8Array.from([1, 2, 3]));
-    const arr2 = CLValueByteArray.newCLByteArray(
+    const arr = CLValue.newCLByteArray(Uint8Array.from([1, 2, 3]));
+    const arr2 = CLValue.newCLByteArray(
       Uint8Array.from([
         1,
         2,
@@ -118,13 +113,9 @@ describe('CLTuple', () => {
       ])
     );
 
-    const myTup1 = CLValueTuple1.newCLTuple1(arr);
-    const myTup2 = CLValueTuple2.newCLTuple2(arr, arr2);
-    const myTup3 = CLValueTuple3.newCLTuple3(
-      arr,
-      arr2,
-      CLValueString.newCLString('ABC')
-    );
+    const myTup1 = CLValue.newCLTuple1(arr);
+    const myTup2 = CLValue.newCLTuple2(arr, arr2);
+    const myTup3 = CLValue.newCLTuple3(arr, arr2, CLValue.newCLString('ABC'));
 
     const myTup1JSON = CLValueParser.toJSON(myTup1);
     const expectedMyTup1JSON = JSON.parse(
@@ -152,15 +143,15 @@ describe('CLTuple', () => {
   });
 
   it('fromJSON() / toJSON()', () => {
-    const myTup1 = CLValueTuple1.newCLTuple1(CLValueBool.newCLValueBool(true));
-    const myTup2 = CLValueTuple2.newCLTuple2(
-      CLValueBool.newCLValueBool(false),
-      CLValueInt32.newCLInt32(555)
+    const myTup1 = CLValue.newCLTuple1(CLValue.newCLValueBool(true));
+    const myTup2 = CLValue.newCLTuple2(
+      CLValue.newCLValueBool(false),
+      CLValue.newCLInt32(555)
     );
-    const myTup3 = CLValueTuple3.newCLTuple3(
-      CLValueInt32.newCLInt32(555),
-      CLValueString.newCLString('ABC'),
-      CLValueString.newCLString('XYZ')
+    const myTup3 = CLValue.newCLTuple3(
+      CLValue.newCLInt32(555),
+      CLValue.newCLString('ABC'),
+      CLValue.newCLString('XYZ')
     );
 
     const myTup1JSON = CLValueParser.toJSON(myTup1);

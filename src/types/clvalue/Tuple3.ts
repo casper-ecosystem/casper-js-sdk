@@ -69,24 +69,6 @@ export class CLValueTuple3 {
   }
 
   /**
-   * Creates a new CLValue instance with a Tuple3 value.
-   * @param val1 - The first CLValue in the tuple.
-   * @param val2 - The second CLValue in the tuple.
-   * @param val3 - The third CLValue in the tuple.
-   * @returns A new CLValue instance containing CLTypeTuple3 and a CLValueTuple3.
-   */
-  public static newCLTuple3(
-    val1: CLValue,
-    val2: CLValue,
-    val3: CLValue
-  ): CLValue {
-    const tupleType = new CLTypeTuple3(val1.type, val2.type, val3.type);
-    const clValue = new CLValue(tupleType);
-    clValue.tuple3 = new CLValueTuple3(tupleType, val1, val2, val3);
-    return clValue;
-  }
-
-  /**
    * Creates a CLValueTuple3 instance from a Uint8Array.
    * Parses the byte array to retrieve the three values of the tuple.
    * @param source - The Uint8Array containing the byte representation of the Tuple3 value.

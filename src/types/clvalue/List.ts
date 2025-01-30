@@ -1,6 +1,6 @@
 import { concat } from '@ethersproject/bytes';
 
-import { CLType, CLTypeList } from './cltype';
+import { CLTypeList } from './cltype';
 import { CLValue, IResultWithBytes } from './CLValue';
 import { CLValueUInt32 } from './Numeric';
 import { CLValueParser } from './Parser';
@@ -122,22 +122,6 @@ export class CLValueList {
    */
   public toJSON(): string[] {
     return this.elements.map(d => d.toJSON());
-  }
-
-  /**
-   * Creates a new CLValue instance with a List value.
-   * @param elementType - The CLType for the elements of the list.
-   * @param elements - Optional array of CLValues to initialize the list with.
-   * @returns A new CLValue instance containing CLTypeList and a CLValueList.
-   */
-  public static newCLList(
-    elementType: CLType,
-    elements: CLValue[] = []
-  ): CLValue {
-    const listType = new CLTypeList(elementType);
-    const clValue = new CLValue(listType);
-    clValue.list = new CLValueList(listType, elements);
-    return clValue;
   }
 
   /**

@@ -1,7 +1,8 @@
 export enum CasperNetworkName {
   Mainnet = 'casper',
   Testnet = 'casper-test',
-  Integration = 'integration-test'
+  Integration = 'integration-test',
+  DevNet = 'dev-net'
 }
 
 export enum AuctionManagerEntryPoint {
@@ -10,7 +11,7 @@ export enum AuctionManagerEntryPoint {
   redelegate = 'redelegate',
   addBid = 'add_bid',
   withdrawBid = 'withdraw_bid',
-  activateBid = 'activate_bid',
+  activateBid = 'activate_bid'
 }
 
 export enum NFTTokenStandard {

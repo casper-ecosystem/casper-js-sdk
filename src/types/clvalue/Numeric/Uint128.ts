@@ -1,8 +1,7 @@
 import { BigNumberish } from '@ethersproject/bignumber';
 
-import { CLTypeUInt128 } from '../cltype';
 import { fromBytesUInt128 } from '../UintBig';
-import { CLValue, IResultWithBytes } from '../CLValue';
+import { IResultWithBytes } from '../CLValue';
 import { toBytesU128 } from '../../ByteConverters';
 import { CLValueNumeric } from './Abstract';
 
@@ -20,17 +19,6 @@ export class CLValueUInt128 extends CLValueNumeric {
    */
   public bytes(): Uint8Array {
     return toBytesU128(this.value);
-  }
-
-  /**
-   * Creates a new CLValue instance with a UInt128 value.
-   * @param value - The value to initialize the UInt128 with.
-   * @returns A new CLValue instance containing CLTypeUInt128 and a CLValueUInt128.
-   */
-  public static newCLUInt128(value: BigNumberish): CLValue {
-    const res = new CLValue(CLTypeUInt128);
-    res.ui128 = new CLValueUInt128(value);
-    return res;
   }
 
   /**

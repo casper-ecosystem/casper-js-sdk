@@ -9,7 +9,7 @@ import { TransactionEntryPoint } from './TransactionEntryPoint';
 import { TransactionScheduling } from './TransactionScheduling';
 import { CalltableSerialization } from './CalltableSerialization';
 import { deserializeArgs, serializeArgs } from './SerializationUtils';
-import { CLValueString, CLValueUInt64 } from './clvalue';
+import { CLValue } from './clvalue';
 import {
   expandBuffer,
   writeBytes,
@@ -356,12 +356,9 @@ export class TransactionV1Payload {
 
     return new CalltableSerialization()
       .addField(0, this.initiatorAddr.toBytes())
-      .addField(
-        1,
-        CLValueUInt64.newCLUint64(this.timestamp.toMilliseconds()).bytes()
-      )
-      .addField(2, CLValueUInt64.newCLUint64(this.ttl.duration).bytes())
-      .addField(3, CLValueString.newCLString(this.chainName).bytes())
+      .addField(1, CLValue.newCLUint64(this.timestamp.toMilliseconds()).bytes())
+      .addField(2, CLValue.newCLUint64(this.ttl.duration).bytes())
+      .addField(3, CLValue.newCLString(this.chainName).bytes())
       .addField(4, this.pricingMode.toBytes())
       .addField(5, fields.toBytes())
       .toBytes();

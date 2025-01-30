@@ -1,7 +1,7 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 
-import { CLTypeUInt32, Int32ByteSize } from '../cltype';
-import { CLValue, IResultWithBytes } from '../CLValue';
+import { Int32ByteSize } from '../cltype';
+import { IResultWithBytes } from '../CLValue';
 import { toBytesU32 } from '../../ByteConverters';
 import { CLValueNumeric } from './Abstract';
 
@@ -19,17 +19,6 @@ export class CLValueUInt32 extends CLValueNumeric {
    */
   public bytes(): Uint8Array {
     return toBytesU32(this.value);
-  }
-
-  /**
-   * Creates a new CLValue instance with a UInt32 value.
-   * @param value - The value to initialize the UInt32 with.
-   * @returns A new CLValue instance containing CLTypeUInt32 and a CLValueUInt32.
-   */
-  public static newCLUInt32(value: BigNumberish): CLValue {
-    const res = new CLValue(CLTypeUInt32);
-    res.ui32 = new CLValueUInt32(value);
-    return res;
   }
 
   /**

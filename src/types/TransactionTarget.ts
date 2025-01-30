@@ -7,9 +7,9 @@ import { Hash } from './key';
 import {
   CLTypeOption,
   CLTypeUInt32,
+  CLValue,
   CLValueOption,
-  CLValueString,
-  CLValueUInt32
+  CLValueString
 } from './clvalue';
 import { ExecutableDeployItem } from './ExecutableDeployItem';
 import { CalltableSerialization } from './CalltableSerialization';
@@ -139,8 +139,8 @@ export class ByPackageHashInvocationTarget {
     const calltableSerialization = new CalltableSerialization();
 
     const versionBytes = this.version
-      ? CLValueOption.newCLOption(
-          CLValueUInt32.newCLUInt32(BigNumber.from(this.version))
+      ? CLValue.newCLOption(
+          CLValue.newCLUInt32(BigNumber.from(this.version))
         ).bytes()
       : new CLValueOption(null, new CLTypeOption(CLTypeUInt32)).bytes();
 
@@ -173,16 +173,13 @@ export class ByPackageNameInvocationTarget {
     const calltableSerialization = new CalltableSerialization();
 
     const versionBytes = this.version
-      ? CLValueOption.newCLOption(
-          CLValueUInt32.newCLUInt32(BigNumber.from(this.version))
+      ? CLValue.newCLOption(
+          CLValue.newCLUInt32(BigNumber.from(this.version))
         ).bytes()
       : new CLValueOption(null, new CLTypeOption(CLTypeUInt32)).bytes();
 
     calltableSerialization.addField(0, Uint8Array.of(3));
-    calltableSerialization.addField(
-      1,
-      CLValueString.newCLString(this.name).bytes()
-    );
+    calltableSerialization.addField(1, CLValue.newCLString(this.name).bytes());
     calltableSerialization.addField(2, versionBytes);
 
     return calltableSerialization.toBytes();
@@ -251,10 +248,7 @@ export class TransactionInvocationTarget {
     } else if (this.byName) {
       const calltableSerializer = new CalltableSerialization();
       calltableSerializer.addField(0, Uint8Array.of(1));
-      calltableSerializer.addField(
-        1,
-        CLValueString.newCLString(this.byName).bytes()
-      );
+      calltableSerializer.addField(1, CLValue.newCLString(this.byName).bytes());
       return calltableSerializer.toBytes();
     } else if (this.byPackageHash) {
       return this.byPackageHash.toBytes();

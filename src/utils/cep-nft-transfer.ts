@@ -2,10 +2,6 @@ import {
   Args,
   CLTypeUInt256,
   CLValue,
-  CLValueBool,
-  CLValueList,
-  CLValueUInt256,
-  CLValueUInt64,
   ContractHash,
   DEFAULT_DEPLOY_TTL,
   Deploy,
@@ -153,17 +149,14 @@ export const getRuntimeArgsForCep78Transfer = ({
   if (tokenId) {
     runtimeArgs.insert(
       'is_hash_identifier_mode',
-      CLValueBool.newCLValueBool(false)
+      CLValue.newCLValueBool(false)
     );
-    runtimeArgs.insert('token_id', CLValueUInt64.newCLUint64(tokenId));
+    runtimeArgs.insert('token_id', CLValue.newCLUint64(tokenId));
   }
 
   if (tokenHash) {
-    runtimeArgs.insert(
-      'is_hash_identifier_mode',
-      CLValueBool.newCLValueBool(true)
-    );
-    runtimeArgs.insert('token_id', CLValueUInt64.newCLUint64(tokenHash));
+    runtimeArgs.insert('is_hash_identifier_mode', CLValue.newCLValueBool(true));
+    runtimeArgs.insert('token_id', CLValue.newCLUint64(tokenHash));
   }
 
   return runtimeArgs;
@@ -184,8 +177,6 @@ export function getRuntimeArgsForCep47Transfer({
         KeyTypeID.Account
       )
     ),
-    token_ids: CLValueList.newCLList(CLTypeUInt256, [
-      CLValueUInt256.newCLUInt256(tokenId)
-    ])
+    token_ids: CLValue.newCLList(CLTypeUInt256, [CLValue.newCLUInt256(tokenId)])
   });
 }

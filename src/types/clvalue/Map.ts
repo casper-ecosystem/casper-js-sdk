@@ -1,6 +1,6 @@
 import { concat } from '@ethersproject/bytes';
 
-import { CLType, CLTypeMap } from './cltype';
+import { CLTypeMap } from './cltype';
 import { CLValue, IResultWithBytes } from './CLValue';
 import { CLValueTuple2 } from './Tuple2';
 import { CLValueUInt32 } from './Numeric';
@@ -169,7 +169,7 @@ export class CLValueMap {
       return new Error('map key already exists');
     }
 
-    const tuple = CLValueTuple2.newCLTuple2(key, val).tuple2;
+    const tuple = CLValue.newCLTuple2(key, val).tuple2;
 
     if (!tuple) {
       return new Error('no tuple');
@@ -218,18 +218,5 @@ export class CLValueMap {
     }
 
     return { result: mapResult, bytes: remainder };
-  }
-
-  /**
-   * Creates a new CLValue instance with a Map value.
-   * @param keyType - The CLType for the map keys.
-   * @param valType - The CLType for the map values.
-   * @returns A new CLValue instance with CLTypeMap and a CLValueMap.
-   */
-  public static newCLMap(keyType: CLType, valType: CLType): CLValue {
-    const mapType = new CLTypeMap(keyType, valType);
-    const clValue = new CLValue(mapType);
-    clValue.map = new CLValueMap(mapType);
-    return clValue;
   }
 }

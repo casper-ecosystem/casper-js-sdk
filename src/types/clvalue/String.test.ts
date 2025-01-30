@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import { CLValueString } from './String';
 import { CLValueParser } from './Parser';
+import { CLValue } from './CLValue';
 
 describe('CLString', () => {
   it('CLString value() should return proper value', () => {
@@ -9,14 +10,14 @@ describe('CLString', () => {
   });
 
   it('toBytes() / fromBytes()', () => {
-    const str = CLValueString.newCLString('ABC');
+    const str = CLValue.newCLString('ABC');
     const bytes = str.bytes();
     const parsed = CLValueParser.fromBytesByType(bytes, str.type);
     expect(parsed.result).to.be.deep.eq(str);
   });
 
   it('toJSON() / fromJSON()', () => {
-    const str = CLValueString.newCLString('ABC-DEF');
+    const str = CLValue.newCLString('ABC-DEF');
     const json = CLValueParser.toJSON(str);
     const fromJSON = CLValueParser.fromJSON(json);
     const expectedJson = JSON.parse(

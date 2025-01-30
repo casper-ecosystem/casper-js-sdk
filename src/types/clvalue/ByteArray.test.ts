@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { CLValueByteArray } from './ByteArray';
 import { CLValueParser } from './Parser';
 import { CLTypeByteArray } from './cltype';
+import { CLValue } from './CLValue';
 
 describe('CLByteArray', () => {
   it('Should be able to return proper value by calling .value()', () => {
@@ -13,7 +14,7 @@ describe('CLByteArray', () => {
 
   it('Should be able to return proper byte array by calling toBytes() / fromBytes()', () => {
     const expectedBytes = Uint8Array.from(Array(32).fill(42));
-    const hash = CLValueByteArray.newCLByteArray(expectedBytes);
+    const hash = CLValue.newCLByteArray(expectedBytes);
     const bytes = hash.bytes();
 
     expect(bytes).to.deep.eq(expectedBytes);
@@ -24,7 +25,7 @@ describe('CLByteArray', () => {
 
   it('toJson() / fromJson()', () => {
     const bytes = Uint8Array.from(Array(32).fill(42));
-    const hash = CLValueByteArray.newCLByteArray(bytes);
+    const hash = CLValue.newCLByteArray(bytes);
     const json = CLValueParser.toJSON(hash);
     const expectedJson = JSON.parse(
       '{"bytes":"2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a","cl_type":{"ByteArray":32}}'

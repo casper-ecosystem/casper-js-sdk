@@ -1,5 +1,5 @@
 import { jsonObject, jsonMember } from 'typedjson';
-import { CLValueString } from './clvalue';
+import { CLValue, CLValueString } from './clvalue';
 import { CalltableSerialization } from './CalltableSerialization';
 
 /**
@@ -125,7 +125,7 @@ export class TransactionEntryPoint {
       this.type === TransactionEntryPointEnum.Custom &&
       this.customEntryPoint
     ) {
-      const entryPointBytes = CLValueString.newCLString(
+      const entryPointBytes = CLValue.newCLString(
         this.customEntryPoint
       ).bytes();
       calltableSerialization.addField(1, entryPointBytes);

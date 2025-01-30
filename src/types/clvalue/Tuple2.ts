@@ -60,19 +60,6 @@ export class CLValueTuple2 {
   }
 
   /**
-   * Creates a new CLValue instance with a Tuple2 value.
-   * @param val1 - The first CLValue in the tuple.
-   * @param val2 - The second CLValue in the tuple.
-   * @returns A new CLValue instance containing CLTypeTuple2 and a CLValueTuple2.
-   */
-  public static newCLTuple2(val1: CLValue, val2: CLValue): CLValue {
-    const tupleType = new CLTypeTuple2(val1.type, val2.type);
-    const clValue = new CLValue(tupleType);
-    clValue.tuple2 = new CLValueTuple2(tupleType, val1, val2);
-    return clValue;
-  }
-
-  /**
    * Creates a CLValueTuple2 instance from a Uint8Array.
    * Parses the byte array to retrieve the two values of the tuple.
    * @param source - The Uint8Array containing the byte representation of the Tuple2 value.

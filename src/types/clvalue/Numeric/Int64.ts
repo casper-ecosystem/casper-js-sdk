@@ -1,7 +1,7 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 
-import { CLTypeInt64, Int64ByteSize } from '../cltype';
-import { CLValue, IResultWithBytes } from '../CLValue';
+import { Int64ByteSize } from '../cltype';
+import { IResultWithBytes } from '../CLValue';
 import { toBytesI64 } from '../../ByteConverters';
 import { CLValueNumeric } from './Abstract';
 
@@ -20,17 +20,6 @@ export class CLValueInt64 extends CLValueNumeric {
    */
   public bytes(): Uint8Array {
     return toBytesI64(this.value);
-  }
-
-  /**
-   * Creates a new CLValue instance with an Int64 value.
-   * @param val - The value to be stored in the Int64. Accepts any BigNumberish type.
-   * @returns A new CLValue instance containing CLTypeInt64 and a CLValueInt64.
-   */
-  public static newCLInt64(val: BigNumberish): CLValue {
-    const res = new CLValue(CLTypeInt64);
-    res.i64 = new CLValueInt64(val);
-    return res;
   }
 
   /**

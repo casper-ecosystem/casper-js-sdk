@@ -1,7 +1,7 @@
 import { jsonObject, jsonMember } from 'typedjson';
 
 import { Timestamp } from './Time';
-import { CLValueUInt64 } from './clvalue';
+import { CLValue } from './clvalue';
 import { CalltableSerialization } from './CalltableSerialization';
 import { fromBytesU64, toBytesU64 } from './ByteConverters';
 
@@ -40,10 +40,7 @@ export class FutureEraScheduling {
   public toBytes(): Uint8Array {
     const calltableSerialization = new CalltableSerialization();
     calltableSerialization.addField(0, Uint8Array.of(1));
-    calltableSerialization.addField(
-      1,
-      CLValueUInt64.newCLUint64(this.eraID).bytes()
-    );
+    calltableSerialization.addField(1, CLValue.newCLUint64(this.eraID).bytes());
 
     return calltableSerialization.toBytes();
   }

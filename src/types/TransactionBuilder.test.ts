@@ -12,7 +12,7 @@ import {
   makeCsprTransferDeploy
 } from '../utils';
 import { Args } from './Args';
-import { CLValue, CLValueUInt256 } from './clvalue';
+import { CLValue } from './clvalue';
 import { Key, KeyTypeID } from './key';
 import { AuctionManagerEntryPoint, CasperNetworkName } from '../@types';
 
@@ -74,7 +74,7 @@ describe('Test TransactionBuilder', () => {
               KeyTypeID.Account
             )
           ),
-          amount: CLValueUInt256.newCLUInt256('1000000000')
+          amount: CLValue.newCLUInt256('1000000000')
         })
       )
       .payment(2_000000000)

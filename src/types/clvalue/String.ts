@@ -1,7 +1,6 @@
 import { concat } from '@ethersproject/bytes';
 
-import { CLTypeString } from './cltype';
-import { CLValue, IResultWithBytes } from './CLValue';
+import { IResultWithBytes } from './CLValue';
 import { CLValueUInt32 } from './Numeric';
 import { fromBytesString } from '../ByteConverters';
 
@@ -57,17 +56,6 @@ export class CLValueString {
    */
   public toString(): string {
     return this.value;
-  }
-
-  /**
-   * Creates a new CLValue instance with a string value.
-   * @param val - The string value to be represented.
-   * @returns A new CLValue instance containing CLTypeString and a CLValueString.
-   */
-  public static newCLString(val: string): CLValue {
-    const res = new CLValue(CLTypeString);
-    res.stringVal = new CLValueString(val);
-    return res;
   }
 
   /**

@@ -1,6 +1,6 @@
 import { concat } from '@ethersproject/bytes';
 
-import { CLType, CLTypeResult } from './cltype';
+import { CLTypeResult } from './cltype';
 import { CLValue, IResultWithBytes } from './CLValue';
 import { CLValueParser } from './Parser';
 import { CLValueUInt8 } from './Numeric';
@@ -64,26 +64,6 @@ export class CLValueResult {
    */
   public value(): CLValue {
     return this.inner;
-  }
-
-  /**
-   * Creates a new CLValue instance with a Result value.
-   * @param innerOk - The CLType for the success case.
-   * @param innerErr - The CLType for the error case.
-   * @param value - The CLValue to be contained in the Result.
-   * @param isSuccess - A boolean indicating whether the Result is a success (true) or an error (false).
-   * @returns A new CLValue instance containing CLTypeResult and a CLValueResult.
-   */
-  public static newCLResult(
-    innerOk: CLType,
-    innerErr: CLType,
-    value: CLValue,
-    isSuccess: boolean
-  ): CLValue {
-    const resultType = new CLTypeResult(innerOk, innerErr);
-    const clValue = new CLValue(resultType);
-    clValue.result = new CLValueResult(resultType, isSuccess, value);
-    return clValue;
   }
 
   /**

@@ -53,18 +53,6 @@ export class CLValueTuple1 {
   }
 
   /**
-   * Creates a new CLValue instance with a Tuple1 value.
-   * @param val - The CLValue to be contained in the tuple.
-   * @returns A new CLValue instance containing CLTypeTuple1 and a CLValueTuple1.
-   */
-  public static newCLTuple1(val: CLValue): CLValue {
-    const tupleType = new CLTypeTuple1(val.type);
-    const clValue = new CLValue(tupleType);
-    clValue.tuple1 = new CLValueTuple1(tupleType, val);
-    return clValue;
-  }
-
-  /**
    * Creates a CLValueTuple1 instance from a Uint8Array.
    * Parses the byte array to retrieve the inner value of the tuple.
    * @param source - The Uint8Array containing the byte representation of the Tuple1 value.

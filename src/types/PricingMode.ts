@@ -1,6 +1,6 @@
 import { jsonObject, jsonMember } from 'typedjson';
 import { Hash } from './key';
-import { CLValueBool, CLValueUInt64, CLValueUInt8 } from './clvalue';
+import { CLValue } from './clvalue';
 import { CalltableSerialization } from './CalltableSerialization';
 
 /**
@@ -29,18 +29,18 @@ export class PaymentLimitedMode {
 
   public toBytes(): Uint8Array {
     const calltableSerializer = new CalltableSerialization();
-    calltableSerializer.addField(0, CLValueUInt8.newCLUint8(0).bytes());
+    calltableSerializer.addField(0, CLValue.newCLUint8(0).bytes());
     calltableSerializer.addField(
       1,
-      CLValueUInt64.newCLUint64(this.paymentAmount).bytes()
+      CLValue.newCLUint64(this.paymentAmount).bytes()
     );
     calltableSerializer.addField(
       2,
-      CLValueUInt8.newCLUint8(this.gasPriceTolerance).bytes()
+      CLValue.newCLUint8(this.gasPriceTolerance).bytes()
     );
     calltableSerializer.addField(
       3,
-      CLValueBool.newCLValueBool(this.standardPayment).bytes()
+      CLValue.newCLValueBool(this.standardPayment).bytes()
     );
 
     return calltableSerializer.toBytes();
@@ -75,14 +75,14 @@ export class FixedMode {
 
   public toBytes(): Uint8Array {
     const calltableSerializer = new CalltableSerialization();
-    calltableSerializer.addField(0, CLValueUInt8.newCLUint8(1).bytes());
+    calltableSerializer.addField(0, CLValue.newCLUint8(1).bytes());
     calltableSerializer.addField(
       1,
-      CLValueUInt8.newCLUint8(this.gasPriceTolerance).bytes()
+      CLValue.newCLUint8(this.gasPriceTolerance).bytes()
     );
     calltableSerializer.addField(
       2,
-      CLValueUInt8.newCLUint8(this.additionalComputationFactor).bytes()
+      CLValue.newCLUint8(this.additionalComputationFactor).bytes()
     );
 
     return calltableSerializer.toBytes();
@@ -107,7 +107,7 @@ export class PrepaidMode {
 
   public toBytes(): Uint8Array {
     const calltableSerializer = new CalltableSerialization();
-    calltableSerializer.addField(0, CLValueUInt8.newCLUint8(2).bytes());
+    calltableSerializer.addField(0, CLValue.newCLUint8(2).bytes());
     calltableSerializer.addField(1, this.receipt.toBytes());
 
     return calltableSerializer.toBytes();

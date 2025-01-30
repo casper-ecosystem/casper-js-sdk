@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import { CLValueBool } from './Bool';
 import { CLValueParser } from './Parser';
 import { CLTypeBool } from './cltype';
+import { CLValue } from './CLValue';
 
 describe('CLBool', () => {
   it('Should be able to return proper value by calling .value()', () => {
@@ -31,7 +32,7 @@ describe('CLBool', () => {
   });
 
   it('toJSON() / fromJSON() do proper bytes serialization', () => {
-    const myBool = CLValueBool.newCLValueBool(false);
+    const myBool = CLValue.newCLValueBool(false);
     const json = CLValueParser.toJSON(myBool);
     const expectedJson = JSON.parse('{"bytes":"00","cl_type":"Bool"}');
 

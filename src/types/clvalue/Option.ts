@@ -1,6 +1,6 @@
 import { concat } from '@ethersproject/bytes';
 
-import { CLType, CLTypeAny, CLTypeOption } from './cltype';
+import { CLTypeOption } from './cltype';
 import { CLValue, IResultWithBytes } from './CLValue';
 import { CLValueParser } from './Parser';
 import { CLValueUInt8 } from './Numeric';
@@ -71,46 +71,6 @@ export class CLValueOption {
    */
   public value(): CLValue | null {
     return this.inner;
-  }
-
-  /**
-   * Creates a new `CLValue` instance that represents an optional value.
-   *
-   * This method allows you to wrap a given `CLValue` as an optional type (`Option`),
-   * which can either contain a value or be `null`. This is useful for scenarios where
-   * a value may or may not be present.
-   *
-   * If `inner` is `null`, the method will use the provided `clType` as the type of the option.
-   * If `clType` is not provided, it defaults to `CLTypeAny`. If `inner` is not `null`,
-   * its type is used instead of `clType`.
-   *
-   * @param inner - The `CLValue` to be wrapped in the option. Pass `null` if no value is present.
-   * @param clType - (Optional) The `CLType` representing the type of the value contained in the option.
-   *                 This is required if `inner` is `null` to properly define the option type.
-   *
-   * @returns A new `CLValue` instance containing:
-   * - A `CLTypeOption` representing the type of the optional value.
-   * - A `CLValueOption` that holds the inner value or `null`.
-   *
-   * @example
-   * ```typescript
-   * // Example of an option containing a value
-   * const innerValue = CLValue.fromU32(42);
-   * const optionValue = CLValue.newCLOption(innerValue);
-   *
-   * // Example of an empty option with an explicitly defined type
-   * const emptyOptionValue = CLValue.newCLOption(null, CLType.U32);
-   *
-   * // Example of an empty option with no type provided (defaults to CLTypeAny)
-   * const emptyOptionValueDefault = CLValue.newCLOption(null);
-   * ```
-   */
-  public static newCLOption(inner: CLValue | null, clType?: CLType): CLValue {
-    const clTypeForOption = inner === null ? clType || CLTypeAny : inner.type;
-    const optionType = new CLTypeOption(clTypeForOption);
-    const clValue = new CLValue(optionType);
-    clValue.option = new CLValueOption(inner, optionType);
-    return clValue;
   }
 
   /**

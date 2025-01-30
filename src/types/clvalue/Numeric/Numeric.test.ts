@@ -1,6 +1,5 @@
 import { expect } from 'chai';
 import { CLValueUInt32 } from './Uint32';
-import { CLValueUInt128 } from './Uint128';
 import { CLValueParser } from '../Parser';
 import {
   CLTypeInt64,
@@ -8,9 +7,7 @@ import {
   CLTypeUInt64,
   CLTypeUInt8
 } from '../cltype';
-import { CLValueUInt64 } from './Uint64';
-import { CLValueUInt8 } from './Uint8';
-import { CLValueInt64 } from './Int64';
+import { CLValue } from '../CLValue';
 
 const MAX_I64 = '9223372036854775807';
 const MAX_U8 = 255;
@@ -24,15 +21,15 @@ describe('Numeric implementation tests', () => {
   });
 
   it('Numeric clType() should return proper type', () => {
-    const num = CLValueUInt128.newCLUInt128(20000);
+    const num = CLValue.newCLUInt128(20000);
     expect(num.getType().toString()).to.be.eq('U128');
   });
 
   it('CLI32 do proper toBytes()/fromBytes()', () => {
-    const num1 = CLValueUInt32.newCLUInt32(10);
+    const num1 = CLValue.newCLUInt32(10);
     const num1bytes = num1.bytes();
 
-    const num2 = CLValueUInt32.newCLUInt32(1);
+    const num2 = CLValue.newCLUInt32(1);
     const num2bytes = num2.bytes();
 
     expect(
@@ -44,10 +41,10 @@ describe('Numeric implementation tests', () => {
   });
 
   it('CLI64 do proper toBytes()/fromBytes()', () => {
-    const num1 = CLValueInt64.newCLInt64(10);
+    const num1 = CLValue.newCLInt64(10);
     const num1bytes = num1.bytes();
 
-    const num2 = CLValueInt64.newCLInt64(MAX_I64);
+    const num2 = CLValue.newCLInt64(MAX_I64);
     const num2bytes = num2.bytes();
 
     expect(
@@ -59,7 +56,7 @@ describe('Numeric implementation tests', () => {
   });
 
   it('CLU8 do proper toBytes()/fromBytes()', () => {
-    const num1 = CLValueUInt8.newCLUint8(MAX_U8);
+    const num1 = CLValue.newCLUint8(MAX_U8);
     const num1bytes = num1.bytes();
 
     expect(
@@ -68,7 +65,7 @@ describe('Numeric implementation tests', () => {
   });
 
   it('CLU32 do proper toBytes()/fromBytes()', () => {
-    const num1 = CLValueUInt32.newCLUInt32(MAX_U32);
+    const num1 = CLValue.newCLUInt32(MAX_U32);
     const num1bytes = num1.bytes();
 
     expect(
@@ -77,7 +74,7 @@ describe('Numeric implementation tests', () => {
   });
 
   it('CLU64 do proper toBytes()/fromBytes()', () => {
-    const num1 = CLValueUInt64.newCLUint64(MAX_U64);
+    const num1 = CLValue.newCLUint64(MAX_U64);
     const num1bytes = num1.bytes();
 
     expect(
@@ -86,7 +83,7 @@ describe('Numeric implementation tests', () => {
   });
 
   it('CLU64 toJSON() / fromJSON()', () => {
-    const num1 = CLValueUInt64.newCLUint64(MAX_U64);
+    const num1 = CLValue.newCLUint64(MAX_U64);
     const num1JSON = CLValueParser.toJSON(num1);
     const expectedJson = JSON.parse(
       '{"bytes":"ffffffffffffffff","cl_type":"U64"}'

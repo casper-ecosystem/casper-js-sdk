@@ -1,5 +1,4 @@
-import { CLTypeUnit } from './cltype';
-import { CLValue, IResultWithBytes } from './CLValue';
+import { IResultWithBytes } from './CLValue';
 
 /**
  * Represents a Unit value in the Casper type system.
@@ -41,17 +40,6 @@ export class CLValueUnit {
    */
   public getValue(): null {
     return this.obj;
-  }
-
-  /**
-   * Creates a new CLValue instance with a Unit value.
-   *
-   * @returns A new CLValue instance with CLTypeUnit and a CLValueUnit.
-   */
-  public static newCLUnit(): CLValue {
-    const res = new CLValue(CLTypeUnit);
-    res.unit = new CLValueUnit();
-    return res;
   }
 
   /**

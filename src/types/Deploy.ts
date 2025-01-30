@@ -399,6 +399,7 @@ export class Deploy {
     paymentLimitedMode.gasPriceTolerance = 1;
     paymentLimitedMode.paymentAmount = paymentAmount;
     paymentLimitedMode.standardPayment = standardPayment;
+    pricingMode.paymentLimited = paymentLimitedMode;
 
     return new Transaction(
       deploy.hash,

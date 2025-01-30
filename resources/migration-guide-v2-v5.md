@@ -78,18 +78,14 @@ const bool = CLValueBuilder.bool(false);
 ##### New Syntax (5.x)
 
 ```typescript
-import {
-  CLValueList,
-  CLValueUInt32,
-  CLValueBool
-} from 'casper-js-sdk';
+import { CLValue, CLTypeUInt32 } from 'casper-js-sdk';
 
-const list = CLValueList.newCLList(CLTypeUInt32, [
-  CLValueUInt32.newCLUInt32(1),
-  CLValueUInt32.newCLUInt32(2),
-  CLValueUInt32.newCLUInt32(3)
+const list = CLValue.newCLList(CLTypeUInt32, [
+  CLValue.newCLUInt32(1),
+  CLValue.newCLUInt32(2),
+  CLValue.newCLUInt32(3)
 ]);
-const bool = CLValueBool.newCLValueBool(false);
+const bool = CLValue.newCLValueBool(false);
 ```
 
 More examples are available in the [unit tests](https://github.com/casper-ecosystem/casper-js-sdk/tree/feat-5.0.0/src/types/clvalue).

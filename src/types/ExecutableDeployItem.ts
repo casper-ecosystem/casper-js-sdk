@@ -3,17 +3,7 @@ import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { concat } from '@ethersproject/bytes';
 
 import { Args } from './Args';
-import {
-  CLTypeOption,
-  CLTypeUInt64,
-  CLValue,
-  CLValueByteArray,
-  CLValueOption,
-  CLValueString,
-  CLValueUInt32,
-  CLValueUInt512,
-  CLValueUInt64
-} from './clvalue';
+import { CLTypeOption, CLTypeUInt64, CLValue, CLValueOption } from './clvalue';
 import { ContractHash, URef } from './key';
 import {
   byteArrayJsonDeserializer,
@@ -75,12 +65,10 @@ export class ModuleBytes {
    * @returns The serialized byte array.
    */
   bytes(): Uint8Array {
-    const lengthBytes = CLValueUInt32.newCLUInt32(
+    const lengthBytes = CLValue.newCLUInt32(
       BigNumber.from(this.moduleBytes.length)
     ).bytes();
-    const bytesArrayBytes = CLValueByteArray.newCLByteArray(
-      this.moduleBytes
-    ).bytes();
+    const bytesArrayBytes = CLValue.newCLByteArray(this.moduleBytes).bytes();
 
     let result = concat([lengthBytes, bytesArrayBytes]);
 
@@ -142,7 +130,7 @@ export class StoredContractByHash {
    */
   bytes(): Uint8Array {
     const hashBytes = this.hash.hash.toBytes();
-    const entryPointBytes = CLValueString.newCLString(this.entryPoint).bytes();
+    const entryPointBytes = CLValue.newCLString(this.entryPoint).bytes();
     const argBytes = this.args.toBytes();
 
     return concat([hashBytes, entryPointBytes, argBytes]);
@@ -192,8 +180,8 @@ export class StoredContractByName {
    * @returns The serialized byte array.
    */
   bytes(): Uint8Array {
-    const nameBytes = CLValueString.newCLString(this.name).bytes();
-    const entryPointBytes = CLValueString.newCLString(this.entryPoint).bytes();
+    const nameBytes = CLValue.newCLString(this.name).bytes();
+    const entryPointBytes = CLValue.newCLString(this.entryPoint).bytes();
     const argBytes = this.args.toBytes();
 
     return concat([nameBytes, entryPointBytes, argBytes]);
@@ -263,11 +251,9 @@ export class StoredVersionedContractByHash {
   bytes(): Uint8Array {
     const hashBytes = this.hash.hash.toBytes();
     const optionBytes = new CLValueOption(
-      this.version
-        ? CLValueUInt32.newCLUInt32(BigNumber.from(this.version))
-        : null
+      this.version ? CLValue.newCLUInt32(BigNumber.from(this.version)) : null
     ).bytes();
-    const entryPointBytes = CLValueString.newCLString(this.entryPoint).bytes();
+    const entryPointBytes = CLValue.newCLString(this.entryPoint).bytes();
     const argBytes = this.args?.toBytes() || new Uint8Array();
 
     return concat([hashBytes, optionBytes, entryPointBytes, argBytes]);
@@ -325,13 +311,11 @@ export class StoredVersionedContractByName {
    * @returns The serialized byte array.
    */
   bytes(): Uint8Array {
-    const nameBytes = CLValueString.newCLString(this.name).bytes();
+    const nameBytes = CLValue.newCLString(this.name).bytes();
     const optionBytes = new CLValueOption(
-      this.version
-        ? CLValueUInt32.newCLUInt32(BigNumber.from(this.version))
-        : null
+      this.version ? CLValue.newCLUInt32(BigNumber.from(this.version)) : null
     ).bytes();
-    const entryPointBytes = CLValueString.newCLString(this.entryPoint).bytes();
+    const entryPointBytes = CLValue.newCLString(this.entryPoint).bytes();
     const argBytes = this.args?.toBytes() || new Uint8Array();
 
     return concat([nameBytes, optionBytes, entryPointBytes, argBytes]);
@@ -376,7 +360,7 @@ export class TransferDeployItem {
     id?: BigNumberish
   ): TransferDeployItem {
     const runtimeArgs = Args.fromMap({});
-    runtimeArgs.insert('amount', CLValueUInt512.newCLUInt512(amount));
+    runtimeArgs.insert('amount', CLValue.newCLUInt512(amount));
     if (sourcePurse) {
       runtimeArgs.insert('source', CLValue.newCLUref(sourcePurse));
     }
@@ -394,9 +378,7 @@ export class TransferDeployItem {
 
     runtimeArgs.insert(
       'id',
-      id
-        ? CLValueOption.newCLOption(CLValueUInt64.newCLUint64(id))
-        : defaultClValue
+      id ? CLValue.newCLOption(CLValue.newCLUint64(id)) : defaultClValue
     );
 
     return new TransferDeployItem(runtimeArgs);
@@ -556,7 +538,7 @@ export class ExecutableDeployItem {
     const executableDeployItem = new ExecutableDeployItem();
     executableDeployItem.moduleBytes = new ModuleBytes(
       Uint8Array.from([]),
-      Args.fromMap({ amount: CLValueUInt512.newCLUInt512(amount) })
+      Args.fromMap({ amount: CLValue.newCLUInt512(amount) })
     );
     return executableDeployItem;
   }

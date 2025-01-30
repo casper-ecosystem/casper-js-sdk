@@ -9,5 +9,7 @@ export const AuctionManagerContractHashMap: Record<
   [CasperNetworkName.Testnet]:
     '93d923e336b20a4c4ca14d592b60e5bd3fe330775618290104f9beb326db7ae2',
   [CasperNetworkName.Integration]:
-    'e22d38bcf3454a93face78a353feaccbf1d637d1ef9ef2e061a655728ff59bbe'
+    'e22d38bcf3454a93face78a353feaccbf1d637d1ef9ef2e061a655728ff59bbe',
+  [CasperNetworkName.DevNet]:
+    '93d923e336b20a4c4ca14d592b60e5bd3fe330775618290104f9beb326db7ae2'
 };

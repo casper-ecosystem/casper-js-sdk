@@ -1,8 +1,7 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 
 import { fromBytesUInt512 } from '../UintBig';
-import { CLValue, IResultWithBytes } from '../CLValue';
-import { CLTypeUInt512 } from '../cltype';
+import { IResultWithBytes } from '../CLValue';
 import { toBytesU512 } from '../../ByteConverters';
 import { CLValueNumeric } from './Abstract';
 
@@ -48,16 +47,5 @@ export class CLValueUInt512 extends CLValueNumeric {
     source: Uint8Array
   ): IResultWithBytes<CLValueUInt512> {
     return fromBytesUInt512(source);
-  }
-
-  /**
-   * Creates a new CLValue instance with a UInt512 value.
-   * @param value - The value to initialize the UInt512 with.
-   * @returns A new CLValue instance containing CLTypeUInt512 and a CLValueUInt512.
-   */
-  public static newCLUInt512(value: BigNumberish): CLValue {
-    const res = new CLValue(CLTypeUInt512);
-    res.ui512 = new CLValueUInt512(value);
-    return res;
   }
 }

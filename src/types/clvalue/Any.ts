@@ -1,6 +1,3 @@
-import { CLTypeAny } from './cltype';
-import { CLValue } from './CLValue';
-
 /**
  * Represents an 'Any' value in the Casper type system.
  * This type can store any arbitrary data as a byte array, making it highly flexible.
@@ -40,16 +37,5 @@ export class CLValueAny {
    */
   public toJSON(): Uint8Array {
     return this.bytes();
-  }
-
-  /**
-   * Creates a new CLValue instance containing an 'Any' value.
-   * @param data - The Uint8Array to be stored within the CLValue.
-   * @returns A new CLValue instance encapsulating the 'Any' value.
-   */
-  public static newCLAny(data: Uint8Array): CLValue {
-    const res = new CLValue(CLTypeAny);
-    res.any = new CLValueAny(data);
-    return res;
   }
 }
