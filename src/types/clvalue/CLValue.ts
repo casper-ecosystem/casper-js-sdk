@@ -1,3 +1,5 @@
+import { BigNumberish } from '@ethersproject/bignumber';
+
 import {
   CLType,
   CLTypeAny,
@@ -50,7 +52,6 @@ import { CLValueTuple1 } from './Tuple1';
 import { CLValueTuple2 } from './Tuple2';
 import { CLValueTuple3 } from './Tuple3';
 import { CLValueAny } from './Any';
-import { BigNumberish } from '@ethersproject/bignumber';
 
 /**
  * Interface representing a value that can be converted to bytes and a string.
