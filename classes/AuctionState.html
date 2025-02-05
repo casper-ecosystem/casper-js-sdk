@@ -23,7 +23,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">AuctionState</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/AuctionState.ts#L51">src/types/AuctionState.ts:51</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/AuctionState.ts#L113">src/types/AuctionState.ts:113</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -39,6 +39,11 @@
 <a href="AuctionState.html#blockHeight" class="tsd-index-link tsd-kind-property tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>block<wbr/>Height</span></a>
 <a href="AuctionState.html#eraValidators" class="tsd-index-link tsd-kind-property tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>era<wbr/>Validators</span></a>
 <a href="AuctionState.html#stateRootHash" class="tsd-index-link tsd-kind-property tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg><span>state<wbr/>Root<wbr/>Hash</span></a>
+</div></section>
+<section class="tsd-index-section">
+<h3 class="tsd-index-heading">Methods</h3>
+<div class="tsd-index-list"><a href="AuctionState.html#fromV1" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF4DB8" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-2048-path"></rect><path d="M9.162 16V7.24H10.578L11.514 10.072C11.602 10.328 11.674 10.584 11.73 10.84C11.794 11.088 11.842 11.28 11.874 11.416C11.906 11.28 11.954 11.088 12.018 10.84C12.082 10.584 12.154 10.324 12.234 10.06L13.122 7.24H14.538V16H13.482V12.82C13.482 12.468 13.49 12.068 13.506 11.62C13.53 11.172 13.558 10.716 13.59 10.252C13.622 9.78 13.654 9.332 13.686 8.908C13.726 8.476 13.762 8.1 13.794 7.78L12.366 12.16H11.334L9.894 7.78C9.934 8.092 9.97 8.456 10.002 8.872C10.042 9.28 10.078 9.716 10.11 10.18C10.142 10.636 10.166 11.092 10.182 11.548C10.206 12.004 10.218 12.428 10.218 12.82V16H9.162Z" fill="var(--color-text)" id="icon-2048-text"></path></svg><span>from<wbr/>V1</span></a>
+<a href="AuctionState.html#fromV2" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>from<wbr/>V2</span></a>
 </div></section></div></details></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Constructors</h2>
@@ -52,32 +57,74 @@
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="bids" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>bids</span><a href="#bids" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
-<div class="tsd-signature">bids<span class="tsd-signature-symbol">:</span> <a href="PublicKeyAndBid.html" class="tsd-signature-type" data-tsd-kind="Class">PublicKeyAndBid</a><span class="tsd-signature-symbol">[]</span></div>
-<div class="tsd-comment tsd-typography"><p>The list of public keys and bids in the auction.</p>
+<div class="tsd-signature">bids<span class="tsd-signature-symbol">:</span> <a href="BidKindWrapper.html" class="tsd-signature-type" data-tsd-kind="Class">BidKindWrapper</a><span class="tsd-signature-symbol">[]</span></div>
+<div class="tsd-comment tsd-typography"><p>The list of bids in the auction.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/AuctionState.ts#L56">src/types/AuctionState.ts:56</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/AuctionState.ts#L118">src/types/AuctionState.ts:118</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="blockHeight" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>block<wbr/>Height</span><a href="#blockHeight" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">block<wbr/>Height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span></div>
 <div class="tsd-comment tsd-typography"><p>The block height at which this auction state was recorded.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/AuctionState.ts#L62">src/types/AuctionState.ts:62</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/AuctionState.ts#L124">src/types/AuctionState.ts:124</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="eraValidators" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>era<wbr/>Validators</span><a href="#eraValidators" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">era<wbr/>Validators<span class="tsd-signature-symbol">:</span> <a href="EraValidators.html" class="tsd-signature-type" data-tsd-kind="Class">EraValidators</a><span class="tsd-signature-symbol">[]</span></div>
 <div class="tsd-comment tsd-typography"><p>The validators and their weights for each era in the auction state.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/AuctionState.ts#L68">src/types/AuctionState.ts:68</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/AuctionState.ts#L130">src/types/AuctionState.ts:130</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class"><a id="stateRootHash" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>state<wbr/>Root<wbr/>Hash</span><a href="#stateRootHash" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">state<wbr/>Root<wbr/>Hash<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 <div class="tsd-comment tsd-typography"><p>The root hash of the state at the time of this auction state.</p>
 </div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/AuctionState.ts#L74">src/types/AuctionState.ts:74</a></li></ul></aside></section></section></div>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/AuctionState.ts#L136">src/types/AuctionState.ts:136</a></li></ul></aside></section></section>
+<section class="tsd-panel-group tsd-member-group">
+<h2>Methods</h2>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="fromV1" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>from<wbr/>V1</span><a href="#fromV1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="fromV1.fromV1-1">from<wbr/>V1<span class="tsd-signature-symbol">(</span>v1<span class="tsd-signature-symbol">: </span><a href="AuctionStateV1.html" class="tsd-signature-type" data-tsd-kind="Class">AuctionStateV1</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="AuctionState.html" class="tsd-signature-type" data-tsd-kind="Class">AuctionState</a><a href="#fromV1.fromV1-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates an AuctionState from an AuctionStateV1.
+For each bid, a BidKindWrapper is created for the validator bid,
+and additional wrappers are created for each delegator bid.</p>
+
+<h3>Returns</h3><p>An AuctionState instance.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>v1: <a href="AuctionStateV1.html" class="tsd-signature-type" data-tsd-kind="Class">AuctionStateV1</a></h5>
+<div class="tsd-comment tsd-typography"><p>An instance of AuctionStateV1.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="AuctionState.html" class="tsd-signature-type" data-tsd-kind="Class">AuctionState</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/AuctionState.ts#L146">src/types/AuctionState.ts:146</a></li></ul></aside></li></ul></section>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="fromV2" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>from<wbr/>V2</span><a href="#fromV2" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+<li class="tsd-signature tsd-anchor-link" id="fromV2.fromV2-1">from<wbr/>V2<span class="tsd-signature-symbol">(</span>v2<span class="tsd-signature-symbol">: </span><a href="AuctionStateV2.html" class="tsd-signature-type" data-tsd-kind="Class">AuctionStateV2</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="AuctionState.html" class="tsd-signature-type" data-tsd-kind="Class">AuctionState</a><a href="#fromV2.fromV2-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates an AuctionState from an AuctionStateV2.</p>
+
+<h3>Returns</h3><p>An AuctionState instance.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>v2: <a href="AuctionStateV2.html" class="tsd-signature-type" data-tsd-kind="Class">AuctionStateV2</a></h5>
+<div class="tsd-comment tsd-typography"><p>An instance of AuctionStateV2.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <a href="AuctionState.html" class="tsd-signature-type" data-tsd-kind="Class">AuctionState</a></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/AuctionState.ts#L200">src/types/AuctionState.ts:200</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
@@ -107,7 +154,9 @@
 <li class="tsd-kind-property tsd-parent-kind-class"><a href="AuctionState.html#bids" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>bids</a></li>
 <li class="tsd-kind-property tsd-parent-kind-class"><a href="AuctionState.html#blockHeight" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>block<wbr/>Height</a></li>
 <li class="tsd-kind-property tsd-parent-kind-class"><a href="AuctionState.html#eraValidators" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>era<wbr/>Validators</a></li>
-<li class="tsd-kind-property tsd-parent-kind-class"><a href="AuctionState.html#stateRootHash" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>state<wbr/>Root<wbr/>Hash</a></li></ul></li></ul></nav></div></div>
+<li class="tsd-kind-property tsd-parent-kind-class"><a href="AuctionState.html#stateRootHash" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>state<wbr/>Root<wbr/>Hash</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="AuctionState.html#fromV1" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>from<wbr/>V1</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class"><a href="AuctionState.html#fromV2" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>from<wbr/>V2</a></li></ul></li></ul></nav></div></div>
 <div class="container tsd-generator">
 <p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div>
 <div class="overlay"></div><script src="../assets/main.js"></script></body></html>

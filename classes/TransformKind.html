@@ -24,7 +24,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 <ul class="tsd-hierarchy">
 <li><span class="target">TransformKind</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L40">src/types/Transform.ts:40</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L41">src/types/Transform.ts:41</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -44,7 +44,8 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div></section>
 <section class="tsd-index-section">
 <h3 class="tsd-index-heading">Methods</h3>
-<div class="tsd-index-list"><a href="TransformKind.html#isAddUint512" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF4DB8" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-2048-path"></rect><path d="M9.162 16V7.24H10.578L11.514 10.072C11.602 10.328 11.674 10.584 11.73 10.84C11.794 11.088 11.842 11.28 11.874 11.416C11.906 11.28 11.954 11.088 12.018 10.84C12.082 10.584 12.154 10.324 12.234 10.06L13.122 7.24H14.538V16H13.482V12.82C13.482 12.468 13.49 12.068 13.506 11.62C13.53 11.172 13.558 10.716 13.59 10.252C13.622 9.78 13.654 9.332 13.686 8.908C13.726 8.476 13.762 8.1 13.794 7.78L12.366 12.16H11.334L9.894 7.78C9.934 8.092 9.97 8.456 10.002 8.872C10.042 9.28 10.078 9.716 10.11 10.18C10.142 10.636 10.166 11.092 10.182 11.548C10.206 12.004 10.218 12.428 10.218 12.82V16H9.162Z" fill="var(--color-text)" id="icon-2048-text"></path></svg><span>is<wbr/>Add<wbr/>Uint512</span></a>
+<div class="tsd-index-list"><a href="TransformKind.html#containsKeyRecursive" class="tsd-index-link tsd-kind-method tsd-parent-kind-class tsd-is-private"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><rect fill="var(--color-icon-background)" stroke="#FF4DB8" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="12" id="icon-2048-path"></rect><path d="M9.162 16V7.24H10.578L11.514 10.072C11.602 10.328 11.674 10.584 11.73 10.84C11.794 11.088 11.842 11.28 11.874 11.416C11.906 11.28 11.954 11.088 12.018 10.84C12.082 10.584 12.154 10.324 12.234 10.06L13.122 7.24H14.538V16H13.482V12.82C13.482 12.468 13.49 12.068 13.506 11.62C13.53 11.172 13.558 10.716 13.59 10.252C13.622 9.78 13.654 9.332 13.686 8.908C13.726 8.476 13.762 8.1 13.794 7.78L12.366 12.16H11.334L9.894 7.78C9.934 8.092 9.97 8.456 10.002 8.872C10.042 9.28 10.078 9.716 10.11 10.18C10.142 10.636 10.166 11.092 10.182 11.548C10.206 12.004 10.218 12.428 10.218 12.82V16H9.162Z" fill="var(--color-text)" id="icon-2048-text"></path></svg><span>contains<wbr/>Key<wbr/>Recursive</span></a>
+<a href="TransformKind.html#isAddUint512" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>is<wbr/>Add<wbr/>Uint512</span></a>
 <a href="TransformKind.html#isCLValueWrite" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>isCLValue<wbr/>Write</span></a>
 <a href="TransformKind.html#isTransformation" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>is<wbr/>Transformation</span></a>
 <a href="TransformKind.html#isWriteAccount" class="tsd-index-link tsd-kind-method tsd-parent-kind-class"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg><span>is<wbr/>Write<wbr/>Account</span></a>
@@ -98,14 +99,14 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="TransformKind.html" class="tsd-signature-type" data-tsd-kind="Class">TransformKind</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L48">src/types/Transform.ts:48</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L49">src/types/Transform.ts:49</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private"><a id="data" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>data</span><a href="#data" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">data<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L41">src/types/Transform.ts:41</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L42">src/types/Transform.ts:42</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Accessors</h2>
 <section class="tsd-panel tsd-member tsd-kind-accessor tsd-parent-kind-class"><a id="transformationData" class="tsd-anchor"></a>
@@ -119,9 +120,33 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L57">src/types/Transform.ts:57</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L58">src/types/Transform.ts:58</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
+<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private"><a id="containsKeyRecursive" class="tsd-anchor"></a>
+<h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>contains<wbr/>Key<wbr/>Recursive</span><a href="#containsKeyRecursive" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
+<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+<li class="tsd-signature tsd-anchor-link" id="containsKeyRecursive.containsKeyRecursive-1">contains<wbr/>Key<wbr/>Recursive<span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, name<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span><a href="#containsKeyRecursive.containsKeyRecursive-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
+<li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Recursively checks if any key in the provided object (including nested objects)
+contains the specified name.</p>
+
+<h3>Returns</h3><p>true if a key containing the name is found; otherwise, false.</p>
+</div>
+<div class="tsd-parameters">
+<h4 class="tsd-parameters-title">Parameters</h4>
+<ul class="tsd-parameter-list">
+<li>
+<h5>obj: <span class="tsd-signature-type">any</span></h5>
+<div class="tsd-comment tsd-typography"><p>The object to search through.</p>
+</div></li>
+<li>
+<h5>name: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The transformation name to search for within the keys.</p>
+</div></li></ul></div>
+<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
+<ul>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L558">src/types/Transform.ts:558</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isAddUint512" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Add<wbr/>Uint512</span><a href="#isAddUint512" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -133,7 +158,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L227">src/types/Transform.ts:227</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L231">src/types/Transform.ts:231</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isCLValueWrite" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>isCLValue<wbr/>Write</span><a href="#isCLValueWrite" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -145,7 +170,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L106">src/types/Transform.ts:106</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L110">src/types/Transform.ts:110</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isTransformation" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Transformation</span><a href="#isTransformation" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -162,7 +187,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 <h5>name: <span class="tsd-signature-type">string</span></h5></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L514">src/types/Transform.ts:514</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L578">src/types/Transform.ts:578</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isWriteAccount" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Write<wbr/>Account</span><a href="#isWriteAccount" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -174,7 +199,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L97">src/types/Transform.ts:97</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L98">src/types/Transform.ts:98</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isWriteAddressableEntity" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Write<wbr/>Addressable<wbr/>Entity</span><a href="#isWriteAddressableEntity" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -186,7 +211,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L173">src/types/Transform.ts:173</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L177">src/types/Transform.ts:177</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isWriteBid" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Write<wbr/>Bid</span><a href="#isWriteBid" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -198,7 +223,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L218">src/types/Transform.ts:218</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L222">src/types/Transform.ts:222</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isWriteBidKind" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Write<wbr/>Bid<wbr/>Kind</span><a href="#isWriteBidKind" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -210,7 +235,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L182">src/types/Transform.ts:182</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L186">src/types/Transform.ts:186</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isWriteCLValue" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>WriteCLValue</span><a href="#isWriteCLValue" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -222,7 +247,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L155">src/types/Transform.ts:155</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L159">src/types/Transform.ts:159</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isWriteContract" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Write<wbr/>Contract</span><a href="#isWriteContract" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -234,7 +259,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L115">src/types/Transform.ts:115</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L119">src/types/Transform.ts:119</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isWriteContractPackage" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Write<wbr/>Contract<wbr/>Package</span><a href="#isWriteContractPackage" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -246,7 +271,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L245">src/types/Transform.ts:245</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L249">src/types/Transform.ts:249</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isWriteDeployInfo" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Write<wbr/>Deploy<wbr/>Info</span><a href="#isWriteDeployInfo" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -258,7 +283,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L236">src/types/Transform.ts:236</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L240">src/types/Transform.ts:240</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isWriteMessage" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Write<wbr/>Message</span><a href="#isWriteMessage" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -270,7 +295,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L200">src/types/Transform.ts:200</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L204">src/types/Transform.ts:204</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isWriteMessageTopic" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Write<wbr/>Message<wbr/>Topic</span><a href="#isWriteMessageTopic" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -282,7 +307,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L209">src/types/Transform.ts:209</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L213">src/types/Transform.ts:213</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isWriteNamedKey" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Write<wbr/>Named<wbr/>Key</span><a href="#isWriteNamedKey" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -294,7 +319,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L191">src/types/Transform.ts:191</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L195">src/types/Transform.ts:195</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isWritePackage" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Write<wbr/>Package</span><a href="#isWritePackage" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -306,7 +331,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L164">src/types/Transform.ts:164</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L168">src/types/Transform.ts:168</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isWriteTransfer" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Write<wbr/>Transfer</span><a href="#isWriteTransfer" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -318,7 +343,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L88">src/types/Transform.ts:88</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L89">src/types/Transform.ts:89</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isWriteUnbonding" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Write<wbr/>Unbonding</span><a href="#isWriteUnbonding" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -330,7 +355,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L146">src/types/Transform.ts:146</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L150">src/types/Transform.ts:150</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="isWriteWithdraw" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>is<wbr/>Write<wbr/>Withdraw</span><a href="#isWriteWithdraw" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -342,7 +367,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L137">src/types/Transform.ts:137</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L141">src/types/Transform.ts:141</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="parseAsUInt512" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>parse<wbr/>AsUInt512</span><a href="#parseAsUInt512" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -354,19 +379,35 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <a href="CLValueUInt512.html" class="tsd-signature-type" data-tsd-kind="Class">CLValueUInt512</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L410">src/types/Transform.ts:410</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L414">src/types/Transform.ts:414</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="parseAsWriteAccount" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>parse<wbr/>As<wbr/>Write<wbr/>Account</span><a href="#parseAsWriteAccount" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="parseAsWriteAccount.parseAsWriteAccount-1">parse<wbr/>As<wbr/>Write<wbr/>Account<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="AccountHash.html" class="tsd-signature-type" data-tsd-kind="Class">AccountHash</a><a href="#parseAsWriteAccount.parseAsWriteAccount-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Attempts to parse the transformation as a WriteDeployInfo.</p>
+<div class="tsd-comment tsd-typography"><p>Attempts to parse the transformation data as a WriteAccount transformation.</p>
+<p>This method supports two JSON formats:</p>
+<ul>
+<li><p><strong>2.x Format:</strong></p>
+<pre><code class="language-json"><span class="hl-1">{</span><br/><span class="hl-1">  </span><span class="hl-10">&quot;Write&quot;</span><span class="hl-1">: {</span><br/><span class="hl-1">    </span><span class="hl-10">&quot;Account&quot;</span><span class="hl-1">: {</span><br/><span class="hl-1">      </span><span class="hl-10">&quot;account_hash&quot;</span><span class="hl-1">: </span><span class="hl-2">&quot;...&quot;</span><br/><span class="hl-1">    }</span><br/><span class="hl-1">  }</span><br/><span class="hl-1">}</span>
+</code></pre>
+<p>If the parsed <code>accountHash</code> is not equal to the zero account hash, this value is returned.</p>
+</li>
+<li><p><strong>1.x Format:</strong></p>
+<pre><code class="language-json"><span class="hl-1">{</span><br/><span class="hl-1">  </span><span class="hl-10">&quot;WriteAccount&quot;</span><span class="hl-1">: </span><span class="hl-2">&quot;...&quot;</span><br/><span class="hl-1">}</span>
+</code></pre>
+<p>If the 2.x format is not matched or the parsed account hash equals the zero hash,
+the method falls back to this format.</p>
+</li>
+</ul>
 
-<h3>Returns</h3><p>A <code>DeployInfo</code> object if the data matches, otherwise <code>throw an error</code>.</p>
+<h3>Returns</h3><p>The parsed <code>AccountHash</code>.</p>
+
+<h3>Throws</h3><p>Error if the transformation data cannot be parsed as a valid WriteAccount.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <a href="AccountHash.html" class="tsd-signature-type" data-tsd-kind="Class">AccountHash</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L426">src/types/Transform.ts:426</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L454">src/types/Transform.ts:454</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="parseAsWriteAddressableEntity" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>parse<wbr/>As<wbr/>Write<wbr/>Addressable<wbr/>Entity</span><a href="#parseAsWriteAddressableEntity" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -378,7 +419,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <a href="AddressableEntity.html" class="tsd-signature-type" data-tsd-kind="Class">AddressableEntity</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L298">src/types/Transform.ts:298</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L302">src/types/Transform.ts:302</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="parseAsWriteBidKind" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>parse<wbr/>As<wbr/>Write<wbr/>Bid<wbr/>Kind</span><a href="#parseAsWriteBidKind" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -390,7 +431,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <a href="BidKind.html" class="tsd-signature-type" data-tsd-kind="Class">BidKind</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L330">src/types/Transform.ts:330</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L334">src/types/Transform.ts:334</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="parseAsWriteCLValue" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>parse<wbr/>As<wbr/>WriteCLValue</span><a href="#parseAsWriteCLValue" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -402,7 +443,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L458">src/types/Transform.ts:458</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L500">src/types/Transform.ts:500</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="parseAsWriteContract" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>parse<wbr/>As<wbr/>Write<wbr/>Contract</span><a href="#parseAsWriteContract" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -414,7 +455,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <a href="Contract.html" class="tsd-signature-type" data-tsd-kind="Class">Contract</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L481">src/types/Transform.ts:481</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L523">src/types/Transform.ts:523</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="parseAsWriteContractPackage" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>parse<wbr/>As<wbr/>Write<wbr/>Contract<wbr/>Package</span><a href="#parseAsWriteContractPackage" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -426,7 +467,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <a href="ContractPackage.html" class="tsd-signature-type" data-tsd-kind="Class">ContractPackage</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L497">src/types/Transform.ts:497</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L539">src/types/Transform.ts:539</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="parseAsWriteDeployInfo" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>parse<wbr/>As<wbr/>Write<wbr/>Deploy<wbr/>Info</span><a href="#parseAsWriteDeployInfo" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -438,7 +479,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <a href="DeployInfo.html" class="tsd-signature-type" data-tsd-kind="Class">DeployInfo</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L442">src/types/Transform.ts:442</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L484">src/types/Transform.ts:484</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="parseAsWriteMessage" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>parse<wbr/>As<wbr/>Write<wbr/>Message</span><a href="#parseAsWriteMessage" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -450,7 +491,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L362">src/types/Transform.ts:362</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L366">src/types/Transform.ts:366</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="parseAsWriteMessageTopic" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>parse<wbr/>As<wbr/>Write<wbr/>Message<wbr/>Topic</span><a href="#parseAsWriteMessageTopic" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -462,7 +503,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <a href="MessageTopicSummary.html" class="tsd-signature-type" data-tsd-kind="Class">MessageTopicSummary</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L378">src/types/Transform.ts:378</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L382">src/types/Transform.ts:382</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="parseAsWriteNamedKey" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>parse<wbr/>As<wbr/>Write<wbr/>Named<wbr/>Key</span><a href="#parseAsWriteNamedKey" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -474,7 +515,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="NamedKeyKind.html" class="tsd-signature-type" data-tsd-kind="Class">NamedKeyKind</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L346">src/types/Transform.ts:346</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L350">src/types/Transform.ts:350</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="parseAsWritePackage" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>parse<wbr/>As<wbr/>Write<wbr/>Package</span><a href="#parseAsWritePackage" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -486,7 +527,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <a href="Package.html" class="tsd-signature-type" data-tsd-kind="Class">Package</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L314">src/types/Transform.ts:314</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L318">src/types/Transform.ts:318</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="parseAsWriteTransfer" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>parse<wbr/>As<wbr/>Write<wbr/>Transfer</span><a href="#parseAsWriteTransfer" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -498,7 +539,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">WriteTransfer</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L267">src/types/Transform.ts:267</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L271">src/types/Transform.ts:271</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="parseAsWriteUnbondings" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>parse<wbr/>As<wbr/>Write<wbr/>Unbondings</span><a href="#parseAsWriteUnbondings" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -510,7 +551,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">null</span><span class="tsd-signature-symbol"> | </span><a href="UnbondingPurse.html" class="tsd-signature-type" data-tsd-kind="Class">UnbondingPurse</a><span class="tsd-signature-symbol">[]</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L394">src/types/Transform.ts:394</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L398">src/types/Transform.ts:398</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="parseAsWriteWithdraws" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>parse<wbr/>As<wbr/>Write<wbr/>Withdraws</span><a href="#parseAsWriteWithdraws" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -522,7 +563,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <a href="UnbondingPurse.html" class="tsd-signature-type" data-tsd-kind="Class">UnbondingPurse</a><span class="tsd-signature-symbol">[]</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L282">src/types/Transform.ts:282</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L286">src/types/Transform.ts:286</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="toJSON" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>toJSON</span><a href="#toJSON" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -534,7 +575,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L79">src/types/Transform.ts:79</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L80">src/types/Transform.ts:80</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="fromJSON" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>fromJSON</span><a href="#fromJSON" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
@@ -553,7 +594,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 </div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><a href="TransformKind.html" class="tsd-signature-type" data-tsd-kind="Class">TransformKind</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/c6d0121/src/types/Transform.ts#L67">src/types/Transform.ts:67</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/3fbeb5b/src/types/Transform.ts#L68">src/types/Transform.ts:68</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
@@ -582,6 +623,7 @@ Used for parsing and processing transformation data in a transaction.</p>
 <li class="tsd-kind-constructor tsd-parent-kind-class"><a href="TransformKind.html#constructor" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-512-path"></use><use href="#icon-512-text"></use></svg>constructor</a></li>
 <li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="TransformKind.html#data" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-1024-path"></use><use href="#icon-1024-text"></use></svg>data</a></li>
 <li class="tsd-kind-accessor tsd-parent-kind-class"><a href="TransformKind.html#transformationData" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-262144-path"></use><use href="#icon-262144-text"></use></svg>transformation<wbr/>Data</a></li>
+<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="TransformKind.html#containsKeyRecursive" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>contains<wbr/>Key<wbr/>Recursive</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class"><a href="TransformKind.html#isAddUint512" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>is<wbr/>Add<wbr/>Uint512</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class"><a href="TransformKind.html#isCLValueWrite" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>isCLValue<wbr/>Write</a></li>
 <li class="tsd-kind-method tsd-parent-kind-class"><a href="TransformKind.html#isTransformation" class="tsd-index-link"><svg class="tsd-kind-icon" width="24" height="24" viewBox="0 0 24 24"><use href="#icon-2048-path"></use><use href="#icon-2048-text"></use></svg>is<wbr/>Transformation</a></li>
