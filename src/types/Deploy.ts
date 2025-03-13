@@ -356,19 +356,27 @@ export class Deploy {
    * @param deployHeader The deploy header.
    * @param payment The payment logic of the deploy.
    * @param session The session logic of the deploy.
+   * @param approvals
    * @returns A new `Deploy` object.
    */
   public static makeDeploy(
     deployHeader: DeployHeader,
     payment: ExecutableDeployItem,
-    session: ExecutableDeployItem
+    session: ExecutableDeployItem,
+    approvals?: Approval[]
   ): Deploy {
     const paymentBytes = payment.bytes();
     const sessionBytes = session.bytes();
     const serializedBody = concat([paymentBytes, sessionBytes]);
     deployHeader.bodyHash = new Hash(byteHash(serializedBody));
     const deployHash = new Hash(byteHash(deployHeader.toBytes()));
-    return Deploy.createNew(deployHash, deployHeader, payment, session);
+    return Deploy.createNew(
+      deployHash,
+      deployHeader,
+      payment,
+      session,
+      approvals
+    );
   }
 
   /**
@@ -441,6 +449,27 @@ export class Deploy {
       undefined,
       deploy
     );
+  }
+
+  public static newDeployFromTransaction(tx: Transaction): Deploy {
+    if (tx?.approvals?.length !== 0) {
+      throw Error('Can not convert already signed transaction.');
+    }
+
+    const executableDeployItem = ExecutableDeployItem.newExecutableDeployItemFromTransaction(
+      tx
+    );
+    const deployHeader = DeployHeader.default();
+    deployHeader.account = tx?.initiatorAddr?.publicKey;
+    deployHeader.ttl = tx?.ttl;
+    deployHeader.chainName = tx?.chainName;
+    deployHeader.timestamp = tx?.timestamp;
+
+    const payment = ExecutableDeployItem.standardPayment(
+      tx?.pricingMode?.paymentLimited?.paymentAmount?.toString() ?? '100000000'
+    );
+
+    return Deploy.makeDeploy(deployHeader, payment, executableDeployItem);
   }
 
   /**

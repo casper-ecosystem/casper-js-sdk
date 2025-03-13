@@ -12,6 +12,7 @@ import {
   serializeArgs
 } from './SerializationUtils';
 import { PublicKey } from './keypair';
+import { Transaction } from './Transaction';
 
 /**
  * Enum representing the different types of executable deploy items.
@@ -611,6 +612,71 @@ export class ExecutableDeployItem {
   ): ExecutableDeployItem {
     const executableDeployItem = new ExecutableDeployItem();
     executableDeployItem.moduleBytes = new ModuleBytes(moduleBytes, args);
+
+    return executableDeployItem;
+  }
+
+  /**
+   * Creates a new ExecutableDeployItem from a given Transaction.
+   *
+   * @param {Transaction} transaction - The transaction object containing execution details.
+   * @returns {ExecutableDeployItem} The constructed ExecutableDeployItem.
+   */
+  public static newExecutableDeployItemFromTransaction(
+    transaction: Transaction
+  ): ExecutableDeployItem {
+    const executableDeployItem = new ExecutableDeployItem();
+    const entryPoint = transaction.entryPoint.customEntryPoint ?? '';
+    const { target, args } = transaction;
+
+    if (target?.native !== undefined) {
+      executableDeployItem.transfer = new TransferDeployItem(args);
+    }
+
+    if (target?.session !== undefined) {
+      executableDeployItem.moduleBytes = new ModuleBytes(
+        target.session.moduleBytes,
+        args
+      );
+    }
+
+    if (target?.stored !== undefined) {
+      const { id } = target.stored;
+
+      if (id?.byHash !== undefined) {
+        executableDeployItem.storedContractByHash = new StoredContractByHash(
+          ContractHash.newContract(id.byHash.toHex()),
+          entryPoint,
+          args
+        );
+      }
+
+      if (id?.byName !== undefined) {
+        executableDeployItem.storedContractByName = new StoredContractByName(
+          id.byName,
+          entryPoint,
+          args
+        );
+      }
+
+      if (id?.byPackageHash !== undefined) {
+        executableDeployItem.storedVersionedContractByHash = new StoredVersionedContractByHash(
+          ContractHash.newContract(id.byPackageHash.addr.toHex()),
+          entryPoint,
+          args,
+          id.byPackageHash.version
+        );
+      }
+
+      if (id?.byPackageName !== undefined) {
+        executableDeployItem.storedVersionedContractByName = new StoredVersionedContractByName(
+          id.byPackageName.name,
+          entryPoint,
+          args,
+          id.byPackageName.version
+        );
+      }
+    }
 
     return executableDeployItem;
   }
