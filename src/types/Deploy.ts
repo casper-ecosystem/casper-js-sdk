@@ -356,27 +356,19 @@ export class Deploy {
    * @param deployHeader The deploy header.
    * @param payment The payment logic of the deploy.
    * @param session The session logic of the deploy.
-   * @param approvals
    * @returns A new `Deploy` object.
    */
   public static makeDeploy(
     deployHeader: DeployHeader,
     payment: ExecutableDeployItem,
-    session: ExecutableDeployItem,
-    approvals?: Approval[]
+    session: ExecutableDeployItem
   ): Deploy {
     const paymentBytes = payment.bytes();
     const sessionBytes = session.bytes();
     const serializedBody = concat([paymentBytes, sessionBytes]);
     deployHeader.bodyHash = new Hash(byteHash(serializedBody));
     const deployHash = new Hash(byteHash(deployHeader.toBytes()));
-    return Deploy.createNew(
-      deployHash,
-      deployHeader,
-      payment,
-      session,
-      approvals
-    );
+    return Deploy.createNew(deployHash, deployHeader, payment, session);
   }
 
   /**
