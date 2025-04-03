@@ -21,7 +21,8 @@ import {
   Args,
   CLValue,
   TransactionV1Payload,
-  NativeTransferBuilder
+  NativeTransferBuilder,
+  Hash
 } from '../../types';
 
 describe('Test Transaction', () => {
@@ -195,9 +196,12 @@ describe('Test Transaction', () => {
     };
 
     const tx = Transaction.fromJSON(json);
+    const deployHash = Hash.fromJSON(json.deploy.hash);
+
     expect(tx.hash.toHex()).to.equal(
       '076e77de17de7f262c5531017c214afd664d9702d4b5b771996ae4dcaf9c01f9'
     );
+    expect(tx.hash.equals(deployHash)).to.equal(true);
 
     const txBytes = tx.toBytes();
     assert.deepEqual(txBytes[0], 0x00);
