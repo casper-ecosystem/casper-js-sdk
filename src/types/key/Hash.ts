@@ -11,7 +11,7 @@ export interface IHash {
   toJSON(): string;
 
   // Method for equality comparison
-  equals(other: IHash): boolean;
+  equals(other: Hash): boolean;
 }
 
 /**
