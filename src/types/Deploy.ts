@@ -5,7 +5,7 @@ import { Hash } from './key';
 import { HexBytes } from './HexBytes';
 import { PublicKey, PrivateKey } from './keypair';
 import { Duration, Timestamp } from './Time';
-import { Approval, Transaction } from './Transaction';
+import { Approval, Transaction, TransactionHash } from './Transaction';
 import {
   TransactionEntryPoint,
   TransactionEntryPointEnum
@@ -285,7 +285,7 @@ export class Deploy {
       this.header.toBytes(),
       this.hash.toBytes(),
       concat([this.payment.bytes(), this.session.bytes()]),
-      serializeApprovals(this.approvals)
+      Approval.toBytes(this.approvals)
     ]);
   }
 
@@ -427,7 +427,7 @@ export class Deploy {
     pricingMode.paymentLimited = paymentLimitedMode;
 
     return new Transaction(
-      deploy.hash,
+      new TransactionHash(deploy.hash),
       deploy.header.chainName,
       deploy.header.timestamp,
       deploy.header.ttl,
@@ -535,30 +535,6 @@ export class Deploy {
     return hashSize + headerSize + bodySize + approvalsSize;
   };
 }
-
-/**
- * Serializes an array of `Approval`s into a `Uint8Array` typed byte array.
- * This is used to store or transmit the approvals associated with a deploy.
- *
- * @param approvals An array of `Approval` objects that represent signatures from accounts that have approved the deploy.
- * @returns A `Uint8Array` typed byte array that can be deserialized back into an array of `Approval` objects.
- *
- * @example
- * const approvals = [new Approval(publicKey, signature)];
- * const serializedApprovals = serializeApprovals(approvals);
- */
-export const serializeApprovals = (approvals: Approval[]): Uint8Array => {
-  const len = toBytesU32(approvals.length);
-  const bytes = concat(
-    approvals.map(approval => {
-      return concat([
-        Uint8Array.from(Buffer.from(approval.signer.toString(), 'hex')),
-        Uint8Array.from(Buffer.from(approval.signature.toString(), 'hex'))
-      ]);
-    })
-  );
-  return concat([len, bytes]);
-};
 
 /**
  * Default TTL value used for deploys (30 minutes).

@@ -40,7 +40,7 @@ describe('RPC Client', () => {
       infoGetTransactionResultV1Json.result.deploy.header.account
     );
     expect(
-      txResult.executionInfo?.executionResult.transfers[0].transactionHash.toString()
+      txResult.executionInfo?.executionResult.transfers[0].transactionHash.toHex()
     ).to.deep.equal(txResult.transaction.hash.toHex());
   });
 
