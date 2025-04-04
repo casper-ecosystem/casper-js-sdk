@@ -108,10 +108,12 @@ describe('EraSummary', () => {
     expect(
       jsonRes?.blockHash.toHex(),
       'Block hash does not match expected value'
+      // @ts-ignore IDE issue
     ).to.deep.equal(eraSummaryJson.block_hash);
 
     const allocations = jsonRes!.storedValue!.eraInfo!.seigniorageAllocations;
     const jsonAllocations =
+      // @ts-ignore IDE issue
       eraSummaryJson.stored_value.EraInfo.seigniorage_allocations;
 
     allocations.forEach((summary, index) => {
