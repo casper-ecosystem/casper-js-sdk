@@ -1,6 +1,6 @@
 {
   "name": "casper-js-sdk",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "license": "Apache 2.0",
   "description": "SDK to interact with the Casper blockchain",
   "homepage": "https://github.com/casper-ecosystem/casper-js-sdk#README.md",
@@ -50,13 +50,12 @@
       "pre-commit": "lint-staged"
     }
   },
-  "overrides": {
-    "elliptic": "6.6.1"
-  },
   "devDependencies": {
     "@jsdevtools/coverage-istanbul-loader": "^3.0.5",
+    "@types/bn.js": "^5.1.6",
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.5",
+    "@types/elliptic": "^6.4.18",
     "@types/eventsource": "^1.1.15",
     "@types/humanize-duration": "^3.18.1",
     "@types/lodash": "^4.14.191",
@@ -111,6 +110,9 @@
     "webpack-cli": "^4.5.0",
     "webpack-node-externals": "^2.5.2"
   },
+  "overrides": {
+    "elliptic": "6.6.1"
+  },
   "dependencies": {
     "@ethersproject/bignumber": "^5.0.8",
     "@ethersproject/bytes": "^5.0.5",
@@ -123,11 +125,13 @@
     "@scure/bip32": "^1.1.5",
     "@scure/bip39": "^1.2.0",
     "@types/ws": "^8.2.2",
-    "axios": "^1.7.9",
+    "asn1.js": "^5.4.1",
+    "axios": "^1.8.4",
+    "bn.js": "^5.2.1",
+    "elliptic": "6.6.1",
     "eventsource": "^2.0.2",
     "glob": "^7.1.6",
     "humanize-duration": "^3.24.0",
-    "key-encoder": "^2.0.3",
     "lodash": "^4.17.21",
     "node-fetch": "2.6.13",
     "reflect-metadata": "^0.1.13",

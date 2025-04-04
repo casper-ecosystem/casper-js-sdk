@@ -1,8 +1,8 @@
 import * as secp256k1 from '@noble/secp256k1';
 import { sha256 } from '@noble/hashes/sha256';
-import { keyEncoder } from './PrivateKey';
 import { Conversions } from '../../Conversions';
 import { readBase64WithPEM } from '../utils';
+import { encodePublic } from "./encoders";
 
 /** The expected size of a secp256k1 public key in bytes. */
 const PublicKeySize = 33;
@@ -36,7 +36,7 @@ export class PublicKey {
    * @returns A PEM compliant string containing this instance's public key
    */
   public toPem(): string {
-    return keyEncoder.encodePublic(
+    return encodePublic(
       Conversions.encodeBase16(this.key),
       'raw',
       'pem'
@@ -81,7 +81,7 @@ export class PublicKey {
   static fromPem(content: string): PublicKey {
     const publicKeyBytes = readBase64WithPEM(content);
 
-    const rawKeyHex = keyEncoder.encodePublic(
+    const rawKeyHex = encodePublic(
       Buffer.from(publicKeyBytes),
       'der',
       'raw'
