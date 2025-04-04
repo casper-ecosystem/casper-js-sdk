@@ -15,12 +15,16 @@
 <li><a href="../modules.html">casper-js-sdk</a></li>
 <li><a href="SpeculativeClient.html">SpeculativeClient</a></li></ul>
 <h1>Class SpeculativeClient</h1></div>
+<section class="tsd-panel tsd-comment">
+<div class="tsd-comment tsd-typography"><p>A client for interacting with the speculative execution endpoint in the Casper Network.
+This class is responsible for executing speculative transactions on the Casper Network and processing their responses.</p>
+</div></section>
 <section class="tsd-panel tsd-hierarchy">
 <h4>Hierarchy</h4>
 <ul class="tsd-hierarchy">
 <li><span class="target">SpeculativeClient</span></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/0146180/src/rpc/speculative_client.ts#L14">src/rpc/speculative_client.ts:14</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/959324f/src/rpc/speculative_client.ts#L18">src/rpc/speculative_client.ts:18</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -46,21 +50,25 @@
 <ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="constructor.new_SpeculativeClient">new <wbr/>Speculative<wbr/>Client<span class="tsd-signature-symbol">(</span>handler<span class="tsd-signature-symbol">: </span><a href="../interfaces/IHandler.html" class="tsd-signature-type" data-tsd-kind="Interface">IHandler</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SpeculativeClient.html" class="tsd-signature-type" data-tsd-kind="Class">SpeculativeClient</a><a href="#constructor.new_SpeculativeClient" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Creates an instance of the <code>SpeculativeClient</code>.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>handler: <a href="../interfaces/IHandler.html" class="tsd-signature-type" data-tsd-kind="Interface">IHandler</a></h5></li></ul></div>
+<h5>handler: <a href="../interfaces/IHandler.html" class="tsd-signature-type" data-tsd-kind="Interface">IHandler</a></h5>
+<div class="tsd-comment tsd-typography"><p>The handler used to process RPC requests.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="SpeculativeClient.html" class="tsd-signature-type" data-tsd-kind="Class">SpeculativeClient</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/0146180/src/rpc/speculative_client.ts#L17">src/rpc/speculative_client.ts:17</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/959324f/src/rpc/speculative_client.ts#L26">src/rpc/speculative_client.ts:26</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private"><a id="handler" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>handler</span><a href="#handler" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">handler<span class="tsd-signature-symbol">:</span> <a href="../interfaces/IHandler.html" class="tsd-signature-type" data-tsd-kind="Interface">IHandler</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/0146180/src/rpc/speculative_client.ts#L15">src/rpc/speculative_client.ts:15</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/959324f/src/rpc/speculative_client.ts#L19">src/rpc/speculative_client.ts:19</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="speculativeExec" class="tsd-anchor"></a>
@@ -68,31 +76,49 @@
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="speculativeExec.speculativeExec-1">speculative<wbr/>Exec<span class="tsd-signature-symbol">(</span>reqID<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span>, deploy<span class="tsd-signature-symbol">: </span><a href="Deploy.html" class="tsd-signature-type" data-tsd-kind="Class">Deploy</a>, identifier<span class="tsd-signature-symbol">?: </span><a href="BlockIdentifier.html" class="tsd-signature-type" data-tsd-kind="Class">BlockIdentifier</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="SpeculativeExecResult.html" class="tsd-signature-type" data-tsd-kind="Class">SpeculativeExecResult</a><span class="tsd-signature-symbol">&gt;</span><a href="#speculativeExec.speculativeExec-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Executes a speculative transaction on the Casper Network.</p>
+
+<h3>Returns</h3><p>A promise that resolves to a <code>SpeculativeExecResult</code>, which contains the results of the speculative execution.</p>
+
+<h3>Throws</h3><p>If the handler response is empty or if an error occurs while processing the RPC call or parsing the response.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>reqID: <span class="tsd-signature-type">string</span></h5></li>
+<h5>reqID: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The request identifier for the RPC call.</p>
+</div></li>
 <li>
-<h5>deploy: <a href="Deploy.html" class="tsd-signature-type" data-tsd-kind="Class">Deploy</a></h5></li>
+<h5>deploy: <a href="Deploy.html" class="tsd-signature-type" data-tsd-kind="Class">Deploy</a></h5>
+<div class="tsd-comment tsd-typography"><p>The deploy object that represents the transaction to be executed.</p>
+</div></li>
 <li>
-<h5><code class="tsd-tag ts-flagOptional">Optional</code> identifier: <a href="BlockIdentifier.html" class="tsd-signature-type" data-tsd-kind="Class">BlockIdentifier</a></h5></li></ul></div>
+<h5><code class="tsd-tag ts-flagOptional">Optional</code> identifier: <a href="BlockIdentifier.html" class="tsd-signature-type" data-tsd-kind="Class">BlockIdentifier</a></h5>
+<div class="tsd-comment tsd-typography"><p>(Optional) The block identifier where the speculative transaction should be executed.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="SpeculativeExecResult.html" class="tsd-signature-type" data-tsd-kind="Class">SpeculativeExecResult</a><span class="tsd-signature-symbol">&gt;</span></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/0146180/src/rpc/speculative_client.ts#L25">src/rpc/speculative_client.ts:25</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/959324f/src/rpc/speculative_client.ts#L51">src/rpc/speculative_client.ts:51</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="newSpeculativeClient" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagStatic">Static</code> <span>new<wbr/>Speculative<wbr/>Client</span><a href="#newSpeculativeClient" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="newSpeculativeClient.newSpeculativeClient-1">new<wbr/>Speculative<wbr/>Client<span class="tsd-signature-symbol">(</span>handler<span class="tsd-signature-symbol">: </span><a href="../interfaces/IHandler.html" class="tsd-signature-type" data-tsd-kind="Interface">IHandler</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="SpeculativeClient.html" class="tsd-signature-type" data-tsd-kind="Class">SpeculativeClient</a><a href="#newSpeculativeClient.newSpeculativeClient-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Static method to create a new <code>SpeculativeClient</code> instance.</p>
+
+<h3>Returns</h3><p>A new instance of the <code>SpeculativeClient</code>.</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>handler: <a href="../interfaces/IHandler.html" class="tsd-signature-type" data-tsd-kind="Interface">IHandler</a></h5></li></ul></div>
+<h5>handler: <a href="../interfaces/IHandler.html" class="tsd-signature-type" data-tsd-kind="Interface">IHandler</a></h5>
+<div class="tsd-comment tsd-typography"><p>The handler used to process RPC requests.</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="SpeculativeClient.html" class="tsd-signature-type" data-tsd-kind="Class">SpeculativeClient</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/0146180/src/rpc/speculative_client.ts#L21">src/rpc/speculative_client.ts:21</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/959324f/src/rpc/speculative_client.ts#L36">src/rpc/speculative_client.ts:36</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
