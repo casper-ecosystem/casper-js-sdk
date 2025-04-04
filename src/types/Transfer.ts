@@ -347,7 +347,9 @@ export class Transfer {
   private static fromTransferV1(transferV1: TransferV1): Transfer {
     const transfer = new Transfer();
     transfer.amount = transferV1.amount;
-    transfer.transactionHash = new TransactionHash(transferV1.deployHash);
+    transfer.transactionHash = TransactionHash.fromDeployHash(
+      transferV1.deployHash
+    );
     transfer.from = new InitiatorAddr(undefined, transferV1.from);
     transfer.gas = transferV1.gas;
     transfer.id = transferV1.id;

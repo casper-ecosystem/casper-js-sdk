@@ -1,7 +1,8 @@
 import { jsonObject, jsonMember, jsonArrayMember, TypedJSON } from 'typedjson';
+import { concat } from '@ethersproject/bytes';
 
 import { Hash } from './key';
-import { Deploy, serializeApprovals } from './Deploy';
+import { Deploy } from './Deploy';
 import { Duration, Timestamp } from './Time';
 import { InitiatorAddr } from './InitiatorAddr';
 import { PricingMode } from './PricingMode';
@@ -11,11 +12,9 @@ import { TransactionScheduling } from './TransactionScheduling';
 import { PublicKey, PrivateKey } from './keypair';
 import { HexBytes } from './HexBytes';
 import { Args } from './Args';
-import { deserializeArgs, serializeArgs } from './SerializationUtils';
-import { byteHash } from './ByteConverters';
+import { byteHash, toBytesU32 } from './ByteConverters';
 import { TransactionV1Payload } from './TransactionV1Payload';
 import { CalltableSerialization } from './CalltableSerialization';
-import { concat } from '@ethersproject/bytes';
 
 /**
  * Custom error class for handling transaction-related errors.
@@ -64,6 +63,126 @@ export enum TransactionVersion {
 }
 
 /**
+ * Represents a transaction hash, which can either be associated with a `Deploy` or a `TransactionV1`.
+ */
+@jsonObject
+export class TransactionHash extends Hash {
+  /**
+   * The hash associated with the deploy transaction, if applicable.
+   * This will contain the hash of the `Deploy` transaction.
+   */
+  @jsonMember({
+    name: 'Deploy',
+    constructor: Hash,
+    deserializer: json => {
+      if (!json) return;
+      return Hash.fromJSON(json);
+    },
+    serializer: value => {
+      if (!value) return;
+      return value.toJSON();
+    }
+  })
+  public deploy?: Hash;
+
+  /**
+   * The hash associated with the version 1 transaction, if applicable.
+   * This will contain the hash of the `TransactionV1`.
+   */
+  @jsonMember({
+    name: 'Version1',
+    constructor: Hash,
+    deserializer: json => {
+      if (!json) return;
+      return Hash.fromJSON(json);
+    },
+    serializer: value => {
+      if (!value) return;
+      return value.toJSON();
+    }
+  })
+  public transactionV1?: Hash;
+
+  /**
+   * Constructs a new `TransactionHash` instance, which can hold either a `Deploy` hash or a `TransactionV1` hash.
+   * @param deploy The hash of the deploy transaction, if applicable.
+   * @param transactionV1 The hash of the version 1 transaction, if applicable.
+   */
+  private constructor(deploy?: Hash, transactionV1?: Hash) {
+    if (deploy) {
+      super(deploy.toBytes());
+      this.deploy = deploy;
+    }
+    if (transactionV1) {
+      super(transactionV1.toBytes());
+      this.transactionV1 = transactionV1;
+    }
+  }
+
+  /**
+   * Creates a TransactionHash from a Deploy hash.
+   * @param hash The Deploy hash instance.
+   * @returns A new TransactionHash instance with the deploy hash.
+   */
+  public static fromDeployHash(hash: Hash): TransactionHash {
+    return new TransactionHash(hash, undefined);
+  }
+
+  /**
+   * Creates a TransactionHash from a TransactionV1 hash.
+   * @param hash The TransactionV1 hash instance.
+   * @returns A new TransactionHash instance with the transactionV1 hash.
+   */
+  public static fromTransactionHash(hash: Hash): TransactionHash {
+    return new TransactionHash(undefined, hash);
+  }
+  /**
+   * Returns the hash (either deploy or transactionV1).
+   * This method is useful when you want to get the hash regardless of type.
+   */
+  public getHash(): Hash | undefined {
+    return this.deploy || this.transactionV1;
+  }
+
+  /**
+   * Converts the `TransactionHash` to a hexadecimal string representation.
+   * @returns The hexadecimal string of the deploy or transactionV1 hash, or an empty string if neither is available.
+   */
+  public toHex(): string {
+    return this.getHash()?.toHex() || '';
+  }
+
+  /**
+   * Converts the `TransactionHash` to a byte array representation.
+   * @returns The byte array of the deploy or transactionV1 hash, or an empty byte array if neither is available.
+   */
+  public toBytes(): Uint8Array {
+    return this.getHash()?.toBytes() || new Uint8Array();
+  }
+
+  /**
+   * Converts the `TransactionHash` to a JSON string (hex format).
+   * @returns The hexadecimal string representation of the hash.
+   */
+  public toJSON(): string {
+    return this.toHex();
+  }
+
+  /**
+   * Checks if the current transaction hash is equal to another hash.
+   * @param other The hash to compare with.
+   * @returns True if the hashes are equal, otherwise false.
+   */
+  public equals(other: Hash): boolean {
+    const thisBytes = this.getHash()?.toBytes();
+    const otherBytes = other.toBytes();
+    if (!thisBytes || thisBytes.length !== otherBytes.length) return false;
+
+    return thisBytes.every((byte, index) => byte === otherBytes[index]);
+  }
+}
+
+/**
  * Represents an approval for a transaction with a signer and signature.
  */
 @jsonObject
@@ -98,6 +217,30 @@ export class Approval {
   constructor(signer: PublicKey, signature: HexBytes) {
     this.signer = signer;
     this.signature = signature;
+  }
+
+  /**
+   * Serializes an array of `Approval`s into a `Uint8Array` typed byte array.
+   * This is used to store or transmit the approvals associated with a deploy.
+   *
+   * @param approvals An array of `Approval` objects that represent signatures from accounts that have approved the deploy.
+   * @returns A `Uint8Array` typed byte array that can be deserialized back into an array of `Approval` objects.
+   *
+   * @example
+   * const approvals = [new Approval(publicKey, signature)];
+   * const serializedApprovals = Approval.toBytes(approvals);
+   */
+  public static toBytes(approvals: Approval[]): Uint8Array {
+    const len = toBytesU32(approvals.length);
+    const bytes = concat(
+      approvals.map(approval => {
+        return concat([
+          Uint8Array.from(Buffer.from(approval.signer.toString(), 'hex')),
+          Uint8Array.from(Buffer.from(approval.signature.toString(), 'hex'))
+        ]);
+      })
+    );
+    return concat([len, bytes]);
   }
 }
 
@@ -182,9 +325,9 @@ export class TransactionV1 {
     this.approvals.push(new Approval(keys.publicKey, signature));
   }
 
-  private static readonly  HASH_FIELD_INDEX = 0;
-  private static readonly  PAYLOAD_FIELD_INDEX = 1;
-  private static readonly  APPROVALS_FIELD_INDEX = 2;
+  private static readonly HASH_FIELD_INDEX = 0;
+  private static readonly PAYLOAD_FIELD_INDEX = 1;
+  private static readonly APPROVALS_FIELD_INDEX = 2;
 
   /**
    * Converts the TransactionV1 to a byte array for transmission or storage.
@@ -194,7 +337,10 @@ export class TransactionV1 {
     return new CalltableSerialization()
       .addField(TransactionV1.HASH_FIELD_INDEX, this.hash.toBytes())
       .addField(TransactionV1.PAYLOAD_FIELD_INDEX, this.payload.toBytes())
-      .addField(TransactionV1.APPROVALS_FIELD_INDEX, serializeApprovals(this.approvals))
+      .addField(
+        TransactionV1.APPROVALS_FIELD_INDEX,
+        Approval.toBytes(this.approvals)
+      )
       .toBytes();
   }
 
@@ -298,11 +444,9 @@ export class Transaction {
    */
   @jsonMember({
     name: 'hash',
-    constructor: Hash,
-    deserializer: json => Hash.fromJSON(json),
-    serializer: value => value.toJSON()
+    constructor: TransactionHash
   })
-  public hash: Hash;
+  public hash: TransactionHash;
 
   /**
    * The name of the blockchain chain associated with this transaction.
@@ -315,9 +459,7 @@ export class Transaction {
    */
   @jsonMember({
     name: 'timestamp',
-    constructor: Timestamp,
-    deserializer: json => Timestamp.fromJSON(json),
-    serializer: value => value.toJSON()
+    constructor: Timestamp
   })
   public timestamp: Timestamp;
 
@@ -326,9 +468,7 @@ export class Transaction {
    */
   @jsonMember({
     name: 'ttl',
-    constructor: Duration,
-    deserializer: json => Duration.fromJSON(json),
-    serializer: value => value.toJSON()
+    constructor: Duration
   })
   public ttl: Duration;
 
@@ -337,9 +477,7 @@ export class Transaction {
    */
   @jsonMember({
     name: 'initiator_addr',
-    constructor: InitiatorAddr,
-    deserializer: json => InitiatorAddr.fromJSON(json),
-    serializer: value => value.toJSON()
+    constructor: InitiatorAddr
   })
   public initiatorAddr: InitiatorAddr;
 
@@ -352,10 +490,7 @@ export class Transaction {
   /**
    * The arguments for the transaction, which can be a map of values required by the entry point.
    */
-  @jsonMember(() => Args, {
-    deserializer: deserializeArgs,
-    serializer: (args: Args) => serializeArgs(args, false)
-  })
+  @jsonMember(() => Args)
   public args: Args;
 
   /**
@@ -363,9 +498,7 @@ export class Transaction {
    */
   @jsonMember({
     name: 'target',
-    constructor: TransactionTarget,
-    serializer: value => value.toJSON(),
-    deserializer: json => TransactionTarget.fromJSON(json)
+    constructor: TransactionTarget
   })
   public target: TransactionTarget;
 
@@ -374,9 +507,7 @@ export class Transaction {
    */
   @jsonMember({
     name: 'entry_point',
-    constructor: TransactionEntryPoint,
-    serializer: value => value.toJSON(),
-    deserializer: json => TransactionEntryPoint.fromJSON(json)
+    constructor: TransactionEntryPoint
   })
   public entryPoint: TransactionEntryPoint;
 
@@ -385,9 +516,7 @@ export class Transaction {
    */
   @jsonMember({
     name: 'scheduling',
-    constructor: TransactionScheduling,
-    serializer: value => value.toJSON(),
-    deserializer: json => TransactionScheduling.fromJSON(json)
+    constructor: TransactionScheduling
   })
   public scheduling: TransactionScheduling;
 
@@ -426,7 +555,7 @@ export class Transaction {
    * @param originDeployV1 The original deploy, if applicable.
    */
   constructor(
-    hash: Hash,
+    hash: TransactionHash,
     chainName: string,
     timestamp: Timestamp,
     ttl: Duration,
@@ -537,16 +666,10 @@ export class Transaction {
    * @returns A `Uint8Array` representing the Transaction instance in byte format.
    */
   public toBytes(): Uint8Array {
-    if(this.originDeployV1) {
-      return concat([
-        Uint8Array.of(0x00),
-        this.originDeployV1.toBytes()
-      ]);
-    } else if(this.originTransactionV1) {
-      return concat([
-        Uint8Array.of(0x01),
-        this.originTransactionV1.toBytes()
-      ]);
+    if (this.originDeployV1) {
+      return concat([Uint8Array.of(0x00), this.originDeployV1.toBytes()]);
+    } else if (this.originTransactionV1) {
+      return concat([Uint8Array.of(0x01), this.originTransactionV1.toBytes()]);
     } else {
       throw new Error('Incorrect Transaction instance. Missing origin value');
     }
@@ -559,7 +682,7 @@ export class Transaction {
    */
   static fromTransactionV1(v1: TransactionV1): Transaction {
     return new Transaction(
-      v1.hash,
+      TransactionHash.fromTransactionHash(v1.hash),
       v1.payload.chainName,
       v1.payload.timestamp,
       v1.payload.ttl,
@@ -653,74 +776,5 @@ export class TransactionWrapper {
   static toJSON(wrapper: TransactionWrapper) {
     const serializer = new TypedJSON(TransactionWrapper);
     return serializer.toPlainJson(wrapper);
-  }
-}
-
-/**
- * Represents a transaction hash, which can either be associated with a `Deploy` or a `TransactionV1`.
- * This class helps in wrapping transaction hashes from different transaction types.
- */
-@jsonObject
-export class TransactionHash {
-  /**
-   * The hash associated with the deploy transaction, if applicable.
-   * This will contain the hash of the `Deploy` transaction.
-   */
-  @jsonMember({
-    name: 'Deploy',
-    constructor: Hash,
-    deserializer: json => {
-      if (!json) return;
-      return Hash.fromJSON(json);
-    },
-    serializer: value => {
-      if (!value) return;
-      return value.toJSON();
-    }
-  })
-  public deploy?: Hash;
-
-  /**
-   * The hash associated with the version 1 transaction, if applicable.
-   * This will contain the hash of the `TransactionV1`.
-   */
-  @jsonMember({
-    name: 'Version1',
-    constructor: Hash,
-    deserializer: json => {
-      if (!json) return;
-      return Hash.fromJSON(json);
-    },
-    serializer: value => {
-      if (!value) return;
-      return value.toJSON();
-    }
-  })
-  public transactionV1?: Hash;
-
-  /**
-   * Constructs a new `TransactionHash` instance, which can hold either a `Deploy` hash or a `TransactionV1` hash.
-   * @param deploy The hash of the deploy transaction, if applicable.
-   * @param transactionV1 The hash of the version 1 transaction, if applicable.
-   */
-  constructor(deploy?: Hash, transactionV1?: Hash) {
-    this.deploy = deploy;
-    this.transactionV1 = transactionV1;
-  }
-
-  /**
-   * Converts the `TransactionHash` to a hexadecimal string representation.
-   *
-   * @returns {string} The hexadecimal string of the deploy or transactionV1,
-   *                   or an empty string if neither is available.
-   */
-  public toString(): string {
-    if (this.deploy) {
-      return this.deploy.toHex();
-    } else if (this.transactionV1) {
-      return this.transactionV1.toHex();
-    }
-
-    return '';
   }
 }

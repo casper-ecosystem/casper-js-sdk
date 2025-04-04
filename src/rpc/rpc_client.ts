@@ -112,7 +112,7 @@ export class RpcClient implements IClient {
     const serializer = new TypedJSON(ParamTransactionHash);
     const hash = Hash.fromHex(transactionHash);
     const transactionHashParam = new ParamTransactionHash(
-      new TransactionHash(undefined, hash)
+      TransactionHash.fromTransactionHash(hash)
     );
 
     const resp = await this.processRequest<ParamTransactionHash>(
@@ -141,7 +141,7 @@ export class RpcClient implements IClient {
     const serializer = new TypedJSON(ParamTransactionHash);
     const hash = Hash.fromHex(deployHash);
     const transactionHashParam = new ParamTransactionHash(
-      new TransactionHash(hash)
+      TransactionHash.fromDeployHash(hash)
     );
 
     const resp = await this.processRequest<ParamTransactionHash>(
@@ -170,7 +170,7 @@ export class RpcClient implements IClient {
     const serializer = new TypedJSON(ParamTransactionHash);
     const hash = Hash.fromHex(transactionHash);
     const transactionHashParam = new ParamTransactionHash(
-      new TransactionHash(undefined, hash),
+      TransactionHash.fromTransactionHash(hash),
       true
     );
 
@@ -200,7 +200,7 @@ export class RpcClient implements IClient {
     const serializer = new TypedJSON(ParamTransactionHash);
     const hash = Hash.fromHex(deployHash);
     const transactionHashParam = new ParamTransactionHash(
-      new TransactionHash(hash),
+      TransactionHash.fromDeployHash(hash),
       true
     );
 

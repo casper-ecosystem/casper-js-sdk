@@ -10,7 +10,7 @@ import {
 } from './Transaction';
 import { PublicKey } from './keypair';
 import { HexBytes } from './HexBytes';
-import { getEnumKeyByValue } from "../utils";
+import { getEnumKeyByValue } from '../utils';
 
 /**
  * Represents a proof containing a public key and a signature, used for validating the authenticity of data.
@@ -428,11 +428,13 @@ export class BlockTransaction {
    * console.log(transactions); // Outputs an array of BlockTransaction instances.
    */
   public static fromJSON(data: any): BlockTransaction[] {
-    const serializer = new TypedJSON(TransactionHash)
+    const serializer = new TypedJSON(TransactionHash);
     const source = {
       Mint: (data['0'] || []).map((json: any) => serializer.parse(json)),
       Auction: (data['1'] || []).map((json: any) => serializer.parse(json)),
-      InstallUpgrade: (data['2'] || []).map((json: any) => serializer.parse(json)),
+      InstallUpgrade: (data['2'] || []).map((json: any) =>
+        serializer.parse(json)
+      ),
       Large: (data['3'] || []).map((json: any) => serializer.parse(json)),
       Medium: (data['4'] || []).map((json: any) => serializer.parse(json)),
       Small: (data['5'] || []).map((json: any) => serializer.parse(json))
@@ -471,7 +473,12 @@ export class BlockTransaction {
 
   public toJSON(): string {
     return JSON.stringify({
-      [this.category.toString()]: [{[getEnumKeyByValue(TransactionVersion, this.version) ?? '']: this.hash.toJSON()}]
+      [this.category.toString()]: [
+        {
+          [getEnumKeyByValue(TransactionVersion, this.version) ??
+          '']: this.hash.toJSON()
+        }
+      ]
     });
   }
 }
@@ -918,7 +925,7 @@ export class BlockBodyV2 {
     serializer: (value: BlockTransaction[]) => {
       return {
         ...value.reduce((acc, tx) => {
-          return {...acc, ...JSON.parse(tx.toJSON())};
+          return { ...acc, ...JSON.parse(tx.toJSON()) };
         }, {})
       };
     }
