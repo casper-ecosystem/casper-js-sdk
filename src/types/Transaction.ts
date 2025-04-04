@@ -1,7 +1,7 @@
 import { jsonObject, jsonMember, jsonArrayMember, TypedJSON } from 'typedjson';
 import { concat } from '@ethersproject/bytes';
 
-import { Hash, IHash } from './key';
+import { Hash } from './key';
 import { Deploy } from './Deploy';
 import { Duration, Timestamp } from './Time';
 import { InitiatorAddr } from './InitiatorAddr';
@@ -64,10 +64,9 @@ export enum TransactionVersion {
 
 /**
  * Represents a transaction hash, which can either be associated with a `Deploy` or a `TransactionV1`.
- * This class helps in wrapping transaction hashes from different transaction types.
  */
 @jsonObject
-export class TransactionHash implements IHash {
+export class TransactionHash extends Hash {
   /**
    * The hash associated with the deploy transaction, if applicable.
    * This will contain the hash of the `Deploy` transaction.
@@ -109,16 +108,45 @@ export class TransactionHash implements IHash {
    * @param deploy The hash of the deploy transaction, if applicable.
    * @param transactionV1 The hash of the version 1 transaction, if applicable.
    */
-  constructor(deploy?: Hash, transactionV1?: Hash) {
-    this.deploy = deploy;
-    this.transactionV1 = transactionV1;
+  private constructor(deploy?: Hash, transactionV1?: Hash) {
+    if (deploy) {
+      super(deploy.toBytes());
+      this.deploy = deploy;
+    }
+    if (transactionV1) {
+      super(transactionV1.toBytes());
+      this.transactionV1 = transactionV1;
+    }
+  }
+
+  /**
+   * Creates a TransactionHash from a Deploy hash.
+   * @param hash The Deploy hash instance.
+   * @returns A new TransactionHash instance with the deploy hash.
+   */
+  public static fromDeployHash(hash: Hash): TransactionHash {
+    return new TransactionHash(hash, undefined);
+  }
+
+  /**
+   * Creates a TransactionHash from a TransactionV1 hash.
+   * @param hash The TransactionV1 hash instance.
+   * @returns A new TransactionHash instance with the transactionV1 hash.
+   */
+  public static fromTransactionHash(hash: Hash): TransactionHash {
+    return new TransactionHash(undefined, hash);
+  }
+  /**
+   * Returns the hash (either deploy or transactionV1).
+   * This method is useful when you want to get the hash regardless of type.
+   */
+  public getHash(): Hash | undefined {
+    return this.deploy || this.transactionV1;
   }
 
   /**
    * Converts the `TransactionHash` to a hexadecimal string representation.
-   *
-   * @returns {string} The hexadecimal string of the deploy or transactionV1,
-   *                   or an empty string if neither is available.
+   * @returns The hexadecimal string of the deploy or transactionV1 hash, or an empty string if neither is available.
    */
   public toHex(): string {
     return this.getHash()?.toHex() || '';
@@ -126,9 +154,7 @@ export class TransactionHash implements IHash {
 
   /**
    * Converts the `TransactionHash` to a byte array representation.
-   *
-   * @returns {Uint8Array} The byte array of the deploy or transactionV1,
-   *                       or an empty byte array if neither is available.
+   * @returns The byte array of the deploy or transactionV1 hash, or an empty byte array if neither is available.
    */
   public toBytes(): Uint8Array {
     return this.getHash()?.toBytes() || new Uint8Array();
@@ -136,8 +162,7 @@ export class TransactionHash implements IHash {
 
   /**
    * Converts the `TransactionHash` to a JSON string (hex format).
-   *
-   * @returns {string} The hexadecimal string representation of the hash.
+   * @returns The hexadecimal string representation of the hash.
    */
   public toJSON(): string {
     return this.toHex();
@@ -145,9 +170,8 @@ export class TransactionHash implements IHash {
 
   /**
    * Checks if the current transaction hash is equal to another hash.
-   *
    * @param other The hash to compare with.
-   * @returns {boolean} True if the hashes are equal, otherwise false.
+   * @returns True if the hashes are equal, otherwise false.
    */
   public equals(other: Hash): boolean {
     const thisBytes = this.getHash()?.toBytes();
@@ -155,15 +179,6 @@ export class TransactionHash implements IHash {
     if (!thisBytes || thisBytes.length !== otherBytes.length) return false;
 
     return thisBytes.every((byte, index) => byte === otherBytes[index]);
-  }
-
-  /**
-   * Helper method to return the hash (either deploy or transactionV1).
-   *
-   * @returns {Hash | undefined} The relevant hash (deploy or transactionV1), or undefined.
-   */
-  private getHash(): Hash | undefined {
-    return this.deploy || this.transactionV1;
   }
 }
 
@@ -667,7 +682,7 @@ export class Transaction {
    */
   static fromTransactionV1(v1: TransactionV1): Transaction {
     return new Transaction(
-      new TransactionHash(undefined, v1.hash),
+      TransactionHash.fromTransactionHash(v1.hash),
       v1.payload.chainName,
       v1.payload.timestamp,
       v1.payload.ttl,

@@ -445,7 +445,7 @@ export class TransactionExpiredEvent {
       );
       if (deployEvent?.deployExpired) {
         transactionEvent.transactionExpiredPayload = {
-          transactionHash: new TransactionHash(
+          transactionHash: TransactionHash.fromDeployHash(
             deployEvent.deployExpired.deployHash
           )
         };
@@ -557,7 +557,7 @@ export class TransactionProcessedEvent {
       if (deployEvent?.deployProcessed) {
         transactionEvent.transactionProcessedPayload = {
           blockHash: deployEvent.deployProcessed.blockHash,
-          transactionHash: new TransactionHash(
+          transactionHash: TransactionHash.fromDeployHash(
             deployEvent.deployProcessed.deployHash
           ),
           initiatorAddr: new InitiatorAddr(deployEvent.deployProcessed.account),

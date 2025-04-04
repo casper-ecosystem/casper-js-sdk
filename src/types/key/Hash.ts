@@ -2,24 +2,11 @@ import { jsonObject } from 'typedjson';
 import { IResultWithBytes } from '../clvalue';
 
 /**
- * Interface for a cryptographic Hash.
- * This interface provides the methods for creating, manipulating, and comparing hash values.
- */
-export interface IHash {
-  toHex(): string;
-  toBytes(): Uint8Array;
-  toJSON(): string;
-
-  // Method for equality comparison
-  equals(other: Hash): boolean;
-}
-
-/**
  * Represents a cryptographic hash.
  * This class provides methods for creating, manipulating, and comparing hash values.
  */
 @jsonObject
-export class Hash implements IHash {
+export class Hash {
   private hashBytes: Uint8Array;
 
   /** The fixed length of the hash in bytes. */

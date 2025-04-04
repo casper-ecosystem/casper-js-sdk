@@ -473,7 +473,7 @@ export class ExecutionResult {
 
         const transfer = new Transfer();
         transfer.amount = writeTransfer.amount;
-        transfer.transactionHash = new TransactionHash(
+        transfer.transactionHash = TransactionHash.fromDeployHash(
           writeTransfer?.deployHash
         );
         transfer.from = new InitiatorAddr(undefined, writeTransfer.from);

@@ -427,7 +427,7 @@ export class Deploy {
     pricingMode.paymentLimited = paymentLimitedMode;
 
     return new Transaction(
-      new TransactionHash(deploy.hash),
+      TransactionHash.fromDeployHash(deploy.hash),
       deploy.header.chainName,
       deploy.header.timestamp,
       deploy.header.ttl,
