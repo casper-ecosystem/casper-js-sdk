@@ -551,11 +551,12 @@ You can retrieve a transaction or deploy information by simply providing the app
 
 ```typescript
 // Provide either a deploy or transaction hash
-const deployTransactionHash = new TransactionHash(
-  DEPLOY_HASH_MAINNET,
-  null
+const deployTransactionHash = TransactionHash.fromDeployHash(
+  DEPLOY_HASH_MAINNET
 ); // For a deploy
-const transactionHash = new TransactionHash(null, TRANSACTION_HASH); // For a transaction
+const transactionHash = TransactionHash.fromTransactionHash(
+  TRANSACTION_HASH
+); // For a transaction
 
 // Retrieve the transaction or deploy information (the method automatically detects the type)
 const transactionInfo = await casperNetwork.getTransaction(
