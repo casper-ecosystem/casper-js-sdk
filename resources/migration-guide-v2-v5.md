@@ -430,7 +430,7 @@ console.log(`Deploy Hash: ${result.deployHash}`);
 
 ### 8. **Casper Network utility**
 
-`CasperNetwork` is a class designed to facilitate interaction with the Casper blockchain. It provides methods for creating and submitting various types of transactions, including delegation, undelegation, redelegation, transfers, contract calls, and session-based transactions.
+`CasperNetwork` is a class designed to provide a consistent interface for functionality that varies between `Casper 1.x` and `Casper 2.x`. It offers methods for creating and submitting a variety of transactions, including `delegation`, `undelegation`, `redelegation`, `transfers`, `contract calls`, and `session-based` transactions. This utility helps minimize the need for conditional logic in your code, ensuring backward and forward compatibility with both Casper `1.x` and `2.x`.
 
 ## Usage
 
