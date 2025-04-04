@@ -428,7 +428,146 @@ console.log(`Deploy Hash: ${result.deployHash}`);
 
 ---
 
-### 8. **Miscellaneous Changes**
+### 8. **Casper Network utility**
+
+`CasperNetwork` is a class designed to provide a consistent interface for functionality that varies between `Casper 1.x` and `Casper 2.x`. It offers methods for creating and submitting a variety of transactions, including `delegation`, `undelegation`, `redelegation`, `transfers`, `contract calls`, and `session-based` transactions. This utility helps minimize the need for conditional logic in your code, ensuring backward and forward compatibility with both Casper `1.x` and `2.x`.
+
+## Usage
+
+#### Creating an Instance
+
+You can create an instance of `CasperNetwork` by passing an `RpcClient`. The `apiVersion` determines whether the instance will interact with Casper Network 2.0 or 1.5.x.
+
+```typescript
+import { RpcClient, HttpHandler, CasperNetwork } from 'casper-js-sdk';
+
+const httpHandler = new HttpHandler('http://<Node Address>:7777/rpc');
+const rpcClient = new RpcClient(httpHandler);
+
+const casperNetwork = await CasperNetwork.create(rpcClient); // You could provide apiVersion as second parameter. More info about api version you can find below
+```
+
+#### API Version
+
+The `CasperNetwork` class determines which version of the network to interact with based on `apiVersion`. If `apiVersion` is not provided, it is fetched dynamically from the node's status:
+
+- `apiVersion = 2` → Uses Casper Network 2.0
+- `apiVersion = 1` → Uses Casper Network 1.5.x
+
+Each transaction method automatically creates the appropriate transaction type based on the assigned API version.
+
+### Transaction Methods
+
+### Delegate Transaction
+
+Depending on the assigned `apiVersion`, a transaction will be created for either Casper Network 2.0 or 1.5.x. If you provide the auctionContractHash parameter, the transaction will be built for version 1.5.
+
+```typescript
+const transaction = casperNetwork.createDelegateTransaction(
+  delegatorPublicKey,
+  validatorPublicKey,
+  'casper-test',
+  '1000000000', // amount in Motes: string | BigNumber
+  5000000000, // deploy cost: number
+  1800000, // ttl : number
+  'auction-contract-hash' // for version 1.5.x
+);
+```
+
+### Undelegate Transaction
+
+Depending on the assigned `apiVersion`, a transaction will be created for either Casper Network 2.0 or 1.5.x. If you provide the auctionContractHash parameter, the transaction will be built for version 1.5.
+
+```typescript
+const transaction = casperNetwork.createUndelegateTransaction(
+  delegatorPublicKey,
+  validatorPublicKey,
+  'casper-test',
+  '1000000000', // amount in Motes: string | BigNumber
+  5000000000, // deploy cost: number
+  1800000, // ttl : number
+  'auction-contract-hash' // for version 1.5.x
+);
+```
+
+### Redelegate Transaction
+
+Depending on the assigned apiVersion, a transaction will be created for either Casper Network 2.0 or 1.5.x. If you provide the auctionContractHash parameter, the transaction will be built for version 1.5.
+
+```typescript
+const transaction = casperNetwork.createRedelegateTransaction(
+  delegatorPublicKey,
+  validatorPublicKey,
+  newValidatorPublicKey,
+  'casper-test',
+  '1000000000', // amount in Motes: string | BigNumber
+  5000000000, // deploy cost: number
+  1800000, // ttl : number
+  'auction-contract-hash' // for version 1.5.x
+);
+```
+
+### Transfer Transaction
+
+Depending on the assigned `apiVersion`, a transaction will be created for either Casper Network 2.0 or 1.5.x.
+
+```typescript
+const transaction = casperNetwork.createTransferTransaction(
+  senderPublicKey,
+  recipientPublicKey,
+  'casper-test',
+  '1000000000', // amount in Motes: string | BigNumber
+  5000000000, // deploy cost: number
+  1800000, // ttl : number
+  1
+);
+```
+
+### Contract Call Transaction
+
+Depending on the assigned `apiVersion`, a transaction will be created for either Casper Network 2.0 or 1.5.x.
+
+```typescript
+const transaction = casperNetwork.createContractCallTransaction(
+  senderPublicKey,
+  'contract-hash',
+  'entryPoint',
+  'casper-test',
+  5000000000, // deploy cost: number
+  1800000, // ttl : number
+  args
+);
+```
+
+### Submit a Transaction
+
+```typescript
+const result = await casperNetwork.putTransaction(transaction);
+```
+
+### Retrieve a Transaction
+
+You can retrieve a transaction or deploy information by simply providing the appropriate hash. The method will automatically determine if the hash corresponds to a deploy or a transaction.
+
+```typescript
+const deployTransactionHash = TransactionHash.fromDeployHash(
+  DEPLOY_HASH
+); // For a deploy
+const transactionHash = TransactionHash.fromTransactionHash(
+  TRANSACTION_HASH
+); // For a transaction
+
+// Retrieve the transaction or deploy information (the method automatically detects the type)
+// You can provide `transaction.hash` from a created transaction object,
+// or create a new one using the `TransactionHash` methods ( see code above ).
+const transactionInfo = await casperNetwork.getTransaction(
+  transaction.hash // Or use the hash created with TransactionHash - [transactionHash | deployTransactionHash]
+);
+```
+
+---
+
+### 9. **Miscellaneous Changes**
 
 - `EventStream` become [SseClient](../src/sse/client.ts). The `SseClient` is the main place to interact with Casper events. [See more details here](../src/sse/README.md)
 - `RuntimeArgs` become [Args](../src/types/Args.ts)
