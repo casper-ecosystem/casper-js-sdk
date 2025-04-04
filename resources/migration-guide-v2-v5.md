@@ -460,39 +460,39 @@ Each transaction method automatically creates the appropriate transaction type b
 
 ### Delegate Transaction
 
-Depending on the assigned `apiVersion`, a transaction will be created for either Casper Network 2.0 or 1.5.x.
+Depending on the assigned `apiVersion`, a transaction will be created for either Casper Network 2.0 or 1.5.x. If you provide the auctionContractHash parameter, the transaction will be built for version 1.5.
 
 ```typescript
 const transaction = casperNetwork.createDelegateTransaction(
   delegatorPublicKey,
   validatorPublicKey,
   'casper-test',
-  '1000000000',
-  5000000000,
-  1800000,
-  'auction-contract-hash'
+  '1000000000', // amount in Motes: string | BigNumber
+  5000000000, // deploy cost: number
+  1800000, // ttl : number
+  'auction-contract-hash' // for version 1.5.x
 );
 ```
 
 ### Undelegate Transaction
 
-Depending on the assigned `apiVersion`, a transaction will be created for either Casper Network 2.0 or 1.5.x.
+Depending on the assigned `apiVersion`, a transaction will be created for either Casper Network 2.0 or 1.5.x. If you provide the auctionContractHash parameter, the transaction will be built for version 1.5.
 
 ```typescript
 const transaction = casperNetwork.createUndelegateTransaction(
   delegatorPublicKey,
   validatorPublicKey,
   'casper-test',
-  '1000000000',
-  5000000000,
-  1800000,
-  'auction-contract-hash'
+  '1000000000', // amount in Motes: string | BigNumber
+  5000000000, // deploy cost: number
+  1800000, // ttl : number
+  'auction-contract-hash' // for version 1.5.x
 );
 ```
 
 ### Redelegate Transaction
 
-Depending on the assigned `apiVersion`, a transaction will be created for either Casper Network 2.0 or 1.5.x.
+Depending on the assigned apiVersion, a transaction will be created for either Casper Network 2.0 or 1.5.x. If you provide the auctionContractHash parameter, the transaction will be built for version 1.5.
 
 ```typescript
 const transaction = casperNetwork.createRedelegateTransaction(
@@ -500,10 +500,10 @@ const transaction = casperNetwork.createRedelegateTransaction(
   validatorPublicKey,
   newValidatorPublicKey,
   'casper-test',
-  '1000000000',
-  5000000000,
-  1800000,
-  'auction-contract-hash'
+  '1000000000', // amount in Motes: string | BigNumber
+  5000000000, // deploy cost: number
+  1800000, // ttl : number
+  'auction-contract-hash' // for version 1.5.x
 );
 ```
 
@@ -516,9 +516,9 @@ const transaction = casperNetwork.createTransferTransaction(
   senderPublicKey,
   recipientPublicKey,
   'casper-test',
-  '1000000000',
-  5000000000,
-  1800000,
+  '1000000000', // amount in Motes: string | BigNumber
+  5000000000, // deploy cost: number
+  1800000, // ttl : number
   1
 );
 ```
@@ -533,8 +533,8 @@ const transaction = casperNetwork.createContractCallTransaction(
   'contract-hash',
   'entryPoint',
   'casper-test',
-  5000000000,
-  1800000,
+  5000000000, // deploy cost: number
+  1800000, // ttl : number
   args
 );
 ```
