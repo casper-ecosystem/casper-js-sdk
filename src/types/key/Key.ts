@@ -37,6 +37,7 @@ export enum PrefixName {
   EraSummary = 'era-summary-',
   Unbond = 'unbond-',
   ChainspecRegistry = 'chainspec-registry-',
+  EntityContract = 'entity-contract-',
   ChecksumRegistry = 'checksum-registry-',
   BidAddr = 'bid-addr-',
   Package = 'package-',
