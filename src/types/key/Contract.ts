@@ -75,7 +75,10 @@ export class ContractHash {
       originPrefix = PrefixName.ContractWasm;
     } else if (source.startsWith(PrefixName.Contract)) {
       originPrefix = PrefixName.Contract;
+    } else if (source.startsWith(PrefixName.EntityContract)) {
+      originPrefix = PrefixName.EntityContract;
     }
+
     const hexBytes = Hash.fromHex(source.slice(originPrefix.length));
     return new ContractHash(hexBytes, originPrefix);
   }
