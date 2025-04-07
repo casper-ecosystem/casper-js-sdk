@@ -7,9 +7,10 @@ import {
   InfoGetDeployResult,
   InfoGetStatusResult,
   InfoGetTransactionResult,
-  InfoGetTransactionResultV1Compatible
+  InfoGetTransactionResultV1Compatible,
+  StateGetAccountInfo
 } from '../../rpc';
-import { BlockBodyV2 } from '../../types';
+import { BlockBodyV2, NamedKey } from '../../types';
 import {
   getBlockByHashJson,
   getStatusJson,
@@ -18,7 +19,8 @@ import {
   infoGetDeployJson,
   transactionWithEraJson,
   getDeployWithNullExecutionResults,
-  getTransactionWithNullExecutionResults
+  getTransactionWithNullExecutionResults,
+  stateGetAccountInfoJson
 } from '../data';
 
 describe('RPC Client', () => {
@@ -226,5 +228,27 @@ describe('RPC Client', () => {
       getTransactionWithNullExecutionResults.result.transaction.Deploy.hash
     );
     expect(transactionResult?.executionInfo?.executionResult).to.be.undefined;
+  });
+
+  it('should correctly parse account info result', () => {
+    const stateGetAccountInfo = new TypedJSON(StateGetAccountInfo).parse(
+      stateGetAccountInfoJson
+    );
+
+    expect(stateGetAccountInfo).to.be.not.undefined;
+    expect(stateGetAccountInfo).to.be.not.empty;
+
+    const parsedNamedKeys = stateGetAccountInfo?.account.namedKeys;
+    const originalNamedKeys = stateGetAccountInfoJson.account.named_keys;
+
+    expect(parsedNamedKeys).to.have.lengthOf(originalNamedKeys.length);
+
+    parsedNamedKeys?.forEach((namedKey, index) => {
+      expect(namedKey).to.be.an.instanceof(NamedKey);
+      expect(namedKey.name).to.deep.equal(originalNamedKeys[index].name);
+      expect(namedKey.key.toPrefixedString()).to.deep.equal(
+        originalNamedKeys[index].key
+      );
+    });
   });
 });
