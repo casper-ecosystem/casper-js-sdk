@@ -1,6 +1,6 @@
 import { jsonObject, jsonMember, jsonArrayMember } from 'typedjson';
 import { AccountHash, URef } from './key';
-import { NamedKeys } from './NamedKey';
+import { NamedKey } from './NamedKey';
 
 /**
  * Represents an associated key for an account, linking an `AccountHash`
@@ -75,11 +75,10 @@ export class Account {
    * The named keys associated with this account, mapping key names to `URef` values.
    * TODO: Is it could be any type of keys or certain types?
    */
-  @jsonMember({
-    name: 'named_keys',
-    constructor: NamedKeys
+  @jsonArrayMember(NamedKey, {
+    name: 'named_keys'
   })
-  namedKeys: NamedKeys;
+  namedKeys: NamedKey[];
 
   /**
    * The main purse associated with this account, represented as a `URef`.
