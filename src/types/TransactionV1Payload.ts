@@ -8,7 +8,11 @@ import { TransactionTarget } from './TransactionTarget';
 import { TransactionEntryPoint } from './TransactionEntryPoint';
 import { TransactionScheduling } from './TransactionScheduling';
 import { CalltableSerialization } from './CalltableSerialization';
-import { deserializeArgs, serializeArgs } from './SerializationUtils';
+import {
+  byteArrayJsonSerializer,
+  deserializeArgs,
+  serializeArgs
+} from './SerializationUtils';
 import { CLValue } from './clvalue';
 import {
   expandBuffer,
@@ -322,6 +326,8 @@ export class TransactionV1Payload {
       true
     );
     runtimeArgsWithLength.set(runtimeArgsBytes, 4);
+
+    console.log(byteArrayJsonSerializer(runtimeArgsWithLength));
     fields.addField(0, runtimeArgsWithLength);
 
     const targetBytes = this.fields.target.toBytes();
