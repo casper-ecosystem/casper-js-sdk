@@ -1,0 +1,248 @@
+{
+  "api_version": "2.0.0",
+  "transaction": {
+    "Version1": {
+      "hash": "8f917c891457b3845bf51c2d60ca5f1ef254a3e0e0f16bd407af460db0e85bf7",
+      "payload": {
+        "ttl": "30m",
+        "fields": {
+          "args": {
+            "Named": [
+              [
+                "arg1",
+                {
+                  "bytes": "000102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20",
+                  "parsed": "account-hash-0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20",
+                  "cl_type": "Key"
+                }
+              ],
+              [
+                "arg2",
+                {
+                  "bytes": "010102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20",
+                  "parsed": "hash-0102030405060708090a0b0c0d0e0f101112131415161718191a1b1c1d1e1f20",
+                  "cl_type": "Key"
+                }
+              ],
+              [
+                "arg3",
+                {
+                  "bytes": "0f03da3cd8cc4c8f34e7731583e67ddc211ff9b5c3f2c52640582415c2cce9315b2a8af7b77811970792f98b806779dfc0d1a9fef5bad205c6be8bb884210d7d323c",
+                  "parsed": "bid-addr-03da3cd8cc4c8f34e7731583e67ddc211ff9b5c3f2c52640582415c2cce9315b2a8af7b77811970792f98b806779dfc0d1a9fef5bad205c6be8bb884210d7d323c",
+                  "cl_type": "Key"
+                }
+              ],
+              [
+                "arg4",
+                {
+                  "bytes": "0f00306633f962155a7d46658adb36143f28668f530454fe788c927cecf62e5964a1",
+                  "parsed": "bid-addr-00306633f962155a7d46658adb36143f28668f530454fe788c927cecf62e5964a1",
+                  "cl_type": "Key"
+                }
+              ],
+              [
+                "arg5",
+                {
+                  "bytes": "02fb6d7dd568bb45bd7433498c37fabf0883f8e5700c08a6541530d3425f66f17f07",
+                  "parsed": "uref-fb6d7dd568bb45bd7433498c37fabf0883f8e5700c08a6541530d3425f66f17f-007",
+                  "cl_type": "Key"
+                }
+              ],
+              [
+                "arg6",
+                {
+                  "bytes": "062a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a",
+                  "parsed": "balance-2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a",
+                  "cl_type": "Key"
+                }
+              ],
+              [
+                "arg7",
+                {
+                  "bytes": "07306633f962155a7d46658adb36143f28668f530454fe788c927cecf62e5964a1",
+                  "parsed": "bid-306633f962155a7d46658adb36143f28668f530454fe788c927cecf62e5964a1",
+                  "cl_type": "Key"
+                }
+              ],
+              [
+                "arg8",
+                {
+                  "bytes": "12016565656565656565656565656565656565656565656565656565656565656565",
+                  "parsed": "byte-code-v1-wasm-6565656565656565656565656565656565656565656565656565656565656565",
+                  "cl_type": "Key"
+                }
+              ],
+              [
+                "arg9",
+                {
+                  "bytes": "0e0000000000000000000000000000000000000000000000000000000000000000",
+                  "parsed": "checksum-registry-0000000000000000000000000000000000000000000000000000000000000000",
+                  "cl_type": "Key"
+                }
+              ],
+              [
+                "arg10",
+                {
+                  "bytes": "042a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a",
+                  "parsed": "deploy-2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a",
+                  "cl_type": "Key"
+                }
+              ],
+              [
+                "arg11",
+                {
+                  "bytes": "092a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a",
+                  "parsed": "dictionary-2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a",
+                  "cl_type": "Key"
+                }
+              ],
+              [
+                "arg12",
+                {
+                  "bytes": "0b0000000000000000000000000000000000000000000000000000000000000000",
+                  "parsed": "era-summary-0000000000000000000000000000000000000000000000000000000000000000",
+                  "cl_type": "Key"
+                }
+              ],
+              [
+                "arg13",
+                {
+                  "bytes": "052a00000000000000",
+                  "parsed": "era-42",
+                  "cl_type": "Key"
+                }
+              ],
+              [
+                "arg14",
+                {
+                  "bytes": "106464646464646464646464646464646464646464646464646464646464646464",
+                  "parsed": "package-6464646464646464646464646464646464646464646464646464646464646464",
+                  "cl_type": "Key"
+                }
+              ],
+              [
+                "arg15",
+                {
+                  "bytes": "0a0000000000000000000000000000000000000000000000000000000000000000",
+                  "parsed": "system-entity-registry-0000000000000000000000000000000000000000000000000000000000000000",
+                  "cl_type": "Key"
+                }
+              ],
+              [
+                "arg16",
+                {
+                  "bytes": "03199957ab005a1bdc246691cb8bfba69ad9a7ee3fd856ad25ff51bb63406584ad",
+                  "parsed": "transfer-199957ab005a1bdc246691cb8bfba69ad9a7ee3fd856ad25ff51bb63406584ad",
+                  "cl_type": "Key"
+                }
+              ],
+              [
+                "arg17",
+                {
+                  "bytes": "0c2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a",
+                  "parsed": "unbond-2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a",
+                  "cl_type": "Key"
+                }
+              ],
+              [
+                "arg18",
+                {
+                  "bytes": "082a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a",
+                  "parsed": "withdraw-2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a2a",
+                  "cl_type": "Key"
+                }
+              ]
+            ]
+          },
+          "target": {
+            "Stored": {
+              "id": {
+                "ByHash": "b5d048d4e3f892181c791f5362b33a6d3a36c720913fdc17bc099cab61923ee6"
+              },
+              "runtime": "VmCasperV1"
+            }
+          },
+          "scheduling": "Standard",
+          "entry_point": {
+            "Custom": "test2"
+          }
+        },
+        "timestamp": "2025-04-07T06:58:47.518Z",
+        "chain_name": "integration-test",
+        "pricing_mode": {
+          "PaymentLimited": {
+            "payment_amount": 2500000000,
+            "standard_payment": true,
+            "gas_price_tolerance": 1
+          }
+        },
+        "initiator_addr": {
+          "PublicKey": "017e037b8b5621b9803cad20c2d85aca9b5028c5ee5238923bb4a8fc5131d539f5"
+        }
+      },
+      "approvals": [
+        {
+          "signer": "017e037b8b5621b9803cad20c2d85aca9b5028c5ee5238923bb4a8fc5131d539f5",
+          "signature": "01272a39879f2c37e9321832a28e613bf746713cd0f634abf73efd66bf0740353b32e14d564f6077383cac9fa8b83780dfa4409a8d13db6aa041e4737ffb5d5c0d"
+        }
+      ]
+    }
+  },
+  "execution_info": {
+    "block_hash": "7180a63248f7bb8de0e294ea21751aafbac1a268a139db9b7c58319637b648cc",
+    "block_height": 4865195,
+    "execution_result": {
+      "Version2": {
+        "cost": "2500000000",
+        "limit": "2500000000",
+        "refund": "0",
+        "effects": [
+          {
+            "key": "balance-hold-015c140dd0a3d1445387013f59318109146ed6d25bb2208b11de508b002253a4c00f6e0b0f96010000",
+            "kind": {
+              "Write": {
+                "CLValue": {
+                  "bytes": "0400f90295",
+                  "parsed": "2500000000",
+                  "cl_type": "U512"
+                }
+              }
+            }
+          },
+          {
+            "key": "balance-hold-015c140dd0a3d1445387013f59318109146ed6d25bb2208b11de508b002253a4c00f6e0b0f96010000",
+            "kind": {
+              "Prune": "balance-hold-015c140dd0a3d1445387013f59318109146ed6d25bb2208b11de508b002253a4c00f6e0b0f96010000"
+            }
+          },
+          {
+            "key": "balance-5c140dd0a3d1445387013f59318109146ed6d25bb2208b11de508b002253a4c0",
+            "kind": {
+              "Write": {
+                "CLValue": {
+                  "bytes": "05a5031dd6dd",
+                  "parsed": "952779998117",
+                  "cl_type": "U512"
+                }
+              }
+            }
+          },
+          {
+            "key": "balance-f18838ea4e022c2a805301cd1fa6fe5117ac0d98a51d46f5724b28b815f6c587",
+            "kind": {
+              "AddUInt512": "2500000000"
+            }
+          }
+        ],
+        "consumed": "0",
+        "initiator": {
+          "PublicKey": "017e037b8b5621b9803cad20c2d85aca9b5028c5ee5238923bb4a8fc5131d539f5"
+        },
+        "transfers": [],
+        "current_price": 1,
+        "error_message": "Forged reference: URef(fb6d7dd568bb45bd7433498c37fabf0883f8e5700c08a6541530d3425f66f17f, READ_ADD_WRITE)",
+        "size_estimate": 1359
+      }
+    }
+  }
+}

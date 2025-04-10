@@ -498,69 +498,44 @@ export class Key {
         result.uRef = uref?.result;
         return { result, bytes: uref?.bytes };
       case KeyTypeID.Transfer:
-        const [transferBytes, remainder] = splitAt(
-          KEY_DEFAULT_BYTE_LENGTH,
-          contentBytes
-        );
-        result.transfer = new TransferHash(transferBytes);
-        return { result, bytes: remainder };
+        const transferHash = Hash.fromBytes(contentBytes);
+        result.transfer = new TransferHash(transferHash?.result.toHex());
+        return { result, bytes: transferHash?.bytes };
       case KeyTypeID.DeployInfo:
-        const [deployBytes, deployRemainder] = splitAt(
-          KEY_DEFAULT_BYTE_LENGTH,
-          contentBytes
-        );
-        result.deploy = Hash.fromBytes(deployBytes)?.result;
-        return { result, bytes: deployRemainder };
+        const deploy = Hash.fromBytes(contentBytes);
+        result.deploy = deploy?.result;
+        return { result, bytes: deploy?.bytes };
       case KeyTypeID.EraId:
         const [eraBytes, eraRemainder] = splitAt(1, contentBytes);
         result.era = Era.fromBytes(eraBytes);
         return { result, bytes: eraRemainder };
       case KeyTypeID.Balance:
-        const [balanceBytes, balanceRemainder] = splitAt(
-          KEY_DEFAULT_BYTE_LENGTH,
-          contentBytes
-        );
-        result.balance = Hash.fromBytes(balanceBytes)?.result;
+        const parsed = Hash.fromBytes(contentBytes);
+        result.balance = parsed?.result;
 
-        return { result, bytes: balanceRemainder };
+        return { result, bytes: parsed?.bytes };
       case KeyTypeID.Bid:
-        const [bidBytes, bidRemainder] = splitAt(
-          KEY_DEFAULT_BYTE_LENGTH,
-          contentBytes
-        );
-        const bidHash = Hash.fromBytes(bidBytes)?.result;
-        result.bid = new AccountHash(bidHash);
+        const bid = Hash.fromBytes(contentBytes);
+        result.bid = new AccountHash(bid.result);
 
-        return { result, bytes: bidRemainder };
+        return { result, bytes: bid?.bytes };
       case KeyTypeID.Withdraw:
-        const [withdrawBytes, withDrawRemainder] = splitAt(
-          KEY_DEFAULT_BYTE_LENGTH,
-          contentBytes
-        );
-        const withdrawHash = Hash.fromBytes(withdrawBytes)?.result;
+        const withdraw = Hash.fromBytes(contentBytes);
+        const withdrawHash = withdraw?.result;
         result.withdraw = new AccountHash(withdrawHash);
-        return { result, bytes: withDrawRemainder };
+        return { result, bytes: withdraw?.bytes };
       case KeyTypeID.Dictionary:
-        const [dictBytes, dictRemainder] = splitAt(
-          KEY_DEFAULT_BYTE_LENGTH,
-          contentBytes
-        );
-        result.dictionary = Hash.fromBytes(dictBytes)?.result;
-        return { result, bytes: dictRemainder };
+        const dictionary = Hash.fromBytes(contentBytes);
+        result.dictionary = dictionary?.result;
+        return { result, bytes: dictionary?.bytes };
       case KeyTypeID.SystemContractRegistry:
-        const [systemBytes, systenRemainder] = splitAt(
-          KEY_DEFAULT_BYTE_LENGTH,
-          contentBytes
-        );
-        result.systemContactRegistry = Hash.fromBytes(systemBytes)?.result;
-        return { result, bytes: systenRemainder };
+        const systemContractRegistry = Hash.fromBytes(contentBytes);
+        result.systemContactRegistry = systemContractRegistry?.result;
+        return { result, bytes: systemContractRegistry?.bytes };
       case KeyTypeID.EraSummary:
-        const [eraSummaryBytes, eraSummaryRemainder] = splitAt(
-          KEY_DEFAULT_BYTE_LENGTH,
-          contentBytes
-        );
-        result.eraSummary = Hash.fromBytes(eraSummaryBytes)?.result;
-        return { result, bytes: eraSummaryRemainder };
+        const eraSummary = Hash.fromBytes(contentBytes);
+        result.eraSummary = eraSummary?.result;
+        return { result, bytes: eraSummary?.bytes };
       case KeyTypeID.Unbond:
         const { result: unbondHash, bytes: unbondBytes } = Hash.fromBytes(
           contentBytes
@@ -575,12 +550,9 @@ export class Key {
         result.chainspecRegistry = Hash.fromBytes(chainBytes)?.result;
         return { result, bytes: chainspecRegistryBytes };
       case KeyTypeID.ChecksumRegistry:
-        const [checksumBytes, checksumRegistry] = splitAt(
-          KEY_DEFAULT_BYTE_LENGTH,
-          contentBytes
-        );
-        result.checksumRegistry = Hash.fromBytes(checksumBytes)?.result;
-        return { result, bytes: checksumRegistry };
+        const checksumRegistry = Hash.fromBytes(contentBytes);
+        result.checksumRegistry = checksumRegistry?.result;
+        return { result, bytes: checksumRegistry?.bytes };
       case KeyTypeID.BidAddr:
         const { result: bidAddr, bytes: bidAddrBytes } = BidAddr.fromBytes(
           contentBytes
@@ -589,12 +561,9 @@ export class Key {
 
         return { result, bytes: bidAddrBytes };
       case KeyTypeID.Package:
-        const [packageBytes, packageBytesRemainder] = splitAt(
-          KEY_DEFAULT_BYTE_LENGTH,
-          contentBytes
-        );
-        result.package = Hash.fromBytes(packageBytes)?.result;
-        return { result, bytes: packageBytesRemainder };
+        const packageHash = Hash.fromBytes(contentBytes);
+        result.package = packageHash?.result;
+        return { result, bytes: packageHash?.bytes };
       case KeyTypeID.AddressableEntity:
         const {
           result: entityAddr,
