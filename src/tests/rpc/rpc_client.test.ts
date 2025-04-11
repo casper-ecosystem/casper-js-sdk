@@ -20,7 +20,8 @@ import {
   transactionWithEraJson,
   getDeployWithNullExecutionResults,
   getTransactionWithNullExecutionResults,
-  stateGetAccountInfoJson
+  stateGetAccountInfoJson,
+  transactionWithArgsKeys
 } from '../data';
 
 describe('RPC Client', () => {
@@ -250,5 +251,16 @@ describe('RPC Client', () => {
         originalNamedKeys[index].key
       );
     });
+  });
+
+  it('should correctly parse transaction with args keys', () => {
+    const tx = InfoGetTransactionResult.fromJSON(transactionWithArgsKeys);
+
+    expect(tx).to.be.not.undefined;
+    expect(tx).to.be.not.empty;
+
+    expect(tx?.transaction?.hash.toHex()).to.deep.equal(
+      transactionWithArgsKeys.transaction.Version1.hash
+    );
   });
 });
