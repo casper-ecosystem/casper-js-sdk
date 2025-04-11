@@ -1,6 +1,7 @@
 import { BigNumber } from '@ethersproject/bignumber';
 
 import {
+  HttpError,
   InfoGetTransactionResult,
   PutDeployResult,
   PutTransactionResult,
@@ -17,8 +18,10 @@ import {
   PublicKey,
   SessionBuilder,
   Transaction,
-  TransactionHash
+  TransactionHash,
+  Hash
 } from '../types';
+import { ErrorCode } from '../@types';
 
 export class CasperNetwork {
   private rpcClient: RpcClient;
@@ -301,15 +304,28 @@ export class CasperNetwork {
   }
 
   public async getTransaction(
-    hash: TransactionHash
+    hash: TransactionHash | Hash | string
   ): Promise<InfoGetTransactionResult> {
-    if (this.apiVersion == 2) {
+    if (typeof hash === 'string') {
+      hash = Hash.fromHex(hash);
+    }
+
+    if (this.apiVersion === 2) {
+      return await this.getTransactionOnCasper2x(hash);
+    }
+
+    return await this.getTransactionOnCasper1x(hash);
+  }
+
+  private async getTransactionOnCasper2x(
+    hash: TransactionHash | Hash
+  ): Promise<InfoGetTransactionResult> {
+    if (hash instanceof TransactionHash) {
       if (hash.transactionV1) {
         return await this.rpcClient.getTransactionByTransactionHash(
-          hash.transactionV1?.toHex()
+          hash.transactionV1.toHex()
         );
       }
-
       if (hash.deploy) {
         return await this.rpcClient.getTransactionByDeployHash(
           hash.deploy.toHex()
@@ -317,13 +333,24 @@ export class CasperNetwork {
       }
     }
 
-    if (hash.deploy) {
-      const getDeployResult = await this.rpcClient.getDeploy(
-        hash.deploy.toHex()
-      );
-      return getDeployResult.toInfoGetTransactionResult();
+    // For unknown hash types, try fetching by transaction hash first, then fallback to deploy hash
+    try {
+      return await this.rpcClient.getTransactionByTransactionHash(hash.toHex());
+    } catch (error) {
+      if (
+        HttpError.isHttpError(error) &&
+        error.statusCode === ErrorCode.NoSuchTransaction
+      ) {
+        return await this.rpcClient.getTransactionByDeployHash(hash.toHex());
+      }
+      throw error;
     }
+  }
 
-    return Promise.reject('Hash is not valid');
+  private async getTransactionOnCasper1x(
+    hash: TransactionHash | Hash
+  ): Promise<InfoGetTransactionResult> {
+    const getDeployResult = await this.rpcClient.getDeploy(hash.toHex());
+    return getDeployResult.toInfoGetTransactionResult();
   }
 }

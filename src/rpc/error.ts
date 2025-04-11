@@ -44,6 +44,6 @@ export class HttpError<T extends Error = Error> extends Error {
   static isHttpError<E extends Error = Error>(
     err: any | HttpError<E>
   ): err is HttpError<E> {
-    return err?.statusCode && err.sourceErr;
+    return Boolean(err?.statusCode && err?.sourceErr);
   }
 }
