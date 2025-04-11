@@ -18,9 +18,9 @@ import {
   PublicKey,
   SessionBuilder,
   Transaction,
-  TransactionHash
+  TransactionHash,
+  Hash
 } from '../types';
-import { Hash } from '../types';
 
 export class CasperNetwork {
   private rpcClient: RpcClient;
@@ -309,45 +309,44 @@ export class CasperNetwork {
       hash = Hash.fromHex(hash);
     }
 
-    // Casper 2.x
-    if (this.apiVersion == 2) {
-      if (hash instanceof TransactionHash) {
-        if (hash.transactionV1) {
-          return await this.rpcClient.getTransactionByTransactionHash(
-            hash.transactionV1?.toHex()
-          );
-        }
+    if (this.apiVersion === 2) {
+      return await this.getTransactionCasper2(hash);
+    }
 
-        if (hash.deploy) {
-          return await this.rpcClient.getTransactionByDeployHash(
-            hash.deploy.toHex()
-          );
-        }
+    return await this.getTransactionCasper1(hash);
+  }
+
+  private async getTransactionCasper2(
+    hash: TransactionHash | Hash
+  ): Promise<InfoGetTransactionResult> {
+    if (hash instanceof TransactionHash) {
+      if (hash.transactionV1) {
+        return await this.rpcClient.getTransactionByTransactionHash(
+          hash.transactionV1.toHex()
+        );
       }
-      else {
-        // If we don't know whether it's deploy hash or transaction hash
-        // try to fetch the transaction first otherwise fallback to deploy
-        try {
-          return await this.rpcClient.getTransactionByTransactionHash(
-            hash.toHex()
-          );
-        }
-        catch (error) {
-          // @todo Check if not found
-          if (error instanceof HttpError) {
-            return await this.rpcClient.getTransactionByDeployHash(
-              hash.toHex()
-            );
-          }
-        }
+      if (hash.deploy) {
+        return await this.rpcClient.getTransactionByDeployHash(
+          hash.deploy.toHex()
+        );
       }
     }
 
-    // Casper 1.x
-    const getDeployResult = await this.rpcClient.getDeploy(
-      hash.toHex()
-    );
+    // For unknown hash types, try fetching by transaction hash first, then fallback to deploy hash
+    try {
+      return await this.rpcClient.getTransactionByTransactionHash(hash.toHex());
+    } catch (error) {
+      if (HttpError.isHttpError(error)) {
+        return await this.rpcClient.getTransactionByDeployHash(hash.toHex());
+      }
+      throw error;
+    }
+  }
 
+  private async getTransactionCasper1(
+    hash: TransactionHash | Hash
+  ): Promise<InfoGetTransactionResult> {
+    const getDeployResult = await this.rpcClient.getDeploy(hash.toHex());
     return getDeployResult.toInfoGetTransactionResult();
   }
 }
