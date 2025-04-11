@@ -21,6 +21,7 @@ import {
   TransactionHash,
   Hash
 } from '../types';
+import { ErrorCode } from '../@types';
 
 export class CasperNetwork {
   private rpcClient: RpcClient;
@@ -310,13 +311,13 @@ export class CasperNetwork {
     }
 
     if (this.apiVersion === 2) {
-      return await this.getTransactionCasper2(hash);
+      return await this.getTransactionOnCasper2x(hash);
     }
 
-    return await this.getTransactionCasper1(hash);
+    return await this.getTransactionOnCasper1x(hash);
   }
 
-  private async getTransactionCasper2(
+  private async getTransactionOnCasper2x(
     hash: TransactionHash | Hash
   ): Promise<InfoGetTransactionResult> {
     if (hash instanceof TransactionHash) {
@@ -336,14 +337,17 @@ export class CasperNetwork {
     try {
       return await this.rpcClient.getTransactionByTransactionHash(hash.toHex());
     } catch (error) {
-      if (HttpError.isHttpError(error)) {
+      if (
+        HttpError.isHttpError(error) &&
+        error.statusCode === ErrorCode.NoSuchTransaction
+      ) {
         return await this.rpcClient.getTransactionByDeployHash(hash.toHex());
       }
       throw error;
     }
   }
 
-  private async getTransactionCasper1(
+  private async getTransactionOnCasper1x(
     hash: TransactionHash | Hash
   ): Promise<InfoGetTransactionResult> {
     const getDeployResult = await this.rpcClient.getDeploy(hash.toHex());
