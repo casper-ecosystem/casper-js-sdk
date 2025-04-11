@@ -4,7 +4,6 @@ import { jsonMember, jsonObject } from 'typedjson';
 import { Hash } from './Hash';
 import { IResultWithBytes } from '../clvalue';
 import { HexBytes } from '../HexBytes';
-import { toBytesString } from '../ByteConverters';
 
 /**
  * Enum representing the different types of bid addresses.
@@ -386,7 +385,7 @@ export class BidAddr {
             createBuffer(
               typeByte,
               this.validator.toBytes(),
-              toBytesString(this.delegatorPurseAddress)
+              HexBytes.fromHex(this.delegatorPurseAddress).bytes
             )
           );
         }
@@ -421,7 +420,7 @@ export class BidAddr {
             createBuffer(
               typeByte,
               this.validator.toBytes(),
-              toBytesString(this.delegatorPurseAddress)
+              HexBytes.fromHex(this.delegatorPurseAddress).bytes
             )
           );
         }
@@ -443,7 +442,7 @@ export class BidAddr {
             createBuffer(
               typeByte,
               this.validator.toBytes(),
-              toBytesString(this.delegatorPurseAddress)
+              HexBytes.fromHex(this.delegatorPurseAddress).bytes
             )
           );
         }
