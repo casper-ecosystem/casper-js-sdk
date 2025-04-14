@@ -1,7 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 
 import {
-  HttpError,
   InfoGetTransactionResult,
   PutDeployResult,
   PutTransactionResult,
@@ -337,10 +336,7 @@ export class CasperNetwork {
     try {
       return await this.rpcClient.getTransactionByTransactionHash(hash.toHex());
     } catch (error) {
-      if (
-        HttpError.isHttpError(error) &&
-        error.statusCode === ErrorCode.NoSuchTransaction
-      ) {
+      if (error?.statusCode === ErrorCode.NoSuchTransaction) {
         return await this.rpcClient.getTransactionByDeployHash(hash.toHex());
       }
       throw error;
