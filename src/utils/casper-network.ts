@@ -334,7 +334,9 @@ export class CasperNetwork {
       }
     }
 
-    // For unknown hash types, try fetching by transaction hash first, then fallback to deploy hash
+    /**
+     * For unknown hash types, try fetching by transaction hash first, then fallback to deploy hash
+     */
     try {
       return await this.rpcClient.getTransactionByTransactionHash(hash.toHex());
     } catch (error) {
