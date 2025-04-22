@@ -362,17 +362,13 @@ export class CasperNetwork {
     const balanceResult = new QueryBalanceResult();
 
     if (identifier?.purseUref) {
-      try {
-        const stateBalanceResult = await this.rpcClient.getLatestBalance(
-          identifier.purseUref.toPrefixedString()
-        );
+      const stateBalanceResult = await this.rpcClient.getLatestBalance(
+        identifier.purseUref.toPrefixedString()
+      );
 
-        if (stateBalanceResult) {
-          balanceResult.balance = stateBalanceResult.balanceValue;
-          balanceResult.apiVersion = stateBalanceResult.apiVersion;
-        }
-      } catch (error) {
-        throw error;
+      if (stateBalanceResult) {
+        balanceResult.balance = stateBalanceResult.balanceValue;
+        balanceResult.apiVersion = stateBalanceResult.apiVersion;
       }
     }
 
