@@ -13,6 +13,57 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [5.0.4] - 2025-04-22
+
+### Added
+
+- Query latest balance utility function for Casper network
+
+### [5.0.3] - 2025-04-14
+
+### Fixed
+
+- Issue with circular dependencies by @alexmyshchyshyn in https://github.com/casper-ecosystem/casper-js-sdk/pull/557
+
+**Full Changelog**: https://github.com/casper-ecosystem/casper-js-sdk/compare/5.0.2...5.0.3
+
+### [5.0.2] - 2025-04-11
+
+### Fixed
+
+- Issue with parsing named keys for AccountInfo and Contracts by @alexmyshchyshyn in https://github.com/casper-ecosystem/casper-js-sdk/pull/552
+- Parsing of arguments keys for transaction V1 by @alexmyshchyshyn in https://github.com/casper-ecosystem/casper-js-sdk/pull/554
+
+### Changed
+
+- Replace key-encoder lib with equal internal implementation by @Comp0te in https://github.com/casper-ecosystem/casper-js-sdk/pull/551
+- Extended the CasperNetwork utility getTransaction method with a fallb… by @ihor in https://github.com/casper-ecosystem/casper-js-sdk/pull/555
+
+### Added
+
+- Support for prefix entity-contract- for contract hashes by @alexmyshchyshyn in https://github.com/casper-ecosystem/casper-js-sdk/pull/553
+
+**Full Changelog**: https://github.com/casper-ecosystem/casper-js-sdk/compare/5.0.1...5.0.2
+
+### [5.0.1] - 2025-04-04
+
+### Fixed
+
+- `token_hash` args type by @Comp0te in https://github.com/casper-ecosystem/casper-js-sdk/pull/545
+- Parsing null execution results for `1.5.x` deploys and transactions by @alexmyshchyshyn in https://github.com/casper-ecosystem/casper-js-sdk/pull/546
+
+### Added
+
+- `toBytes()` method to `Transaction` class. by @davidatwhiletrue in https://github.com/casper-ecosystem/casper-js-sdk/pull/544
+- Dynamic payment amount for deploys by @alexmyshchyshyn in https://github.com/casper-ecosystem/casper-js-sdk/pull/547
+- `CasperNetwork` utility usage documentation by @alexmyshchyshyn in https://github.com/casper-ecosystem/casper-js-sdk/pull/550
+
+### Changed
+
+- hash type to `TransactionHash` by @alexmyshchyshyn in https://github.com/casper-ecosystem/casper-js-sdk/pull/549
+
+**Full Changelog**: https://github.com/casper-ecosystem/casper-js-sdk/compare/5.0.0...5.0.1
+
 ### [5.0.0] - 2025-03-27
 
 This version is identical to `5.0.16-beta2`. Please review the changes in the previous beta releases, and refer to the [Migration guide](https://github.com/make-software/casper-net-sdk/blob/master/Docs/Articles/Casper20MigrationGuide.md) if you’re updating a project from `v2.x`.
