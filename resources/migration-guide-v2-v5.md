@@ -565,6 +565,26 @@ const transactionInfo = await casperNetwork.getTransaction(
 );
 ```
 
+### Query latest balance
+
+Fetches the latest balance of a purse from the Casper blockchain.
+
+This method works with both API version 1 and 2:
+
+- For API version 2, it calls `rpcClient.queryLatestBalance`.
+- For older versions, it uses `rpcClient.getLatestBalance` and constructs the result manually.
+
+#### Example
+
+```ts
+const identifier = PurseIdentifier.fromUref('uref-...');
+
+const result = await casperNetwork.queryLatestBalance(identifier);
+
+console.log(`Balance: ${result.balance?.toNumber()}`);
+console.log(`API Version: ${result.apiVersion}`);
+```
+
 ---
 
 ### 9. **Miscellaneous Changes**
