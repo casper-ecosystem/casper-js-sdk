@@ -2,8 +2,10 @@ import { BigNumber } from '@ethersproject/bignumber';
 
 import {
   InfoGetTransactionResult,
+  PurseIdentifier,
   PutDeployResult,
   PutTransactionResult,
+  QueryBalanceResult,
   RpcClient
 } from '../rpc';
 import {
@@ -348,5 +350,32 @@ export class CasperNetwork {
   ): Promise<InfoGetTransactionResult> {
     const getDeployResult = await this.rpcClient.getDeploy(hash.toHex());
     return getDeployResult.toInfoGetTransactionResult();
+  }
+
+  public async queryLatestBalance(
+    identifier: PurseIdentifier
+  ): Promise<QueryBalanceResult> {
+    if (this.apiVersion === 2) {
+      return this.rpcClient.queryLatestBalance(identifier);
+    }
+
+    const balanceResult = new QueryBalanceResult();
+
+    if (identifier?.purseUref) {
+      try {
+        const stateBalanceResult = await this.rpcClient.getLatestBalance(
+          identifier.purseUref.toPrefixedString()
+        );
+
+        if (stateBalanceResult) {
+          balanceResult.balance = stateBalanceResult.balanceValue;
+          balanceResult.apiVersion = stateBalanceResult.apiVersion;
+        }
+      } catch (error) {
+        throw error;
+      }
+    }
+
+    return balanceResult;
   }
 }
