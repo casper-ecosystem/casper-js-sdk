@@ -28,7 +28,7 @@ jobs:
       matrix:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
         node-version: [16.x, 18.x]
-        os: [ubuntu-20.04, ubuntu-22.04]
+        os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     env:
       FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIM0OhegYkU4zxgXeZggBdAR6+XkByue+3iZbznGbCUkM' #ci/test-assets/secret-key.pem
