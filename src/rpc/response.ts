@@ -101,6 +101,15 @@ export class StateGetBalanceResult {
   balanceValue: CLValueUInt512;
 
   public rawJSON: any;
+
+  public toQueryBalanceResult() {
+    const queryBalanceResult = new QueryBalanceResult();
+
+    queryBalanceResult.apiVersion = this.apiVersion;
+    queryBalanceResult.balance = this.balanceValue;
+
+    return queryBalanceResult;
+  }
 }
 
 @jsonObject
@@ -279,7 +288,7 @@ export class InfoGetDeployResult {
         this.executionInfo.executionResult
       );
     } else if (this?.executionResultsV1?.length) {
-      executionInfo = ExecutionInfo.fromV1(this.executionResultsV1)
+      executionInfo = ExecutionInfo.fromV1(this.executionResultsV1);
     }
 
     return new InfoGetTransactionResult(

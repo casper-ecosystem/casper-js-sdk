@@ -5,7 +5,6 @@ import {
   PurseIdentifier,
   PutDeployResult,
   PutTransactionResult,
-  QueryBalanceResult,
   RpcClient
 } from '../rpc';
 import {
@@ -354,26 +353,17 @@ export class CasperNetwork {
     return getDeployResult.toInfoGetTransactionResult();
   }
 
-  public async queryLatestBalance(
-    identifier: PurseIdentifier
-  ): Promise<QueryBalanceResult> {
+  public async queryLatestBalance(identifier: PurseIdentifier) {
     if (this.apiVersion === 2) {
       return this.rpcClient.queryLatestBalance(identifier);
     }
 
-    const balanceResult = new QueryBalanceResult();
+    const purseUref = identifier?.purseUref;
+    if (!purseUref) return;
 
-    if (identifier?.purseUref) {
-      const stateBalanceResult = await this.rpcClient.getLatestBalance(
-        identifier.purseUref.toPrefixedString()
-      );
-
-      if (stateBalanceResult) {
-        balanceResult.balance = stateBalanceResult.balanceValue;
-        balanceResult.apiVersion = stateBalanceResult.apiVersion;
-      }
-    }
-
-    return balanceResult;
+    const balance = await this.rpcClient.getLatestBalance(
+      purseUref.toPrefixedString()
+    );
+    return balance?.toQueryBalanceResult();
   }
 }
