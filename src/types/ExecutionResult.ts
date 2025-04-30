@@ -95,7 +95,10 @@ export class ExecutionResultStatusData {
   @jsonMember({
     name: 'cost',
     constructor: Number,
-    deserializer: json => BigNumber.from(json).toNumber(),
+    deserializer: json => {
+      if (!json) return;
+      return BigNumber.from(json).toNumber();
+    },
     serializer: value => BigNumber.from(value).toString()
   })
   public cost: number;
@@ -290,7 +293,10 @@ export class ExecutionResult {
    */
   @jsonMember({
     constructor: InitiatorAddr,
-    deserializer: json => InitiatorAddr.fromJSON(json),
+    deserializer: json => {
+      if (!json) return;
+      return InitiatorAddr.fromJSON(json);
+    },
     serializer: (value: InitiatorAddr) => value.toJSON()
   })
   public initiator: InitiatorAddr;
@@ -306,11 +312,24 @@ export class ExecutionResult {
   public errorMessage?: string;
 
   /**
+   * The error message, if any, generated during the execution.
+   */
+  @jsonMember({
+    name: 'error',
+    constructor: String,
+    preserveNull: true
+  })
+  public error?: string;
+
+  /**
    * The execution limit for the transaction.
    */
   @jsonMember({
     constructor: Number,
-    deserializer: json => BigNumber.from(json).toNumber(),
+    deserializer: json => {
+      if (!json) return;
+      return BigNumber.from(json).toNumber();
+    },
     serializer: value => BigNumber.from(value).toString()
   })
   public limit: number;
@@ -344,6 +363,11 @@ export class ExecutionResult {
   })
   public refund: number;
 
+  @jsonMember({
+    constructor: AnyT
+  })
+  public messages: any[];
+
   /**
    * The gas price of the era.
    */
@@ -358,7 +382,10 @@ export class ExecutionResult {
    */
   @jsonMember({
     constructor: Number,
-    deserializer: json => BigNumber.from(json).toNumber(),
+    deserializer: json => {
+      if (!json) return;
+      return BigNumber.from(json).toNumber();
+    },
     serializer: value => BigNumber.from(value).toString()
   })
   public cost: number;

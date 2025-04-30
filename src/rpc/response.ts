@@ -44,13 +44,20 @@ export class RpcResponse {
   @jsonMember({ name: 'jsonrpc', constructor: String })
   version: string;
 
-  @jsonMember({ constructor: IDValue, name: 'id' })
+  @jsonMember({
+    constructor: IDValue,
+    name: 'id',
+    deserializer: json => {
+      if (!json) return;
+      return IDValue.fromJSON(json);
+    }
+  })
   id?: IDValue;
 
   @jsonMember({ name: 'result', constructor: AnyT })
   result: any;
 
-  @jsonMember({ name: 'error', constructor: RpcError })
+  @jsonMember({ name: 'error', constructor: RpcError, preserveNull: true })
   error?: RpcError;
 }
 
@@ -822,10 +829,14 @@ export class SpeculativeExecResult {
       return value.toJSON();
     }
   })
-  blockHash: Hash;
+  blockHash?: Hash;
 
-  @jsonMember({ name: 'execution_result', constructor: ExecutionResult })
-  executionResult: ExecutionResult;
+  @jsonMember({
+    name: 'execution_result',
+    constructor: ExecutionResult,
+    preserveNull: true
+  })
+  executionResult?: ExecutionResult;
 
   rawJSON?: any;
 }

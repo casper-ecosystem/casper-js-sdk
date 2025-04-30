@@ -9,7 +9,7 @@ import {
 import { RpcResponse, SpeculativeExecResult } from './response';
 import { IHandler } from './client';
 import { IDValue } from './id_value';
-import { ExecutionResult, Deploy, Hash } from '../types';
+import { Deploy, Hash, ExecutionResult } from '../types';
 
 /**
  * A client for interacting with the speculative execution endpoint in the Casper Network.
@@ -49,16 +49,16 @@ export class SpeculativeClient {
    * @throws {Error} If the handler response is empty or if an error occurs while processing the RPC call or parsing the response.
    */
   async speculativeExec(
-      reqID: string,
-      deploy: Deploy,
-      identifier?: BlockIdentifier
+    reqID: string,
+    deploy: Deploy,
+    identifier?: BlockIdentifier
   ): Promise<SpeculativeExecResult> {
     const serializer = new TypedJSON(SpeculativeExecParams);
     const speculativeParams = new SpeculativeExecParams(deploy, identifier);
 
     const request = RpcRequest.defaultRpcRequest(
-        Method.SpeculativeExec,
-        serializer.toPlainJson(speculativeParams)
+      Method.SpeculativeExec,
+      serializer.toPlainJson(speculativeParams)
     );
 
     if (reqID && reqID !== '0') {
@@ -72,7 +72,9 @@ export class SpeculativeClient {
     }
 
     if (resp.error) {
-      throw new Error(`RPC call failed, details: ${resp.error}`);
+      throw new Error(
+        `RPC call failed, details: ${JSON.stringify(resp.error)}`
+      );
     }
 
     try {
@@ -84,9 +86,14 @@ export class SpeculativeClient {
       }
 
       const result = new SpeculativeExecResult();
-      result.apiVersion = data.version;
-      result.executionResult = ExecutionResult.fromJSON(resp.result);
-      result.blockHash = Hash.fromHex(identifier?.hash ?? '');
+      result.apiVersion = data?.version;
+      result.executionResult = new TypedJSON(ExecutionResult).parse(
+        data?.result?.execution_result
+      );
+      result.blockHash = data?.result?.execution_result?.block_hash
+        ? Hash.fromHex(data?.result?.execution_result?.block_hash)
+        : undefined;
+      result.rawJSON = data?.result;
       return result;
     } catch (error) {
       throw new Error(`Error parsing JSON, details: ${error}`);
