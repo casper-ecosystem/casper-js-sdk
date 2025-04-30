@@ -25,12 +25,12 @@ import {
   EntryPointValue,
   EraSummary,
   ExecutionInfo,
-  ExecutionResult,
   Hash,
   InitiatorAddr,
   MinimalBlockInfo,
   NamedKey,
   PublicKey,
+  SpeculativeExecutionResult,
   StoredValue,
   Timestamp,
   Transaction,
@@ -833,10 +833,10 @@ export class SpeculativeExecResult {
 
   @jsonMember({
     name: 'execution_result',
-    constructor: ExecutionResult,
+    constructor: SpeculativeExecutionResult,
     preserveNull: true
   })
-  executionResult?: ExecutionResult;
+  executionResult?: SpeculativeExecutionResult;
 
   rawJSON?: any;
 }

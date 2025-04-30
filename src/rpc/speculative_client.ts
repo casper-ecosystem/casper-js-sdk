@@ -9,7 +9,7 @@ import {
 import { RpcResponse, SpeculativeExecResult } from './response';
 import { IHandler } from './client';
 import { IDValue } from './id_value';
-import { Deploy, Hash, ExecutionResult } from '../types';
+import { Deploy, Hash, SpeculativeExecutionResult } from '../types';
 
 /**
  * A client for interacting with the speculative execution endpoint in the Casper Network.
@@ -87,7 +87,7 @@ export class SpeculativeClient {
 
       const result = new SpeculativeExecResult();
       result.apiVersion = data?.version;
-      result.executionResult = new TypedJSON(ExecutionResult).parse(
+      result.executionResult = new TypedJSON(SpeculativeExecutionResult).parse(
         data?.result?.execution_result
       );
       result.blockHash = data?.result?.execution_result?.block_hash
