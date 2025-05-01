@@ -25,12 +25,13 @@ import {
   EntryPointValue,
   EraSummary,
   ExecutionInfo,
-  ExecutionResult,
+  ExecutionResultV1,
   Hash,
   InitiatorAddr,
   MinimalBlockInfo,
   NamedKey,
   PublicKey,
+  SpeculativeExecutionResult,
   StoredValue,
   Timestamp,
   Transaction,
@@ -44,13 +45,20 @@ export class RpcResponse {
   @jsonMember({ name: 'jsonrpc', constructor: String })
   version: string;
 
-  @jsonMember({ constructor: IDValue, name: 'id' })
+  @jsonMember({
+    constructor: IDValue,
+    name: 'id',
+    deserializer: json => {
+      if (!json) return;
+      return IDValue.fromJSON(json);
+    }
+  })
   id?: IDValue;
 
   @jsonMember({ name: 'result', constructor: AnyT })
   result: any;
 
-  @jsonMember({ name: 'error', constructor: RpcError })
+  @jsonMember({ name: 'error', constructor: RpcError, preserveNull: true })
   error?: RpcError;
 }
 
@@ -822,12 +830,73 @@ export class SpeculativeExecResult {
       return value.toJSON();
     }
   })
-  blockHash: Hash;
+  blockHash?: Hash;
 
-  @jsonMember({ name: 'execution_result', constructor: ExecutionResult })
-  executionResult: ExecutionResult;
+  /**
+   * Execution result for Casper v2.0 (speculative execution format).
+   */
+  executionResult?: SpeculativeExecutionResult;
 
+  /**
+   * Execution result for Casper v1.5.x (legacy execution format).
+   */
+  executionResultV1?: ExecutionResultV1;
+
+  /**
+   * Stores the raw json object if version could not be parsed.
+   */
   rawJSON?: any;
+
+  /**
+   * True if the parsed execution result matches Casper v1.5.x format.
+   */
+  get isV1(): boolean {
+    return !!this.executionResultV1;
+  }
+
+  /**
+   * True if the parsed execution result matches Casper v2.0 format.
+   */
+  get isV2(): boolean {
+    return !!this.executionResult;
+  }
+
+  /**
+   * Parses and returns a version-aware SpeculativeExecResult from raw JSON.
+   * Supports both Casper v1.5.x and v2.0 formats.
+   */
+  static fromJSON(json: any): SpeculativeExecResult {
+    const result = new SpeculativeExecResult();
+
+    result.apiVersion = json?.version;
+    const execJson = json?.result?.execution_result;
+    result.rawJSON = json;
+
+    result.blockHash = execJson?.block_hash
+      ? Hash.fromHex(execJson.block_hash)
+      : undefined;
+
+    if (
+      execJson &&
+      (execJson.block_hash ||
+        execJson.limit !== undefined ||
+        execJson.consumed !== undefined)
+    ) {
+      // Casper v2.0
+      result.executionResult = new TypedJSON(SpeculativeExecutionResult).parse(
+        execJson
+      );
+    } else if (execJson && ('Success' in execJson || 'Failure' in execJson)) {
+      // Casper v1.5.x
+      result.executionResultV1 = new TypedJSON(ExecutionResultV1).parse(
+        execJson
+      );
+    } else {
+      console.warn('Unknown execution_result format:', execJson);
+    }
+
+    return result;
+  }
 }
 
 @jsonObject

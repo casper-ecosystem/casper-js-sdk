@@ -12,6 +12,7 @@ import { InitiatorAddr } from './InitiatorAddr';
 import { Transfer } from './Transfer';
 import { Transform, TransformKey } from './Transform';
 import { TransactionHash } from './Transaction';
+import { Message } from './MessageTopic';
 
 /**
  * Represents an operation performed during a transaction.
@@ -95,7 +96,10 @@ export class ExecutionResultStatusData {
   @jsonMember({
     name: 'cost',
     constructor: Number,
-    deserializer: json => BigNumber.from(json).toNumber(),
+    deserializer: json => {
+      if (!json) return;
+      return BigNumber.from(json).toNumber();
+    },
     serializer: value => BigNumber.from(value).toString()
   })
   public cost: number;
@@ -290,7 +294,10 @@ export class ExecutionResult {
    */
   @jsonMember({
     constructor: InitiatorAddr,
-    deserializer: json => InitiatorAddr.fromJSON(json),
+    deserializer: json => {
+      if (!json) return;
+      return InitiatorAddr.fromJSON(json);
+    },
     serializer: (value: InitiatorAddr) => value.toJSON()
   })
   public initiator: InitiatorAddr;
@@ -310,7 +317,10 @@ export class ExecutionResult {
    */
   @jsonMember({
     constructor: Number,
-    deserializer: json => BigNumber.from(json).toNumber(),
+    deserializer: json => {
+      if (!json) return;
+      return BigNumber.from(json).toNumber();
+    },
     serializer: value => BigNumber.from(value).toString()
   })
   public limit: number;
@@ -358,7 +368,10 @@ export class ExecutionResult {
    */
   @jsonMember({
     constructor: Number,
-    deserializer: json => BigNumber.from(json).toNumber(),
+    deserializer: json => {
+      if (!json) return;
+      return BigNumber.from(json).toNumber();
+    },
     serializer: value => BigNumber.from(value).toString()
   })
   public cost: number;
@@ -542,6 +555,81 @@ export class ExecutionResult {
     const serializer = new TypedJSON(ExecutionResult);
     return serializer.toPlainJson(executionResult);
   }
+}
+
+@jsonObject
+export class SpeculativeExecutionResult {
+  @jsonMember({
+    constructor: Hash,
+    name: 'block_hash',
+    deserializer: json => {
+      if (!json) return;
+      return Hash.fromJSON(json);
+    },
+    serializer: value => value.toJSON()
+  })
+  public blockHash: Hash;
+
+  /**
+   * The transfers included in the transaction execution.
+   */
+  @jsonArrayMember(Transfer, {
+    name: 'transfers',
+    deserializer: (json: any) => json.map((it: string) => Transfer.fromJSON(it))
+  })
+  public transfers: Transfer[] = [];
+
+  /**
+   * The execution limit for the transaction.
+   */
+  @jsonMember({
+    name: 'limit',
+    constructor: Number,
+    deserializer: json => {
+      if (!json) return;
+      return BigNumber.from(json).toNumber();
+    },
+    serializer: value => {
+      if (!value) return;
+      return BigNumber.from(value).toString();
+    }
+  })
+  public limit: number;
+
+  /**
+   * The amount of resources consumed during the transaction execution.
+   */
+  @jsonMember({
+    name: 'consumed',
+    constructor: Number,
+    deserializer: json => {
+      if (!json) return;
+      return BigNumber.from(json).toNumber();
+    },
+    serializer: value => BigNumber.from(value).toString()
+  })
+  public consumed: number;
+
+  /**
+   * The effects applied during the transaction execution.
+   */
+  @jsonArrayMember(Transform, {
+    name: 'effects'
+  })
+  public effects: Transform[] = [];
+
+  @jsonArrayMember(Message, { name: 'messages' })
+  messages: Message[];
+
+  /**
+   * The error message, if any, generated during the execution.
+   */
+  @jsonMember({
+    name: 'error',
+    constructor: String,
+    preserveNull: true
+  })
+  public errorMessage?: string;
 }
 
 /**
