@@ -13,6 +13,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [5.0.6] - 2025-05-01
+
+### Fixed
+
+- Issue with speculative client response deserialization
+
 ### [5.0.5] - 2025-04-23
 
 ### Fixed
