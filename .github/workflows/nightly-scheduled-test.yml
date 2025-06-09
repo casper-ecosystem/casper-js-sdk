@@ -42,7 +42,7 @@ jobs:
         run: npm install
 
       - name: Unit Test
-        run: npm run test:unit
+        run: npm run test:node:unit
 
       # test mainnet
       - name: Get the mainnet version
