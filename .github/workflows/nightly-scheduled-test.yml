@@ -50,7 +50,7 @@ jobs:
         run: echo "MAINNET_VERSION=$(curl -s -X POST --data-raw '${{ env.VERSION_QUERY }}' -H "Content-Type:application/json" ${{ env.MAINNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1)" >> "$GITHUB_ENV"
 
       - name: Test RPC - mainnet ${{ env.MAINNET_VERSION }}
-        run: npx casper-node-launcher-js node v${{ env.MAINNET_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
+        run: npx casper-node-launcher-js node v${{ env.MAINNET_VERSION }} --daemon && npm run test:node:unit && npx casper-node-launcher-js stop
 
       # test testnet
       - name: Get the testnet version
@@ -58,10 +58,10 @@ jobs:
         run: echo "TESTNET_VERSION=$(curl -s -X POST --data-raw '${{ env.VERSION_QUERY }}' -H "Content-Type:application/json" ${{ env.TESTNET_NODE_URL }} | jq -r .result.build_version | cut -d "-" -f 1)" >> "$GITHUB_ENV"
 
       - name: Test RPC - testnet ${{ env.TESTNET_VERSION }}
-        run: npx casper-node-launcher-js node v${{ env.TESTNET_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
+        run: npx casper-node-launcher-js node v${{ env.TESTNET_VERSION }} --daemon && npm run test:node:unit && npx casper-node-launcher-js stop
 
       - name: Test RPC - CN Dev
-        run: npx casper-node-launcher-js node dev --daemon && npm run test:e2e && npx casper-node-launcher-js stop
+        run: npx casper-node-launcher-js node dev --daemon && npm run test:node:unit && npx casper-node-launcher-js stop
 
       - name: Get Latest Casper-Node Tag Version
         run: |
@@ -70,7 +70,7 @@ jobs:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/tags'
 
       - name: Test RPC - CN Release - ${{ env.CASPER_TAG_VERSION }}
-        run: npx casper-node-launcher-js node ${{env.CASPER_TAG_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
+        run: npx casper-node-launcher-js node ${{env.CASPER_TAG_VERSION }} --daemon && npm run test:node:unit && npx casper-node-launcher-js stop
 
       - name: Get Latest Casper-Node RC Version
         run: |
@@ -79,7 +79,7 @@ jobs:
           GH_API_URL: 'https://api.github.com/repos/casper-network/casper-node/branches'
 
       - name: Test RPC - CN RC - ${{ env.CASPER_RC_VERSION }}
-        run: npx casper-node-launcher-js node ${{env.CASPER_TAG_VERSION }} --daemon && npm run test:e2e && npx casper-node-launcher-js stop
+        run: npx casper-node-launcher-js node ${{env.CASPER_TAG_VERSION }} --daemon && npm run test:node:unit && npx casper-node-launcher-js stop
 
       # - name: Slack Notification
       #   uses: ravsamhq/notify-slack-action@v2
