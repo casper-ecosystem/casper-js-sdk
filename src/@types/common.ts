@@ -16,5 +16,6 @@ export enum AuctionManagerEntryPoint {
 
 export enum NFTTokenStandard {
   CEP47 = 'CEP47',
-  CEP78 = 'CEP78'
+  CEP78 = 'CEP78',
+  CEP95 = 'CEP95'
 }
