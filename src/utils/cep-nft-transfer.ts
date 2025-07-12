@@ -134,7 +134,7 @@ export const makeNftTransferTransaction = ({
   if (casperNetworkApiVersion.startsWith('2.')) {
     let txBuilder = new ContractCallBuilder()
       .byPackageHash(contractPackageHash)
-      .entryPoint(nftStandard === NFTTokenStandard.CEP95 ? 'safe_transfer_from' : 'transfer')
+      .entryPoint(nftStandard === NFTTokenStandard.CEP95 ? 'transfer_from' : 'transfer')
       .from(PublicKey.fromHex(senderPublicKeyHex))
       .chainName(chainName)
       .ttl(ttl)
