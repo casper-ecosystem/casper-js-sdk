@@ -134,7 +134,7 @@ export const makeNftTransferTransaction = ({
   if (casperNetworkApiVersion.startsWith('2.')) {
     let txBuilder = new ContractCallBuilder()
       .byPackageHash(contractPackageHash)
-      .entryPoint('transfer')
+      .entryPoint(nftStandard === NFTTokenStandard.CEP95 ? 'transfer_from' : 'transfer')
       .from(PublicKey.fromHex(senderPublicKeyHex))
       .chainName(chainName)
       .ttl(ttl)
@@ -209,6 +209,14 @@ export const getRuntimeArgsForNftTransfer = ({
     });
   }
 
+  if (nftStandard === NFTTokenStandard.CEP95) {
+    if (!tokenId) {
+      throw new Error('TokenId is required for CEP-95 transfer');
+    }
+
+    args = getRuntimeArgsForCep95Transfer({ tokenId, recipientPublicKeyHex, senderPublicKeyHex });
+  }
+
   if (!args) {
     throw new Error('Arguments error. Check provided token data');
   }
@@ -280,5 +288,34 @@ export function getRuntimeArgsForCep47Transfer({
       )
     ),
     token_ids: CLValue.newCLList(CLTypeUInt256, [CLValue.newCLUInt256(tokenId)])
+  });
+}
+
+export function getRuntimeArgsForCep95Transfer({
+  tokenId,
+  recipientPublicKeyHex,
+  senderPublicKeyHex,
+}: Required<
+  Pick<IMakeNftTransferDeployParams, 'tokenId' | 'recipientPublicKeyHex' | 'senderPublicKeyHex'>
+>) {
+  return Args.fromMap({
+    from: CLValue.newCLKey(
+      Key.createByType(
+        PublicKey.fromHex(senderPublicKeyHex)
+          .accountHash()
+          .toPrefixedString(),
+        KeyTypeID.Account
+      )
+    ),
+    to: CLValue.newCLKey(
+      Key.createByType(
+        PublicKey.fromHex(recipientPublicKeyHex)
+          .accountHash()
+          .toPrefixedString(),
+        KeyTypeID.Account
+      )
+    ),
+    token_id: CLValue.newCLUInt256(tokenId),
+    data: CLValue.newCLOption(null),
   });
 }
