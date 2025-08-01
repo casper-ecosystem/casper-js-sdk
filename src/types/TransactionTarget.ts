@@ -135,6 +135,14 @@ export class ByPackageHashInvocationTarget {
   @jsonMember({ name: 'version', isRequired: false, constructor: Number })
   version?: number;
 
+  @jsonMember({
+    name: 'protocol_version_major',
+    constructor: Number,
+    isRequired: false,
+    preserveNull: false
+  })
+  public protocolVersionMajor?: number | null;
+
   public toBytes(): Uint8Array {
     const calltableSerialization = new CalltableSerialization();
 
@@ -147,6 +155,16 @@ export class ByPackageHashInvocationTarget {
     calltableSerialization.addField(0, Uint8Array.of(2));
     calltableSerialization.addField(1, this.addr.toBytes());
     calltableSerialization.addField(2, versionBytes);
+
+    if (
+      this.protocolVersionMajor !== undefined &&
+      this.protocolVersionMajor !== null
+    ) {
+      calltableSerialization.addField(
+        3,
+        CLValue.newCLUInt32(BigNumber.from(this.protocolVersionMajor)).bytes()
+      );
+    }
 
     return calltableSerialization.toBytes();
   }
@@ -333,6 +351,7 @@ export class TransactionInvocationTarget {
         const byPackageHash = new ByPackageHashInvocationTarget();
         byPackageHash.addr = packageHash.result;
         byPackageHash.version = BigNumber.from(version).toNumber();
+        byPackageHash.protocolVersionMajor = null;
         invocationTarget.byPackageHash = byPackageHash;
         return invocationTarget;
       }
@@ -630,6 +649,7 @@ export class TransactionTarget {
       packageHashInvocationTarget.addr =
         session.storedVersionedContractByHash.hash.hash;
       packageHashInvocationTarget.version = version;
+      packageHashInvocationTarget.protocolVersionMajor = null;
 
       const invocationTarget = new TransactionInvocationTarget();
       invocationTarget.byPackageHash = packageHashInvocationTarget;

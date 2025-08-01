@@ -838,11 +838,13 @@ export class ContractCallBuilder extends TransactionBuilder<
 
   public byPackageHash(
     contractHash: string,
-    version?: number
+    version?: number,
+    protocolVersionMajor: number | null = null
   ): ContractCallBuilder {
     const packageHashInvocationTarget = new ByPackageHashInvocationTarget();
     packageHashInvocationTarget.addr = Hash.fromHex(contractHash);
     packageHashInvocationTarget.version = version;
+    packageHashInvocationTarget.protocolVersionMajor = protocolVersionMajor;
     const transactionInvocationTarget = new TransactionInvocationTarget();
     transactionInvocationTarget.byPackageHash = packageHashInvocationTarget;
     this._transactionInvocationTarget = transactionInvocationTarget;
