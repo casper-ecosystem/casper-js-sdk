@@ -120,6 +120,10 @@ abstract class TransactionBuilder<T extends TransactionBuilder<T>> {
     deployHeader.timestamp = this._timestamp;
     deployHeader.ttl = this._ttl;
 
+    if (this._pricingMode.paymentLimited?.gasPriceTolerance) {
+      deployHeader.gasPrice = this._pricingMode.paymentLimited?.gasPriceTolerance;
+    }
+
     return deployHeader;
   }
 
