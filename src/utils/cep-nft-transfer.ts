@@ -1,6 +1,7 @@
 import {
   Args,
   CLTypeUInt256,
+  CLTypeUInt8,
   CLValue,
   ContractCallBuilder,
   ContractHash,
@@ -316,6 +317,6 @@ export function getRuntimeArgsForCep95Transfer({
       )
     ),
     token_id: CLValue.newCLUInt256(tokenId),
-    data: CLValue.newCLOption(null),
+    data: CLValue.newCLOption(null, CLTypeUInt8),
   });
 }
