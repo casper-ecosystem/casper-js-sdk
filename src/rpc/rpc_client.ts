@@ -126,10 +126,11 @@ export class RpcClient implements IClient {
     );
     result.rawJSON = resp.result;
 
-    const txResult = InfoGetTransactionResultV1Compatible.newInfoGetTransactionResultFromV1Compatible(
-      result,
-      result.rawJSON
-    );
+    const txResult =
+      InfoGetTransactionResultV1Compatible.newInfoGetTransactionResultFromV1Compatible(
+        result,
+        result.rawJSON
+      );
     txResult.rawJSON = resp.result;
 
     return txResult;
@@ -155,10 +156,11 @@ export class RpcClient implements IClient {
     );
     result.rawJSON = resp.result;
 
-    const txResult = InfoGetTransactionResultV1Compatible.newInfoGetTransactionResultFromV1Compatible(
-      result,
-      result.rawJSON
-    );
+    const txResult =
+      InfoGetTransactionResultV1Compatible.newInfoGetTransactionResultFromV1Compatible(
+        result,
+        result.rawJSON
+      );
     txResult.rawJSON = resp.result;
 
     return txResult;
@@ -185,10 +187,11 @@ export class RpcClient implements IClient {
     );
     result.rawJSON = resp.result;
 
-    const txResult = InfoGetTransactionResultV1Compatible.newInfoGetTransactionResultFromV1Compatible(
-      result,
-      result.rawJSON
-    );
+    const txResult =
+      InfoGetTransactionResultV1Compatible.newInfoGetTransactionResultFromV1Compatible(
+        result,
+        result.rawJSON
+      );
     txResult.rawJSON = resp.result;
 
     return txResult;
@@ -215,15 +218,27 @@ export class RpcClient implements IClient {
     );
     result.rawJSON = resp.result;
 
-    const txResult = InfoGetTransactionResultV1Compatible.newInfoGetTransactionResultFromV1Compatible(
-      result,
-      result.rawJSON
-    );
+    const txResult =
+      InfoGetTransactionResultV1Compatible.newInfoGetTransactionResultFromV1Compatible(
+        result,
+        result.rawJSON
+      );
     txResult.rawJSON = resp.result;
 
     return txResult;
   }
 
+  /**
+   * ⚠️ Deprecated: `getStateItem` is deprecated and will be removed in a future release.
+   *
+   * Use `queryLatestGlobalState`, `queryGlobalStateByBlockHash`,
+   * `queryGlobalStateByBlockHeight`, or `queryGlobalStateByStateHash` instead.
+   *
+   * Reason: The newer Global State Query API provides more consistent behavior
+   * across block identifiers and supports both stored values and typed keys.
+   *
+   * @deprecated Use Global State Query methods instead.
+   */
   async getStateItem(
     stateRootHash: string | null,
     key: string,
@@ -255,10 +270,8 @@ export class RpcClient implements IClient {
     path: string[]
   ): Promise<QueryGlobalStateResult> {
     const serializer = new TypedJSON(ParamQueryGlobalState);
-    const queryGlobalStateParam = ParamQueryGlobalState.newQueryGlobalStateParam(
-      key,
-      path
-    );
+    const queryGlobalStateParam =
+      ParamQueryGlobalState.newQueryGlobalStateParam(key, path);
 
     const resp = await this.processRequest(
       Method.QueryGlobalState,
@@ -277,11 +290,8 @@ export class RpcClient implements IClient {
     path: string[]
   ): Promise<QueryGlobalStateResult> {
     const serializer = new TypedJSON(ParamQueryGlobalState);
-    const queryGlobalStateParam = ParamQueryGlobalState.newQueryGlobalStateParam(
-      key,
-      path,
-      { blockHash }
-    );
+    const queryGlobalStateParam =
+      ParamQueryGlobalState.newQueryGlobalStateParam(key, path, { blockHash });
 
     const resp = await this.processRequest(
       Method.QueryGlobalState,
@@ -300,11 +310,10 @@ export class RpcClient implements IClient {
     path: string[]
   ): Promise<QueryGlobalStateResult> {
     const serializer = new TypedJSON(ParamQueryGlobalState);
-    const queryGlobalStateParam = ParamQueryGlobalState.newQueryGlobalStateParam(
-      key,
-      path,
-      { blockHeight }
-    );
+    const queryGlobalStateParam =
+      ParamQueryGlobalState.newQueryGlobalStateParam(key, path, {
+        blockHeight
+      });
 
     const resp = await this.processRequest(
       Method.QueryGlobalState,
@@ -326,10 +335,8 @@ export class RpcClient implements IClient {
     let resp: RpcResponse;
 
     if (!stateRootHash) {
-      const queryGlobalStateParamWithoutRootHash = ParamQueryGlobalState.newQueryGlobalStateParam(
-        key,
-        path
-      );
+      const queryGlobalStateParamWithoutRootHash =
+        ParamQueryGlobalState.newQueryGlobalStateParam(key, path);
       resp = await this.processRequest(
         Method.QueryGlobalState,
         serializer.toPlainJson(
@@ -621,10 +628,11 @@ export class RpcClient implements IClient {
     );
     result.rawJSON = resp.result;
 
-    const blockResult = ChainGetBlockResult.newChainGetBlockResultFromV1Compatible(
-      result,
-      result.rawJSON
-    );
+    const blockResult =
+      ChainGetBlockResult.newChainGetBlockResultFromV1Compatible(
+        result,
+        result.rawJSON
+      );
     blockResult.rawJSON = result.rawJSON;
 
     return blockResult;
@@ -645,10 +653,11 @@ export class RpcClient implements IClient {
     );
     result.rawJSON = resp.result;
 
-    const blockResult = ChainGetBlockResult.newChainGetBlockResultFromV1Compatible(
-      result,
-      result.rawJSON
-    );
+    const blockResult =
+      ChainGetBlockResult.newChainGetBlockResultFromV1Compatible(
+        result,
+        result.rawJSON
+      );
     blockResult.rawJSON = resp.result;
 
     return blockResult;
@@ -669,10 +678,11 @@ export class RpcClient implements IClient {
     );
     result.rawJSON = resp.result;
 
-    const blockResult = ChainGetBlockResult.newChainGetBlockResultFromV1Compatible(
-      result,
-      result.rawJSON
-    );
+    const blockResult =
+      ChainGetBlockResult.newChainGetBlockResultFromV1Compatible(
+        result,
+        result.rawJSON
+      );
     blockResult.rawJSON = resp.result;
 
     return blockResult;
