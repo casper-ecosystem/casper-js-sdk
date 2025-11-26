@@ -152,6 +152,17 @@ export interface ClientInformational {
     stateRootHash: string | null,
     identifier: ParamDictionaryIdentifier
   ): Promise<StateGetDictionaryResult>;
+  /**
+   * ⚠️ Deprecated: `getStateItem` is deprecated and will be removed in a future release.
+   *
+   * Use `queryLatestGlobalState`, `queryGlobalStateByBlockHash`,
+   * `queryGlobalStateByBlockHeight`, or `queryGlobalStateByStateHash` instead.
+   *
+   * Reason: The newer Global State Query API provides more consistent behavior
+   * across block identifiers and supports both stored values and typed keys.
+   *
+   * @deprecated Use Global State Query methods instead.
+   */
   getStateItem(
     stateRootHash: string | null,
     key: string,
