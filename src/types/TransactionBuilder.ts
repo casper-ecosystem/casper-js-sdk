@@ -858,10 +858,15 @@ export class ContractCallBuilder extends TransactionBuilder<
     return this;
   }
 
-  public byPackageName(name: string, version?: number): ContractCallBuilder {
+  public byPackageName(
+    name: string,
+    version?: number,
+    protocolVersionMajor: number | null = null
+  ): ContractCallBuilder {
     const packageNameInvocationTarget = new ByPackageNameInvocationTarget();
     packageNameInvocationTarget.name = name;
     packageNameInvocationTarget.version = version;
+    packageNameInvocationTarget.protocolVersionMajor = protocolVersionMajor;
     const transactionInvocationTarget = new TransactionInvocationTarget();
     transactionInvocationTarget.byPackageName = packageNameInvocationTarget;
     this._transactionInvocationTarget = transactionInvocationTarget;

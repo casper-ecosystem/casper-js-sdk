@@ -9,7 +9,8 @@ import {
   CLTypeUInt32,
   CLValue,
   CLValueOption,
-  CLValueString
+  CLValueString,
+  CLValueUInt32
 } from './clvalue';
 import { ExecutableDeployItem } from './ExecutableDeployItem';
 import { CalltableSerialization } from './CalltableSerialization';
@@ -141,7 +142,7 @@ export class ByPackageHashInvocationTarget {
     isRequired: false,
     preserveNull: false
   })
-  public protocolVersionMajor?: number | null;
+  public protocolVersionMajor: number | null;
 
   public toBytes(): Uint8Array {
     const calltableSerialization = new CalltableSerialization();
@@ -156,10 +157,7 @@ export class ByPackageHashInvocationTarget {
     calltableSerialization.addField(1, this.addr.toBytes());
     calltableSerialization.addField(2, versionBytes);
 
-    if (
-      this.protocolVersionMajor !== undefined &&
-      this.protocolVersionMajor !== null
-    ) {
+    if (this.protocolVersionMajor !== null) {
       calltableSerialization.addField(
         3,
         CLValue.newCLUInt32(BigNumber.from(this.protocolVersionMajor)).bytes()
@@ -187,6 +185,14 @@ export class ByPackageNameInvocationTarget {
   @jsonMember({ name: 'version', isRequired: false, constructor: Number })
   version?: number;
 
+  @jsonMember({
+    name: 'protocol_version_major',
+    constructor: Number,
+    isRequired: false,
+    preserveNull: false
+  })
+  public protocolVersionMajor: number | null;
+
   public toBytes(): Uint8Array {
     const calltableSerialization = new CalltableSerialization();
 
@@ -199,6 +205,13 @@ export class ByPackageNameInvocationTarget {
     calltableSerialization.addField(0, Uint8Array.of(3));
     calltableSerialization.addField(1, CLValue.newCLString(this.name).bytes());
     calltableSerialization.addField(2, versionBytes);
+
+    if (this.protocolVersionMajor !== null) {
+      calltableSerialization.addField(
+        3,
+        CLValue.newCLUInt32(BigNumber.from(this.protocolVersionMajor)).bytes()
+      );
+    }
 
     return calltableSerialization.toBytes();
   }
@@ -338,11 +351,18 @@ export class TransactionInvocationTarget {
       case 2: {
         const packageHashBytes = calltable.getField(1);
         const versionBytes = calltable.getField(2);
+        const protocolVersionMajorBytes = calltable.getField(3);
 
         if (!packageHashBytes || !versionBytes) {
           throw new Error('Missing fields for ByPackageHash target');
         }
 
+        let protocolVersionMajor = null;
+        if (protocolVersionMajorBytes) {
+          protocolVersionMajor = CLValueUInt32.fromBytes(
+            protocolVersionMajorBytes
+          ).result.toNumber();
+        }
         const packageHash = Hash.fromBytes(packageHashBytes);
         const version = CLValueOption.fromBytes(
           versionBytes,
@@ -351,7 +371,7 @@ export class TransactionInvocationTarget {
         const byPackageHash = new ByPackageHashInvocationTarget();
         byPackageHash.addr = packageHash.result;
         byPackageHash.version = BigNumber.from(version).toNumber();
-        byPackageHash.protocolVersionMajor = null;
+        byPackageHash.protocolVersionMajor = protocolVersionMajor;
         invocationTarget.byPackageHash = byPackageHash;
         return invocationTarget;
       }
@@ -359,9 +379,17 @@ export class TransactionInvocationTarget {
       case 3: {
         const nameBytes = calltable.getField(1);
         const versionBytes = calltable.getField(2);
+        const protocolVersionMajorBytes = calltable.getField(3);
 
         if (!nameBytes || !versionBytes) {
           throw new Error('Missing fields for ByPackageName target');
+        }
+
+        let protocolVersionMajor = null;
+        if (protocolVersionMajorBytes) {
+          protocolVersionMajor = CLValueUInt32.fromBytes(
+            protocolVersionMajorBytes
+          ).result.toNumber();
         }
 
         const name = CLValueString.fromBytes(nameBytes).result.toString();
@@ -372,6 +400,7 @@ export class TransactionInvocationTarget {
         const byPackageName = new ByPackageNameInvocationTarget();
         byPackageName.version = BigNumber.from(version).toNumber();
         byPackageName.name = name;
+        byPackageName.protocolVersionMajor = protocolVersionMajor;
         invocationTarget.byPackageName = byPackageName;
         return invocationTarget;
       }
@@ -682,6 +711,7 @@ export class TransactionTarget {
       packageNameInvocationTarget.name =
         session.storedVersionedContractByName.name;
       packageNameInvocationTarget.version = version;
+      packageNameInvocationTarget.protocolVersionMajor = null;
 
       const invocationTarget = new TransactionInvocationTarget();
       invocationTarget.byPackageName = packageNameInvocationTarget;
