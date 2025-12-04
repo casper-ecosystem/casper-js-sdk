@@ -20,6 +20,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - CEP-95 support for NFT transfers
 - Documentation for `Transaction` builder
 - Updated README.md
+- Add protocol_major_version as optional property in `ByPackageHash` and `ByPackageName` invocations
 
 ### Fixed
 
