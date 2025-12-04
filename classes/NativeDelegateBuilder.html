@@ -15,6 +15,13 @@
 <li><a href="../modules.html">casper-js-sdk</a></li>
 <li><a href="NativeDelegateBuilder.html">NativeDelegateBuilder</a></li></ul>
 <h1>Class NativeDelegateBuilder</h1></div>
+<section class="tsd-panel tsd-comment">
+<div class="tsd-comment tsd-typography"><p>Builder for creating Native Delegate transactions.
+Allows accounts to delegate their CSPR tokens to a validator for staking.</p>
+
+<h3>Example</h3><pre><code class="language-typescript"><span class="hl-5">const</span><span class="hl-1"> </span><span class="hl-6">transaction</span><span class="hl-1"> = </span><span class="hl-5">new</span><span class="hl-1"> </span><span class="hl-7">NativeDelegateBuilder</span><span class="hl-1">()</span><br/><span class="hl-1">  .</span><span class="hl-7">from</span><span class="hl-1">(</span><span class="hl-4">delegatorPublicKey</span><span class="hl-1">)</span><br/><span class="hl-1">  .</span><span class="hl-7">validator</span><span class="hl-1">(</span><span class="hl-4">validatorPublicKey</span><span class="hl-1">)</span><br/><span class="hl-1">  .</span><span class="hl-7">amount</span><span class="hl-1">(</span><span class="hl-2">&#39;500000000000&#39;</span><span class="hl-1">) </span><span class="hl-0">// 500 CSPR</span><br/><span class="hl-1">  .</span><span class="hl-7">chainName</span><span class="hl-1">(</span><span class="hl-2">&#39;casper&#39;</span><span class="hl-1">)</span><br/><span class="hl-1">  .</span><span class="hl-7">payment</span><span class="hl-1">(</span><span class="hl-9">2_500_000_000</span><span class="hl-1">)</span><br/><span class="hl-1">  .</span><span class="hl-7">build</span><span class="hl-1">();</span>
+</code></pre>
+</div></section>
 <section class="tsd-panel tsd-hierarchy">
 <h4>Hierarchy</h4>
 <ul class="tsd-hierarchy">
@@ -22,7 +29,7 @@
 <ul class="tsd-hierarchy">
 <li><span class="target">NativeDelegateBuilder</span></li></ul></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L476">src/types/TransactionBuilder.ts:476</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L669">src/types/TransactionBuilder.ts:669</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-index-accordion" open><summary class="tsd-accordion-summary tsd-index-summary">
@@ -75,256 +82,321 @@
   NativeDelegateBuilder
 &gt;.constructor</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L482">src/types/TransactionBuilder.ts:482</a></li></ul></aside></li></ul></section></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L675">src/types/TransactionBuilder.ts:675</a></li></ul></aside></li></ul></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Properties</h2>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private"><a id="_amount" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>_amount</span><a href="#_amount" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">_amount<span class="tsd-signature-symbol">:</span> <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L480">src/types/TransactionBuilder.ts:480</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L673">src/types/TransactionBuilder.ts:673</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="_chainName" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_chain<wbr/>Name</span><a href="#_chainName" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">_chain<wbr/>Name<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder._chainName</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L43">src/types/TransactionBuilder.ts:43</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L47">src/types/TransactionBuilder.ts:47</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="_contractHash" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_contract<wbr/>Hash</span><a href="#_contractHash" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">_contract<wbr/>Hash<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder._contractHash</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L51">src/types/TransactionBuilder.ts:51</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L55">src/types/TransactionBuilder.ts:55</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="_entryPoint" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_entry<wbr/>Point</span><a href="#_entryPoint" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">_entry<wbr/>Point<span class="tsd-signature-symbol">:</span> <a href="TransactionEntryPoint.html" class="tsd-signature-type" data-tsd-kind="Class">TransactionEntryPoint</a></div><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder._entryPoint</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L48">src/types/TransactionBuilder.ts:48</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L52">src/types/TransactionBuilder.ts:52</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="_initiatorAddr" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_initiator<wbr/>Addr</span><a href="#_initiatorAddr" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">_initiator<wbr/>Addr<span class="tsd-signature-symbol">:</span> <a href="InitiatorAddr.html" class="tsd-signature-type" data-tsd-kind="Class">InitiatorAddr</a></div><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder._initiatorAddr</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L42">src/types/TransactionBuilder.ts:42</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L46">src/types/TransactionBuilder.ts:46</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="_invocationTarget" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_invocation<wbr/>Target</span><a href="#_invocationTarget" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">_invocation<wbr/>Target<span class="tsd-signature-symbol">:</span> <a href="TransactionTarget.html" class="tsd-signature-type" data-tsd-kind="Class">TransactionTarget</a></div><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder._invocationTarget</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L47">src/types/TransactionBuilder.ts:47</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L51">src/types/TransactionBuilder.ts:51</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="_pricingMode" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_pricing<wbr/>Mode</span><a href="#_pricingMode" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">_pricing<wbr/>Mode<span class="tsd-signature-symbol">:</span> <a href="PricingMode.html" class="tsd-signature-type" data-tsd-kind="Class">PricingMode</a></div><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder._pricingMode</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L46">src/types/TransactionBuilder.ts:46</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L50">src/types/TransactionBuilder.ts:50</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="_runtimeArgs" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_runtime<wbr/>Args</span><a href="#_runtimeArgs" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">_runtime<wbr/>Args<span class="tsd-signature-symbol">:</span> <a href="Args.html" class="tsd-signature-type" data-tsd-kind="Class">Args</a></div><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder._runtimeArgs</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L50">src/types/TransactionBuilder.ts:50</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L54">src/types/TransactionBuilder.ts:54</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="_scheduling" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_scheduling</span><a href="#_scheduling" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">_scheduling<span class="tsd-signature-symbol">:</span> <a href="TransactionScheduling.html" class="tsd-signature-type" data-tsd-kind="Class">TransactionScheduling</a><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder._scheduling</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L49">src/types/TransactionBuilder.ts:49</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L53">src/types/TransactionBuilder.ts:53</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="_timestamp" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_timestamp</span><a href="#_timestamp" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">_timestamp<span class="tsd-signature-symbol">:</span> <a href="Timestamp.html" class="tsd-signature-type" data-tsd-kind="Class">Timestamp</a><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder._timestamp</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L44">src/types/TransactionBuilder.ts:44</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L48">src/types/TransactionBuilder.ts:48</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="_ttl" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_ttl</span><a href="#_ttl" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">_ttl<span class="tsd-signature-symbol">:</span> <a href="Duration.html" class="tsd-signature-type" data-tsd-kind="Class">Duration</a><span class="tsd-signature-symbol"> = ...</span></div><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder._ttl</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L45">src/types/TransactionBuilder.ts:45</a></li></ul></aside></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L49">src/types/TransactionBuilder.ts:49</a></li></ul></aside></section>
 <section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private"><a id="_validator" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagPrivate">Private</code> <span>_validator</span><a href="#_validator" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <div class="tsd-signature">_validator<span class="tsd-signature-symbol">:</span> <a href="CLValue.html" class="tsd-signature-type" data-tsd-kind="Class">CLValue</a></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L479">src/types/TransactionBuilder.ts:479</a></li></ul></aside></section></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L672">src/types/TransactionBuilder.ts:672</a></li></ul></aside></section></section>
 <section class="tsd-panel-group tsd-member-group">
 <h2>Methods</h2>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="_getDefaultDeployHeader" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_get<wbr/>Default<wbr/>Deploy<wbr/>Header</span><a href="#_getDefaultDeployHeader" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="_getDefaultDeployHeader._getDefaultDeployHeader-1">_get<wbr/>Default<wbr/>Deploy<wbr/>Header<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="DeployHeader.html" class="tsd-signature-type" data-tsd-kind="Class">DeployHeader</a><a href="#_getDefaultDeployHeader._getDefaultDeployHeader-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
-<li class="tsd-description">
+<li class="tsd-description"><code class="tsd-tag ts-flagProtected">Protected</code> 
+<div class="tsd-comment tsd-typography"><p>Creates a default deploy header with the configured transaction settings.</p>
+
+<h3>Returns</h3><p>A deploy header with account, chain name, timestamp, TTL, and gas price</p>
+</div>
 <h4 class="tsd-returns-title">Returns <a href="DeployHeader.html" class="tsd-signature-type" data-tsd-kind="Class">DeployHeader</a></h4><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder._getDefaultDeployHeader</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L116">src/types/TransactionBuilder.ts:116</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L148">src/types/TransactionBuilder.ts:148</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited"><a id="_getStandardPayment" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><code class="tsd-tag ts-flagProtected">Protected</code> <span>_get<wbr/>Standard<wbr/>Payment</span><a href="#_getStandardPayment" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-protected tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="_getStandardPayment._getStandardPayment-1">_get<wbr/>Standard<wbr/>Payment<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="ExecutableDeployItem.html" class="tsd-signature-type" data-tsd-kind="Class">ExecutableDeployItem</a><a href="#_getStandardPayment._getStandardPayment-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
-<li class="tsd-description">
+<li class="tsd-description"><code class="tsd-tag ts-flagProtected">Protected</code> 
+<div class="tsd-comment tsd-typography"><p>Creates a standard payment executable deploy item.</p>
+
+<h3>Returns</h3><p>An executable deploy item configured for standard payment</p>
+
+<h3>Throws</h3><p>If payment amount is not specified</p>
+</div>
 <h4 class="tsd-returns-title">Returns <a href="ExecutableDeployItem.html" class="tsd-signature-type" data-tsd-kind="Class">ExecutableDeployItem</a></h4><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder._getStandardPayment</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L126">src/types/TransactionBuilder.ts:126</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L169">src/types/TransactionBuilder.ts:169</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="amount" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>amount</span><a href="#amount" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="amount.amount-1">amount<span class="tsd-signature-symbol">(</span>amount<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">BigNumber</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a><a href="#amount.amount-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Sets the amount to delegate in motes.</p>
+
+<h3>Returns</h3><p>The builder instance for method chaining</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>amount: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">BigNumber</span></h5></li></ul></div>
+<h5>amount: <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">BigNumber</span></h5>
+<div class="tsd-comment tsd-typography"><p>The delegation amount (minimum varies by network)</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L495">src/types/TransactionBuilder.ts:495</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L700">src/types/TransactionBuilder.ts:700</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="build" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>build</span><a href="#build" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="build.build-1">build<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Transaction.html" class="tsd-signature-type" data-tsd-kind="Class">Transaction</a><a href="#build.build-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Builds and returns the Delegate transaction for Casper 2.0+.</p>
+
+<h3>Returns</h3><p>A complete Transaction object ready to be signed and submitted</p>
+
+<h3>Throws</h3><p>If initiator address is not specified</p>
+</div>
 <h4 class="tsd-returns-title">Returns <a href="Transaction.html" class="tsd-signature-type" data-tsd-kind="Class">Transaction</a></h4><aside class="tsd-sources">
 <p>Overrides TransactionBuilder.build</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L500">src/types/TransactionBuilder.ts:500</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L711">src/types/TransactionBuilder.ts:711</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="buildFor1_5" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>build<wbr/>For1_<wbr/>5</span><a href="#buildFor1_5" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="buildFor1_5.buildFor1_5-1">build<wbr/>For1_<wbr/>5<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="Transaction.html" class="tsd-signature-type" data-tsd-kind="Class">Transaction</a><a href="#buildFor1_5.buildFor1_5-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Builds and returns the Delegate transaction for Casper 1.5.
+Uses the auction manager contract for backward compatibility.</p>
+
+<h3>Returns</h3><p>A Transaction object compatible with Casper 1.5</p>
+
+<h3>Throws</h3><p>If initiator address or contract hash is not specified</p>
+</div>
 <h4 class="tsd-returns-title">Returns <a href="Transaction.html" class="tsd-signature-type" data-tsd-kind="Class">Transaction</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L514">src/types/TransactionBuilder.ts:514</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L732">src/types/TransactionBuilder.ts:732</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="chainName" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>chain<wbr/>Name</span><a href="#chainName" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="chainName.chainName-1">chain<wbr/>Name<span class="tsd-signature-symbol">(</span>chainName<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a><a href="#chainName.chainName-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Sets the chain name for the transaction.</p>
+
+<h3>Returns</h3><p>The builder instance for method chaining</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>chainName: <span class="tsd-signature-type">string</span></h5></li></ul></div>
+<h5>chainName: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The name of the Casper network chain (e.g., &#39;casper-test&#39;, &#39;casper&#39;)</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a></h4><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder.chainName</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L72">src/types/TransactionBuilder.ts:72</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L85">src/types/TransactionBuilder.ts:85</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="contractHash" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>contract<wbr/>Hash</span><a href="#contractHash" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="contractHash.contractHash-1">contract<wbr/>Hash<span class="tsd-signature-symbol">(</span>contractHash<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a><a href="#contractHash.contractHash-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Sets the contract hash for the transaction.</p>
+
+<h3>Returns</h3><p>The builder instance for method chaining</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>contractHash: <span class="tsd-signature-type">string</span></h5></li></ul></div>
+<h5>contractHash: <span class="tsd-signature-type">string</span></h5>
+<div class="tsd-comment tsd-typography"><p>The contract hash in hexadecimal format</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a></h4><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder.contractHash</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L80">src/types/TransactionBuilder.ts:80</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L96">src/types/TransactionBuilder.ts:96</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="from" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>from</span><a href="#from" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="from.from-1">from<span class="tsd-signature-symbol">(</span>publicKey<span class="tsd-signature-symbol">: </span><a href="PublicKey.html" class="tsd-signature-type" data-tsd-kind="Class">PublicKey</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a><a href="#from.from-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Sets the initiator address using a public key.</p>
+
+<h3>Returns</h3><p>The builder instance for method chaining</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>publicKey: <a href="PublicKey.html" class="tsd-signature-type" data-tsd-kind="Class">PublicKey</a></h5></li></ul></div>
+<h5>publicKey: <a href="PublicKey.html" class="tsd-signature-type" data-tsd-kind="Class">PublicKey</a></h5>
+<div class="tsd-comment tsd-typography"><p>The public key of the transaction initiator</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a></h4><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder.from</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L56">src/types/TransactionBuilder.ts:56</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L63">src/types/TransactionBuilder.ts:63</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="fromAccountHash" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>from<wbr/>Account<wbr/>Hash</span><a href="#fromAccountHash" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="fromAccountHash.fromAccountHash-1">from<wbr/>Account<wbr/>Hash<span class="tsd-signature-symbol">(</span>accountHashKey<span class="tsd-signature-symbol">: </span><a href="AccountHash.html" class="tsd-signature-type" data-tsd-kind="Class">AccountHash</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a><a href="#fromAccountHash.fromAccountHash-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Sets the initiator address using an account hash.</p>
+
+<h3>Returns</h3><p>The builder instance for method chaining</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>accountHashKey: <a href="AccountHash.html" class="tsd-signature-type" data-tsd-kind="Class">AccountHash</a></h5></li></ul></div>
+<h5>accountHashKey: <a href="AccountHash.html" class="tsd-signature-type" data-tsd-kind="Class">AccountHash</a></h5>
+<div class="tsd-comment tsd-typography"><p>The account hash of the transaction initiator</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a></h4><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder.fromAccountHash</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L64">src/types/TransactionBuilder.ts:64</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L74">src/types/TransactionBuilder.ts:74</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="payment" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>payment</span><a href="#payment" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="payment.payment-1">payment<span class="tsd-signature-symbol">(</span>paymentAmount<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, gasPriceTolerance<span class="tsd-signature-symbol">?: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a><a href="#payment.payment-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
-<div class="tsd-comment tsd-typography"><p>Sets the payment amount for the transaction.</p>
+<div class="tsd-comment tsd-typography"><p>Sets the payment amount for the transaction using a limited payment mode.</p>
+
+<h3>Returns</h3><p>The builder instance for method chaining</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>paymentAmount: <span class="tsd-signature-type">number</span></h5></li>
+<h5>paymentAmount: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>The payment amount in motes</p>
+</div></li>
 <li>
-<h5>gasPriceTolerance: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 1</span></h5></li></ul></div>
+<h5>gasPriceTolerance: <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> = 1</span></h5>
+<div class="tsd-comment tsd-typography"><p>Gas price tolerance multiplier (default: 1)</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a></h4><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder.payment</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L104">src/types/TransactionBuilder.ts:104</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L130">src/types/TransactionBuilder.ts:130</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="timestamp" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>timestamp</span><a href="#timestamp" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="timestamp.timestamp-1">timestamp<span class="tsd-signature-symbol">(</span>timestamp<span class="tsd-signature-symbol">: </span><a href="Timestamp.html" class="tsd-signature-type" data-tsd-kind="Class">Timestamp</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a><a href="#timestamp.timestamp-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Sets the timestamp for the transaction.</p>
+
+<h3>Returns</h3><p>The builder instance for method chaining</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>timestamp: <a href="Timestamp.html" class="tsd-signature-type" data-tsd-kind="Class">Timestamp</a></h5></li></ul></div>
+<h5>timestamp: <a href="Timestamp.html" class="tsd-signature-type" data-tsd-kind="Class">Timestamp</a></h5>
+<div class="tsd-comment tsd-typography"><p>The transaction timestamp</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a></h4><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder.timestamp</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L88">src/types/TransactionBuilder.ts:88</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L107">src/types/TransactionBuilder.ts:107</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a id="ttl" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>ttl</span><a href="#ttl" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
 <li class="tsd-signature tsd-anchor-link" id="ttl.ttl-1">ttl<span class="tsd-signature-symbol">(</span>ttl<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a><a href="#ttl.ttl-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
 <div class="tsd-comment tsd-typography"><p>Sets the time-to-live for the transaction.</p>
+
+<h3>Returns</h3><p>The builder instance for method chaining</p>
 </div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>ttl: <span class="tsd-signature-type">number</span></h5></li></ul></div>
+<h5>ttl: <span class="tsd-signature-type">number</span></h5>
+<div class="tsd-comment tsd-typography"><p>Time-to-live in milliseconds (default: 1800000ms = 30 minutes)</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a></h4><aside class="tsd-sources">
 <p>Inherited from TransactionBuilder.ttl</p>
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L96">src/types/TransactionBuilder.ts:96</a></li></ul></aside></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L118">src/types/TransactionBuilder.ts:118</a></li></ul></aside></li></ul></section>
 <section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class"><a id="validator" class="tsd-anchor"></a>
 <h3 class="tsd-anchor-link"><span>validator</span><a href="#validator" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></h3>
 <ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
 <li class="tsd-signature tsd-anchor-link" id="validator.validator-1">validator<span class="tsd-signature-symbol">(</span>publicKey<span class="tsd-signature-symbol">: </span><a href="PublicKey.html" class="tsd-signature-type" data-tsd-kind="Class">PublicKey</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a><a href="#validator.validator-1" aria-label="Permalink" class="tsd-anchor-icon"><svg class="icon icon-tabler icon-tabler-link" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><use href="#icon-anchor-a"></use><use href="#icon-anchor-b"></use><use href="#icon-anchor-c"></use></svg></a></li>
 <li class="tsd-description">
+<div class="tsd-comment tsd-typography"><p>Sets the validator&#39;s public key to delegate to.</p>
+
+<h3>Returns</h3><p>The builder instance for method chaining</p>
+</div>
 <div class="tsd-parameters">
 <h4 class="tsd-parameters-title">Parameters</h4>
 <ul class="tsd-parameter-list">
 <li>
-<h5>publicKey: <a href="PublicKey.html" class="tsd-signature-type" data-tsd-kind="Class">PublicKey</a></h5></li></ul></div>
+<h5>publicKey: <a href="PublicKey.html" class="tsd-signature-type" data-tsd-kind="Class">PublicKey</a></h5>
+<div class="tsd-comment tsd-typography"><p>The validator&#39;s public key</p>
+</div></li></ul></div>
 <h4 class="tsd-returns-title">Returns <a href="NativeDelegateBuilder.html" class="tsd-signature-type" data-tsd-kind="Class">NativeDelegateBuilder</a></h4><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/998aae5/src/types/TransactionBuilder.ts#L490">src/types/TransactionBuilder.ts:490</a></li></ul></aside></li></ul></section></section></div>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/42788c0/src/types/TransactionBuilder.ts#L689">src/types/TransactionBuilder.ts:689</a></li></ul></aside></li></ul></section></section></div>
 <div class="col-4 col-menu menu-sticky-wrap menu-highlight">
 <div class="tsd-navigation settings">
 <details class="tsd-index-accordion"><summary class="tsd-accordion-summary">
