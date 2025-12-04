@@ -1,5 +1,7 @@
 # Casper JS SDK
 
+[![npm version](https://img.shields.io/npm/v/casper-js-sdk.svg?style=flat-square)](https://www.npmjs.com/package/casper-js-sdk) [![npm downloads](https://img.shields.io/npm/dm/casper-js-sdk.svg?style=flat-square)](https://www.npmjs.com/package/casper-js-sdk) [![License](https://img.shields.io/npm/l/casper-js-sdk.svg?style=flat-square)](https://github.com/casper-ecosystem/casper-js-sdk/blob/master/LICENSE) [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg?style=flat-square&logo=typescript)](https://www.typescriptlang.org/) [![GitHub stars](https://img.shields.io/github/stars/casper-ecosystem/casper-js-sdk.svg?style=flat-square&logo=github)](https://github.com/casper-ecosystem/casper-js-sdk) [![Build Status](https://img.shields.io/github/actions/workflow/status/casper-ecosystem/casper-js-sdk/ci.yml?style=flat-square&logo=github)](https://github.com/casper-ecosystem/casper-js-sdk/actions)
+
 The Casper JS SDK provides a convenient way to interact with the Casper Network using JavaScript.
 
 ## Get started
