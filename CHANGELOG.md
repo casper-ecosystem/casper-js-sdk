@@ -13,6 +13,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [5.0.7] - 2025-12-04
+
+### Added
+
+- CEP-95 support for NFT transfers
+- Documentation for `Transaction` builder
+- Updated README.md
+
+### Fixed
+
+- Issue with speculative client response deserialization
+- Issue when `gas_price` not set to value indicated in payment
+- Optional data type in NFT transfer utils
+
+### Changed
+
+- Deprecate `getStateItem` in favor of `queryLatestGlobalState`
+
 ### [5.0.6] - 2025-05-01
 
 ### Fixed
