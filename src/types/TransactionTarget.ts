@@ -157,7 +157,7 @@ export class ByPackageHashInvocationTarget {
     calltableSerialization.addField(1, this.addr.toBytes());
     calltableSerialization.addField(2, versionBytes);
 
-    if (this.protocolVersionMajor !== null) {
+    if (this.protocolVersionMajor) {
       calltableSerialization.addField(
         3,
         CLValue.newCLUInt32(BigNumber.from(this.protocolVersionMajor)).bytes()
@@ -206,7 +206,7 @@ export class ByPackageNameInvocationTarget {
     calltableSerialization.addField(1, CLValue.newCLString(this.name).bytes());
     calltableSerialization.addField(2, versionBytes);
 
-    if (this.protocolVersionMajor !== null) {
+    if (this.protocolVersionMajor) {
       calltableSerialization.addField(
         3,
         CLValue.newCLUInt32(BigNumber.from(this.protocolVersionMajor)).bytes()
