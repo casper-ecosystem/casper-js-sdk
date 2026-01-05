@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import { TypedJSON } from 'typedjson';
 import {
   makeAuctionManagerDeploy,
   makeCep18TransferDeploy,
@@ -10,10 +11,13 @@ import {
   Key,
   KeyTypeID,
   PublicKey,
+  PrivateKey,
+  KeyAlgorithm,
   ContractCallBuilder,
   NativeDelegateBuilder,
   NativeTransferBuilder,
-  SessionBuilder
+  SessionBuilder,
+  TransactionV1
 } from '../../types';
 import { AuctionManagerEntryPoint, CasperNetworkName } from '../../@types';
 
@@ -135,6 +139,158 @@ describe('TransactionBuilder', () => {
       expect(deploy!.header.gasPrice).to.equal(2);
       expect(deploy!.header.chainName).to.equal(CasperNetworkName.Mainnet);
       expect(deploy!.header?.account?.toHex()).to.equal(PK.toHex());
+    });
+  });
+
+  describe('ProtocolVersionMajor', () => {
+    it('ByPackageHashNoVersionTest', async () => {
+      const testKey = await PrivateKey.generate(KeyAlgorithm.SECP256K1);
+      const runtimeArgs = Args.fromMap({});
+
+      const transaction = new ContractCallBuilder()
+        .from(testKey.publicKey)
+        .payment(2_500_000_000, 2)
+        .chainName('chain_name')
+        .byPackageHash(
+          '0101010101010101010101010101010101010101010101010101010101010101'
+        )
+        .entryPoint('counter_inc')
+        .runtimeArgs(runtimeArgs)
+        .build();
+
+      const txv1 = transaction.getTransactionV1();
+      expect(txv1).to.exist;
+      const target = txv1!.payload.fields.target.stored;
+      expect(target).to.exist;
+      const invocationTarget = target!.id.byPackageHash;
+      expect(invocationTarget).to.exist;
+      expect(invocationTarget!.addr.toHex()).to.equal(
+        '0101010101010101010101010101010101010101010101010101010101010101'
+      );
+      expect(invocationTarget!.version).to.be.undefined;
+      expect(invocationTarget!.protocolVersionMajor).to.be.null;
+    });
+
+    it('ByPackageHashWithVersionTest', async () => {
+      const testKey = await PrivateKey.generate(KeyAlgorithm.SECP256K1);
+      const runtimeArgs = Args.fromMap({});
+
+      const transaction = new ContractCallBuilder()
+        .from(testKey.publicKey)
+        .payment(2_500_000_000, 2)
+        .chainName('chain_name')
+        .byPackageHash(
+          '0101010101010101010101010101010101010101010101010101010101010101',
+          undefined,
+          2
+        )
+        .entryPoint('counter_inc')
+        .runtimeArgs(runtimeArgs)
+        .build();
+
+      const txv1 = transaction.getTransactionV1();
+      expect(txv1).to.exist;
+      const target = txv1!.payload.fields.target.stored;
+      expect(target).to.exist;
+      const invocationTarget = target!.id.byPackageHash;
+      expect(invocationTarget).to.exist;
+      expect(invocationTarget!.addr.toHex()).to.equal(
+        '0101010101010101010101010101010101010101010101010101010101010101'
+      );
+      expect(invocationTarget!.version).to.be.undefined;
+      expect(invocationTarget!.protocolVersionMajor).to.equal(2);
+    });
+
+    it('ByPackageNameNoVersionTest', async () => {
+      const testKey = await PrivateKey.generate(KeyAlgorithm.SECP256K1);
+      const runtimeArgs = Args.fromMap({});
+
+      const transaction = new ContractCallBuilder()
+        .from(testKey.publicKey)
+        .payment(2_500_000_000, 2)
+        .chainName('chain_name')
+        .byPackageName('counter_package_name')
+        .entryPoint('counter_inc')
+        .runtimeArgs(runtimeArgs)
+        .build();
+
+      const txv1 = transaction.getTransactionV1();
+      expect(txv1).to.exist;
+      const target = txv1!.payload.fields.target.stored;
+      expect(target).to.exist;
+      const invocationTarget = target!.id.byPackageName;
+      expect(invocationTarget).to.exist;
+      expect(invocationTarget!.name).to.equal('counter_package_name');
+      expect(invocationTarget!.version).to.be.undefined;
+      expect(invocationTarget!.protocolVersionMajor).to.be.null;
+    });
+
+    it('ByPackageNameWithVersionTest', async () => {
+      const testKey = await PrivateKey.generate(KeyAlgorithm.SECP256K1);
+      const runtimeArgs = Args.fromMap({});
+
+      const transaction = new ContractCallBuilder()
+        .from(testKey.publicKey)
+        .payment(2_500_000_000, 2)
+        .chainName('chain_name')
+        .byPackageName('counter_package_name', 1, 2)
+        .entryPoint('counter_inc')
+        .runtimeArgs(runtimeArgs)
+        .build();
+
+      const txv1 = transaction.getTransactionV1();
+      expect(txv1).to.exist;
+      const target = txv1!.payload.fields.target.stored;
+      expect(target).to.exist;
+      const invocationTarget = target!.id.byPackageName;
+      expect(invocationTarget).to.exist;
+      expect(invocationTarget!.name).to.equal('counter_package_name');
+      expect(invocationTarget!.version).to.equal(1);
+      expect(invocationTarget!.protocolVersionMajor).to.equal(2);
+    });
+
+    it('ByPackageNameNoVersionJsonTest', async () => {
+      const testKey = await PrivateKey.generate(KeyAlgorithm.SECP256K1);
+      const runtimeArgs = Args.fromMap({});
+
+      const transaction = new ContractCallBuilder()
+        .from(testKey.publicKey)
+        .payment(2_500_000_000, 2)
+        .chainName('chain_name')
+        .byPackageName('counter_package_name')
+        .entryPoint('counter_inc')
+        .runtimeArgs(runtimeArgs)
+        .build();
+
+      const txv1 = transaction.getTransactionV1();
+      expect(txv1).to.exist;
+      const serializer = new TypedJSON(TransactionV1);
+      const json = serializer.toPlainJson(txv1!);
+      const jsonString = JSON.stringify(json);
+      expect(jsonString).to.not.be.null;
+      expect(jsonString).to.not.include('protocol_version_major');
+    });
+
+    it('ByPackageNameWithVersionJsonTest', async () => {
+      const testKey = await PrivateKey.generate(KeyAlgorithm.SECP256K1);
+      const runtimeArgs = Args.fromMap({});
+
+      const transaction = new ContractCallBuilder()
+        .from(testKey.publicKey)
+        .payment(2_500_000_000, 2)
+        .chainName('chain_name')
+        .byPackageName('counter_package_name', 1, 2)
+        .entryPoint('counter_inc')
+        .runtimeArgs(runtimeArgs)
+        .build();
+
+      const txv1 = transaction.getTransactionV1();
+      expect(txv1).to.exist;
+      const serializer = new TypedJSON(TransactionV1);
+      const json = serializer.toPlainJson(txv1!);
+      const jsonString = JSON.stringify(json);
+      expect(jsonString).to.not.be.null;
+      expect(jsonString).to.include('"protocol_version_major":2');
     });
   });
 });
