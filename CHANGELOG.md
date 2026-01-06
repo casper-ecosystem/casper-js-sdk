@@ -13,6 +13,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [5.0.8] - 2026-01-06
+
+### Fixed
+
+- Issue with parsing `protocol_version_major` when it's null for `InvocationTarget's`
+
 ### [5.0.7] - 2025-12-04
 
 ### Added

@@ -1,6 +1,6 @@
 {
   "name": "casper-js-sdk",
-  "version": "5.0.7",
+  "version": "5.0.8",
   "license": "Apache 2.0",
   "description": "SDK to interact with the Casper blockchain",
   "homepage": "https://github.com/casper-ecosystem/casper-js-sdk#README.md",
