@@ -1,11 +1,13 @@
-# This workflow will do a clean install of node dependencies, build the source code and run tests across different versions of node
-# For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
-
 name: publish-casper-js-sdk
 
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - "*.*.*"
+
+permissions:
+  contents: write
+  id-token: write
 
 jobs:
   publish:
@@ -14,39 +16,34 @@ jobs:
 
     strategy:
       matrix:
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
         node-version: [20.x]
 
     steps:
-      - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
-      - name: Set release tag
-        run: |
-          if [ ${{ github.event.release.target_commitish }} == 'feat-5.0.0' ]; then
-          echo "release_tag=condor" >> $GITHUB_ENV
-          else
-          echo "release_tag=latest" >> $GITHUB_ENV
-          fi
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node-version }}
-          registry-url: 'https://registry.npmjs.org'
-      - name: Install and Build 🔧
-        run: |
-          npm install
-          npm run build
-      - name: Publish
-        uses: JS-DevTools/npm-publish@v3
+          registry-url: "https://registry.npmjs.org"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish to npm
+        run: npm publish --access public --tag latest
+
+      - name: Rename package
+        run: cp dist/lib.node.js casper-js-sdk.v${{ github.ref_name }}.js
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
         with:
-          token: ${{ secrets.NPM_TOKEN }}
-          tag: ${{ env.release_tag }}
-          access: "public"
-      - name: Get latest release version number
-        id: get_version
-        uses: battila7/get-version-action@v2
-      - run: cp dist/lib.node.js casper-js-sdk.v${{ steps.get_version.outputs.version }}.js
-      - uses: meeDamian/github-release@2.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          files: casper-js-sdk.v${{ steps.get_version.outputs.version }}.js
-          allow_override: true
+          generate_release_notes: true
+          files: |
+            casper-js-sdk.v${{ github.ref_name }}.js
