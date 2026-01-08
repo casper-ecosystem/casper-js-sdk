@@ -19,7 +19,8 @@
     "build": "webpack --config webpack.config.js",
     "clean": "rm -rf ./dist",
     "~build": "tsc --watch",
-    "test:node:unit": "cross-env NODE_ENV=test TS_NODE_FILES=true NODE_OPTIONS=\"--no-experimental-strip-types\" mocha --require ts-node/register/transpile-only --extension ts \"src/**/*.test.ts\"",
+    "test:node:unit": "cross-env NODE_ENV=test TS_NODE_FILES=true mocha --require ts-node/register/transpile-only --extension ts \"src/**/*.test.ts\"",
+    "test:node:unit:node22": "cross-env NODE_ENV=test TS_NODE_FILES=true NODE_OPTIONS=\"--no-experimental-strip-types\" mocha --require ts-node/register/transpile-only --extension ts \"src/**/*.test.ts\"",
     "test:node:unit:coverage": "nyc npm run test:node:unit",
     "test:browser:unit": "cross-env NODE_ENV=test karma start karma.conf.js --single-run",
     "test:unit": "cross-env NODE_ENV=test npm run test:node:unit && npm run test:browser:unit",
@@ -30,7 +31,7 @@
     "docs:watch": "rm -rf docs && typedoc --watch",
     "docs:serve": "npm run docs:build && serve docs",
     "docs:dev": "concurrently \"npm run docs:watch\" \"serve docs\"",
-    "prepublishOnly": "npm run build && npm run test:node:unit"
+    "prepublishOnly": "npm run build && npm run test:node:unit:node22"
   },
   "keywords": [
     "Casper",
