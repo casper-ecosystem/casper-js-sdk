@@ -30,7 +30,7 @@
     "docs:watch": "rm -rf docs && typedoc --watch",
     "docs:serve": "npm run docs:build && serve docs",
     "docs:dev": "concurrently \"npm run docs:watch\" \"serve docs\"",
-    "prepublishOnly": "npm run build && npm run test:unit"
+    "prepublishOnly": "npm run build && npm run test:node:unit"
   },
   "keywords": [
     "Casper",
