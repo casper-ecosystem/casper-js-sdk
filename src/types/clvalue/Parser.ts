@@ -54,15 +54,58 @@ export const ErrUnsupportedCLType = new Error(
  */
 export class CLValueParser {
   /**
+   * Detects the broken API shape:
+   *   cl_type: { List: { List: "U8" } }
+   * but bytes are encoded as List<U8> (u32 length + raw bytes)
+   */
+  private static isListListU8(clType: any): boolean {
+    return (
+      clType &&
+      typeof clType === 'object' &&
+      clType.List &&
+      typeof clType.List === 'object' &&
+      clType.List.List === 'U8'
+    );
+  }
+
+  private static readU32LE(bytes: Uint8Array): number | null {
+    if (bytes.length < 4) return null;
+    // little-endian u32
+    return bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24);
+  }
+
+  /**
+   * If cl_type claims List<List<U8>> but bytes look exactly like List<U8>,
+   * normalize the cl_type to List<U8>.
+   */
+  private static normalizeJsonClType(json: any): any {
+    if (!json || !CLValueParser.isListListU8(json.cl_type)) return json;
+    if (typeof json.bytes !== 'string') return json;
+
+    const raw = Conversions.decodeBase16(json.bytes);
+    const len = CLValueParser.readU32LE(raw);
+    if (len == null) return json;
+
+    // List<U8> layout is: [4 bytes length][payload len bytes]
+    if (raw.length === 4 + len) {
+      return { ...json, cl_type: { List: 'U8' } };
+    }
+
+    return json;
+  }
+
+  /**
    * Parses a CLValue from a JSON representation.
    * @param json - The JSON object representing a CLValue.
    * @returns A CLValue instance parsed from the JSON.
    */
   public static fromJSON(json: any): CLValue {
-    const clType = CLTypeParser.fromInterface(json.cl_type);
+    const normalized = CLValueParser.normalizeJsonClType(json);
+
+    const clType = CLTypeParser.fromInterface(normalized.cl_type);
 
     const clEntity = CLValueParser.fromBytesByType(
-      Conversions.decodeBase16(json.bytes),
+      Conversions.decodeBase16(normalized.bytes),
       clType
     );
 
@@ -118,116 +161,162 @@ export class CLValueParser {
     const typeID = sourceType.getTypeID();
 
     switch (typeID) {
-      case TypeID.Bool:
+      case TypeID.Bool: {
         const boolValue = CLValueBool.fromBytes(bytes);
         result.bool = boolValue?.result;
         return { result, bytes: boolValue.bytes };
-      case TypeID.I32:
+      }
+
+      case TypeID.I32: {
         const i32 = CLValueInt32.fromBytes(bytes);
         result.i32 = i32.result;
         return { result, bytes: i32?.bytes };
-      case TypeID.I64:
+      }
+
+      case TypeID.I64: {
         const i64 = CLValueInt64.fromBytes(bytes);
         result.i64 = i64?.result;
         return { result, bytes: i64?.bytes };
-      case TypeID.U8:
+      }
+
+      case TypeID.U8: {
         const u8 = CLValueUInt8.fromBytes(bytes);
         result.ui8 = u8?.result;
         return { result, bytes: u8?.bytes };
-      case TypeID.U32:
+      }
+
+      case TypeID.U32: {
         const u32 = CLValueUInt32.fromBytes(bytes);
         result.ui32 = u32?.result;
         return { result, bytes: u32?.bytes };
-      case TypeID.U64:
+      }
+
+      case TypeID.U64: {
         const u64 = CLValueUInt64.fromBytes(bytes);
         result.ui64 = u64?.result;
         return { result, bytes: u64?.bytes };
-      case TypeID.U128:
+      }
+
+      case TypeID.U128: {
         const u128 = CLValueUInt128.fromBytes(bytes);
         result.ui128 = u128?.result;
         return { result, bytes: u128?.bytes };
-      case TypeID.U256:
+      }
+
+      case TypeID.U256: {
         const u256 = CLValueUInt256.fromBytes(bytes);
         result.ui256 = u256?.result;
         return { result, bytes: u256?.bytes };
-      case TypeID.U512:
+      }
+
+      case TypeID.U512: {
         const u512 = CLValueUInt512.fromBytes(bytes);
         result.ui512 = u512?.result;
         return { result, bytes: u512?.bytes };
-      case TypeID.String:
+      }
+
+      case TypeID.String: {
         const stringValue = CLValueString.fromBytes(bytes);
         result.stringVal = stringValue.result;
         return { result, bytes: stringValue?.bytes };
-      case TypeID.Unit:
+      }
+
+      case TypeID.Unit: {
         const unit = CLValueUnit.fromBytes(bytes);
         result.unit = unit?.result;
         return { result, bytes: unit?.bytes };
-      case TypeID.Key:
+      }
+
+      case TypeID.Key: {
         const key = Key.fromBytes(bytes);
         result.key = key?.result;
         return { result, bytes: key?.bytes };
-      case TypeID.URef:
+      }
+
+      case TypeID.URef: {
         const uref = URef.fromBytes(bytes);
         result.uref = uref?.result;
         return { result, bytes: uref?.bytes };
-      case TypeID.Any:
+      }
+
+      case TypeID.Any: {
         const anyType = new CLValueAny(bytes);
         result.any = anyType;
         return { result, bytes: new Uint8Array([]) };
-      case TypeID.PublicKey:
+      }
+
+      case TypeID.PublicKey: {
         const pubKey = PublicKey.fromBytes(bytes);
         result.publicKey = pubKey?.result;
         return { result, bytes: pubKey?.bytes };
-      case TypeID.Option:
+      }
+
+      case TypeID.Option: {
         const optionType = CLValueOption.fromBytes(
           bytes,
           sourceType as CLTypeOption
         );
         result.option = optionType?.result;
         return { result, bytes: optionType?.bytes };
-      case TypeID.List:
+      }
+
+      case TypeID.List: {
         const listType = CLValueList.fromBytes(bytes, sourceType as CLTypeList);
         result.list = listType?.result;
         return { result, bytes: listType?.bytes };
-      case TypeID.ByteArray:
+      }
+
+      case TypeID.ByteArray: {
         const byteArrayType = CLValueByteArray.fromBytes(
           bytes,
           sourceType as CLTypeByteArray
         );
         result.byteArray = byteArrayType?.result;
         return { result, bytes: byteArrayType?.bytes };
-      case TypeID.Result:
+      }
+
+      case TypeID.Result: {
         const resultType = CLValueResult.fromBytes(
           bytes,
           sourceType as CLTypeResult
         );
         result.result = resultType?.result;
         return { result, bytes: resultType?.bytes };
-      case TypeID.Map:
+      }
+
+      case TypeID.Map: {
         const mapType = CLValueMap.fromBytes(bytes, sourceType as CLTypeMap);
         result.map = mapType?.result;
         return { result, bytes: mapType?.bytes };
-      case TypeID.Tuple1:
+      }
+
+      case TypeID.Tuple1: {
         const tuple1 = CLValueTuple1.fromBytes(
           bytes,
           sourceType as CLTypeTuple1
         );
         result.tuple1 = tuple1.result;
         return { result, bytes: tuple1?.bytes };
-      case TypeID.Tuple2:
+      }
+
+      case TypeID.Tuple2: {
         const tuple2 = CLValueTuple2.fromBytes(
           bytes,
           sourceType as CLTypeTuple2
         );
         result.tuple2 = tuple2?.result;
         return { result, bytes: tuple2?.bytes };
-      case TypeID.Tuple3:
+      }
+
+      case TypeID.Tuple3: {
         const tuple3 = CLValueTuple3.fromBytes(
           bytes,
           sourceType as CLTypeTuple3
         );
         result.tuple3 = tuple3?.result;
         return { result, bytes: tuple3?.bytes };
+      }
+
       default:
         throw ErrUnsupportedCLType;
     }
@@ -236,19 +325,8 @@ export class CLValueParser {
   /**
    * Parses a `Uint8Array` to extract a `CLValue` with its corresponding type.
    *
-   * This method takes a byte array and interprets it as a `CLValue` by first extracting
-   * the length of the value, then splitting the bytes into the value's data and its type.
-   *
-   * @param bytes - The byte array to be parsed.
-   * @returns An `IResultWithBytes<CLValue>` containing the parsed `CLValue` and its remaining bytes.
-   * @throws Error - If the length of the value extracted from the bytes is invalid.
-   *
-   * ### Example
-   * ```typescript
-   * const bytes = new Uint8Array([...]); // Provide valid CLValue bytes
-   * const result = CLValueParser.fromBytesWithType(bytes);
-   * console.log(result.result); // Parsed CLValue
-   * ```
+   * Layout:
+   *   [u32 length][value bytes of that length][type bytes][remainder...]
    */
   public static fromBytesWithType(
     bytes: Uint8Array
@@ -265,7 +343,7 @@ export class CLValueParser {
     const clType = CLTypeParser.matchBytesToCLType(typeBytes);
     const clValue = this.fromBytesByType(valueBytes, clType.result);
 
-    // return clType bytes here, since clType bytes are after clValue bytes: [clvalue.bytes, cltype.bytes, remainder...]
+    // clType.bytes are after clValue bytes: [clvalue.bytes, cltype.bytes, remainder...]
     return { result: clValue.result, bytes: clType.bytes };
   }
 }
