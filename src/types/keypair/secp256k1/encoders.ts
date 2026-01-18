@@ -1,9 +1,7 @@
-import elliptic_1 from 'elliptic';
 import BN from 'bn.js';
 // @ts-ignore
 import asn1 from 'asn1.js';
-
-// Based on https://github.com/stacks-archive/key-encoder-js
+import { secp256k1 } from '@noble/curves/secp256k1';
 
 interface PK {
   version: any;
@@ -18,34 +16,25 @@ interface PK {
 type KeyFormat = 'raw' | 'pem' | 'der';
 
 const options = {
-  curveParameters: [1, 3, 132, 0, 10],
+  curveParameters: [1, 3, 132, 0, 10], // secp256k1 OID
   privatePEMOptions: { label: 'EC PRIVATE KEY' },
-  publicPEMOptions: { label: 'PUBLIC KEY' },
-  curve: new elliptic_1.ec('secp256k1')
+  publicPEMOptions: { label: 'PUBLIC KEY' }
 };
 
-const algorithmID = [1, 2, 840, 10045, 2, 1];
+const algorithmID = [1, 2, 840, 10045, 2, 1]; // id-ecPublicKey
 
-const ECPrivateKeyASN = asn1.define('ECPrivateKey', function() {
+const ECPrivateKeyASN = asn1.define('ECPrivateKey', function () {
   // @ts-ignore
   const self = this as any;
   self.seq().obj(
     self.key('version').int(),
     self.key('privateKey').octstr(),
-    self
-      .key('parameters')
-      .explicit(0)
-      .objid()
-      .optional(),
-    self
-      .key('publicKey')
-      .explicit(1)
-      .bitstr()
-      .optional()
+    self.key('parameters').explicit(0).objid().optional(),
+    self.key('publicKey').explicit(1).bitstr().optional()
   );
 });
 
-const SubjectPublicKeyInfoASN = asn1.define('SubjectPublicKeyInfo', function() {
+const SubjectPublicKeyInfoASN = asn1.define('SubjectPublicKeyInfo', function () {
   // @ts-ignore
   const self = this as any;
   self.seq().obj(
@@ -57,44 +46,62 @@ const SubjectPublicKeyInfoASN = asn1.define('SubjectPublicKeyInfo', function() {
   );
 });
 
+const assertHexString = (value: unknown, name: string) => {
+  if (typeof value !== 'string') throw new Error(`${name} must be a string`);
+  if (!/^[0-9a-fA-F]*$/.test(value)) throw new Error(`${name} must be a hex string`);
+};
+
+const getUncompressedPublicKeyHexFromPrivateHex = (privateKeyHex: string) => {
+  assertHexString(privateKeyHex, 'privateKey');
+
+  const privBytes = Buffer.from(privateKeyHex, 'hex');
+  if (privBytes.length !== 32) {
+    throw new Error(`Invalid private key length: expected 32 bytes, got ${privBytes.length}`);
+  }
+
+  // noble returns 65 bytes for uncompressed: 04 || X(32) || Y(32)
+  const pubBytes = secp256k1.getPublicKey(privBytes, false);
+  return Buffer.from(pubBytes).toString('hex');
+};
+
 export function encodePrivate(
   privateKey: string | Buffer,
   originalFormat: KeyFormat,
   destinationFormat: KeyFormat
 ) {
-  let privateKeyObject;
+  let privateKeyObject: PK;
 
-  /* Parse the incoming private key and convert it to a private key object */
+  // Parse incoming private key into a privateKeyObject
   if (originalFormat === 'raw') {
     if (typeof privateKey !== 'string') {
-      throw 'private key must be a string';
+      throw new Error('private key must be a string');
     }
 
-    const keyPair = options.curve.keyFromPrivate(privateKey, 'hex');
-    const rawPublicKey = keyPair.getPublic('hex');
+    const rawPublicKey = getUncompressedPublicKeyHexFromPrivateHex(privateKey);
     privateKeyObject = privateKeyObjectFn(privateKey, rawPublicKey);
   } else if (originalFormat === 'der') {
-    if (typeof privateKey !== 'string') {
-      // do nothing
-    } else if (typeof privateKey === 'string') {
+    if (typeof privateKey === 'string') {
       privateKey = Buffer.from(privateKey, 'hex');
-    } else {
-      throw 'private key must be a buffer or a string';
+    } else if (!Buffer.isBuffer(privateKey)) {
+      throw new Error('private key must be a buffer or a string');
     }
+
     privateKeyObject = ECPrivateKeyASN.decode(privateKey, 'der');
   } else if (originalFormat === 'pem') {
     if (typeof privateKey !== 'string') {
-      throw 'private key must be a string';
+      throw new Error('private key must be a string');
     }
+
     privateKeyObject = ECPrivateKeyASN.decode(
       privateKey,
       'pem',
       options.privatePEMOptions
     );
   } else {
-    throw 'invalid private key format';
+    throw new Error('invalid private key format');
   }
-  /* Export the private key object to the desired format */
+
+  // Export to destination format
   if (destinationFormat === 'raw') {
     return privateKeyObject.privateKey.toString('hex');
   } else if (destinationFormat === 'der') {
@@ -106,7 +113,7 @@ export function encodePrivate(
       options.privatePEMOptions
     );
   } else {
-    throw 'invalid destination format for private key';
+    throw new Error('invalid destination format for private key');
   }
 }
 
@@ -115,43 +122,42 @@ export function encodePublic(
   originalFormat: KeyFormat,
   destinationFormat: KeyFormat
 ): string {
-  let publicKeyObject;
+  let publicKeyObject: any;
 
-  /* Parse the incoming public key and convert it to a public key object */
+  // Parse incoming public key into a publicKeyObject
   if (originalFormat === 'raw') {
     if (typeof publicKey !== 'string') {
-      throw 'public key must be a string';
+      throw new Error('public key must be a string');
     }
+
     publicKeyObject = publicKeyObjectFn(publicKey);
   } else if (originalFormat === 'der') {
-    if (typeof publicKey !== 'string') {
-      // do nothing
-    } else if (typeof publicKey === 'string') {
+    if (typeof publicKey === 'string') {
       publicKey = Buffer.from(publicKey, 'hex');
-    } else {
-      throw 'public key must be a buffer or a string';
+    } else if (!Buffer.isBuffer(publicKey)) {
+      throw new Error('public key must be a buffer or a string');
     }
+
     publicKeyObject = SubjectPublicKeyInfoASN.decode(publicKey, 'der');
   } else if (originalFormat === 'pem') {
     if (typeof publicKey !== 'string') {
-      throw 'public key must be a string';
+      throw new Error('public key must be a string');
     }
+
     publicKeyObject = SubjectPublicKeyInfoASN.decode(
       publicKey,
       'pem',
       options.publicPEMOptions
     );
   } else {
-    throw 'invalid public key format';
+    throw new Error('invalid public key format');
   }
 
-  /* Export the private key object to the desired format */
+  // Export to destination format
   if (destinationFormat === 'raw') {
     return publicKeyObject.pub.data.toString('hex');
   } else if (destinationFormat === 'der') {
-    return SubjectPublicKeyInfoASN.encode(publicKeyObject, 'der').toString(
-      'hex'
-    );
+    return SubjectPublicKeyInfoASN.encode(publicKeyObject, 'der').toString('hex');
   } else if (destinationFormat === 'pem') {
     return SubjectPublicKeyInfoASN.encode(
       publicKeyObject,
@@ -159,7 +165,7 @@ export function encodePublic(
       options.publicPEMOptions
     );
   } else {
-    throw 'invalid destination format for public key';
+    throw new Error('invalid destination format for public key');
   }
 }
 
@@ -190,5 +196,5 @@ function publicKeyObjectFn(rawPublicKey: string) {
       unused: 0,
       data: Buffer.from(rawPublicKey, 'hex')
     }
-  }
+  };
 }
