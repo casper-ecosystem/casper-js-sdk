@@ -13,6 +13,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [5.0.9] - 2026-01-19
+
+### Fixed
+
+- Issue with parsing list of U8
+
 ### [5.0.8] - 2026-01-06
 
 ### Fixed
