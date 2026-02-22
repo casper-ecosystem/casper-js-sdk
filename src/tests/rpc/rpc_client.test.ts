@@ -22,7 +22,8 @@ import {
   getTransactionWithNullExecutionResults,
   stateGetAccountInfoJson,
   transactionWithArgsKeys,
-  transactionWithListU8
+  transactionWithListU8,
+  getTransactionBidAddr
 } from '../data';
 
 describe('RPC Client', () => {
@@ -274,5 +275,14 @@ describe('RPC Client', () => {
     expect(tx?.transaction?.hash.toHex()).to.deep.equal(
       transactionWithListU8.transaction.Deploy.hash
     );
+  });
+
+  it('should correctly parse transaction with bid addr', () => {
+    const tx = InfoGetTransactionResult.fromJSON(getTransactionBidAddr);
+
+    expect(tx).to.be.not.undefined;
+    expect(tx).to.be.not.empty;
+
+    expect(tx?.transaction?.hash.toHex()).to.deep.equal(getTransactionBidAddr.transaction.Version1.hash);
   });
 });
