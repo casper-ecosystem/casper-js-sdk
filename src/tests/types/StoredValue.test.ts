@@ -78,12 +78,32 @@ describe('Test StoredValue', () => {
           jsonEntryPoint.ret
         );
         expect(entryPoint.entryPoint.name).to.deep.equal(jsonEntryPoint.name);
-        expect(entryPoint.entryPoint.access).to.deep.equal(
+        expect(entryPoint.entryPoint.access.toJSON()).to.deep.equal(
           jsonEntryPoint.access
         );
+        expect(entryPoint.entryPoint.access.isPublic).to.be.true;
         expect(entryPoint.entryPoint.entryPointType).to.deep.equal(
           jsonEntryPoint.entry_point_type
         );
+      });
+    });
+
+    describe('Template access', () => {
+      it('should correctly deserialize Template access in EntryPoint', () => {
+        const json = {
+          ret: 'U256',
+          args: [],
+          name: 'total_supply',
+          access: 'Template',
+          entry_point_type: 'Called'
+        };
+
+        const entryPoint = NamedEntryPoint.fromJSON(json);
+
+        expect(entryPoint).to.exist;
+        expect(entryPoint.entryPoint.access.isTemplate).to.be.true;
+        expect(entryPoint.entryPoint.access.isPublic).to.be.false;
+        expect(entryPoint.entryPoint.access.groups).to.be.null;
       });
     });
 
@@ -110,7 +130,8 @@ describe('Test StoredValue', () => {
         expect(entryPoint.entryPoint.name).to.deep.equal(
           jsonEntryPoint.entry_point.name
         );
-        expect(entryPoint.entryPoint.access).to.deep.equal(
+        expect(entryPoint.entryPoint.access.isPublic).to.be.true;
+        expect(entryPoint.entryPoint.access.toJSON()).to.deep.equal(
           jsonEntryPoint.entry_point.access
         );
         expect(entryPoint.entryPoint.entryPointType).to.deep.equal(
