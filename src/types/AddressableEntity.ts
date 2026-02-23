@@ -134,6 +134,12 @@ export class AddressableEntity {
 @jsonObject
 export class NamedEntryPoint {
   /**
+   * The name of the entry point.
+   */
+  @jsonMember({ name: 'name', constructor: String })
+  name: string;
+
+  /**
    * The entry point configuration, specifying the method and parameters.
    */
   @jsonMember({
@@ -147,7 +153,7 @@ export class NamedEntryPoint {
    *
    * This method supports both JSON variants:
    *  - 1.x: { name, args, ret, access, entry_point_type, ... }
-   *  - 2.x: { entry_point: { name, args, ret, access, entry_point_type, ... } }
+   *  - 2.x: { name, entry_point: { name, args, ret, access, entry_point_type, ... } }
    *
    * @param json The raw JSON to parse.
    * @returns A new instance of NamedEntryPoint.
@@ -157,7 +163,9 @@ export class NamedEntryPoint {
       throw new Error('Invalid JSON provided for NamedEntryPoint');
     }
 
-    const normalizedJSON = json.entry_point ? json : { entry_point: json };
+    const normalizedJSON = json.entry_point
+      ? json
+      : { name: json?.name, entry_point: json };
     const typedJSON = new TypedJSON(NamedEntryPoint);
 
     const parsed = typedJSON.parse(normalizedJSON);

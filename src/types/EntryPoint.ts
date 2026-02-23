@@ -1,15 +1,15 @@
-import { jsonObject, jsonMember, jsonArrayMember, AnyT } from 'typedjson';
+import { jsonObject, jsonMember, jsonArrayMember } from 'typedjson';
 import { CLTypeRaw } from './clvalue';
 
 /**
  * Enum representing the type of entry point.
  */
 export enum EntryPointType {
-  Session = 'Session',
-  Contract = 'Contract',
   Caller = 'Caller',
   Called = 'Called',
-  Factory = 'Factory'
+  Factory = 'Factory',
+  Contract = 'Contract',
+  Session = 'Session'
 }
 
 /**
@@ -28,6 +28,95 @@ export enum EntryPointPayment {
    * Will cover cost to execute self and the cost of any subsequent invoked contracts.
    */
   SelfOnward = 'SelfOnward'
+}
+
+/**
+ * Access control options for a contract entry point (method).
+ */
+@jsonObject
+export class EntryPointAccess {
+  /**
+   * When public, anyone can call this method (no access controls).
+   */
+  @jsonMember({ name: 'isPublic', constructor: Boolean })
+  isPublic: boolean;
+
+  /**
+   * Only users from the listed groups may call this method.
+   * Note: if the list is empty then this method is not callable from outside the contract.
+   */
+  @jsonArrayMember(String, { name: 'groups' })
+  groups: string[] | null;
+
+  /**
+   * Can't be accessed directly but are kept in the derived wasm bytes.
+   */
+  @jsonMember({ name: 'isTemplate', constructor: Boolean })
+  isTemplate: boolean;
+
+  constructor(
+    isPublic = false,
+    groups: string[] | null = null,
+    isTemplate = false
+  ) {
+    this.isPublic = isPublic;
+    this.groups = groups;
+    this.isTemplate = isTemplate;
+  }
+
+  /**
+   * Deserializes an EntryPointAccess instance from its JSON representation.
+   * @param json The JSON value to deserialize.
+   * @returns A new instance of EntryPointAccess.
+   */
+  public static fromJSON(json: any): EntryPointAccess | undefined {
+    if (json === null || json === undefined) {
+      return undefined;
+    }
+
+    if (typeof json === 'string') {
+      const value = json.toLowerCase();
+      if (value === 'public') {
+        return new EntryPointAccess(true, null, false);
+      }
+      if (value === 'template') {
+        return new EntryPointAccess(false, null, true);
+      }
+    } else if (typeof json === 'object') {
+      const keys = Object.keys(json);
+      if (keys.length > 0 && keys[0].toLowerCase() === 'groups') {
+        const groups = json[keys[0]];
+        return new EntryPointAccess(false, groups, false);
+      }
+    }
+
+    throw new Error(
+      `Could not deserialize EntryPointAccess. Not expected token found: ${JSON.stringify(
+        json
+      )}`
+    );
+  }
+
+  /**
+   * Serializes an EntryPointAccess instance into its JSON representation.
+   * @param value The EntryPointAccess instance to serialize.
+   * @returns The JSON representation of the EntryPointAccess instance.
+   */
+  public toJSON(): any {
+    if (this.isPublic) {
+      return 'Public';
+    }
+
+    if (this.isTemplate) {
+      return 'Template';
+    }
+
+    if (this.groups !== null) {
+      return { groups: this.groups };
+    }
+
+    return 'Public'; // Default to Public if nothing is set
+  }
 }
 
 /**
@@ -80,9 +169,17 @@ export class EntryPointV1 {
    */
   @jsonMember({
     name: 'access',
-    constructor: AnyT
+    constructor: EntryPointAccess,
+    deserializer: json => {
+      if (!json) return;
+      return EntryPointAccess.fromJSON(json);
+    },
+    serializer: (value: EntryPointAccess) => {
+      if (!value) return;
+      return value.toJSON();
+    }
   })
-  access: any;
+  access: EntryPointAccess;
 
   /**
    * A list of arguments for the entry point.
@@ -142,7 +239,7 @@ export class EntryPointV1 {
    * @param ret The return type of the entry point.
    */
   constructor(
-    access: any,
+    access: EntryPointAccess,
     args: EntryPointArg[],
     entryPointType: EntryPointType,
     entryPointPayment: EntryPointPayment,

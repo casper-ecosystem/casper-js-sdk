@@ -96,6 +96,13 @@
           "entry_point_type": "Contract"
         },
         {
+          "ret": "U256",
+          "args": [],
+          "name": "total_supply",
+          "access": "Template",
+          "entry_point_type": "Called"
+        },
+        {
           "name": "constructor",
           "args": [
             {
