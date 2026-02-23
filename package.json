@@ -113,7 +113,6 @@
   "overrides": {
     "elliptic": "^6.6.1",
     "minimatch": "^10.2.1",
-    "ajv": "^8.12.0",
     "bn.js": "^5.2.1"
   },
   "dependencies": {
