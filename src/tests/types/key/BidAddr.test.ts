@@ -88,4 +88,20 @@ describe('BidAddr', () => {
       '8af7b77811970792f98b806779dfc0d1a9fef5bad205c6be8bb884210d7d323c'
     );
   });
+
+  it('should correctly create a new key for validator rev BidAddr', () => {
+    const validatorRevBidAddrKeyStr =
+      'bid-addr-092f3fb80d362ad0a922f446915a259c9aaec9ba99292b3e50ff2359c458007309';
+    const key = Key.newKey(validatorRevBidAddrKeyStr);
+
+    expect(key.toPrefixedString()).to.equal(validatorRevBidAddrKeyStr);
+    expect(key.bidAddr?.getTag()).to.equal(BidAddrTag.ValidatorRevTag);
+    expect(key.bidAddr?.validator).not.to.be.undefined;
+    expect(key.bidAddr?.validator?.toHex()).to.equal(
+      '2f3fb80d362ad0a922f446915a259c9aaec9ba99292b3e50ff2359c458007309'
+    );
+    expect(`account-hash-${key.bidAddr?.validator?.toHex()}`).to.equal(
+      'account-hash-2f3fb80d362ad0a922f446915a259c9aaec9ba99292b3e50ff2359c458007309'
+    );
+  });
 });

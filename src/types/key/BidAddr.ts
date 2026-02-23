@@ -18,7 +18,8 @@ export enum BidAddrTag {
   ReservedDelegationAccountTag,
   ReservedDelegationPurseTag,
   UnbondAccountTag,
-  UnbondPurseTag
+  UnbondPurseTag,
+  ValidatorRevTag
 }
 
 /** Error indicating an invalid BidAddrTag was encountered. */
@@ -110,14 +111,17 @@ export class BidAddr {
     switch (bidAddrTag) {
       case BidAddrTag.UnifiedTag:
       case BidAddrTag.ValidatorTag:
+      case BidAddrTag.ValidatorRevTag:
         if (hexBytes.length !== UnifiedOrValidatorAddrLen) {
           throw new Error(
             `Wrong key length for ${BidAddrTag[bidAddrTag]} BidAddr. Expected 33 bytes.`
           );
         }
-        const key =
-          bidAddrTag === BidAddrTag.UnifiedTag ? 'unified' : 'validator';
-        bidAddr[key] = Hash.fromBytes(hexBytes.slice(1, 33))?.result;
+        if (bidAddrTag === BidAddrTag.UnifiedTag) {
+          bidAddr.unified = Hash.fromBytes(hexBytes.slice(1, 33))?.result;
+        } else {
+          bidAddr.validator = Hash.fromBytes(hexBytes.slice(1, 33))?.result;
+        }
         break;
 
       case BidAddrTag.DelegatedAccountTag:
@@ -249,6 +253,11 @@ export class BidAddr {
         bidAddr.delegatorPurseAddress = delegator;
         return { result: bidAddr, bytes };
       }
+      case BidAddrTag.ValidatorRevTag: {
+        const { result: validatorRevHash, bytes } = Hash.fromBytes(rem);
+        bidAddr.validator = validatorRevHash;
+        return { result: bidAddr, bytes };
+      }
       default:
         throw ErrInvalidBidAddrFormat;
     }
@@ -342,6 +351,13 @@ export class BidAddr {
         return `${tagHex}${this.validator.toHex()}${
           this.delegatorPurseAddress
         }`;
+      case BidAddrTag.ValidatorRevTag:
+        if (!this.validator) {
+          throw new Error(
+            `Missing 'validator' field for tag ${BidAddrTag.ValidatorRevTag}`
+          );
+        }
+        return `${tagHex}${this.validator.toHex()}`;
       default:
         throw new Error(`Unexpected BidAddr type: ${this.tag}`);
     }
@@ -444,6 +460,13 @@ export class BidAddr {
               this.validator.toBytes(),
               HexBytes.fromHex(this.delegatorPurseAddress).bytes
             )
+          );
+        }
+        break;
+      case BidAddrTag.ValidatorRevTag:
+        if (this.validator) {
+          return new Uint8Array(
+            createBuffer(typeByte, this.validator.toBytes())
           );
         }
         break;
