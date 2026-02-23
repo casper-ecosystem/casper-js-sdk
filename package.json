@@ -111,7 +111,10 @@
     "webpack-node-externals": "^2.5.2"
   },
   "overrides": {
-    "elliptic": "6.6.1"
+    "elliptic": "^6.6.1",
+    "minimatch": "^9.0.3",
+    "ajv": "^8.12.0",
+    "bn.js": "^5.2.1"
   },
   "dependencies": {
     "@ethersproject/bignumber": "^5.0.8",
