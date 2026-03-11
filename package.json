@@ -111,7 +111,7 @@
   },
   "overrides": {
     "elliptic": "^6.6.1",
-    "minimatch": "^10.2.1",
+    "minimatch": "^10.2.3",
     "bn.js": "^5.2.1"
   },
   "dependencies": {
