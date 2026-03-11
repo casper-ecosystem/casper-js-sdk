@@ -1,0 +1,53 @@
+# BidKind
+
+A polymorphic container for all bid variants in the Casper 2.x auction system.
+
+## Import
+
+```ts
+import { BidKind } from 'casper-js-sdk';
+```
+
+## Class
+
+### `BidKind`
+
+A discriminated union that holds one of several bid types. Only one field is set at a time.
+
+| Property | Type | Description |
+|---|---|---|
+| `unified?` | `Bid` | Legacy unified bid (Casper 1.x) |
+| `validator?` | `ValidatorBid` | Validator bid |
+| `delegator?` | `Delegator` | Delegator bid |
+| `bridge?` | `Bridge` | Bridge bid used during validator key changes |
+| `credit?` | `Credit` | Credit bid |
+| `reservation?` | `Reservation` | Reserved delegation slot bid |
+| `unbond?` | `Unbond` | Pending unbonding request |
+
+## Usage
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+
+const client = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+const { auctionState } = await client.getLatestAuctionInfo();
+
+for (const wrapper of auctionState.bids) {
+  const { bid } = wrapper;
+
+  if (bid.validator) {
+    console.log('Validator bid, staked:', bid.validator.stakedAmount.toString());
+  } else if (bid.delegator) {
+    console.log('Delegator bid, to:', bid.delegator.validatorPublicKey.toHex());
+  } else if (bid.credit) {
+    console.log('Credit bid');
+  } else if (bid.bridge) {
+    console.log('Bridge bid');
+  }
+}
+```
+
+## See Also
+
+- [`Bid`](/types/bid) - Individual bid type definitions
+- [`AuctionState`](/types/auction-state) - Contains `BidKindWrapper[]`

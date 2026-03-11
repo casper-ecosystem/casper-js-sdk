@@ -1,0 +1,93 @@
+# CLValueParser
+
+Parses CLValues from JSON (RPC responses) or binary bytes.
+
+## Import
+
+```ts
+import { CLValueParser } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+// Read a contract value via RPC
+const stateResult = await rpcClient.queryLatestGlobalState(
+  'hash-contract-abc...',
+  ['total_supply']
+);
+
+// Parse the JSON response into a typed CLValue
+const clValue = CLValueParser.fromJSON(stateResult.storedValue.clValue);
+
+// Access the value
+console.log(clValue.ui256?.val.toString()); // BigNumber as string
+```
+
+## Methods
+
+### CLValueParser.fromJSON
+
+Parses a CLValue from the JSON format returned by RPC responses.
+
+```ts
+CLValueParser.fromJSON(json: object): CLValue
+```
+
+### CLValueParser.fromBytes
+
+Parses a CLValue from its binary bytesrepr encoding.
+
+```ts
+CLValueParser.fromBytes(bytes: Uint8Array, clType: CLType): CLValue
+```
+
+## Reading Parsed Values
+
+After parsing, access the value via type-specific accessors:
+
+```ts
+const v = CLValueParser.fromJSON(json);
+
+// Numeric types
+v.ui8?.val      // number
+v.ui32?.val     // number
+v.ui64?.val     // BigNumber
+v.ui128?.val    // BigNumber
+v.ui256?.val    // BigNumber
+v.ui512?.val    // BigNumber
+v.i32?.val      // number
+v.i64?.val      // BigNumber
+
+// Primitives
+v.stringVal?.val  // string
+v.boolVal?.val    // boolean
+v.byteArray?.val  // Uint8Array
+
+// Compound types
+v.list?.vec       // CLValue[]
+v.map?.mapEntries // {key: CLValue, val: CLValue}[]
+v.option?.inner   // CLValue | null
+v.tuple2?.val     // [CLValue, CLValue]
+v.tuple3?.val     // [CLValue, CLValue, CLValue]
+
+// Address types
+v.key?.data       // Key
+v.uref?.data      // URef
+v.publicKey?.data // PublicKey
+```
+
+## Full Example
+
+```ts
+// Check a CEP-18 token balance
+const dictResult = await rpcClient.getDictionaryItem(
+  stateRootHash,
+  balancesDictionaryURef,
+  accountHash.toHex()
+);
+
+const balance = CLValueParser.fromJSON(dictResult.storedValue.clValue);
+const amount = balance.ui256?.val ?? BigNumber.from(0);
+console.log('Token balance:', amount.toString());
+```

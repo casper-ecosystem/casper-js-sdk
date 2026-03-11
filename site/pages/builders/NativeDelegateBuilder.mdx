@@ -1,0 +1,70 @@
+# NativeDelegateBuilder
+
+Builds a native delegate (stake) transaction to stake CSPR with a validator.
+
+## Import
+
+```ts
+import { NativeDelegateBuilder, PublicKey } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const transaction = new NativeDelegateBuilder()
+  .from(delegatorPublicKey)
+  .validator(validatorPublicKey)
+  .amount('500000000000')  // 500 CSPR
+  .chainName('casper')
+  .payment(2_500_000_000)
+  .build();
+
+transaction.sign(privateKey);
+const result = await rpcClient.putTransaction(transaction);
+```
+
+## Methods
+
+### .from(publicKey)
+
+- **Type:** `PublicKey` - required
+
+The delegator's public key.
+
+### .validator(publicKey)
+
+- **Type:** `PublicKey` - required
+
+The validator to delegate to.
+
+### .amount(motes)
+
+- **Type:** `BigNumber | string` - required
+
+Amount to stake in motes.
+
+### .chainName(name)
+
+- **Type:** `string` - required
+
+### .payment(motes)
+
+- **Type:** `number` - optional
+
+Gas payment in motes.
+
+## Return Value
+
+`Transaction`
+
+## Notes
+
+- Minimum delegation is `500_000_000_000` motes (500 CSPR) on mainnet.
+- Delegated stake earns rewards each era (approximately every 2 hours).
+- Use [`NativeUndelegateBuilder`](/builders/NativeUndelegateBuilder) to unstake.
+
+## Related
+
+- [`NativeUndelegateBuilder`](/builders/NativeUndelegateBuilder)
+- [`NativeRedelegateBuilder`](/builders/NativeRedelegateBuilder)
+- [`makeAuctionManagerDeploy`](/utilities/makeAuctionManagerDeploy)

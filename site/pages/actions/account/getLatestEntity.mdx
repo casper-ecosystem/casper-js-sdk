@@ -1,0 +1,52 @@
+# getLatestEntity
+
+Returns the addressable entity for an account or contract (Casper 2.x format).
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+// By public key
+const result = await rpcClient.getLatestEntity({
+  publicKey: publicKey.toHex(),
+});
+
+console.log(result.entity.entityAddr);
+console.log(result.entity.mainPurse); // URef of main purse
+```
+
+## Parameters
+
+### identifier
+
+- **Type:** `EntityIdentifier`
+
+```ts
+type EntityIdentifier =
+  | { publicKey: string }      // public key hex
+  | { accountHash: string }    // 'account-hash-abc...'
+  | { entityAddr: string }     // 'entity-account-abc...'
+```
+
+## Return Value
+
+`Promise<StateGetEntityResult>`
+
+```ts
+interface StateGetEntityResult {
+  entity: AddressableEntity;
+}
+```
+
+:::note
+This method is for Casper 2.0 nodes. For 1.x compatibility, see [`getAccountInfo`](/actions/account/getAccountInfo).
+:::
+
+## Related
+
+- [`getAccountInfo`](/actions/account/getAccountInfo)

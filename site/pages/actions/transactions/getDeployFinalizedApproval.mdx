@@ -1,0 +1,41 @@
+# getDeployFinalizedApproval
+
+Retrieves a deploy along with its finalized approvals - the set of approvals used during execution, which may differ from the approvals originally submitted.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getDeployFinalizedApproval('abc123...');
+
+console.log(result.deploy.hash.toHex());
+```
+
+## Parameters
+
+### hash
+
+- **Type:** `string`
+
+The deploy hash as a hex string.
+
+## Return Value
+
+`Promise<InfoGetDeployResult>`
+
+```ts
+interface InfoGetDeployResult {
+  deploy: Deploy;
+  executionInfo?: ExecutionInfo;
+}
+```
+
+## Related
+
+- [`getDeploy`](/actions/transactions/getDeploy)
+- [`getTransactionFinalizedApprovalByDeployHash`](/actions/transactions/getTransactionFinalizedApprovalByDeployHash)

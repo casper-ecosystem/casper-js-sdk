@@ -1,0 +1,51 @@
+# UnbondingPurse
+
+Represents a pending unbonding (unstaking) request for a validator or delegator.
+
+## Import
+
+```ts
+import { UnbondingPurse } from 'casper-js-sdk';
+```
+
+## Class
+
+### `UnbondingPurse`
+
+| Property | Type | Description |
+|---|---|---|
+| `amount` | `CLValueUInt512` | Amount being unbonded (in motes) |
+| `bondingPurse` | `URef` | The purse the stake is being returned to |
+| `eraOfCreation` | `number` | Era in which the unbonding was requested |
+| `unbonderPublicKey` | `PublicKey` | Public key of the entity unbonding |
+| `validatorPublicKey` | `PublicKey` | Public key of the validator being unbonded from |
+| `newValidator?` | `PublicKey` | New validator (only set during redelegation) |
+
+## Usage
+
+```ts
+// UnbondingPurse appears in StoredValue.withdraw and StoredValue.unbonding
+const result = await client.queryLatestGlobalState({
+  key: 'account-hash-abc...',
+  path: [],
+});
+
+if (result.storedValue.withdraw) {
+  for (const purse of result.storedValue.withdraw) {
+    console.log('Unbonding:', purse.amount.toString(), 'motes');
+    console.log('From validator:', purse.validatorPublicKey.toHex());
+    console.log('Era:', purse.eraOfCreation);
+
+    if (purse.newValidator) {
+      console.log('Redelegating to:', purse.newValidator.toHex());
+    }
+  }
+}
+```
+
+## See Also
+
+- [`StoredValue`](/types/stored-value) - Contains `withdraw` and `unbonding` fields
+- [`Bid`](/types/bid) - Active staking bids
+- [`NativeUndelegateBuilder`](/builders/NativeUndelegateBuilder) - Create an unbonding transaction
+- [`NativeRedelegateBuilder`](/builders/NativeRedelegateBuilder) - Create a redelegation transaction

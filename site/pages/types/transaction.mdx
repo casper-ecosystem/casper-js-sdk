@@ -1,0 +1,180 @@
+# Transaction
+
+The unified transaction type supporting both Casper 1.x `Deploy` and 2.x `TransactionV1` formats.
+
+## Import
+
+```ts
+import {
+  Transaction,
+  TransactionV1,
+  TransactionHash,
+  Approval,
+  TransactionCategory,
+  TransactionVersion,
+} from 'casper-js-sdk';
+```
+
+## Enums
+
+### `TransactionCategory`
+
+| Value | Description |
+|---|---|
+| `Mint` | Native mint/transfer operations |
+| `Auction` | Auction operations (staking, delegation) |
+| `InstallUpgrade` | Contract install/upgrade |
+| `Large` | Large user transactions |
+| `Medium` | Medium user transactions |
+| `Small` | Small user transactions |
+
+### `TransactionVersion`
+
+| Value | Description |
+|---|---|
+| `V1` | Casper 2.x TransactionV1 |
+| `Deploy` | Casper 1.x Deploy |
+
+## Classes
+
+### `Transaction`
+
+Wrapper that holds either a `Deploy` or `TransactionV1`. All properties reflect the underlying transaction.
+
+| Property | Type | Description |
+|---|---|---|
+| `hash` | `TransactionHash` | Transaction hash |
+| `chainName` | `string` | Target chain name |
+| `timestamp` | `Timestamp` | Creation timestamp |
+| `ttl` | `Duration` | Time-to-live |
+| `initiatorAddr` | `InitiatorAddr` | Who initiated the transaction |
+| `pricingMode` | `PricingMode` | Pricing strategy |
+| `args` | `Args` | Transaction arguments |
+| `target` | `TransactionTarget` | Execution target |
+| `entryPoint` | `TransactionEntryPoint` | Entry point |
+| `scheduling` | `TransactionScheduling` | Scheduling |
+| `approvals` | `Approval[]` | Signatures |
+
+#### Methods
+
+```ts
+tx.getDeploy(): Deploy | undefined
+tx.getTransactionV1(): TransactionV1 | undefined
+tx.getTransactionWrapper(): TransactionWrapper
+tx.validate(): boolean
+tx.sign(privateKey: PrivateKey): void
+tx.setSignature(signature: HexBytes, publicKey: PublicKey): void
+tx.toBytes(): Uint8Array
+tx.toJSON(): any
+```
+
+#### Static Methods
+
+```ts
+Transaction.fromTransactionV1(v1: TransactionV1): Transaction
+Transaction.fromDeploy(deploy: Deploy): Transaction
+Transaction.fromJSON(data: any): Transaction
+```
+
+### `TransactionV1`
+
+A Casper 2.x transaction.
+
+| Property | Type | Description |
+|---|---|---|
+| `hash` | `Hash` | Transaction hash |
+| `payload` | `TransactionV1Payload` | Transaction payload |
+| `approvals` | `Approval[]` | Signatures |
+
+#### Methods
+
+```ts
+tx.validate(): boolean
+tx.sign(privateKey: PrivateKey): void
+tx.toBytes(): Uint8Array
+```
+
+#### Static Methods
+
+```ts
+TransactionV1.newTransactionV1(payload: TransactionV1Payload): TransactionV1
+TransactionV1.makeTransactionV1(params: ITransactionPayloadBuildParams): TransactionV1
+TransactionV1.fromJSON(data: any): TransactionV1
+TransactionV1.toJSON(tx: TransactionV1): any
+```
+
+### `TransactionHash`
+
+Wraps either a deploy hash or a transaction V1 hash.
+
+| Property | Type | Description |
+|---|---|---|
+| `deploy?` | `Hash` | Deploy hash (1.x) |
+| `transactionV1?` | `Hash` | TransactionV1 hash (2.x) |
+
+#### Methods
+
+```ts
+hash.getHash(): Hash
+hash.toHex(): string
+hash.toBytes(): Uint8Array
+hash.toJSON(): any
+hash.equals(other: TransactionHash): boolean
+```
+
+#### Static Methods
+
+```ts
+TransactionHash.fromDeployHash(hash: Hash): TransactionHash
+TransactionHash.fromTransactionHash(hash: Hash): TransactionHash
+```
+
+### `Approval`
+
+A signature authorizing a transaction.
+
+| Property | Type | Description |
+|---|---|---|
+| `signer` | `PublicKey` | Signer's public key |
+| `signature` | `HexBytes` | Signature |
+
+#### Constructor
+
+```ts
+new Approval(signer: PublicKey, signature: HexBytes)
+```
+
+#### Static Methods
+
+```ts
+Approval.toBytes(approvals: Approval[]): Uint8Array
+```
+
+## Usage
+
+```ts
+import { NativeTransferBuilder, PrivateKey, KeyAlgorithm, PublicKey } from 'casper-js-sdk';
+
+const privateKey = PrivateKey.generate(KeyAlgorithm.ED25519);
+
+const tx = new NativeTransferBuilder()
+  .from(privateKey.publicKey)
+  .target(PublicKey.fromHex('01abc...'))
+  .amount('2500000000')
+  .id(Date.now())
+  .chainName('casper')
+  .payment(100_000_000)
+  .build();
+
+tx.sign(privateKey);
+
+const result = await client.putTransaction(tx);
+console.log('Hash:', result.transactionHash.toHex());
+```
+
+## See Also
+
+- [`Deploy`](/types/deploy) - Casper 1.x transaction format
+- [`TransactionV1Payload`](/types/transaction-v1-payload) - Payload structure
+- [Transaction Builders](/builders/introduction) - High-level builders
+- [`putTransaction`](/actions/transactions/putTransaction) - Submit a transaction

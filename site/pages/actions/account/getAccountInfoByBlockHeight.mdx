@@ -1,0 +1,51 @@
+# getAccountInfoByBlockHeight
+
+Returns account information for a public key at a specific block height.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler, PublicKey } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getAccountInfoByBlockHeight(
+  1234567,
+  publicKey
+);
+
+console.log(result.account.accountHash().toFormattedStr());
+console.log(result.account.mainPurse);
+```
+
+## Parameters
+
+### blockHeight
+
+- **Type:** `number`
+
+The block height to query at.
+
+### pub
+
+- **Type:** `PublicKey`
+
+The public key of the account to look up.
+
+## Return Value
+
+`Promise<StateGetAccountInfo>`
+
+```ts
+interface StateGetAccountInfo {
+  account: AccountInfo;
+}
+```
+
+## Related
+
+- [`getAccountInfo`](/actions/account/getAccountInfo)
+- [`getAccountInfoByBlockHash`](/actions/account/getAccountInfoByBlockHash)
+- [`getLatestEntity`](/actions/account/getLatestEntity)

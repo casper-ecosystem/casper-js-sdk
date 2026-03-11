@@ -1,0 +1,33 @@
+# CLValue.newCLByteArray
+
+Creates a CLValue of type `ByteArray` from a `Uint8Array`.
+
+## Import
+
+```ts
+import { CLValue } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const bytes = new Uint8Array(32); // 32-byte hash
+const value = CLValue.newCLByteArray(bytes);
+```
+
+## Parameters
+
+### val
+
+- **Type:** `Uint8Array`
+
+Raw bytes. The length is encoded as part of the type: `CLType.ByteArray(n)`.
+
+## Return Value
+
+`CLValue` with `clType = CLType.ByteArray(val.length)`.
+
+## Notes
+
+- Use for contract arguments that expect fixed-length byte arrays (e.g., 32-byte hashes).
+- Use `CLValue.newCLAny(bytes)` for opaque raw bytes without a fixed length type.

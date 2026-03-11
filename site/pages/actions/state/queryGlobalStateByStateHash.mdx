@@ -1,0 +1,72 @@
+# queryGlobalStateByStateHash
+
+Queries a value from global state at a specific state root hash.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.queryGlobalStateByStateHash(
+  stateRootHash,
+  'hash-contract-abc...',
+  ['total_supply']
+);
+
+const clValue = CLValueParser.fromJSON(result.storedValue.clValue);
+```
+
+Pass `null` to use the latest state root hash automatically.
+
+```ts
+const result = await rpcClient.queryGlobalStateByStateHash(
+  null,
+  'hash-contract-abc...',
+  []
+);
+```
+
+## Parameters
+
+### stateRootHash
+
+- **Type:** `string | null`
+
+State root hash as a hex string, or `null` to query latest state.
+
+### key
+
+- **Type:** `string`
+
+The global state key to query. Formats:
+- `hash-{hex}` - contract or package hash
+- `account-hash-{hex}` - account
+- `uref-{hex}-{octal}` - URef
+
+### path
+
+- **Type:** `string[]`
+
+Storage path to traverse from the key. Use `[]` for the root value.
+
+## Return Value
+
+`Promise<QueryGlobalStateResult>`
+
+```ts
+interface QueryGlobalStateResult {
+  storedValue: StoredValue;
+  blockHeader: BlockHeader;
+}
+```
+
+## Related
+
+- [`queryLatestGlobalState`](/actions/state/queryLatestGlobalState)
+- [`queryGlobalStateByBlockHash`](/actions/state/queryGlobalStateByBlockHash)
+- [`queryGlobalStateByBlockHeight`](/actions/state/queryGlobalStateByBlockHeight)
+- [`getStateRootHashLatest`](/actions/state/getStateRootHashLatest)

@@ -1,0 +1,31 @@
+# getChainspec
+
+Returns the chain specification of the connected network.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getChainspec();
+
+console.log(result.chainspecBytes); // raw chainspec bytes
+```
+
+## Return Value
+
+`Promise<InfoGetChainspecResult>`
+
+```ts
+interface InfoGetChainspecResult {
+  chainspecBytes: Uint8Array;
+}
+```
+
+## Related
+
+- [`getStatus`](/actions/node/getStatus)

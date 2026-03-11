@@ -1,0 +1,48 @@
+# getLatestBlockTransfers
+
+Returns the transfers included in the most recent block.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getLatestBlockTransfers();
+
+for (const transfer of result.transfers) {
+  const t = transfer.getTransferV2() ?? transfer.getTransferV1();
+  console.log(t?.from, t?.to, t?.amount);
+}
+```
+
+## Return Value
+
+`Promise<ChainGetBlockTransfersResult>`
+
+```ts
+interface ChainGetBlockTransfersResult {
+  blockHash: Hash;
+  transfers: Transfer[];
+}
+```
+
+Each `Transfer` wraps either a V1 or V2 transfer record. Use `.getTransferV2() ?? .getTransferV1()` for version-compatible access.
+
+## Transfer Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `from` | `AccountHash` | Sender account hash |
+| `to` | `AccountHash \| undefined` | Recipient account hash |
+| `amount` | `BigNumber` | Transfer amount in motes |
+| `deployHash` | `Hash` | Transaction/deploy that caused this transfer |
+| `id` | `number \| undefined` | Transfer memo ID |
+
+## Related
+
+- [`getBlockTransfersByHash`](/actions/block/getBlockTransfersByHash)
+- [`getBlockTransfersByHeight`](/actions/block/getBlockTransfersByHeight)

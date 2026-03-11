@@ -1,0 +1,86 @@
+# SpeculativeClient
+
+The `SpeculativeClient` allows dry-running transactions against the current chain state without submitting them on-chain.
+
+## Import
+
+```ts
+import { SpeculativeClient, HttpHandler, IHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+// Speculative execution uses port 7778
+const handler = new HttpHandler('http://<Node Address>:7778/rpc');
+const speculativeClient = SpeculativeClient.newSpeculativeClient(handler);
+
+const result = await speculativeClient.speculativeExec('1', deploy);
+console.log('Execution effect:', result.executionResult);
+```
+
+## Constructor
+
+```ts
+new SpeculativeClient(handler: IHandler)
+```
+
+The constructor takes any `IHandler` implementation. Use the static factory for convenience:
+
+```ts
+SpeculativeClient.newSpeculativeClient(handler: IHandler): SpeculativeClient
+```
+
+### Parameters
+
+#### handler
+
+- **Type:** `IHandler`
+
+The HTTP transport pointing to port `7778` on the node.
+
+## Methods
+
+### speculativeExec
+
+```ts
+speculativeClient.speculativeExec(
+  reqID: string,
+  deploy: Deploy,
+  identifier?: BlockIdentifier
+): Promise<SpeculativeExecResult>
+```
+
+Executes a deploy speculatively. The transaction is **not** written to the chain.
+
+### Parameters
+
+#### reqID
+
+- **Type:** `string`
+
+A unique request ID string for this speculative execution call.
+
+#### deploy
+
+- **Type:** `Deploy`
+
+The legacy deploy to execute speculatively.
+
+#### identifier
+
+- **Type:** `BlockIdentifier` (optional)
+
+The block to execute against. Defaults to the latest block.
+
+### Return Value
+
+`SpeculativeExecResult`
+
+Contains the execution result and effects that would have occurred.
+
+## Notes
+
+- Not all nodes expose port 7778 - check with your node operator.
+- The speculative execution state is based on the current latest block.
+- Use this to estimate gas costs or verify contract logic before submitting.

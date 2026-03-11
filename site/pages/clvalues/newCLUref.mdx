@@ -1,0 +1,51 @@
+# CLValue.newCLUref
+
+Creates a CLValue of type `URef` (Unforgeable Reference).
+
+## Import
+
+```ts
+import { CLValue, URef } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const uref = URef.fromFormattedStr('uref-abc123...-007');
+const value = CLValue.newCLUref(uref);
+```
+
+## Parameters
+
+### val
+
+- **Type:** `URef`
+
+A `URef` object parsed from its formatted string.
+
+## Return Value
+
+`CLValue` with `clType = CLType.URef`.
+
+## URef Access Rights
+
+A URef string ends with a 3-digit octal access suffix that controls what operations the holder can perform:
+
+| Suffix | Permissions |
+|---|---|
+| `-001` | Read only |
+| `-002` | Write only |
+| `-004` | Add only (deposit into a purse) |
+| `-006` | Read + Write |
+| `-007` | Read + Write + Add (full access) |
+
+Account main purses have full rights (`-007`). When a purse is shared as a deposit target, it typically uses Add-only rights (`-004`). If the runtime detects an attempt to use a URef beyond its granted access level, execution halts with a "forged URef" error.
+
+## Notes
+
+- Use `CLValue.newCLKey(Key.fromURef(uref))` when the contract expects a `Key` variant.
+- Use `CLValue.newCLUref(uref)` when the contract expects exactly a `URef` type.
+
+## Related
+
+- [`newCLKey`](/clvalues/newCLKey)

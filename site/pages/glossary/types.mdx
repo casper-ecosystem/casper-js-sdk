@@ -1,0 +1,88 @@
+# Types
+
+Reference for key TypeScript types in the Casper JS SDK.
+
+## Core Types
+
+```ts
+type BigNumberish = BigNumber | string | number;
+type HexString = string;     // hex without 0x prefix
+type TransactionHash = string;
+```
+
+## Identifier Types
+
+```ts
+type PurseIdentifier =
+  | { mainPurseUnderPublicKey: string }
+  | { mainPurseUnderAccountHash: string }
+  | { mainPurseUnderEntityAddr: string }
+  | { purseURef: string };
+
+type EntityIdentifier =
+  | { publicKey: string }
+  | { accountHash: string }
+  | { entityAddr: string };
+```
+
+## Builder Options
+
+```ts
+interface WaitOptions {
+  timeout?: number;   // ms, default 60000
+  interval?: number;  // ms, default 2000
+}
+
+interface HttpHandlerOptions {
+  timeout?: number;
+  headers?: Record<string, string>;
+}
+```
+
+## CLType Constants
+
+```ts
+// Primitive types
+CLType.Bool
+CLType.I32
+CLType.I64
+CLType.U8
+CLType.U32
+CLType.U64
+CLType.U128
+CLType.U256
+CLType.U512
+CLType.String
+CLType.Unit
+CLType.Key
+CLType.URef
+CLType.PublicKey
+CLType.Any
+
+// Parameterized types
+CLType.List(innerType: CLType)
+CLType.Option(innerType: CLType)
+CLType.Map(keyType: CLType, valType: CLType)
+CLType.Result(okType: CLType, errType: CLType)
+CLType.Tuple1(t: CLType)
+CLType.Tuple2(t1: CLType, t2: CLType)
+CLType.Tuple3(t1: CLType, t2: CLType, t3: CLType)
+CLType.ByteArray(length: number)
+```
+
+## Response Types
+
+Key response types from RPC calls:
+
+| Type | Returned by |
+|---|---|
+| `ChainGetBlockResult` | `getLatestBlock`, `getBlockByHash`, `getBlockByHeight` |
+| `QueryBalanceResult` | `queryLatestBalance` |
+| `QueryBalanceDetailsResult` | `queryLatestBalanceDetails` |
+| `PutTransactionResult` | `putTransaction` |
+| `PutDeployResult` | `putDeploy` |
+| `InfoGetTransactionResult` | `getTransactionByTransactionHash` |
+| `QueryGlobalStateResult` | `queryLatestGlobalState` |
+| `StateGetEntityResult` | `getLatestEntity` |
+| `StateGetAuctionInfoResult` | `getLatestAuctionInfo` |
+| `InfoGetStatusResult` | `getStatus` |

@@ -1,0 +1,142 @@
+# Transform
+
+Represents a state transformation - a change to a specific key in global state as a result of transaction execution.
+
+## Import
+
+```ts
+import { Transform, TransformKind, TransformKey } from 'casper-js-sdk';
+```
+
+## Classes
+
+### `Transform`
+
+A single state transformation pairing a global state key with a transformation kind.
+
+| Property | Type | Description |
+|---|---|---|
+| `key` | `Key` | Global state key that was modified |
+| `kind` | `TransformKind` | The type and value of the transformation |
+
+#### Constructor
+
+```ts
+new Transform(key: Key, kind: TransformKind)
+```
+
+### `TransformKind`
+
+The transformation data with type-checking and parsing helpers.
+
+| Property | Type | Description |
+|---|---|---|
+| `transformationData` | `any` | Raw transformation data |
+
+#### Constructor
+
+```ts
+new TransformKind(data: any)
+```
+
+#### Methods - Type Checking
+
+```ts
+kind.isWriteTransfer(): boolean
+kind.isWriteAccount(): boolean
+kind.isCLValueWrite(): boolean
+kind.isWriteContract(): boolean
+kind.isWriteWithdraw(): boolean
+kind.isWriteUnbonding(): boolean
+kind.isWriteCLValue(): boolean
+kind.isWritePackage(): boolean
+kind.isWriteAddressableEntity(): boolean
+kind.isWriteBidKind(): boolean
+kind.isWriteNamedKey(): boolean
+kind.isWriteMessage(): boolean
+kind.isWriteMessageTopic(): boolean
+kind.isWriteBid(): boolean
+kind.isAddUint512(): boolean
+kind.isWriteDeployInfo(): boolean
+kind.isWriteContractPackage(): boolean
+kind.isTransformation(name: string): boolean
+```
+
+#### Methods - Parsing
+
+```ts
+kind.parseAsWriteTransfer(): Transfer
+kind.parseAsWriteAccount(): Account
+kind.parseAsWriteWithdraws(): UnbondingPurse[]
+kind.parseAsWriteUnbondings(): UnbondingPurse[]
+kind.parseAsWriteAddressableEntity(): AddressableEntity
+kind.parseAsWritePackage(): Package
+kind.parseAsWriteBidKind(): BidKind
+kind.parseAsWriteNamedKey(): NamedKeyKind
+kind.parseAsUInt512(): CLValueUInt512
+kind.parseAsWriteDeployInfo(): DeployInfo
+kind.parseAsWriteCLValue(): CLValue
+kind.parseAsWriteContract(): Contract
+kind.parseAsWriteContractPackage(): ContractPackage
+```
+
+#### Static Methods
+
+```ts
+TransformKind.fromJSON(json: any): TransformKind | undefined
+```
+
+#### Methods - Serialization
+
+```ts
+kind.toJSON(): any
+```
+
+### `TransformKey`
+
+Used in V1 execution results - a key + transform kind pair.
+
+| Property | Type | Description |
+|---|---|---|
+| `key` | `Key` | Global state key |
+| `transform` | `TransformKind` | Transformation |
+
+### `NamedKeyKind`
+
+Returned when parsing a `WriteNamedKey` transform.
+
+| Property | Type | Description |
+|---|---|---|
+| `namedKey` | `Args` | Named key value |
+| `name` | `Args` | Key name |
+
+## Usage
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+
+const client = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+const { transaction } = await client.getTransactionByTransactionHash({ ... });
+
+const effects = transaction.executionInfo?.executionResult?.effects ?? [];
+
+for (const transform of effects) {
+  console.log('Key:', transform.key.toJSON());
+
+  if (transform.kind.isWriteTransfer()) {
+    const transfer = transform.kind.parseAsWriteTransfer();
+    console.log('Transfer amount:', transfer.amount.toString());
+  } else if (transform.kind.isAddUint512()) {
+    const amount = transform.kind.parseAsUInt512();
+    console.log('Added:', amount.toString());
+  } else if (transform.kind.isCLValueWrite()) {
+    const clv = transform.kind.parseAsWriteCLValue();
+    console.log('CL value:', clv.toString());
+  }
+}
+```
+
+## See Also
+
+- [`ExecutionResult`](/types/execution-result) - Contains `effects: Transform[]`
+- [`StoredValue`](/types/stored-value) - Types that transforms can write

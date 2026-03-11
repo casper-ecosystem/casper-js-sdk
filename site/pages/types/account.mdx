@@ -1,0 +1,67 @@
+# Account
+
+Represents an on-chain account with associated keys, action thresholds, and a main purse.
+
+## Import
+
+```ts
+import { Account, AssociatedKey, ActionThresholds } from 'casper-js-sdk';
+```
+
+## Classes
+
+### `Account`
+
+The top-level account object returned from RPC calls like `getAccountInfo`.
+
+| Property | Type | Description |
+|---|---|---|
+| `accountHash` | `AccountHash` | Unique account identifier |
+| `namedKeys` | `NamedKey[]` | Named key mappings stored on the account |
+| `mainPurse` | `URef` | Reference to the account's main purse |
+| `associatedKeys` | `AssociatedKey[]` | Keys associated with this account and their weights |
+| `actionThresholds` | `ActionThresholds` | Weight thresholds for deployment and key management |
+
+### `AssociatedKey`
+
+A key associated with an account, used for multi-signature schemes.
+
+| Property | Type | Description |
+|---|---|---|
+| `accountHash` | `AccountHash` | The account hash of the associated key |
+| `weight` | `number` | Permission weight of this key |
+
+### `ActionThresholds`
+
+Minimum cumulative weight required to authorize each type of action.
+
+| Property | Type | Description |
+|---|---|---|
+| `deployment` | `number` | Weight required to authorize a deploy |
+| `keyManagement` | `number` | Weight required to manage associated keys |
+
+## Usage
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+
+const client = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+
+const { account } = await client.getAccountInfo({
+  accountIdentifier: { publicKey: '01abc...' },
+});
+
+console.log(account.accountHash.toHex());
+console.log(account.mainPurse.toJSON());
+console.log(account.actionThresholds.deployment); // e.g. 1
+
+for (const key of account.associatedKeys) {
+  console.log(key.accountHash.toHex(), key.weight);
+}
+```
+
+## See Also
+
+- [`getAccountInfo`](/actions/account/getAccountInfo) - RPC action that returns an `Account`
+- [`NamedKey`](/types/named-key) - Named keys stored on the account
+- [`AddressableEntity`](/types/addressable-entity) - Casper 2.x equivalent of `Account`

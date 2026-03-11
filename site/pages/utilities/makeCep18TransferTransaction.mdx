@@ -1,0 +1,61 @@
+# makeCep18TransferTransaction
+
+Creates a `Transaction` for transferring CEP-18 (ERC-20 compatible) fungible tokens. Supports both Casper 1.x (wraps a Deploy) and Casper 2.0 (uses `ContractCallBuilder`).
+
+## Import
+
+```ts
+import { makeCep18TransferTransaction } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const tx = makeCep18TransferTransaction({
+  contractPackageHash: 'abc123...',
+  senderPublicKeyHex: privateKey.publicKey.toHex(),
+  recipientPublicKeyHex: recipientPublicKey.toHex(),
+  transferAmount: '1000000000',  // token amount in smallest unit
+  paymentAmount: '3000000000',   // 3 CSPR gas
+  chainName: 'casper',
+  casperNetworkApiVersion: '2.0',
+});
+
+tx.sign(privateKey);
+const result = await rpcClient.putTransaction(tx);
+```
+
+## Parameters
+
+| Parameter | Type | Required | Default |
+|---|---|---|---|
+| `contractPackageHash` | `string` | yes | - |
+| `senderPublicKeyHex` | `string` | yes | - |
+| `recipientPublicKeyHex` | `string` | yes | - |
+| `transferAmount` | `string` | yes | - |
+| `paymentAmount` | `string` | yes | - |
+| `casperNetworkApiVersion` | `string` | yes | - |
+| `chainName` | `string` | no | `'casper'` |
+| `ttl` | `number` | no | `1800000` |
+| `timestamp` | `string` | no | now |
+| `gasPrice` | `number` | no | `1` |
+
+### casperNetworkApiVersion
+
+Pass the API version string from `rpcClient.getStatus()`. If it starts with `'2.'`, a `TransactionV1` is built via `ContractCallBuilder`. Otherwise a legacy `Deploy` is wrapped in a `Transaction`.
+
+```ts
+const status = await rpcClient.getStatus();
+const tx = makeCep18TransferTransaction({
+  // ...
+  casperNetworkApiVersion: status.apiVersion,
+});
+```
+
+## Return Value
+
+`Transaction`
+
+## Related
+
+- [`makeCep18TransferDeploy`](/utilities/makeCep18TransferDeploy) - Deploy-only version for 1.x nodes

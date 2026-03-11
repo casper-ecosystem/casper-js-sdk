@@ -1,0 +1,40 @@
+# CLValue.newCLPublicKey
+
+Creates a CLValue of type `PublicKey`.
+
+## Import
+
+```ts
+import { CLValue, PublicKey } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const value = CLValue.newCLPublicKey(publicKey);
+```
+
+## Parameters
+
+### val
+
+- **Type:** `PublicKey`
+
+An ED25519 or SECP256K1 public key.
+
+## Return Value
+
+`CLValue` with `clType = CLType.PublicKey`.
+
+## Example
+
+```ts
+const args = Args.fromMap({
+  operator: CLValue.newCLPublicKey(operatorPublicKey),
+  new_owner: CLValue.newCLPublicKey(newOwnerPublicKey),
+});
+```
+
+## Notes
+
+- Some contracts expect `Key` (use `CLValue.newCLKey`), others expect `PublicKey` directly. Check the contract's entry point type.

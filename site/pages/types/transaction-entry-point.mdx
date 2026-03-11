@@ -1,0 +1,83 @@
+# TransactionEntryPoint
+
+Specifies which entry point a transaction targets - built-in system entry points or a custom contract entry point.
+
+## Import
+
+```ts
+import { TransactionEntryPoint, TransactionEntryPointEnum } from 'casper-js-sdk';
+```
+
+## Enum
+
+### `TransactionEntryPointEnum`
+
+| Value | Description |
+|---|---|
+| `Custom` | A custom contract entry point |
+| `Transfer` | Native token transfer |
+| `AddBid` | Add a validator bid |
+| `WithdrawBid` | Withdraw a validator bid |
+| `Delegate` | Delegate stake to a validator |
+| `Undelegate` | Remove delegation |
+| `Redelegate` | Move delegation to another validator |
+| `ActivateBid` | Reactivate an inactive bid |
+| `ChangeBidPublicKey` | Change a validator's public key |
+| `Call` | Generic contract call |
+| `AddReservations` | Add delegation reservations |
+| `CancelReservations` | Cancel delegation reservations |
+
+## Class
+
+### `TransactionEntryPoint`
+
+| Property | Type | Description |
+|---|---|---|
+| `type` | `TransactionEntryPointEnum` | Entry point type |
+| `customEntryPoint?` | `string` | Entry point name for `Custom` type |
+
+#### Constructor
+
+```ts
+new TransactionEntryPoint(
+  type: TransactionEntryPointEnum,
+  customEntryPoint?: string
+)
+```
+
+#### Methods
+
+```ts
+ep.tag(): number          // Numeric tag (0–11)
+ep.toBytes(): Uint8Array
+ep.toJSON(): unknown
+TransactionEntryPoint.fromJSON(json: any): TransactionEntryPoint
+TransactionEntryPoint.fromBytes(bytes: Uint8Array): TransactionEntryPoint
+```
+
+## Usage
+
+```ts
+import { TransactionEntryPoint, TransactionEntryPointEnum } from 'casper-js-sdk';
+
+// Native transfer
+const transfer = new TransactionEntryPoint(TransactionEntryPointEnum.Transfer);
+
+// Custom contract entry point
+const custom = new TransactionEntryPoint(
+  TransactionEntryPointEnum.Custom,
+  'mint'
+);
+
+// Delegate
+const delegate = new TransactionEntryPoint(TransactionEntryPointEnum.Delegate);
+```
+
+:::tip
+Transaction builders like `NativeTransferBuilder` and `NativeDelegateBuilder` set the entry point automatically.
+:::
+
+## See Also
+
+- [`TransactionV1Payload`](/types/transaction-v1-payload) - Contains `entryPoint`
+- [Transaction Builders](/builders/introduction) - Set entry points automatically

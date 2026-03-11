@@ -1,0 +1,61 @@
+# getDelegatorRewardByBlockHeight
+
+Returns the reward earned by a delegator for a specific validator at the era corresponding to a specific block height.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler, PublicKey } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const validator = PublicKey.fromHex('01a8b1...');
+const delegator = PublicKey.fromHex('01c9d2...');
+
+const result = await rpcClient.getDelegatorRewardByBlockHeight(
+  validator,
+  delegator,
+  1234567
+);
+
+console.log('Delegator reward:', result.delegatorReward.toString());
+```
+
+## Parameters
+
+### validator
+
+- **Type:** `PublicKey`
+
+The validator's public key.
+
+### delegator
+
+- **Type:** `PublicKey`
+
+The delegator's public key.
+
+### height
+
+- **Type:** `number`
+
+Block height. The era is determined from this block.
+
+## Return Value
+
+`Promise<InfoGetRewardResult>`
+
+```ts
+interface InfoGetRewardResult {
+  delegatorReward: BigNumber;
+  validatorReward: BigNumber;
+}
+```
+
+## Related
+
+- [`getLatestDelegatorReward`](/actions/auction/getLatestDelegatorReward)
+- [`getDelegatorRewardByEraID`](/actions/auction/getDelegatorRewardByEraID)
+- [`getDelegatorRewardByBlockHash`](/actions/auction/getDelegatorRewardByBlockHash)

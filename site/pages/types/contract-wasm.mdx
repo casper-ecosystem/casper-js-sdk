@@ -1,0 +1,44 @@
+# ContractWasm
+
+A container for the raw WASM bytecode of a deployed contract.
+
+## Import
+
+```ts
+import { ContractWasm } from 'casper-js-sdk';
+```
+
+## Class
+
+### `ContractWasm`
+
+| Property | Type | Description |
+|---|---|---|
+| `bytes` | `string` | WASM bytecode as a string |
+
+#### Constructor
+
+```ts
+new ContractWasm(bytes: string)
+```
+
+## Usage
+
+```ts
+// ContractWasm is typically obtained from StoredValue
+const result = await client.queryLatestGlobalState({
+  key: 'hash-abc123...',
+  path: [],
+});
+
+if (result.storedValue.ContractWasm) {
+  const wasm = result.storedValue.ContractWasm;
+  console.log('WASM bytes length:', wasm.bytes.length);
+}
+```
+
+## See Also
+
+- [`Contract`](/types/contract) - Contract metadata including WASM hash
+- [`ByteCode`](/types/byte-code) - System bytecode type
+- [`StoredValue`](/types/stored-value) - Contains `ContractWasm`

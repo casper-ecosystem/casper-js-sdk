@@ -1,0 +1,37 @@
+# getTransactionByDeployHash
+
+Retrieves a transaction by its legacy deploy hash, returning it in the unified `Transaction` wrapper.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getTransactionByDeployHash('abc123...');
+
+const tx = result.transaction;
+// The transaction wraps the deploy in Transaction format
+const deploy = tx.getDeploy();
+console.log(deploy?.hash.toHex());
+```
+
+## Parameters
+
+### hash
+
+- **Type:** `string`
+
+The deploy hash as a hex string.
+
+## Return Value
+
+`Promise<InfoGetTransactionResult>`
+
+## Related
+
+- [`getDeploy`](/actions/transactions/getDeploy)
+- [`getTransactionByTransactionHash`](/actions/transactions/getTransactionByTransactionHash)

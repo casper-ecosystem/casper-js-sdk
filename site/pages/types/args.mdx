@@ -1,0 +1,99 @@
+# Args
+
+Named argument map used to pass parameters to contract entry points and deploy sessions.
+
+## Import
+
+```ts
+import { Args, NamedArg } from 'casper-js-sdk';
+```
+
+## Classes
+
+### `Args`
+
+A map of named `CLValue` arguments. All contract calls and deploys use `Args` to pass parameters.
+
+| Property | Type | Description |
+|---|---|---|
+| `args` | `Map<string, CLValue>` | Underlying argument map |
+
+#### Constructor
+
+```ts
+new Args(args: Map<string, CLValue>)
+```
+
+#### Methods
+
+```ts
+// Get an argument by name
+args.getByName(argName: string): CLValue | undefined
+
+// Insert or update an argument
+args.insert(key: string, value: CLValue): void
+
+// Serialize to bytes
+args.toBytes(): Uint8Array
+```
+
+#### Static Methods
+
+```ts
+// Create from a plain object
+Args.fromMap(args: Record<string, CLValue>): Args
+
+// Create from an array of NamedArg
+Args.fromNamedArgs(namedArgs: NamedArg[]): Args
+
+// Deserialize from bytes
+Args.fromBytes(bytes: Uint8Array): Args
+```
+
+### `NamedArg`
+
+A single named argument - a `(name, CLValue)` pair.
+
+| Property | Type | Description |
+|---|---|---|
+| `name` | `string` | Argument name |
+| `value` | `CLValue` | Argument value |
+
+#### Constructor
+
+```ts
+new NamedArg(name: string, value: CLValue)
+```
+
+#### Methods
+
+```ts
+namedArg.toBytes(): Uint8Array
+NamedArg.toBytesWithNamedArg(source: NamedArg): Uint8Array
+NamedArg.fromBytes(bytes: Uint8Array): NamedArg
+```
+
+## Usage
+
+```ts
+import { Args, newCLString, newCLU256 } from 'casper-js-sdk';
+
+// Build args from a plain object
+const args = Args.fromMap({
+  recipient: newCLString('account-hash-abc...'),
+  amount: newCLU256('1000000000'),
+});
+
+// Or insert incrementally
+const args2 = new Args(new Map());
+args2.insert('token_id', newCLU256('42'));
+
+// Retrieve a value
+const amount = args.getByName('amount');
+```
+
+## See Also
+
+- [CLValues Introduction](/clvalues/introduction) - Available CL value types
+- [Args reference](/clvalues/Args) - Detailed Args documentation
+- [`ContractCallBuilder`](/builders/ContractCallBuilder) - Uses `Args` for contract calls

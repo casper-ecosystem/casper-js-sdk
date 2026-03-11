@@ -1,0 +1,43 @@
+# queryBalanceByBlockHash
+
+Returns the CSPR balance at a specific block, identified by hash.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.queryBalanceByBlockHash(
+  'abc123...',
+  { mainPurseUnderPublicKey: publicKey.toHex() }
+);
+
+console.log(result.balance.toString());
+```
+
+## Parameters
+
+### hash
+
+- **Type:** `string`
+
+Block hash as hex string.
+
+### identifier
+
+- **Type:** `PurseIdentifier`
+
+Which purse to query. Same options as [`queryLatestBalance`](/actions/balance/queryLatestBalance).
+
+## Return Value
+
+`Promise<QueryBalanceResult>`
+
+## Related
+
+- [`queryLatestBalance`](/actions/balance/queryLatestBalance)
+- [`queryBalanceByBlockHeight`](/actions/balance/queryBalanceByBlockHeight)

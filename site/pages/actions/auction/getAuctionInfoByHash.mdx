@@ -1,0 +1,44 @@
+# getAuctionInfoByHash
+
+Returns the auction state at a specific block, identified by block hash. Automatically handles both Casper 1.x (V1) and Casper 2.x (V2) node responses.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getAuctionInfoByHash('abc123...');
+
+const bids = result.auctionState.getBids();
+for (const bid of bids) {
+  console.log('Validator:', bid.publicKey.toHex());
+  console.log('Stake:', bid.bid.stakedAmount);
+}
+```
+
+## Parameters
+
+### blockHash
+
+- **Type:** `string`
+
+Block hash as a hex string.
+
+## Return Value
+
+`Promise<StateGetAuctionInfoResult>`
+
+```ts
+interface StateGetAuctionInfoResult {
+  auctionState: AuctionState;
+}
+```
+
+## Related
+
+- [`getLatestAuctionInfo`](/actions/auction/getLatestAuctionInfo)
+- [`getAuctionInfoByHeight`](/actions/auction/getAuctionInfoByHeight)

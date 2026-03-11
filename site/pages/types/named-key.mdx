@@ -1,0 +1,64 @@
+# NamedKey
+
+Named keys allow accounts and contracts to store human-readable labels for global state keys.
+
+## Import
+
+```ts
+import { NamedKey, NamedKeyValue } from 'casper-js-sdk';
+```
+
+## Classes
+
+### `NamedKey`
+
+Associates a string name with a `Key` in an account or contract's context.
+
+| Property | Type | Description |
+|---|---|---|
+| `name` | `string` | Human-readable label |
+| `key` | `Key` | The global state key |
+
+#### Constructor
+
+```ts
+new NamedKey(name: string, key: Key)
+```
+
+### `NamedKeyValue`
+
+Casper 2.x variant used in `StoredValue` - stores both name and key as `CLValue`.
+
+| Property | Type | Description |
+|---|---|---|
+| `name` | `CLValue` | Name as a CL string |
+| `namedKey` | `CLValue` | Key as a CL value |
+
+#### Constructor
+
+```ts
+new NamedKeyValue(name: CLValue, namedKey: CLValue)
+```
+
+## Usage
+
+```ts
+// Named keys are accessed via Account and Contract
+const { account } = await client.getAccountInfo({ ... });
+
+for (const namedKey of account.namedKeys) {
+  console.log(namedKey.name, '->', namedKey.key.toJSON());
+}
+
+// Querying state via a named key path
+const result = await client.queryLatestGlobalState({
+  key: account.accountHash.toHex(),
+  path: ['my_contract_key'],
+});
+```
+
+## See Also
+
+- [`Account`](/types/account) - Contains `namedKeys: NamedKey[]`
+- [`Contract`](/types/contract) - Contains `namedKeys: NamedKey[]`
+- [`StoredValue`](/types/stored-value) - Contains optional `namedKey: NamedKeyValue`

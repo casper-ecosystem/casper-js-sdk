@@ -1,0 +1,40 @@
+# MinimalBlockInfo
+
+Lightweight block summary containing only the most commonly needed fields.
+
+## Import
+
+```ts
+import { MinimalBlockInfo } from 'casper-js-sdk';
+```
+
+## Class
+
+### `MinimalBlockInfo`
+
+| Property | Type | Description |
+|---|---|---|
+| `creator` | `PublicKey` | Public key of the validator that proposed this block (called `"creator"` in this summary type; `"proposer"` in the full `Block` header) |
+| `eraID` | `number` | Era this block belongs to |
+| `hash` | `Hash` | Block hash |
+| `height` | `number` | Block height |
+| `stateRootHash` | `Hash` | State root hash |
+| `timestamp` | `Timestamp` | Block creation timestamp |
+
+## Usage
+
+```ts
+// MinimalBlockInfo typically appears in RPC responses like getEraSummary
+const { eraSummary } = await client.getEraSummaryLatest();
+
+// Block info is also embedded in various RPC responses
+const blockInfo: MinimalBlockInfo = /* from RPC response */;
+console.log('Height:', blockInfo.height);
+console.log('Hash:', blockInfo.hash.toHex());
+console.log('Creator:', blockInfo.creator.toHex());
+```
+
+## See Also
+
+- [`Block`](/types/block) - Full block with transactions and proofs
+- [`EraSummary`](/types/era-summary) - Contains minimal block context

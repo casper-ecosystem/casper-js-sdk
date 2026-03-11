@@ -1,0 +1,53 @@
+# ByteCode
+
+Represents system bytecode stored on-chain, identified by a kind tag and raw bytes.
+
+## Import
+
+```ts
+import { SystemByteCode } from 'casper-js-sdk';
+```
+
+## Class
+
+### `SystemByteCode`
+
+| Property | Type | Description |
+|---|---|---|
+| `kind` | `string` | Bytecode type identifier (e.g. `"V1CasperWasm"`) |
+| `bytes` | `HexBytes` | Raw bytecode |
+
+#### Constructor
+
+```ts
+new SystemByteCode(kind: string, bytes: HexBytes)
+```
+
+#### Methods
+
+```ts
+byteCode.isEmpty(): boolean
+byteCode.isV1CasperWasm(): boolean
+byteCode.toString(): string
+```
+
+## Usage
+
+```ts
+// ByteCode is typically obtained from StoredValue
+import { StoredValue } from 'casper-js-sdk';
+
+const storedValue: StoredValue = /* from RPC */;
+
+if (storedValue.byteCode) {
+  const bc = storedValue.byteCode;
+  console.log('Kind:', bc.kind);
+  console.log('Is V1 Wasm:', bc.isV1CasperWasm());
+  console.log('Empty:', bc.isEmpty());
+}
+```
+
+## See Also
+
+- [`StoredValue`](/types/stored-value) - Container that may hold `SystemByteCode`
+- [`ContractWasm`](/types/contract-wasm) - WASM bytecode for user contracts

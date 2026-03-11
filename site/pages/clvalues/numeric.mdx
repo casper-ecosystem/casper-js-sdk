@@ -1,0 +1,112 @@
+# Numeric Types
+
+CLValue factories for all integer types.
+
+## Import
+
+```ts
+import { CLValue } from 'casper-js-sdk';
+```
+
+## Unsigned Integers
+
+### CLValue.newCLUInt512
+
+```ts
+CLValue.newCLUInt512(val: BigNumberish): CLValue
+```
+
+Used for **CSPR amounts**. Supports values up to 2^512 - 1.
+
+```ts
+CLValue.newCLUInt512('25000000000')  // 25 CSPR
+CLValue.newCLUInt512(1_000_000_000)
+CLValue.newCLUInt512(BigNumber.from('25000000000'))
+```
+
+---
+
+### CLValue.newCLUInt256
+
+```ts
+CLValue.newCLUInt256(val: BigNumberish): CLValue
+```
+
+Used for **token amounts** in CEP-18 contracts.
+
+```ts
+CLValue.newCLUInt256('1000000000000000000')  // typical token amount
+```
+
+---
+
+### CLValue.newCLUInt128
+
+```ts
+CLValue.newCLUInt128(val: BigNumberish): CLValue
+```
+
+---
+
+### CLValue.newCLUint64
+
+```ts
+CLValue.newCLUint64(val: BigNumberish): CLValue
+```
+
+---
+
+### CLValue.newCLUInt32
+
+```ts
+CLValue.newCLUInt32(val: BigNumberish): CLValue
+```
+
+---
+
+### CLValue.newCLUint8
+
+```ts
+CLValue.newCLUint8(val: BigNumberish): CLValue
+```
+
+Used for small numeric values and flags.
+
+---
+
+## Signed Integers
+
+### CLValue.newCLInt64
+
+```ts
+CLValue.newCLInt64(val: BigNumberish): CLValue
+```
+
+---
+
+### CLValue.newCLInt32
+
+```ts
+CLValue.newCLInt32(val: BigNumberish): CLValue
+```
+
+---
+
+## BigNumberish
+
+All numeric factories accept:
+
+```ts
+type BigNumberish = number | string | BigNumber;
+
+// All equivalent:
+CLValue.newCLUInt512(25_000_000_000)
+CLValue.newCLUInt512('25000000000')
+CLValue.newCLUInt512(BigNumber.from('25000000000'))
+```
+
+## Notes
+
+- For CSPR amounts, always use `U512`.
+- For CEP-18 token amounts, use `U256` (check your contract's type).
+- JavaScript `number` is safe for values up to 2^53 - 1. Use `string` or `BigNumber` for larger values.

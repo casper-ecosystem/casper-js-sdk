@@ -1,0 +1,72 @@
+# waitForTransaction
+
+Polls the node until a `TransactionV1` is finalized, then returns the result.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const transaction = new NativeTransferBuilder()
+  .from(senderPublicKey)
+  // ...
+  .build();
+
+transaction.sign(privateKey);
+await rpcClient.putTransaction(transaction);
+
+// Pass the Transaction object (not a hash), optional timeout in ms (default: 6000)
+const result = await rpcClient.waitForTransaction(transaction, 60_000);
+
+const execution = result.executionInfo?.executionResult;
+if (!execution?.errorMessage) {
+  console.log('Confirmed! Consumed:', execution?.consumed);
+} else {
+  console.error('Failed:', execution.errorMessage);
+}
+```
+
+## Parameters
+
+### transaction
+
+- **Type:** `Transaction`
+
+The `Transaction` object returned by a builder's `.build()`. The method reads `.hash` from it internally.
+
+### timeout
+
+- **Type:** `number` (optional, default `6000`)
+
+Maximum wait time in milliseconds. Throws if this is reached before the transaction is finalized.
+
+## Return Value
+
+`Promise<InfoGetTransactionResult>`
+
+The same structure as [`getTransactionByTransactionHash`](/actions/transactions/getTransactionByDeployHash). The `executionInfo.executionResult` field is guaranteed to be populated when this resolves.
+
+## Checking the Result
+
+```ts
+const result = await rpcClient.waitForTransaction(transaction, 60_000);
+const execution = result.executionInfo?.executionResult;
+
+// Success: errorMessage is null/undefined
+if (!execution?.errorMessage) {
+  console.log('Success - gas consumed:', execution?.consumed);
+} else {
+  // Failure: errorMessage contains the on-chain error
+  console.error('Reverted:', execution.errorMessage);
+}
+```
+
+## Related
+
+- [`waitForDeploy`](/actions/transactions/waitForTransaction) - legacy Deploy equivalent
+- [`putTransaction`](/actions/transactions/putTransaction)
+- [SSE: TransactionProcessed](/sse/transaction-processed) - event-based alternative to polling

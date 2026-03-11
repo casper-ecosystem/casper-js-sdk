@@ -1,0 +1,40 @@
+# getLatestValidatorReward
+
+Returns the reward earned by a validator in the most recent completed era.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler, PublicKey } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const reward = await rpcClient.getLatestValidatorReward(validatorPublicKey);
+
+console.log('Reward:', reward.reward.toString(), 'motes');
+```
+
+## Parameters
+
+### validator
+
+- **Type:** `PublicKey`
+
+The validator's public key.
+
+## Return Value
+
+`Promise<InfoGetRewardResult>`
+
+```ts
+interface InfoGetRewardResult {
+  reward: BigNumber; // in motes
+  eraId: number;
+}
+```
+
+## Related
+
+- [`getLatestDelegatorReward`](/actions/auction/getLatestDelegatorReward)

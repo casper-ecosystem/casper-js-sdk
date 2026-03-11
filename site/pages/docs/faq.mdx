@@ -1,0 +1,74 @@
+# FAQ
+
+## What is the difference between Deploy and Transaction?
+
+Casper has two transaction formats:
+
+- **Deploy** - the original format used in Casper 1.x. Still supported by all nodes.
+- **TransactionV1** - introduced in Casper 2.0. More efficient, supports new features.
+
+Use `Transaction` (the SDK wrapper class) which holds either format. All builders produce `Transaction`.
+
+Use `putTransaction()` for `Transaction` and `putDeploy()` only for raw `Deploy` objects.
+
+## How do I check my account balance?
+
+```ts
+const result = await rpcClient.queryLatestBalance({
+  mainPurseUnderPublicKey: publicKey.toHex(),
+});
+console.log(result.balance.toString()); // in motes
+// 1 CSPR = 1,000,000,000 motes
+```
+
+## Why do I get `AccountMigratedToEntity`?
+
+Your account was created on Casper 1.x and migrated during the Casper 2.0 upgrade. Use `getLatestEntity` instead of `getAccountInfo`:
+
+```ts
+const entity = await rpcClient.getLatestEntity({
+  publicKey: publicKey.toHex(),
+});
+```
+
+## What is a mote?
+
+The smallest unit of CSPR. `1 CSPR = 1,000,000,000 motes (10^9)`. All SDK amounts are in motes as strings to avoid floating point issues.
+
+## How do I call a smart contract?
+
+```ts
+const args = Args.fromMap({
+  amount: CLValue.newCLUInt256('1000000000'),
+  recipient: CLValue.newCLPublicKey(recipientKey),
+});
+
+const tx = new ContractCallBuilder()
+  .from(senderPublicKey)
+  .byHash('hash-contract-abc...')
+  .entryPoint('transfer')
+  .runtimeArgs(args)
+  .chainName('casper')
+  .payment(3_000_000_000)
+  .build();
+```
+
+## What is a URef?
+
+An Unforgeable Reference - a capability token that grants access to a storage location (purse, dictionary, contract state). Format: `uref-{32-byte-hex}-{octal-access-rights}`.
+
+## Does the SDK work in the browser?
+
+Yes. Use `dist/lib.web.js` or import from the package with a bundler. The `eventsource` package provides SSE support in environments without native `EventSource`.
+
+## How do I use hardware wallets?
+
+Get the bytes to sign, send them to the hardware wallet, then set the signature:
+
+```ts
+const tx = new NativeTransferBuilder()...build();
+const bytesToSign = tx.getTransactionV1()!.hash.toBytes();
+// → send bytesToSign to hardware wallet
+const signature = await hardwareWallet.sign(bytesToSign);
+tx.setSignature(signature, publicKey);
+```

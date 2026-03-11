@@ -1,0 +1,47 @@
+# getEraInfoByBlockHash
+
+Returns the era info at a specific block, identified by block hash.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getEraInfoByBlockHash('abc123...');
+
+if (result.eraSummary) {
+  console.log('Era ID:', result.eraSummary.eraId);
+}
+```
+
+## Parameters
+
+### hash
+
+- **Type:** `string`
+
+Block hash as a hex string.
+
+## Return Value
+
+`Promise<ChainGetEraInfoResult>`
+
+```ts
+interface ChainGetEraInfoResult {
+  eraSummary?: EraSummary;
+}
+```
+
+:::note
+`eraSummary` is only present in the result if the queried block is a switch block (i.e., the last block of an era).
+:::
+
+## Related
+
+- [`getEraInfoLatest`](/actions/auction/getEraInfoLatest)
+- [`getEraInfoByBlockHeight`](/actions/auction/getEraInfoByBlockHeight)
+- [`getEraSummaryByHash`](/actions/auction/getEraSummaryByHash)

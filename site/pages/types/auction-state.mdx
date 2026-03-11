@@ -1,0 +1,89 @@
+# AuctionState
+
+Represents the current state of the Casper auction system, including all active bids and era validator weights.
+
+## Import
+
+```ts
+import { AuctionState, BidKindWrapper, EraValidators } from 'casper-js-sdk';
+```
+
+## Classes
+
+### `AuctionState`
+
+Unified auction state supporting both Casper 1.x (`AuctionStateV1`) and 2.x (`AuctionStateV2`) formats.
+
+| Property | Type | Description |
+|---|---|---|
+| `bids` | `BidKindWrapper[]` | All active bids |
+| `blockHeight` | `number` | Block height at which this state was captured |
+| `eraValidators` | `EraValidators[]` | Validator weights per era |
+| `stateRootHash` | `string` | State root hash |
+
+#### Static Methods
+
+```ts
+AuctionState.fromV1(v1: AuctionStateV1): AuctionState
+AuctionState.fromV2(v2: AuctionStateV2): AuctionState
+```
+
+### `BidKindWrapper`
+
+Associates a public key with a polymorphic `BidKind`.
+
+| Property | Type | Description |
+|---|---|---|
+| `publicKey` | `PublicKey` | Validator's public key |
+| `bid` | `BidKind` | The bid data (validator, delegator, credit, etc.) |
+
+#### Constructor
+
+```ts
+new BidKindWrapper(publicKey?: PublicKey, bid?: BidKind)
+```
+
+### `EraValidators`
+
+Validator weights for a specific era.
+
+| Property | Type | Description |
+|---|---|---|
+| `eraID` | `number` | Era identifier |
+| `validatorWeights` | `ValidatorWeightAuction[]` | Weights of each validator |
+
+### `PublicKeyAndBid`
+
+Used in Casper 1.x auction state to pair a public key with a legacy `Bid`.
+
+| Property | Type | Description |
+|---|---|---|
+| `publicKey` | `PublicKey` | Validator's public key |
+| `bid` | `Bid` | The legacy bid |
+
+## Usage
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+
+const client = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+
+const { auctionState } = await client.getLatestAuctionInfo();
+
+console.log('Block height:', auctionState.blockHeight);
+console.log('Total bids:', auctionState.bids.length);
+
+for (const wrapper of auctionState.bids) {
+  console.log(wrapper.publicKey.toHex(), wrapper.bid.validator?.stakedAmount?.toString());
+}
+
+for (const eraInfo of auctionState.eraValidators) {
+  console.log(`Era ${eraInfo.eraID}: ${eraInfo.validatorWeights.length} validators`);
+}
+```
+
+## See Also
+
+- [`getLatestAuctionInfo`](/actions/auction/getLatestAuctionInfo) - RPC action returning `AuctionState`
+- [`BidKind`](/types/bid-kind) - Polymorphic bid type
+- [`Bid`](/types/bid) - Individual bid structures

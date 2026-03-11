@@ -1,0 +1,61 @@
+# CLValue.newCLKey
+
+Creates a CLValue of type `Key` wrapping any Casper key variant.
+
+## Import
+
+```ts
+import { CLValue, Key } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+// Key from account hash
+const accountKey = CLValue.newCLKey(
+  Key.fromAccount(accountHash)
+);
+
+// Key from contract hash
+const contractKey = CLValue.newCLKey(
+  Key.fromHash(contractHash)
+);
+```
+
+## Parameters
+
+### val
+
+- **Type:** `Key`
+
+Any `Key` variant: account hash, contract hash, URef, etc.
+
+## Return Value
+
+`CLValue` with `clType = CLType.Key`.
+
+## Key Variants
+
+```ts
+Key.fromAccount(accountHash: AccountHash)
+Key.fromHash(hash: Hash)
+Key.fromURef(uref: URef)
+Key.fromTransfer(hash: Hash)
+// ...and more
+```
+
+## Example (CEP-18 transfer recipient)
+
+```ts
+const args = Args.fromMap({
+  recipient: CLValue.newCLKey(
+    Key.fromAccount(recipientPublicKey.accountHash())
+  ),
+  amount: CLValue.newCLUInt256('1000000'),
+});
+```
+
+## Related
+
+- [`newCLUref`](/clvalues/newCLUref) - when the contract specifically expects a URef
+- [`newCLPublicKey`](/clvalues/newCLPublicKey) - when the contract expects a PublicKey

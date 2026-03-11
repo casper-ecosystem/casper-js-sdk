@@ -1,0 +1,60 @@
+# getDictionaryItem
+
+Reads a single entry from a contract dictionary by its URef seed and key.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler, CLValueParser } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const stateRoot = (await rpcClient.getStateRootHashLatest()).stateRootHash;
+
+const result = await rpcClient.getDictionaryItem(
+  stateRoot,
+  'uref-dictionary-seed-abc...-007',  // dictionary's URef
+  'account-hash-xyz...'               // dictionary key
+);
+
+const value = CLValueParser.fromJSON(result.storedValue.clValue);
+console.log(value.ui256?.val.toString()); // e.g., token balance
+```
+
+## Parameters
+
+### stateRoot
+
+- **Type:** `string`
+
+The state root hash to query at. Get it from [`getStateRootHashLatest`](/actions/state/getStateRootHashLatest).
+
+### dictionarySeedURef
+
+- **Type:** `string`
+
+The URef of the dictionary seed (`uref-{hex}-{octal}`).
+
+### itemKey
+
+- **Type:** `string`
+
+The key within the dictionary to look up.
+
+## Return Value
+
+`Promise<GetDictionaryItemResult>`
+
+```ts
+interface GetDictionaryItemResult {
+  dictionaryKey: string;
+  storedValue: StoredValue;
+}
+```
+
+## Related
+
+- [`queryLatestGlobalState`](/actions/state/queryLatestGlobalState)
+- [`getStateRootHashLatest`](/actions/state/getStateRootHashLatest)

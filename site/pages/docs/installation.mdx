@@ -1,0 +1,69 @@
+# Installation
+
+## Package Manager
+
+:::code-group
+
+```bash [npm]
+npm install casper-js-sdk
+```
+
+```bash [yarn]
+yarn add casper-js-sdk
+```
+
+```bash [pnpm]
+pnpm add casper-js-sdk
+```
+
+:::
+
+## Browser (CDN)
+
+For browser use without a bundler:
+
+```html
+<script src="node_modules/casper-js-sdk/dist/lib.web.js"></script>
+<script>
+  const { RpcClient, HttpHandler } = CasperJsSdk;
+</script>
+```
+
+## TypeScript Setup
+
+The SDK ships with full TypeScript declarations (`dist/index.d.ts`). No `@types/casper-js-sdk` package is needed.
+
+Minimum TypeScript version: **4.9**.
+
+Recommended `tsconfig.json` settings:
+
+```json
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020"],
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "strict": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  }
+}
+```
+
+:::note
+`experimentalDecorators` and `emitDecoratorMetadata` are required for the TypedJSON decorators used in serialization classes.
+:::
+
+## Node.js Version
+
+Node.js **14+** is supported. Node.js 18+ is recommended.
+
+## Bundle Targets
+
+| Target | File |
+|---|---|
+| Node.js (CommonJS) | `dist/lib.node.js` |
+| Browser (UMD) | `dist/lib.web.js` |
+| TypeScript types | `dist/index.d.ts` |

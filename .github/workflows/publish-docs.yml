@@ -1,27 +1,21 @@
 name: Publish docs
 
 on:
-  release:
-    types: [created]
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-22.04
-
-    strategy:
-      matrix:
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        node-version: [16.x]
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js 22
         uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: '22'
           registry-url: 'https://registry.npmjs.org'
 
       - name: Install and Build 🔧
