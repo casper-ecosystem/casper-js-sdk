@@ -136,6 +136,7 @@
     "humanize-duration": "^3.24.0",
     "lodash": "^4.17.21",
     "node-fetch": "2.6.13",
+    "patch-package": "^8.0.1",
     "reflect-metadata": "^0.1.13",
     "ts-results": "npm:@casperlabs/ts-results@^3.3.4",
     "typedjson": "^1.6.0-rc2"
