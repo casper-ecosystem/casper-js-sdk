@@ -1,0 +1,86 @@
+# Time
+
+`Timestamp` and `Duration` types for handling block and transaction timing.
+
+## Import
+
+```ts
+import { Timestamp, Duration } from 'casper-js-sdk';
+```
+
+## Classes
+
+### `Timestamp`
+
+Wraps a JavaScript `Date` with Casper-compatible JSON serialization (ISO 8601).
+
+| Property | Type | Description |
+|---|---|---|
+| `date` | `Date` | Underlying JavaScript date |
+
+#### Constructor
+
+```ts
+new Timestamp(date: Date)
+```
+
+#### Methods
+
+```ts
+timestamp.toMilliseconds(): number
+timestamp.toDate(): Date
+timestamp.toJSON(): string          // ISO 8601 string
+Timestamp.fromJSON(data: string): Timestamp
+```
+
+### `Duration`
+
+Represents a time duration in milliseconds. Serializes to/from human-readable strings like `"30m"` or `"1day 30m"`.
+
+| Property | Type | Description |
+|---|---|---|
+| `duration` | `number` | Duration in milliseconds |
+
+#### Constructor
+
+```ts
+new Duration(duration: number)
+```
+
+#### Methods
+
+```ts
+duration.toMilliseconds(): number
+duration.toJSON(): string                  // Human-readable: "30m", "1day"
+duration.toDurationString(): string        // hh:mm:ss format
+Duration.fromJSON(data: string): Duration  // Parse human-readable string
+Duration.parseDurationString(str: string): number  // → milliseconds
+```
+
+## Usage
+
+```ts
+import { Timestamp, Duration } from 'casper-js-sdk';
+
+// Current timestamp
+const ts = new Timestamp(new Date());
+console.log(ts.toJSON());       // '2024-01-01T00:00:00.000Z'
+console.log(ts.toMilliseconds());
+
+// Parse from RPC response
+const ts2 = Timestamp.fromJSON('2024-01-01T00:00:00.000Z');
+
+// 30-minute TTL
+const ttl = new Duration(30 * 60 * 1000);
+console.log(ttl.toJSON());       // '30m'
+
+// Parse TTL string
+const ttl2 = Duration.fromJSON('1day 30m');
+console.log(ttl2.toMilliseconds());
+```
+
+## See Also
+
+- [`DeployHeader`](/types/deploy) - Uses `Timestamp` and `Duration`
+- [`TransactionV1Payload`](/types/transaction-v1-payload) - Uses `Timestamp` and `Duration`
+- [`Block`](/types/block) - `timestamp: Timestamp`

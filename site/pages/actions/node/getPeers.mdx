@@ -1,0 +1,39 @@
+# getPeers
+
+Returns the list of peers connected to the node.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getPeers();
+
+console.log(`Connected to ${result.peers.length} peers`);
+for (const peer of result.peers) {
+  console.log(peer.nodeId, peer.address);
+}
+```
+
+## Return Value
+
+`Promise<InfoGetPeerResult>`
+
+```ts
+interface InfoGetPeerResult {
+  peers: Peer[];
+}
+
+interface Peer {
+  nodeId: string;   // node's public key identifier
+  address: string;  // IP:port
+}
+```
+
+## Related
+
+- [`getStatus`](/actions/node/getStatus)

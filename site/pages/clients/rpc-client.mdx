@@ -1,0 +1,120 @@
+# RpcClient
+
+The `RpcClient` is the primary interface for querying the Casper Network. It implements the full Casper JSON-RPC 2.0 API.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const handler = new HttpHandler('http://<Node Address>:7777/rpc');
+const rpcClient = new RpcClient(handler);
+
+const status = await rpcClient.getStatus();
+```
+
+## Constructor
+
+```ts
+new RpcClient(handler: IHandler)
+```
+
+### Parameters
+
+#### handler
+
+- **Type:** `IHandler`
+
+The transport to use for all requests. Typically an `HttpHandler` instance.
+
+## Methods
+
+### Block Actions
+- [`getLatestBlock`](/actions/block/getLatestBlock) - Get the most recent block
+- [`getBlockByHash`](/actions/block/getBlockByHash) - Get block by hash
+- [`getBlockByHeight`](/actions/block/getBlockByHeight) - Get block by height
+- [`getLatestBlockTransfers`](/actions/block/getLatestBlockTransfers) - Transfers in the latest block
+- [`getBlockTransfersByHash`](/actions/block/getBlockTransfersByHash) - Transfers in a block by hash
+- [`getBlockTransfersByHeight`](/actions/block/getBlockTransfersByHeight) - Transfers in a block by height
+
+### Balance Actions
+- [`queryLatestBalance`](/actions/balance/queryLatestBalance) - Query latest balance by identifier
+- [`queryLatestBalanceDetails`](/actions/balance/queryLatestBalanceDetails) - Latest balance with hold breakdown
+- [`getLatestBalance`](/actions/balance/getLatestBalance) - Get latest balance (1.x format)
+- [`queryBalanceByBlockHash`](/actions/balance/queryBalanceByBlockHash) - Balance at a specific block hash
+- [`queryBalanceByBlockHeight`](/actions/balance/queryBalanceByBlockHeight) - Balance at a specific block height
+- [`queryBalanceByStateRootHash`](/actions/balance/queryBalanceByStateRootHash) - Balance at a state root hash
+- [`queryBalanceDetailsByBlockHash`](/actions/balance/queryBalanceDetailsByBlockHash) - Balance details at a block hash
+- [`queryBalanceDetailsByBlockHeight`](/actions/balance/queryBalanceDetailsByBlockHeight) - Balance details at a block height
+- [`queryBalanceDetailsByStateRootHash`](/actions/balance/queryBalanceDetailsByStateRootHash) - Balance details at a state root hash
+
+### Transaction Actions
+- [`putTransaction`](/actions/transactions/putTransaction) - Submit a TransactionV1
+- [`putDeploy`](/actions/transactions/putDeploy) - Submit a legacy Deploy
+- [`waitForTransaction`](/actions/transactions/waitForTransaction) - Poll until a transaction is confirmed
+- [`waitForDeploy`](/actions/transactions/waitForDeploy) - Poll until a deploy is confirmed
+- [`getTransactionByTransactionHash`](/actions/transactions/getTransactionByTransactionHash) - Get transaction by hash
+- [`getTransactionByDeployHash`](/actions/transactions/getTransactionByDeployHash) - Get transaction by deploy hash
+- [`getDeploy`](/actions/transactions/getDeploy) - Get a legacy deploy by hash
+- [`getDeployFinalizedApproval`](/actions/transactions/getDeployFinalizedApproval) - Finalized approvals for a deploy
+- [`getTransactionFinalizedApprovalByDeployHash`](/actions/transactions/getTransactionFinalizedApprovalByDeployHash) - Finalized approvals by deploy hash
+- [`getTransactionFinalizedApprovalByTransactionHash`](/actions/transactions/getTransactionFinalizedApprovalByTransactionHash) - Finalized approvals by transaction hash
+
+### Account & Entity Actions
+- [`getAccountInfo`](/actions/account/getAccountInfo) - Get account (1.x format, latest state)
+- [`getAccountInfoByBlockHash`](/actions/account/getAccountInfoByBlockHash) - Get account at a block hash
+- [`getAccountInfoByBlockHeight`](/actions/account/getAccountInfoByBlockHeight) - Get account at a block height
+- [`getLatestEntity`](/actions/account/getLatestEntity) - Get entity (2.x format, latest state)
+- [`getEntityByBlockHash`](/actions/account/getEntityByBlockHash) - Get entity at a block hash
+- [`getEntityByBlockHeight`](/actions/account/getEntityByBlockHeight) - Get entity at a block height
+
+### Global State Actions
+- [`queryLatestGlobalState`](/actions/state/queryLatestGlobalState) - Query contract storage (latest state)
+- [`queryGlobalStateByBlockHash`](/actions/state/queryGlobalStateByBlockHash) - Query global state at a block hash
+- [`queryGlobalStateByBlockHeight`](/actions/state/queryGlobalStateByBlockHeight) - Query global state at a block height
+- [`queryGlobalStateByStateHash`](/actions/state/queryGlobalStateByStateHash) - Query global state at a state root hash
+- [`getDictionaryItem`](/actions/state/getDictionaryItem) - Read a dictionary entry
+- [`getDictionaryItemByIdentifier`](/actions/state/getDictionaryItemByIdentifier) - Read a dictionary entry by full identifier
+- [`getStateRootHashLatest`](/actions/state/getStateRootHashLatest) - Get the latest state root hash
+- [`getStateRootHashByHash`](/actions/state/getStateRootHashByHash) - Get state root hash at a block hash
+- [`getStateRootHashByHeight`](/actions/state/getStateRootHashByHeight) - Get state root hash at a block height
+
+### Auction & Staking Actions
+- [`getLatestAuctionInfo`](/actions/auction/getLatestAuctionInfo) - Validator bids and delegations (latest)
+- [`getAuctionInfoByHash`](/actions/auction/getAuctionInfoByHash) - Auction info at a block hash
+- [`getAuctionInfoByHeight`](/actions/auction/getAuctionInfoByHeight) - Auction info at a block height
+- [`getEraInfoLatest`](/actions/auction/getEraInfoLatest) - Latest era info (1.x)
+- [`getEraInfoByBlockHash`](/actions/auction/getEraInfoByBlockHash) - Era info at a block hash
+- [`getEraInfoByBlockHeight`](/actions/auction/getEraInfoByBlockHeight) - Era info at a block height
+- [`getEraSummaryLatest`](/actions/auction/getEraSummaryLatest) - Latest era summary (2.x)
+- [`getEraSummaryByHash`](/actions/auction/getEraSummaryByHash) - Era summary at a block hash
+- [`getEraSummaryByHeight`](/actions/auction/getEraSummaryByHeight) - Era summary at a block height
+- [`getValidatorChangesInfo`](/actions/auction/getValidatorChangesInfo) - Validator status changes
+- [`getLatestValidatorReward`](/actions/auction/getLatestValidatorReward) - Latest validator reward
+- [`getValidatorRewardByEraID`](/actions/auction/getValidatorRewardByEraID) - Validator reward for an era
+- [`getValidatorRewardByBlockHash`](/actions/auction/getValidatorRewardByBlockHash) - Validator reward at a block hash
+- [`getValidatorRewardByBlockHeight`](/actions/auction/getValidatorRewardByBlockHeight) - Validator reward at a block height
+- [`getLatestDelegatorReward`](/actions/auction/getLatestDelegatorReward) - Latest delegator reward
+- [`getDelegatorRewardByEraID`](/actions/auction/getDelegatorRewardByEraID) - Delegator reward for an era
+- [`getDelegatorRewardByBlockHash`](/actions/auction/getDelegatorRewardByBlockHash) - Delegator reward at a block hash
+- [`getDelegatorRewardByBlockHeight`](/actions/auction/getDelegatorRewardByBlockHeight) - Delegator reward at a block height
+
+### Node Actions
+- [`getStatus`](/actions/node/getStatus) - Node status and version
+- [`getPeers`](/actions/node/getPeers) - Connected peers
+- [`getChainspec`](/actions/node/getChainspec) - Chainspec configuration
+
+## Raw RPC Access
+
+```ts
+const response = await rpcClient.processCall({
+  id: 1,
+  jsonrpc: '2.0',
+  method: 'chain_get_block',
+  params: { block_identifier: { Height: 1000000 } },
+});
+```

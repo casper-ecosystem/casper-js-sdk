@@ -1,0 +1,37 @@
+# getBlockTransfersByHash
+
+Returns the transfers included in a specific block, identified by hash.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getBlockTransfersByHash('abc123...');
+
+for (const transfer of result.transfers) {
+  const t = transfer.getTransferV2() ?? transfer.getTransferV1();
+  if (t) console.log('Amount:', t.amount.toString(), 'motes');
+}
+```
+
+## Parameters
+
+### hash
+
+- **Type:** `string`
+
+Block hash as a hex string.
+
+## Return Value
+
+`Promise<ChainGetBlockTransfersResult>`
+
+## Related
+
+- [`getLatestBlockTransfers`](/actions/block/getLatestBlockTransfers)
+- [`getBlockTransfersByHeight`](/actions/block/getBlockTransfersByHeight)

@@ -1,0 +1,41 @@
+# getEraSummaryByHeight
+
+Returns the era summary at a specific block height.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getEraSummaryByHeight(1234567);
+
+console.log('Era ID:', result.eraSummary.eraId);
+```
+
+## Parameters
+
+### height
+
+- **Type:** `number`
+
+The block height to retrieve the era summary for.
+
+## Return Value
+
+`Promise<ChainGetEraSummaryResult>`
+
+```ts
+interface ChainGetEraSummaryResult {
+  eraSummary: EraSummary;
+}
+```
+
+## Related
+
+- [`getEraSummaryLatest`](/actions/auction/getEraSummaryLatest)
+- [`getEraSummaryByHash`](/actions/auction/getEraSummaryByHash)
+- [`getEraInfoByBlockHeight`](/actions/auction/getEraInfoByBlockHeight)

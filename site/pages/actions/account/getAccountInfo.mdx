@@ -1,0 +1,91 @@
+# getAccountInfo
+
+Returns account information for an account identifier, optionally scoped to a specific block (Casper 1.x format).
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler, PublicKey, ParamBlockIdentifier, AccountIdentifier } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+// Query at the latest block
+const result = await rpcClient.getAccountInfo(
+  null,
+  { publicKey: publicKey }
+);
+
+console.log(result.account.accountHash().toFormattedStr());
+console.log(result.account.mainPurse);
+```
+
+Pass a `ParamBlockIdentifier` to query at a specific block:
+
+```ts
+const blockId = ParamBlockIdentifier.byHash('abc123...');
+
+const result = await rpcClient.getAccountInfo(
+  blockId,
+  { accountHash: someHash }
+);
+```
+
+## Parameters
+
+### blockIdentifier
+
+- **Type:** `ParamBlockIdentifier | null`
+
+The block to query at. Pass `null` to use the latest block.
+
+### accountIdentifier
+
+- **Type:** `AccountIdentifier`
+
+Identifies the account. One of:
+
+```ts
+interface AccountIdentifier {
+  publicKey?: PublicKey;
+  accountHash?: AccountHash;
+}
+```
+
+## Return Value
+
+`Promise<StateGetAccountInfo>`
+
+```ts
+interface StateGetAccountInfo {
+  account: AccountInfo;
+}
+```
+
+:::warning
+On Casper 2.0 nodes, accounts created before the Casper 2.0 upgrade may have been migrated. This method will throw `RpcError` with `ErrorCode.AccountMigratedToEntity`. Use [`getLatestEntity`](/actions/account/getLatestEntity) as a fallback.
+:::
+
+## Version-Compatible Pattern
+
+```ts
+import { RpcError, ErrorCode } from 'casper-js-sdk';
+
+async function getAccount(publicKey: PublicKey) {
+  try {
+    return await rpcClient.getAccountInfo(null, { publicKey });
+  } catch (err) {
+    if (err instanceof RpcError && err.code === ErrorCode.AccountMigratedToEntity) {
+      return await rpcClient.getLatestEntity({ publicKey: publicKey.toHex() });
+    }
+    throw err;
+  }
+}
+```
+
+## Related
+
+- [`getAccountInfoByBlockHash`](/actions/account/getAccountInfoByBlockHash)
+- [`getAccountInfoByBlockHeight`](/actions/account/getAccountInfoByBlockHeight)
+- [`getLatestEntity`](/actions/account/getLatestEntity)

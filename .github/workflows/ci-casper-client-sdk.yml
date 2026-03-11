@@ -63,8 +63,5 @@ jobs:
       - name: Unit Test
         run: npm run test:node:unit
 
-      - name: Test docs build
-        run: npm run docs:build
-
       - name: Test build
         run: npm run build

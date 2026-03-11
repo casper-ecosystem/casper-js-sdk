@@ -1,0 +1,60 @@
+# queryLatestBalanceDetails
+
+Returns the CSPR balance of an account including a breakdown of holds (locked amounts).
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.queryLatestBalanceDetails({
+  mainPurseUnderPublicKey: publicKey.toHex(),
+});
+
+console.log('Total:', result.totalBalance.toString());
+console.log('Available:', result.availableBalance.toString());
+console.log('Holds:', result.holds.length);
+```
+
+## Parameters
+
+### identifier
+
+- **Type:** `PurseIdentifier`
+
+Same as [`queryLatestBalance`](/actions/balance/queryLatestBalance).
+
+## Return Value
+
+`Promise<QueryBalanceDetailsResult>`
+
+```ts
+interface QueryBalanceDetailsResult {
+  totalBalance: BigNumber;      // total CSPR including holds
+  availableBalance: BigNumber;  // spendable balance
+  holds: BalanceHold[];         // locked amounts
+}
+```
+
+### BalanceHold
+
+```ts
+interface BalanceHold {
+  amount: BigNumber;  // locked amount in motes
+  // additional hold metadata
+}
+```
+
+## Notes
+
+- `availableBalance = totalBalance - sum(holds)`
+- Use `availableBalance` for withdrawal calculations
+- Holds occur from staking, smart contract locks, etc.
+
+## Related
+
+- [`queryLatestBalance`](/actions/balance/queryLatestBalance)

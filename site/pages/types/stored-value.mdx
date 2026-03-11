@@ -1,0 +1,68 @@
+# StoredValue
+
+A discriminated union representing any value that can be stored in global state. The active field indicates which type is present.
+
+## Import
+
+```ts
+import { StoredValue } from 'casper-js-sdk';
+```
+
+## Class
+
+### `StoredValue`
+
+Only one property is set at a time.
+
+| Property | Type | Description |
+|---|---|---|
+| `clValue?` | `CLValue` | A raw CL value |
+| `account?` | `Account` | An account (Casper 1.x) |
+| `contract?` | `Contract` | A smart contract |
+| `ContractWasm?` | `ContractWasm` | Contract WASM bytecode |
+| `contractPackage?` | `ContractPackage` | Contract package with version history |
+| `transfer?` | `Transfer` | A transfer record |
+| `deployInfo?` | `DeployInfo` | Deploy execution info |
+| `eraInfo?` | `EraInfo` | Era seigniorage allocations |
+| `bid?` | `Bid` | Legacy auction bid (1.x) |
+| `withdraw?` | `UnbondingPurse[]` | Withdrawal purses |
+| `unbonding?` | `UnbondingPurse` | Unbonding purse |
+| `addressableEntity?` | `AddressableEntity` | Addressable entity (Casper 2.x) |
+| `bidKind?` | `BidKind` | Polymorphic bid (2.x) |
+| `package?` | `Package` | Contract package (2.x) |
+| `byteCode?` | `SystemByteCode` | System bytecode |
+| `namedKey?` | `NamedKeyValue` | Named key value |
+| `entryPoint?` | `EntryPointValue` | Entry point definition |
+
+## Usage
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+
+const client = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+
+const result = await client.queryLatestGlobalState({
+  key: 'account-hash-abc123...',
+  path: [],
+});
+
+const sv = result.storedValue;
+
+if (sv.account) {
+  console.log('Account hash:', sv.account.accountHash.toHex());
+} else if (sv.addressableEntity) {
+  console.log('Entity kind:', sv.addressableEntity.entityKind);
+} else if (sv.contract) {
+  console.log('Contract entry points:', sv.contract.entryPoints.length);
+} else if (sv.clValue) {
+  console.log('CL value:', sv.clValue.toString());
+}
+```
+
+## See Also
+
+- [`queryLatestGlobalState`](/actions/state/queryLatestGlobalState) - Returns `StoredValue`
+- [`Account`](/types/account) - Account type
+- [`Contract`](/types/contract) - Contract type
+- [`AddressableEntity`](/types/addressable-entity) - 2.x entity type
+- [`EraSummary`](/types/era-summary) - Contains `storedValue` with `eraInfo`

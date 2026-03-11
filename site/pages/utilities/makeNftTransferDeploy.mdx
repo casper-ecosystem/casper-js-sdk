@@ -1,0 +1,69 @@
+# makeNftTransferDeploy
+
+Creates a legacy `Deploy` for transferring an NFT. Supports CEP-47, CEP-78, and CEP-95 standards.
+
+## Import
+
+```ts
+import { makeNftTransferDeploy, NFTTokenStandard } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const deploy = makeNftTransferDeploy({
+  nftStandard: NFTTokenStandard.CEP78,
+  contractPackageHash: 'abc123...',
+  senderPublicKeyHex: privateKey.publicKey.toHex(),
+  recipientPublicKeyHex: recipientPublicKey.toHex(),
+  paymentAmount: '5000000000',  // 5 CSPR gas
+  chainName: 'casper',
+  tokenId: '42',
+});
+
+deploy.sign(privateKey);
+const result = await rpcClient.putDeploy(deploy);
+```
+
+## Parameters
+
+| Parameter | Type | Required | Default |
+|---|---|---|---|
+| `nftStandard` | `NFTTokenStandard` | yes | - |
+| `contractPackageHash` | `string` | yes | - |
+| `senderPublicKeyHex` | `string` | yes | - |
+| `recipientPublicKeyHex` | `string` | yes | - |
+| `paymentAmount` | `string` | yes | - |
+| `tokenId` | `string` | one of | - |
+| `tokenHash` | `string` | one of | - |
+| `chainName` | `string` | no | `'casper'` |
+| `ttl` | `number` | no | `1800000` |
+| `timestamp` | `string` | no | now |
+| `gasPrice` | `number` | no | `1` |
+
+### nftStandard
+
+```ts
+enum NFTTokenStandard {
+  CEP47 = 'CEP47',
+  CEP78 = 'CEP78',
+  CEP95 = 'CEP95',
+}
+```
+
+### tokenId / tokenHash
+
+Provide exactly one. `tokenId` is a numeric string (e.g. `'42'`). `tokenHash` is used for contracts that identify tokens by hash.
+
+## Return Value
+
+`Deploy`
+
+## Notes
+
+- CEP-78 is the primary Casper NFT standard. CEP-47 is the older standard, CEP-95 is an extension.
+- For Casper 2.0 nodes use [`makeNftTransferTransaction`](/utilities/makeNftTransferTransaction) instead.
+
+## Related
+
+- [`makeNftTransferTransaction`](/utilities/makeNftTransferTransaction) - Transaction version for 2.0 nodes

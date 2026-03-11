@@ -1,0 +1,153 @@
+# Block Response
+
+Raw response from `getBlockByHash` / `getLatestBlock` on a Casper 2.x node.
+
+## Raw JSON
+
+```json
+{
+  "api_version": "2.0.0",
+  "block_with_signatures": {
+    "block": {
+      "Version2": {
+        "hash": "b51e5d16944c63eab276e6c5494fd39a454418e3a3f6aa519797882b6c3c0d4b",
+        "header": {
+          "parent_hash": "11040b60955bc9921dfbeff3abf4ee3e1c702865b0183638cd5eba922cd34fe3",
+          "state_root_hash": "cf1d7c8d33ce0fbc6c5211000ade4cc88ab671cb51e8be6e458c774dd82f8ab0",
+          "body_hash": "ab363e6bf68b4190176b53196caa16954d2eb97f3f0dbe004b16f0e6951893cc",
+          "timestamp": "2025-01-27T10:51:36.846Z",
+          "era_id": 14828,
+          "height": 3444515,
+          "protocol_version": "2.0.1",
+          "proposer": "0140afe8f752e5ff100e0189c080bc207e8805b3e5e82f792ec608de2f11f39f6c",
+          "current_gas_price": 1,
+          "last_switch_block_hash": "a265470a3663bbf88ab37d276cd1786c5e0f53f3da5a8fc268dfddedaf890b93",
+          "era_end": null,
+          "random_bit": true,
+          "accumulated_seed": "22cfe5e17ebb2f79af99556e2f134051d8a64e6ff6cb96eac5378f24b8b8a486"
+        },
+        "body": {
+          "transactions": {
+            "3": [
+              { "Deploy": "c102a6fed7f4b9a435ca8584b4d2f704f419d523a1c3f7199799b534df264c9a" }
+            ]
+          },
+          "rewarded_signatures": [[240], [0], [0]]
+        }
+      }
+    },
+    "proofs": [
+      {
+        "public_key": "01032146b0b9de01e26aaec7b0d1769920de94681dbd432c3530bfe591752ded6c",
+        "signature": "0120730fd151cfd40d8b86abfc679c66dd50f49d0c76fe6d68a75d7f18efd05b..."
+      }
+    ]
+  }
+}
+```
+
+## Field reference
+
+### Top level
+
+| Field | Description |
+|---|---|
+| `api_version` | Node API version - `"2.0.0"` for Casper 2.x |
+| `block_with_signatures` | The block and its finality proofs |
+
+### `block.Version2.header`
+
+| Field | Type | Description |
+|---|---|---|
+| `hash` | hex string | Block hash |
+| `parent_hash` | hex string | Previous block hash |
+| `state_root_hash` | hex string | Merkle root after this block's execution |
+| `era_id` | number | Era this block belongs to |
+| `height` | number | Block height (0-indexed) |
+| `protocol_version` | string | e.g. `"2.0.1"` |
+| `timestamp` | ISO 8601 | When this block was proposed |
+| `proposer` | public key hex | Validator that proposed the block |
+| `current_gas_price` | number | Gas price multiplier for this block |
+| `era_end` | object \| null | Non-null only on the **switch block** (the last block of an era); contains equivocators, rewards, and next-era validator weights |
+
+### `block.Version2.body.transactions`
+
+The transactions map uses lane IDs as keys:
+
+| Lane | Meaning |
+|---|---|
+| `"0"` | Mint (native CSPR transfers) |
+| `"1"` | Auction (delegate/undelegate) |
+| `"2"` | Install/upgrade contracts |
+| `"3"` | Legacy Deploy wrapper |
+
+Each entry is either `{ "Deploy": "<hash>" }` or `{ "Version1": "<hash>" }`.
+
+### `proofs`
+
+Array of finality signatures from validators. Each has:
+- `public_key` - validator's public key
+- `signature` - their signature over the block hash
+
+## SDK usage
+
+```ts
+const result = await rpcClient.getBlockByHash(
+  'b51e5d16944c63eab276e6c5494fd39a454418e3a3f6aa519797882b6c3c0d4b'
+);
+
+const block = result.block!;
+
+console.log(block.hash.toHex());           // block hash
+console.log(block.header.height);          // 3444515
+console.log(block.header.eraId);           // 14828
+console.log(block.header.timestamp.toJSON()); // "2025-01-27T10:51:36.846Z"
+console.log(block.header.stateRootHash.toHex()); // state root
+
+// Proposer public key
+console.log(block.header.proposer?.toHex());
+
+// Finality signatures
+result.blockWithSignatures?.proofs.forEach(proof => {
+  console.log(proof.publicKey.toHex());
+});
+```
+
+## 1.x vs 2.x differences
+
+On a Casper 1.x node (`api_version: "1.x.x"`), the response uses a `Version1` block format:
+
+```json
+{
+  "block": {
+    "Version1": {
+      "hash": "...",
+      "header": {
+        "parent_hash": "...",
+        "state_root_hash": "...",
+        "era_id": 1234,
+        "height": 500000,
+        "protocol_version": "1.5.6"
+      },
+      "body": {
+        "deploy_hashes": ["abc123..."],
+        "transfer_hashes": ["def456..."]
+      }
+    }
+  }
+}
+```
+
+Notable differences:
+- Body uses `deploy_hashes` / `transfer_hashes` arrays instead of a lane map
+- No `current_gas_price` field
+- No `last_switch_block_hash`
+
+The SDK's `ChainGetBlockResult` handles both formats transparently.
+
+## Related
+
+- [`getLatestBlock`](/actions/block/getLatestBlock)
+- [`getBlockByHash`](/actions/block/getBlockByHash)
+- [`getBlockByHeight`](/actions/block/getBlockByHeight)
+- [Block type](/types/block)

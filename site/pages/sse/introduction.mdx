@@ -1,0 +1,60 @@
+# SSE Events
+
+The Casper node exposes a Server-Sent Events (SSE) stream on port 9999 for real-time blockchain events.
+
+## Setup
+
+```ts
+import { SseClient, EventName } from 'casper-js-sdk';
+
+const sseClient = new SseClient('http://<Node Address>:9999/events');
+
+sseClient.subscribe(EventName.BlockAddedEventType, (raw) => {
+  const event = raw.parseAsBlockAddedEvent();
+  if (!event.err) {
+    console.log('New block:', event.val.blockAdded);
+  }
+});
+
+sseClient.start(); // opens the connection
+```
+
+## Event Types
+
+| Event | When it fires |
+|---|---|
+| [`BlockAdded`](/sse/block-added) | A new block is finalized |
+| [`TransactionProcessed`](/sse/transaction-processed) | A transaction completes execution |
+| [`TransactionAccepted`](/sse/transaction-accepted) | A transaction is accepted to the mempool |
+| [`TransactionExpired`](/sse/transaction-expired) | A transaction's TTL expires before execution |
+| [`DeployProcessed`](/sse/deploy-processed) | A legacy deploy completes execution |
+| [`FinalitySignature`](/sse/finality-signature) | A validator signs a block final |
+| [`Fault`](/sse/fault) | A validator equivocates |
+| [`Step`](/sse/step) | The end-of-era auction step runs |
+
+## Parsing Pattern
+
+Every event arrives as a `RawEvent`. Parse it to get the typed event:
+
+```ts
+sseClient.subscribe(EventName.TransactionProcessedEventType, (raw) => {
+  // raw.data contains the JSON string
+  const result = raw.parseAsTransactionProcessedEvent();
+
+  if (result.err) {
+    console.error('Parse error:', result.val);
+    return;
+  }
+
+  const event = result.val; // TransactionProcessedEvent
+  const payload = event.transactionProcessed;
+});
+```
+
+All `parseAs*` methods return `Result<T, string>` from `ts-results`. Always check `.err` before accessing `.val`.
+
+## Rules
+
+- Only one handler per event type. Calling `subscribe` twice for the same event returns `Err`.
+- Call `start()` after all `subscribe()` calls to avoid missing early events.
+- EventSource reconnects automatically on connection loss.

@@ -1,0 +1,44 @@
+# TransactionAccepted
+
+Fires when a transaction is accepted into the node's mempool (before execution).
+
+## Import
+
+```ts
+import { SseClient, EventName } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+sseClient.subscribe(EventName.TransactionAcceptedEventType, (raw) => {
+  const result = raw.parseAsTransactionAcceptedEvent();
+  if (result.err) return;
+
+  const tx = result.val.transactionAccepted;
+
+  const v1Hash = tx.getTransactionV1()?.hash.toHex();
+  console.log('Accepted transaction hash:', v1Hash);
+});
+```
+
+## Payload
+
+The payload wraps either a `TransactionV1` or a legacy `Deploy`.
+
+```ts
+interface TransactionAcceptedPayload {
+  getTransactionV1(): TransactionV1 | undefined;
+  getDeploy(): Deploy | undefined;
+}
+```
+
+## Notes
+
+- This event fires before execution. A `TransactionAccepted` does **not** mean the transaction succeeded.
+- Listen for [`TransactionProcessed`](/sse/transaction-processed) for the execution outcome.
+
+## Related
+
+- [`TransactionProcessed`](/sse/transaction-processed)
+- [`TransactionExpired`](/sse/transaction-expired)

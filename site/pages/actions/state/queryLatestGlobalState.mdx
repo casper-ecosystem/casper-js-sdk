@@ -1,0 +1,77 @@
+# queryLatestGlobalState
+
+Queries a value from global state at the latest block.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler, CLValueParser } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+// Query a contract's named key path
+const result = await rpcClient.queryLatestGlobalState(
+  'hash-abc123...',   // contract hash or account hash key
+  ['total_supply']    // storage path
+);
+
+const clValue = CLValueParser.fromJSON(result.storedValue.clValue);
+console.log(clValue.ui256?.val.toString());
+```
+
+## Parameters
+
+### key
+
+- **Type:** `string`
+
+The global state key to query. Formats:
+- `hash-{hex}` - contract or package hash
+- `account-hash-{hex}` - account
+- `uref-{hex}-{octal}` - URef
+
+### path
+
+- **Type:** `string[]`
+
+Storage path to traverse from the key. Use `[]` for the root value.
+
+## Return Value
+
+`Promise<QueryGlobalStateResult>`
+
+```ts
+interface QueryGlobalStateResult {
+  storedValue: StoredValue;
+  blockHeader: BlockHeader;
+}
+```
+
+## Examples
+
+### Read a counter
+
+```ts
+const result = await rpcClient.queryLatestGlobalState(
+  'hash-contract-abc...',
+  ['counter']
+);
+const counter = CLValueParser.fromJSON(result.storedValue.clValue);
+console.log(counter.ui32?.val);
+```
+
+### Read nested path
+
+```ts
+const result = await rpcClient.queryLatestGlobalState(
+  'account-hash-abc...',
+  ['cep18_contract_hash', 'balances']
+);
+```
+
+## Related
+
+- [`getDictionaryItem`](/actions/state/getDictionaryItem)
+- [`getStateRootHashLatest`](/actions/state/getStateRootHashLatest)

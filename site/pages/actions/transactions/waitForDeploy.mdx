@@ -1,0 +1,51 @@
+# waitForDeploy
+
+Polls the node until a legacy deploy is confirmed on-chain (i.e., has an execution result), or throws if the timeout is reached.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const deployResult = await rpcClient.putDeploy(deploy);
+
+const confirmed = await rpcClient.waitForDeploy(deploy);
+
+console.log('Execution result:', confirmed.executionInfo?.executionResult);
+```
+
+## Parameters
+
+### deploy
+
+- **Type:** `Deploy`
+
+The deploy instance to wait for. Its `hash` property is used to poll for confirmation.
+
+### timeout
+
+- **Type:** `number`
+- **Default:** `60000`
+
+Maximum time in milliseconds to wait before throwing a timeout error.
+
+## Return Value
+
+`Promise<InfoGetDeployResult>`
+
+```ts
+interface InfoGetDeployResult {
+  deploy: Deploy;
+  executionInfo?: ExecutionInfo;
+}
+```
+
+## Related
+
+- [`putDeploy`](/actions/transactions/putDeploy)
+- [`getDeploy`](/actions/transactions/getDeploy)
+- [`waitForTransaction`](/actions/transactions/waitForTransaction)

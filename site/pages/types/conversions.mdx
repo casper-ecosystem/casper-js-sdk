@@ -1,0 +1,65 @@
+# Conversions
+
+Utility class for encoding/decoding between Base16, Base64, and hex, plus CSPR ↔ motes conversion.
+
+## Import
+
+```ts
+import { Conversions } from 'casper-js-sdk';
+```
+
+## Class
+
+### `Conversions`
+
+All methods are static.
+
+### Encoding
+
+```ts
+Conversions.encodeBase16(bytes: Uint8Array): string
+Conversions.decodeBase16(base16String: string): Uint8Array
+
+Conversions.encodeBase64(bytes: Uint8Array): string
+Conversions.decodeBase64(base64String: string): Uint8Array
+
+Conversions.base64to16(base64: string): string  // Base64 → Base16
+```
+
+### CSPR ↔ Motes
+
+1 CSPR = 10⁹ motes (1,000,000,000).
+
+```ts
+Conversions.csprToMotes(cspr: string | number): BigNumber
+Conversions.motesToCSPR(motes: BigNumberish): string
+```
+
+## Usage
+
+```ts
+import { Conversions } from 'casper-js-sdk';
+
+// Hex encoding
+const hex = Conversions.encodeBase16(new Uint8Array([1, 2, 3]));
+// '010203'
+
+const bytes = Conversions.decodeBase16('010203');
+// Uint8Array [1, 2, 3]
+
+// Base64
+const b64 = Conversions.encodeBase64(new Uint8Array([1, 2, 3]));
+const back = Conversions.decodeBase64(b64);
+
+// CSPR ↔ Motes
+const motes = Conversions.csprToMotes('2.5');
+// BigNumber { value: '2500000000' }
+
+const cspr = Conversions.motesToCSPR('2500000000');
+// '2.5'
+```
+
+## See Also
+
+- [`ByteConverters`](/types/byte-converters) - Low-level byte serialization
+- [`HexBytes`](/types/hex-bytes) - Bytes wrapper with `.toHex()`

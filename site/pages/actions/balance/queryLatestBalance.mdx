@@ -1,0 +1,75 @@
+# queryLatestBalance
+
+Returns the CSPR balance of an account or purse at the latest block.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.queryLatestBalance({
+  mainPurseUnderPublicKey: publicKey.toHex(),
+});
+
+console.log(result.balance.toString()); // in motes
+// 1 CSPR = 1,000,000,000 motes
+```
+
+## Parameters
+
+### identifier
+
+- **Type:** `PurseIdentifier`
+
+Specifies which balance to query. Exactly one field must be set:
+
+```ts
+type PurseIdentifier =
+  | { mainPurseUnderPublicKey: string }     // public key hex
+  | { mainPurseUnderAccountHash: string }   // 'account-hash-abc...'
+  | { mainPurseUnderEntityAddr: string }    // 'entity-account-abc...'
+  | { purseURef: string }                   // 'uref-abc...-007'
+```
+
+#### By public key (most common)
+
+```ts
+await rpcClient.queryLatestBalance({
+  mainPurseUnderPublicKey: '01a8b1...',
+});
+```
+
+#### By account hash
+
+```ts
+await rpcClient.queryLatestBalance({
+  mainPurseUnderAccountHash: 'account-hash-abc123...',
+});
+```
+
+#### By URef
+
+```ts
+await rpcClient.queryLatestBalance({
+  purseURef: 'uref-abc123...-007',
+});
+```
+
+## Return Value
+
+`Promise<QueryBalanceResult>`
+
+```ts
+interface QueryBalanceResult {
+  balance: BigNumber; // in motes
+}
+```
+
+## Related
+
+- [`queryLatestBalanceDetails`](/actions/balance/queryLatestBalanceDetails) - includes locked balance info
+- [`queryBalanceByBlockHash`](/actions/balance/queryBalanceByBlockHash) - balance at a specific block

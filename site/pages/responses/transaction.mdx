@@ -1,0 +1,186 @@
+# Transaction Result Response
+
+Raw response from `getTransactionByTransactionHash` on a Casper 2.x node (V1-compatible format, wrapping a legacy Deploy).
+
+## Raw JSON
+
+```json
+{
+  "api_version": "1.5.6",
+  "deploy": {
+    "hash": "84ad4a6aa15ac60810c854f8463fa83f1fecd1f4ec51088cd22baf7da47bbdf5",
+    "header": {
+      "account": "02033300ef2194d8cc8a2074130d0c58f2b10faae9cec3adc25d2a3e96c806ed1f54",
+      "timestamp": "2024-06-05T14:01:32.621Z",
+      "ttl": "30m",
+      "gas_price": 1,
+      "chain_name": "casper",
+      "body_hash": "86f834702123baeddce7d3d03952ad549ceee8cc4a951a85d692eca1880bfcbd",
+      "dependencies": []
+    },
+    "payment": {
+      "ModuleBytes": {
+        "module_bytes": "",
+        "args": [
+          ["amount", { "cl_type": "U512", "bytes": "06001f5b448d0e", "parsed": "15999900000000" }]
+        ]
+      }
+    },
+    "session": {
+      "Transfer": {
+        "args": [
+          ["amount", { "cl_type": "U512", "bytes": "06001f5b448d0e", "parsed": "15999900000000" }],
+          ["target", { "cl_type": { "ByteArray": 32 }, "bytes": "fbab6b8a...", "parsed": "fbab6b8a..." }],
+          ["id",     { "cl_type": { "Option": "U64" }, "bytes": "00", "parsed": null }]
+        ]
+      }
+    },
+    "approvals": [
+      {
+        "signer": "02033300ef2194d8cc8a2074130d0c58f2b10faae9cec3adc25d2a3e96c806ed1f54",
+        "signature": "02da42dda61957ddb8633ec8bc72839d00e579e40b513ece0afd15fd4ee7cb43..."
+      }
+    ]
+  },
+  "execution_results": [
+    {
+      "block_hash": "15e48342b9ae88d6c6fed97144a3df1fabc1b9ffa90af18674b6c3f085ef5ebc",
+      "result": {
+        "Success": {
+          "cost": "100000000",
+          "transfers": [
+            "transfer-23df36827bab18568e8077bf1151ed29497456e6bb0896371e9c1a244bcb30c9"
+          ],
+          "effect": {
+            "operations": [],
+            "transforms": [
+              {
+                "key": "balance-2feb39e0671116d70f2df80aeeb78fac604194ab2d160566ca75e319a09edd6a",
+                "transform": { "WriteCLValue": { "cl_type": "U512", "bytes": "06001f5b448d0e", "parsed": "15999900000000" } }
+              },
+              {
+                "key": "transfer-23df36827bab18568e8077bf1151ed29497456e6bb0896371e9c1a244bcb30c9",
+                "transform": {
+                  "WriteTransfer": {
+                    "deploy_hash": "84ad4a6aa15ac60810c854f8463fa83f1fecd1f4ec51088cd22baf7da47bbdf5",
+                    "from": "account-hash-a106cf121145d7cc62835df18dea2991395c87a4c67c83f28b4d63847a71653e",
+                    "to":   "account-hash-fbab6b8ac6befe3d2f2f4c0cc6497796a2a661d77dbf19e2cfe789e3c08b86d9",
+                    "source": "uref-2feb39e0671116d70f2df80aeeb78fac604194ab2d160566ca75e319a09edd6a-007",
+                    "target": "uref-5d533f1316b9ac1173e47e946f1f523a66abee451d05b13690856228706d3f03-004",
+                    "amount": "15999900000000",
+                    "gas": "0",
+                    "id": null
+                  }
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}
+```
+
+## Field reference
+
+### Header fields
+
+| Field | Description |
+|---|---|
+| `header.account` | Sender's public key (prefixed `01` or `02`) |
+| `header.timestamp` | ISO 8601 submission time |
+| `header.ttl` | Time-to-live string: `"30m"`, `"1h"`, `"1day"` |
+| `header.chain_name` | `"casper"` (mainnet) or `"casper-test"` |
+
+### Session types
+
+The `session` field is a tagged union indicating what the deploy does:
+
+| Tag | Meaning |
+|---|---|
+| `Transfer` | Native CSPR transfer |
+| `StoredContractByHash` | Call a contract by hash |
+| `StoredContractByName` | Call a named contract |
+| `ModuleBytes` | Deploy/run raw Wasm |
+| `StoredVersionedContractByHash` | Call a versioned contract |
+
+### CLValue args encoding
+
+Each argument in `args` is a 2-element array `[name, value]` where the value has:
+- `cl_type` - the CL type (`"U512"`, `"Key"`, `{ "Option": "U64" }`, etc.)
+- `bytes` - hex-encoded byte representation
+- `parsed` - human-readable parsed value (string for large integers)
+
+:::note
+Amounts like `"15999900000000"` are **motes** (1 CSPR = 1,000,000,000 motes). This value is ~16,000 CSPR.
+:::
+
+### Execution result
+
+The `execution_results` array contains one entry per block that included this deploy (usually one).
+
+| Field | Description |
+|---|---|
+| `block_hash` | Block where this was executed |
+| `result.Success.cost` | Total cost in motes (`gas_consumed × gas_price`) |
+| `result.Success.transfers` | Transfer record keys created |
+| `result.Failure.error_message` | Error if execution failed |
+
+:::note
+**Gas vs cost:** `cost` is measured in motes (payment currency). Gas is the internal execution unit - the runtime counts opcodes as gas, then multiplies by the block's `current_gas_price` to arrive at the mote cost. On Casper 1.x the `gas_price` was always `1`, so gas and mote cost were equal.
+:::
+
+### Transforms
+
+The `effect.transforms` array records every state change:
+
+| Transform type | Meaning |
+|---|---|
+| `"Identity"` | Value was read (no change) |
+| `{ "WriteCLValue": {...} }` | Balance or storage written |
+| `{ "AddUInt512": "..." }` | Amount added to a purse |
+| `{ "WriteTransfer": {...} }` | Transfer record created |
+| `{ "WriteDeployInfo": {...} }` | Deploy metadata written |
+
+### WriteTransfer fields
+
+| Field | Description |
+|---|---|
+| `from` | Sender account hash |
+| `to` | Recipient account hash |
+| `source` | Sender's purse URef |
+| `target` | Recipient's purse URef |
+| `amount` | Transferred amount in motes |
+| `deploy_hash` | Hash of the deploy that caused this transfer |
+| `id` | Optional memo ID |
+
+## SDK usage
+
+```ts
+const result = await rpcClient.getTransactionByDeployHash(
+  '84ad4a6aa15ac60810c854f8463fa83f1fecd1f4ec51088cd22baf7da47bbdf5'
+);
+
+const exec = result.executionInfo?.executionResult;
+
+if (!exec?.errorMessage) {
+  console.log('Success, gas used:', exec?.consumed);
+
+  // Access transfer details from transforms
+  const transfers = exec?.transfers ?? [];
+  transfers.forEach(t => console.log('Transfer key:', t));
+} else {
+  console.log('Failed:', exec.errorMessage);
+}
+
+// Initiator public key
+console.log(result.executionInfo?.executionResult.initiator.publicKey?.toHex());
+```
+
+## Related
+
+- [`getTransactionByDeployHash`](/actions/transactions/getTransactionByDeployHash)
+- [`getTransactionByTransactionHash`](/actions/transactions/getTransactionByTransactionHash)
+- [`waitForTransaction`](/actions/transactions/waitForTransaction)
+- [ExecutionResult type](/types/execution-result)

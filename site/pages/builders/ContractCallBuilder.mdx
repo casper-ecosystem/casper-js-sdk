@@ -1,0 +1,82 @@
+# ContractCallBuilder
+
+Builds a transaction that calls an entry point on a deployed smart contract.
+
+## Import
+
+```ts
+import { ContractCallBuilder, Args, CLValue, PublicKey } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const args = Args.fromMap({
+  amount: CLValue.newCLUInt256('1000000000'),
+  recipient: CLValue.newCLPublicKey(recipientPublicKey),
+});
+
+const transaction = new ContractCallBuilder()
+  .from(senderPublicKey)
+  .byHash('hash-abc123...')     // contract hash
+  .entryPoint('transfer')
+  .runtimeArgs(args)
+  .chainName('casper')
+  .payment(3_000_000_000)
+  .build();
+
+transaction.sign(privateKey);
+const result = await rpcClient.putTransaction(transaction);
+```
+
+## Methods
+
+### .from(publicKey)
+
+- **Type:** `PublicKey` - required
+
+### Contract targeting (choose one)
+
+```ts
+.byHash(contractHash: string)
+.byPackageHash(packageHash: string, version?: number)
+.byName(contractName: string)
+.byPackageName(packageName: string, version?: number)
+```
+
+| Method | Description |
+|---|---|
+| `.byHash(hash)` | Call a specific contract by its hash |
+| `.byPackageHash(hash, version?)` | Call latest (or specific version) in a package |
+| `.byName(name)` | Call by named key in the caller's account |
+| `.byPackageName(name, version?)` | Call by named key pointing to a package |
+
+### .entryPoint(name)
+
+- **Type:** `string` - required
+
+The contract entry point to call.
+
+### .runtimeArgs(args)
+
+- **Type:** `Args` - optional
+
+Arguments to pass to the entry point.
+
+### .chainName(name)
+
+- **Type:** `string` - required
+
+### .payment(motes)
+
+- **Type:** `number` - optional
+
+## Return Value
+
+`Transaction`
+
+## Related
+
+- [`SessionBuilder`](/builders/SessionBuilder)
+- [`Args`](/clvalues/Args)
+- [`CLValue`](/clvalues/introduction)

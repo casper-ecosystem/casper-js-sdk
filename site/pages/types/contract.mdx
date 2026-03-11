@@ -1,0 +1,53 @@
+# Contract
+
+Represents a smart contract stored on-chain, including its entry points, named keys, and package/wasm hashes.
+
+## Import
+
+```ts
+import { Contract } from 'casper-js-sdk';
+```
+
+## Class
+
+### `Contract`
+
+| Property | Type | Description |
+|---|---|---|
+| `contractPackageHash` | `ContractPackageHash` | Hash of the contract's package |
+| `contractWasmHash` | `ContractHash` | Hash of the contract's WASM |
+| `entryPoints` | `NamedEntryPoint[]` | Entry points defined by this contract |
+| `namedKeys` | `NamedKey[]` | Named keys stored in this contract's context |
+| `protocolVersion` | `string` | Protocol version this contract was deployed with |
+
+## Usage
+
+```ts
+// Contract is typically obtained from StoredValue
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+
+const client = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+
+const result = await client.queryLatestGlobalState({
+  key: 'hash-abc123...',
+  path: [],
+});
+
+if (result.storedValue.contract) {
+  const contract = result.storedValue.contract;
+  console.log('Package:', contract.contractPackageHash);
+  console.log('WASM hash:', contract.contractWasmHash);
+  console.log('Protocol:', contract.protocolVersion);
+
+  for (const ep of contract.entryPoints) {
+    console.log('Entry point:', ep.name);
+  }
+}
+```
+
+## See Also
+
+- [`ContractPackage`](/types/contract-package) - Version and access control for a contract
+- [`ContractWasm`](/types/contract-wasm) - WASM bytecode container
+- [`EntryPoint`](/types/entry-point) - Entry point definitions
+- [`StoredValue`](/types/stored-value) - Union type containing `Contract`

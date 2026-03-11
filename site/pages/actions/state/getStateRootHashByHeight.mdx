@@ -1,0 +1,41 @@
+# getStateRootHashByHeight
+
+Returns the state root hash for a specific block height.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getStateRootHashByHeight(1234567);
+
+console.log(result.stateRootHash.toHex());
+```
+
+## Parameters
+
+### height
+
+- **Type:** `number`
+
+The block height to retrieve the state root hash for.
+
+## Return Value
+
+`Promise<ChainGetStateRootHashResult>`
+
+```ts
+interface ChainGetStateRootHashResult {
+  stateRootHash: Hash;
+}
+```
+
+## Related
+
+- [`getStateRootHashLatest`](/actions/state/getStateRootHashLatest)
+- [`getStateRootHashByHash`](/actions/state/getStateRootHashByHash)
+- [`queryGlobalStateByStateHash`](/actions/state/queryGlobalStateByStateHash)

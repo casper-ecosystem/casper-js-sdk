@@ -1,0 +1,61 @@
+# BlockProposer
+
+Represents the entity that proposed a block. Can be the system itself or a validator identified by public key.
+
+## Import
+
+```ts
+import { Proposer } from 'casper-js-sdk';
+```
+
+## Class
+
+### `Proposer`
+
+| Property | Type | Description |
+|---|---|---|
+| `isSystem` | `boolean` | Whether this is a system-level proposer |
+| `publicKey?` | `PublicKey` | Validator's public key (absent for system proposers) |
+
+#### Constructor
+
+```ts
+new Proposer(isSystem?: boolean, publicKey?: PublicKey)
+```
+
+#### Methods
+
+```ts
+proposer.isSystemProposer(): boolean
+proposer.getPublicKey(): PublicKey            // throws if system
+proposer.getPublicKeyOptional(): PublicKey | undefined
+proposer.toJSON(): string
+```
+
+#### Static Methods
+
+```ts
+Proposer.fromString(src: string): Proposer
+Proposer.fromJSON(json: string): Proposer
+```
+
+## Usage
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+
+const client = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+const { block } = await client.getLatestBlock();
+
+const proposer = block.proposer;
+
+if (proposer.isSystemProposer()) {
+  console.log('System block');
+} else {
+  console.log('Proposed by:', proposer.getPublicKey().toHex());
+}
+```
+
+## See Also
+
+- [`Block`](/types/block) - Block type that contains a `Proposer`

@@ -1,0 +1,145 @@
+# ExecutableDeployItem
+
+The polymorphic item type used for the `payment` and `session` fields of a Casper 1.x `Deploy`.
+
+## Import
+
+```ts
+import {
+  ExecutableDeployItem,
+  ModuleBytes,
+  StoredContractByHash,
+  StoredContractByName,
+  StoredVersionedContractByHash,
+  StoredVersionedContractByName,
+  TransferDeployItem,
+} from 'casper-js-sdk';
+```
+
+## Classes
+
+### `ExecutableDeployItem`
+
+A discriminated union. Exactly one variant is set.
+
+| Property | Type | Description |
+|---|---|---|
+| `moduleBytes?` | `ModuleBytes` | Inline WASM module |
+| `storedContractByHash?` | `StoredContractByHash` | Contract call by hash |
+| `storedContractByName?` | `StoredContractByName` | Contract call by named key |
+| `storedVersionedContractByHash?` | `StoredVersionedContractByHash` | Versioned contract by hash |
+| `storedVersionedContractByName?` | `StoredVersionedContractByName` | Versioned contract by name |
+| `transfer?` | `TransferDeployItem` | Native transfer |
+
+#### Methods
+
+```ts
+item.getArgByName(name: string): CLValue | undefined
+item.setArg(name: string, value: CLValue): void
+item.getArgs(): Args
+item.bytes(): Uint8Array
+item.isTransfer(): boolean
+item.isStoredVersionContractByHash(): boolean
+item.asModuleBytes(): ModuleBytes | undefined
+```
+
+#### Static Methods
+
+```ts
+// Standard payment item for a fixed mote amount
+ExecutableDeployItem.standardPayment(amount: BigNumberish): ExecutableDeployItem
+
+// Inline WASM module
+ExecutableDeployItem.newModuleBytes(
+  moduleBytes: Uint8Array,
+  args: Args
+): ExecutableDeployItem
+```
+
+### `ModuleBytes`
+
+| Property | Type | Description |
+|---|---|---|
+| `moduleBytes` | `Uint8Array` | Raw WASM bytes |
+| `args` | `Args` | Arguments passed to the WASM |
+
+### `StoredContractByHash`
+
+| Property | Type | Description |
+|---|---|---|
+| `hash` | `ContractHash` | Contract hash |
+| `entryPoint` | `string` | Entry point name |
+| `args` | `Args` | Arguments |
+
+### `StoredContractByName`
+
+| Property | Type | Description |
+|---|---|---|
+| `name` | `string` | Named key pointing to the contract |
+| `entryPoint` | `string` | Entry point name |
+| `args` | `Args` | Arguments |
+
+### `StoredVersionedContractByHash`
+
+| Property | Type | Description |
+|---|---|---|
+| `hash` | `ContractHash` | Package hash |
+| `entryPoint` | `string` | Entry point name |
+| `args` | `Args` | Arguments |
+| `version?` | `number` | Optional version (latest if omitted) |
+
+### `StoredVersionedContractByName`
+
+| Property | Type | Description |
+|---|---|---|
+| `name` | `string` | Named key pointing to the package |
+| `entryPoint` | `string` | Entry point name |
+| `args` | `Args` | Arguments |
+| `version?` | `number` | Optional version |
+
+### `TransferDeployItem`
+
+| Property | Type | Description |
+|---|---|---|
+| `args` | `Args` | Transfer arguments |
+
+#### Static Methods
+
+```ts
+TransferDeployItem.newTransfer(
+  amount: BigNumberish,
+  target: PublicKey | AccountHash | URef,
+  sourcePurse?: URef,
+  id?: number
+): TransferDeployItem
+```
+
+## Usage
+
+```ts
+import { ExecutableDeployItem, Args, newCLU512 } from 'casper-js-sdk';
+
+// Standard payment
+const payment = ExecutableDeployItem.standardPayment('100000000');
+
+// Call a stored contract
+const session = new ExecutableDeployItem();
+session.storedContractByHash = {
+  hash: 'abc123...',
+  entryPoint: 'transfer',
+  args: Args.fromMap({
+    amount: newCLU512('1000000000'),
+  }),
+};
+
+// Inline WASM
+const wasmSession = ExecutableDeployItem.newModuleBytes(
+  wasmBytes,
+  Args.fromMap({ key: newCLU512('1') })
+);
+```
+
+## See Also
+
+- [`Deploy`](/types/deploy) - Contains `payment` and `session` as `ExecutableDeployItem`
+- [`Args`](/types/args) - Argument map

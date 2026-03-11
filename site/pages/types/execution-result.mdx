@@ -1,0 +1,113 @@
+# ExecutionResult
+
+The outcome of executing a deploy or transaction, including gas consumed, error messages, transfers, and state effects.
+
+## Import
+
+```ts
+import { ExecutionResult, ExecutionResultV1, ExecutionResultV2, Effect, Operation } from 'casper-js-sdk';
+```
+
+## Classes
+
+### `ExecutionResult`
+
+Unified execution result normalizing V1 and V2 formats.
+
+| Property | Type | Description |
+|---|---|---|
+| `initiator?` | `InitiatorAddr` | Who initiated the transaction |
+| `errorMessage?` | `string` | Error message if execution failed |
+| `limit?` | `number` | Gas limit (maximum execution units allowed) |
+| `consumed?` | `number` | Gas consumed (execution units used) |
+| `cost?` | `number` | Total cost in motes (`consumed × gas_price`) |
+| `transfers?` | `Transfer[]` | Transfers executed |
+| `effects?` | `Transform[]` | State changes |
+
+#### Static Methods
+
+```ts
+ExecutionResult.fromJSON(data: any): ExecutionResult
+ExecutionResult.fromV1(v1: ExecutionResultV1): ExecutionResult
+ExecutionResult.toJSON(result: ExecutionResult): any
+```
+
+### `ExecutionResultV1`
+
+Casper 1.x execution result format.
+
+| Property | Type | Description |
+|---|---|---|
+| `success?` | `ExecutionResultStatusData` | Present if execution succeeded |
+| `failure?` | `ExecutionResultStatusData` | Present if execution failed |
+
+### `ExecutionResultStatusData`
+
+Execution result detail for V1.
+
+| Property | Type | Description |
+|---|---|---|
+| `effect` | `Effect` | State changes |
+| `transfers` | `TransferHash[]` | Transfer hashes |
+| `cost` | `number` | Total cost in motes (`gas_used × gas_price`) |
+| `errorMessage` | `string` | Error message (if failure) |
+
+### `ExecutionResultV2`
+
+Casper 2.x execution result format.
+
+| Property | Type | Description |
+|---|---|---|
+| `initiator` | `InitiatorAddr` | Initiator |
+| `errorMessage?` | `string` | Error message |
+| `limit` | `number` | Gas limit (maximum execution units allowed) |
+| `consumed` | `number` | Gas consumed (execution units used) |
+| `cost` | `number` | Total cost in motes (`consumed × gas_price`) |
+| `transfers` | `Transfer[]` | Transfers |
+| `effects` | `Transform[]` | State transformations |
+
+### `Effect`
+
+Collection of state operations and transforms (V1 only).
+
+| Property | Type | Description |
+|---|---|---|
+| `operations` | `Operation[]` | Low-level key operations |
+| `transforms` | `TransformKey[]` | State transforms |
+
+### `Operation`
+
+A single key operation within an effect.
+
+| Property | Type | Description |
+|---|---|---|
+| `key` | `Key` | The global state key |
+| `kind` | `string` | Operation kind (Read, Write, Add, NoOp) |
+
+## Usage
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+
+const client = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+
+const { transaction } = await client.getTransactionByTransactionHash({
+  transactionHash: { transactionV1: 'abc...' },
+});
+
+const result = transaction.executionInfo?.executionResult;
+if (result) {
+  if (result.errorMessage) {
+    console.log('Failed:', result.errorMessage);
+  } else {
+    console.log('Gas used:', result.consumed);
+    console.log('Transfers:', result.transfers?.length);
+  }
+}
+```
+
+## See Also
+
+- [`Transform`](/types/transform) - State transformation type
+- [`Transfer`](/types/transfer) - Transfer type
+- [`getTransactionByTransactionHash`](/actions/transactions/getTransactionByTransactionHash) - Includes execution result

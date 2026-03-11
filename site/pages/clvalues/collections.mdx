@@ -1,0 +1,112 @@
+# Collection Types
+
+CLValue factories for List, Map, Option, Result, and Tuple types.
+
+## Import
+
+```ts
+import { CLValue, CLType } from 'casper-js-sdk';
+```
+
+## CLValue.newCLList
+
+Creates an empty list with a specified element type.
+
+```ts
+CLValue.newCLList(innerType: CLType): CLValue
+```
+
+```ts
+const list = CLValue.newCLList(CLType.U256);
+list.children.push(CLValue.newCLUInt256('100'));
+list.children.push(CLValue.newCLUInt256('200'));
+```
+
+---
+
+## CLValue.newCLMap
+
+Creates an empty map with specified key and value types.
+
+```ts
+CLValue.newCLMap(keyType: CLType, valType: CLType): CLValue
+```
+
+```ts
+const map = CLValue.newCLMap(CLType.String, CLType.U256);
+// Add entries via children array as alternating [key, value, key, value] pairs
+```
+
+---
+
+## CLValue.newCLOption
+
+Creates an optional value.
+
+```ts
+CLValue.newCLOption(inner: CLValue | null, clType?: CLType): CLValue
+```
+
+```ts
+// Some value
+const some = CLValue.newCLOption(CLValue.newCLUInt256('100'));
+
+// None value - must specify the inner type
+const none = CLValue.newCLOption(null, CLType.U256);
+```
+
+---
+
+## CLValue.newCLResult
+
+Creates a Result (Ok/Err) value.
+
+```ts
+CLValue.newCLResult(
+  innerOk: CLType,
+  innerErr: CLType,
+  value: CLValue,
+  isSuccess: boolean
+): CLValue
+```
+
+```ts
+// Ok variant
+const ok = CLValue.newCLResult(
+  CLType.U256,
+  CLType.String,
+  CLValue.newCLUInt256('100'),
+  true
+);
+
+// Err variant
+const err = CLValue.newCLResult(
+  CLType.U256,
+  CLType.String,
+  CLValue.newCLString('insufficient balance'),
+  false
+);
+```
+
+---
+
+## CLValue.newCLTuple1 / Tuple2 / Tuple3
+
+```ts
+CLValue.newCLTuple1(val: CLValue): CLValue
+CLValue.newCLTuple2(val1: CLValue, val2: CLValue): CLValue
+CLValue.newCLTuple3(val1: CLValue, val2: CLValue, val3: CLValue): CLValue
+```
+
+```ts
+const pair = CLValue.newCLTuple2(
+  CLValue.newCLString('key'),
+  CLValue.newCLUInt256('1000')
+);
+
+const triple = CLValue.newCLTuple3(
+  CLValue.newCLUint8(1),
+  CLValue.newCLString('name'),
+  CLValue.newCLValueBool(true)
+);
+```

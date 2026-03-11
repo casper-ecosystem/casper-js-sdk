@@ -1,0 +1,57 @@
+# getEntityByBlockHash
+
+Returns an addressable entity (account or smart contract) at a specific block, identified by block hash. This is the Casper 2.x equivalent of `getAccountInfo`.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getEntityByBlockHash(
+  { publicKey: publicKey.toHex() },
+  'abc123...'
+);
+
+console.log(result.entity);
+```
+
+## Parameters
+
+### entityIdentifier
+
+- **Type:** `EntityIdentifier`
+
+Identifies the entity to look up. One of:
+
+```ts
+type EntityIdentifier =
+  | { publicKey: string }         // public key hex
+  | { accountHash: string }       // 'account-hash-abc...'
+  | { entityAddr: string }        // 'entity-account-abc...'
+```
+
+### hash
+
+- **Type:** `string`
+
+Block hash as a hex string.
+
+## Return Value
+
+`Promise<StateGetEntityResult>`
+
+```ts
+interface StateGetEntityResult {
+  entity: AddressableEntity | LegacyAccount;
+}
+```
+
+## Related
+
+- [`getLatestEntity`](/actions/account/getLatestEntity)
+- [`getEntityByBlockHeight`](/actions/account/getEntityByBlockHeight)
+- [`getAccountInfoByBlockHash`](/actions/account/getAccountInfoByBlockHash)

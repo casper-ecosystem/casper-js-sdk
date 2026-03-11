@@ -1,0 +1,47 @@
+# getEraInfoByBlockHeight
+
+Returns the era info at a specific block height.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getEraInfoByBlockHeight(1234567);
+
+if (result.eraSummary) {
+  console.log('Era ID:', result.eraSummary.eraId);
+}
+```
+
+## Parameters
+
+### height
+
+- **Type:** `number`
+
+The block height to query era info at.
+
+## Return Value
+
+`Promise<ChainGetEraInfoResult>`
+
+```ts
+interface ChainGetEraInfoResult {
+  eraSummary?: EraSummary;
+}
+```
+
+:::note
+`eraSummary` is only present in the result if the queried block is a switch block (i.e., the last block of an era).
+:::
+
+## Related
+
+- [`getEraInfoLatest`](/actions/auction/getEraInfoLatest)
+- [`getEraInfoByBlockHash`](/actions/auction/getEraInfoByBlockHash)
+- [`getEraSummaryByHeight`](/actions/auction/getEraSummaryByHeight)

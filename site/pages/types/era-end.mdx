@@ -1,0 +1,83 @@
+# EraEnd
+
+Data attached to a **switch block** - the last finalized block of an era - marking the end of that era. Contains equivocators, inactive validators, seigniorage rewards, and the validator weights for the next era. Only present on switch blocks; `block.eraEnd` is `null` for all other blocks.
+
+## Import
+
+```ts
+import { EraEnd, EraReport, EraReward, EraEndV1, EraEndV2 } from 'casper-js-sdk';
+```
+
+## Classes
+
+### `EraEnd`
+
+Unified era-end data, normalizing V1 and V2 formats.
+
+| Property | Type | Description |
+|---|---|---|
+| `equivocators` | `PublicKey[]` | Validators caught double-signing |
+| `inactiveValidators` | `PublicKey[]` | Validators that were inactive this era |
+| `nextEraValidatorWeights` | `ValidatorWeightEraEnd[]` | Validator weights for the next era |
+| `rewards` | `Map<string, CLValueUInt512[]>` | Seigniorage rewards map (validator hex → mote amounts). Includes both validator and delegator shares. |
+| `nextEraGasPrice` | `number` | Gas price for the next era |
+
+#### Static Methods
+
+```ts
+EraEnd.fromV1(v1: EraEndV1): EraEnd
+EraEnd.fromV2(v2: EraEndV2): EraEnd
+```
+
+### `EraReport`
+
+Era report (V1 only) containing equivocators, inactive validators, and rewards.
+
+| Property | Type | Description |
+|---|---|---|
+| `equivocators` | `PublicKey[]` | Double-signing validators |
+| `inactiveValidators` | `PublicKey[]` | Inactive validators |
+| `rewards` | `EraReward[]` | Per-validator rewards |
+
+### `EraReward`
+
+A single validator reward entry.
+
+| Property | Type | Description |
+|---|---|---|
+| `validator` | `PublicKey` | Validator's public key |
+| `amount` | `CLValueUInt512` | Reward amount in motes |
+
+#### Constructor
+
+```ts
+new EraReward(validator: PublicKey, amount: CLValueUInt512)
+```
+
+## Usage
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+
+const client = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+const { block } = await client.getLatestBlock();
+
+if (block.eraEnd) {
+  const eraEnd = block.eraEnd;
+  console.log('Era ended!');
+  console.log('Equivocators:', eraEnd.equivocators.length);
+  console.log('Inactive validators:', eraEnd.inactiveValidators.length);
+  console.log('Next era validators:', eraEnd.nextEraValidatorWeights.length);
+  console.log('Next era gas price:', eraEnd.nextEraGasPrice);
+
+  for (const [validator, amounts] of eraEnd.rewards) {
+    console.log(`${validator}: ${amounts.map(a => a.toString()).join(', ')}`);
+  }
+}
+```
+
+## See Also
+
+- [`Block`](/types/block) - Block containing optional `EraEnd`
+- [`EraInfo`](/types/era-info) - Era seigniorage allocation info
+- [`EraSummary`](/types/era-summary) - Era summary from RPC

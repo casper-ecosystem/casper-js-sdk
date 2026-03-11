@@ -1,0 +1,42 @@
+# Step
+
+Fires at the end of each era when the auction step executes, distributing rewards and updating validator weights.
+
+## Import
+
+```ts
+import { SseClient, EventName } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+sseClient.subscribe(EventName.StepEventType, (raw) => {
+  const result = raw.parseAsStepEvent();
+  if (result.err) return;
+
+  const step = result.val.step;
+  console.log('Era ID:', step.eraId);
+  // step.executionEffect contains all state changes from the era step
+});
+```
+
+## Payload
+
+### StepPayload
+
+| Field | Type | Description |
+|---|---|---|
+| `eraId` | `number` | The era that just completed |
+| `executionEffect` | `ExecutionEffect` | State changes from reward distribution |
+
+## Notes
+
+- Eras on mainnet are approximately 120 minutes (~440 blocks). The era ends when both the minimum block count and minimum duration thresholds are met.
+- The step event includes validator activations/deactivations and reward distributions.
+- Subscribe to this event to track staking reward payouts.
+
+## Related
+
+- [`getLatestAuctionInfo`](/actions/auction/getLatestAuctionInfo)
+- [`getLatestValidatorReward`](/actions/auction/getLatestValidatorReward)

@@ -1,0 +1,161 @@
+# Deploy Result Response
+
+Raw response from `getDeploy` on a Casper 1.x node. Deploys are the legacy transaction format, still valid on 2.x nodes.
+
+## Raw JSON
+
+```json
+{
+  "deploy": {
+    "hash": "bf9a6000a02e964f95623f819a528edf6c55a1cffb4bc30e4926c7a3e1d66893",
+    "header": {
+      "account": "019c7f219960a76f648b65875b0d0abe881a8ecff4a098a58299fe5880268637f6",
+      "timestamp": "2022-11-08T19:08:22.94Z",
+      "ttl": "30m",
+      "gas_price": 1,
+      "chain_name": "casper",
+      "body_hash": "622b376f10e909a670bc20f3476e81801ddb744b72687ae34db4ce8117b9f414",
+      "dependencies": []
+    },
+    "payment": {
+      "ModuleBytes": {
+        "module_bytes": "",
+        "args": [
+          ["amount", { "cl_type": "U512", "bytes": "0400c2eb0b", "parsed": "200000000" }]
+        ]
+      }
+    },
+    "session": {
+      "StoredContractByHash": {
+        "hash": "6719a812047efdc30392ceb461f3a20aaf2ae56aa6e7fe6570ae02c3536c52f1",
+        "entry_point": "transfer",
+        "args": [
+          [
+            "recipient",
+            {
+              "cl_type": "Key",
+              "bytes": "001ad7497ca73d1ac9b086b998b81cafa01e0e77ccb29866d47c782357f5a7c6fb",
+              "parsed": { "Account": "account-hash-1ad7497ca73d1ac9b086b998b81cafa01e0e77ccb29866d47c782357f5a7c6fb" }
+            }
+          ],
+          [
+            "amount",
+            { "cl_type": "U256", "bytes": "0100", "parsed": "0" }
+          ]
+        ]
+      }
+    },
+    "approvals": [
+      {
+        "signer": "019c7f219960a76f648b65875b0d0abe881a8ecff4a098a58299fe5880268637f6",
+        "signature": "01010975199b46be287a4772b4a5a2e560330c7d6142db78a3d92db32320ae28..."
+      }
+    ]
+  },
+  "api_version": "1.5.2",
+  "execution_results": [
+    {
+      "block_hash": "b07cc9a028e031863226c473486c7f96de8ddc39bf1aa802bbb981e17d0a6cba",
+      "result": {
+        "Success": {
+          "cost": "5323340",
+          "effect": {
+            "operations": [],
+            "transforms": [
+              {
+                "key": "balance-86e859007f2e183641e49476bb4d9152ae3cc1d19eedafee43ed44014ec7cc2f",
+                "transform": {
+                  "WriteCLValue": { "cl_type": "U512", "parsed": "2693899999000" }
+                }
+              },
+              {
+                "key": "deploy-bf9a6000a02e964f95623f819a528edf6c55a1cffb4bc30e4926c7a3e1d66893",
+                "transform": {
+                  "WriteDeployInfo": {
+                    "deploy_hash": "bf9a6000a02e964f95623f819a528edf6c55a1cffb4bc30e4926c7a3e1d66893",
+                    "from": "account-hash-0244556732cc71edb8d3bd3358eef763e00ca7c130fc594bb58773ff8ddb26d2",
+                    "source": "uref-86e859007f2e183641e49476bb4d9152ae3cc1d19eedafee43ed44014ec7cc2f-007",
+                    "gas": "5323340",
+                    "transfers": []
+                  }
+                }
+              }
+            ]
+          },
+          "transfers": []
+        }
+      }
+    }
+  ]
+}
+```
+
+## Deploy vs Transaction
+
+| Concept | Deploy (1.x) | Transaction (2.x) |
+|---|---|---|
+| Identifier | `deploy_hash` | `transaction_hash` |
+| Sender field | `header.account` (public key) | `initiator_addr` |
+| Session wrapper | Tagged union: `Transfer`, `StoredContractByHash`, etc. | `TransactionV1Payload` with target/entry_point |
+| Payment | Separate `payment` field (ModuleBytes) | `pricing_mode` field |
+| `api_version` | `"1.x.x"` | `"2.x.x"` |
+
+## Session types
+
+### `Transfer`
+Native CSPR transfer. Args: `amount` (U512), `target` (ByteArray/Key), `id` (Option\<U64\>).
+
+### `StoredContractByHash`
+Call a deployed contract. Contains:
+- `hash` - contract hash (without `hash-` prefix)
+- `entry_point` - function name to call
+- `args` - CL-typed arguments
+
+### `StoredContractByName`
+Same as above but references a named key in the sender's account instead of a hash.
+
+### `ModuleBytes`
+Deploy and execute raw Wasm. The `module_bytes` field contains base64-encoded Wasm. When used for payment (standard pattern), `module_bytes` is empty (`""`) and only an `amount` arg is supplied.
+
+## Key types in parsed values
+
+CLValue `Key` args have a tagged parsed format:
+
+```json
+{ "Account": "account-hash-<hex>" }
+{ "Hash": "hash-<hex>" }
+{ "URef": "uref-<hex>-007" }
+{ "Transfer": "transfer-<hex>" }
+{ "DeployInfo": "deploy-<hex>" }
+{ "Balance": "balance-<hex>" }
+```
+
+## SDK usage
+
+```ts
+const result = await rpcClient.getDeploy(
+  'bf9a6000a02e964f95623f819a528edf6c55a1cffb4bc30e4926c7a3e1d66893'
+);
+
+const execResult = result.executionResults?.[0]?.result;
+
+if (execResult?.Success) {
+  console.log('Cost:', execResult.Success.cost);
+} else if (execResult?.Failure) {
+  console.log('Error:', execResult.Failure.errorMessage);
+}
+
+// Access deploy header
+const deploy = result.deploy!;
+console.log('Sender:', deploy.header.account);
+console.log('TTL:', deploy.header.ttl);
+console.log('Chain:', deploy.header.chainName);
+```
+
+## Related
+
+- [`getDeploy`](/actions/transactions/getDeploy)
+- [`putDeploy`](/actions/transactions/putDeploy)
+- [`waitForDeploy`](/actions/transactions/waitForDeploy)
+- [Deploy type](/types/deploy)
+- [ExecutableDeployItem type](/types/executable-deploy-item)

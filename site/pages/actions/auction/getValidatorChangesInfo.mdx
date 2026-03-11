@@ -1,0 +1,34 @@
+# getValidatorChangesInfo
+
+Returns a list of validators whose status changed in the most recent era.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getValidatorChangesInfo();
+
+for (const change of result.changes) {
+  console.log('Validator:', change.publicKey.toHex());
+  console.log('Status changes:', change.statusChanges);
+}
+```
+
+## Return Value
+
+`Promise<InfoGetValidatorChangesResult>`
+
+```ts
+interface InfoGetValidatorChangesResult {
+  changes: ValidatorChange[];
+}
+```
+
+## Related
+
+- [`getLatestAuctionInfo`](/actions/auction/getLatestAuctionInfo)

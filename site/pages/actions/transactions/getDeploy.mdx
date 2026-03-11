@@ -1,0 +1,46 @@
+# getDeploy
+
+Retrieves a legacy deploy by its hash.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getDeploy('abc123def456...');
+
+const deploy = result.deploy;
+const execResult = result.executionResults[0];
+
+if (execResult?.result.success) {
+  console.log('Deploy succeeded');
+}
+```
+
+## Parameters
+
+### hash
+
+- **Type:** `string`
+
+The deploy hash as a hex string.
+
+## Return Value
+
+`Promise<InfoGetDeployResult>`
+
+```ts
+interface InfoGetDeployResult {
+  deploy: Deploy;
+  executionResults: DeployExecutionResult[];
+}
+```
+
+## Related
+
+- [`getTransactionByDeployHash`](/actions/transactions/getTransactionByDeployHash)
+- [`putDeploy`](/actions/transactions/putDeploy)

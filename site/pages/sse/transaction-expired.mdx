@@ -1,0 +1,41 @@
+# TransactionExpired
+
+Fires when a transaction's time-to-live (TTL) expires before it was processed.
+
+## Import
+
+```ts
+import { SseClient, EventName } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+sseClient.subscribe(EventName.TransactionExpiredEventType, (raw) => {
+  const result = raw.parseAsTransactionExpiredEvent();
+  if (result.err) return;
+
+  const hash = result.val.transactionExpired.hash;
+  console.log('Expired transaction:', hash);
+  // → retry or notify the user
+});
+```
+
+## Payload
+
+```ts
+interface TransactionExpiredPayload {
+  hash: TransactionHash; // hash of the expired transaction
+}
+```
+
+## Notes
+
+- Default transaction TTL is 30 minutes. Set with `.ttl('60m')` on builders.
+- A transaction can expire if the network is congested or the fee was too low.
+- Retry by rebuilding and resubmitting with a fresh timestamp.
+
+## Related
+
+- [`TransactionAccepted`](/sse/transaction-accepted)
+- [`TransactionProcessed`](/sse/transaction-processed)

@@ -1,0 +1,60 @@
+# NativeRedelegateBuilder
+
+Builds a native redelegate transaction to move stake from one validator to another without waiting for the unbonding period.
+
+## Import
+
+```ts
+import { NativeRedelegateBuilder, PublicKey } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const transaction = new NativeRedelegateBuilder()
+  .from(delegatorPublicKey)
+  .validator(currentValidatorPublicKey)
+  .newValidator(newValidatorPublicKey)
+  .amount('500000000000')
+  .chainName('casper')
+  .payment(2_500_000_000)
+  .build();
+
+transaction.sign(privateKey);
+const result = await rpcClient.putTransaction(transaction);
+```
+
+## Methods
+
+### .from(publicKey)
+
+- **Type:** `PublicKey` - required
+
+### .validator(publicKey)
+
+- **Type:** `PublicKey` - required
+
+The current validator to move stake away from.
+
+### .newValidator(publicKey)
+
+- **Type:** `PublicKey` - required
+
+The new validator to move stake to.
+
+### .amount(motes)
+
+- **Type:** `BigNumber | string` - required
+
+### .chainName(name)
+
+- **Type:** `string` - required
+
+## Notes
+
+- Redelegation avoids the 7-era unbonding period (~14 hours) that would apply to undelegating and re-delegating separately.
+
+## Related
+
+- [`NativeDelegateBuilder`](/builders/NativeDelegateBuilder)
+- [`NativeUndelegateBuilder`](/builders/NativeUndelegateBuilder)

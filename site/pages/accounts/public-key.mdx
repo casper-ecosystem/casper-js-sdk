@@ -1,0 +1,190 @@
+# PublicKey
+
+Represents a cryptographic public key. Used for account identification, signature verification, and deriving account hashes.
+
+## Import
+
+```ts
+import { PublicKey, KeyAlgorithm } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+// From hex string (with algorithm prefix byte)
+const publicKey = PublicKey.fromHex('01a8b1d7f4e9c2...');
+
+// Derive the account hash (on-chain identifier)
+const accountHash = publicKey.accountHash();
+console.log(accountHash.toFormattedStr());
+// → 'account-hash-abc123...'
+```
+
+## Methods
+
+### PublicKey.fromHex
+
+Parses a public key from a hex string with an algorithm prefix byte.
+
+```ts
+PublicKey.fromHex(publicKeyHex: string, checksummed?: boolean): PublicKey
+```
+
+#### Parameters
+
+##### publicKeyHex
+
+- **Type:** `string`
+
+Hex-encoded public key. Prefix byte: `01` = ED25519, `02` = SECP256K1.
+
+##### checksummed
+
+- **Type:** `boolean` (optional, default `false`)
+
+Whether to validate EIP-55 checksum encoding.
+
+#### Return Value
+
+`PublicKey`
+
+#### Example
+
+```ts
+// ED25519 public key (starts with '01')
+const ed25519Key = PublicKey.fromHex('01a8b1d7f4e9c2...');
+
+// SECP256K1 public key (starts with '02', 33 bytes compressed)
+const secp256k1Key = PublicKey.fromHex('0202f5a92ab6da536e7b1a351406f3744224bec85d7acbab1497b65de48a1a707b64');
+```
+
+---
+
+### PublicKey.fromPem
+
+Imports a public key from PEM format.
+
+```ts
+PublicKey.fromPem(content: string, algorithm: KeyAlgorithm): PublicKey
+```
+
+---
+
+### PublicKey.fromBytes
+
+Creates a public key from raw bytes. Returns a result wrapper, not a direct `PublicKey`.
+
+```ts
+PublicKey.fromBytes(source: Uint8Array): IResultWithBytes<PublicKey>
+```
+
+```ts
+import { IResultWithBytes } from 'casper-js-sdk';
+
+const result = PublicKey.fromBytes(bytes);
+if (result.result.err) {
+  console.error(result.result.val);
+} else {
+  const publicKey = result.result.val;
+}
+```
+
+---
+
+### toHex
+
+Returns the prefixed hex string representation.
+
+```ts
+publicKey.toHex(checksummed?: boolean): string
+```
+
+#### Return Value
+
+`string` - `'01' + 32-byte-hex` for ED25519 or `'02' + 33-byte-hex` for SECP256K1.
+
+#### Example
+
+```ts
+console.log(publicKey.toHex());
+// → '01a8b1d7f4e9c2...' (66 chars for ED25519)
+```
+
+---
+
+### accountHash
+
+Derives the on-chain account hash from this public key.
+
+```ts
+publicKey.accountHash(): AccountHash
+```
+
+The account hash is computed as `blake2b-256(algorithmName + '\0' + publicKeyBytes)`.
+
+#### Return Value
+
+`AccountHash`
+
+#### Example
+
+```ts
+const hash = publicKey.accountHash();
+console.log(hash.toFormattedStr());
+// → 'account-hash-abc123...'
+
+// Used as deposit address for exchanges
+const depositAddress = publicKey.accountHash().toFormattedStr();
+```
+
+---
+
+### verifySignature
+
+Verifies a signature against a message.
+
+```ts
+publicKey.verifySignature(message: Uint8Array, sig: Uint8Array): boolean
+```
+
+#### Parameters
+
+##### message
+
+- **Type:** `Uint8Array`
+
+The original message bytes.
+
+##### signature
+
+- **Type:** `Uint8Array`
+
+The signature bytes to verify.
+
+#### Return Value
+
+`boolean`
+
+---
+
+### toPem / toBytes
+
+```ts
+publicKey.toPem(): string
+publicKey.toBytes(): Uint8Array  // without prefix byte
+```
+
+---
+
+## Properties
+
+| Property | Type | Description |
+|---|---|---|
+| `algorithm` | `KeyAlgorithm` | `ED25519` or `SECP256K1` |
+
+## Key Format Reference
+
+| Algorithm | Prefix | Key bytes | toHex() length |
+|---|---|---|---|
+| ED25519 | `01` | 32 bytes | 66 chars |
+| SECP256K1 | `02` | 33 bytes compressed | 68 chars |

@@ -1,0 +1,61 @@
+# getDelegatorRewardByEraID
+
+Returns the reward earned by a delegator for a specific validator in a specific era.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler, PublicKey } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const validator = PublicKey.fromHex('01a8b1...');
+const delegator = PublicKey.fromHex('01c9d2...');
+
+const result = await rpcClient.getDelegatorRewardByEraID(
+  validator,
+  delegator,
+  1234
+);
+
+console.log('Delegator reward:', result.delegatorReward.toString());
+```
+
+## Parameters
+
+### validator
+
+- **Type:** `PublicKey`
+
+The validator's public key.
+
+### delegator
+
+- **Type:** `PublicKey`
+
+The delegator's public key.
+
+### eraID
+
+- **Type:** `number`
+
+The era ID to query the reward for.
+
+## Return Value
+
+`Promise<InfoGetRewardResult>`
+
+```ts
+interface InfoGetRewardResult {
+  delegatorReward: BigNumber;
+  validatorReward: BigNumber;
+}
+```
+
+## Related
+
+- [`getLatestDelegatorReward`](/actions/auction/getLatestDelegatorReward)
+- [`getDelegatorRewardByBlockHash`](/actions/auction/getDelegatorRewardByBlockHash)
+- [`getDelegatorRewardByBlockHeight`](/actions/auction/getDelegatorRewardByBlockHeight)

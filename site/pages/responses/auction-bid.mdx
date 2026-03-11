@@ -1,0 +1,148 @@
+# Auction Bid Response
+
+Raw bid structures from `getLatestAuctionInfo`. The format changed significantly between Casper 1.x and 2.x - both are shown here.
+
+## V1 format (Casper 1.x)
+
+Simple flat structure with `public_key` directly on each delegator:
+
+```json
+{
+  "bonding_purse": "uref-b3c03358245a0d9514064b6d0c3dd90023d29a0fe137507d430a26990f5ce8e3-007",
+  "staked_amount": "900000000000",
+  "delegation_rate": 10,
+  "inactive": false,
+  "delegators": [
+    {
+      "public_key": "01d829cbfb66b2b11ef8d8feb6d3f2155789fc22f407bb57f89b05f6ba4b9ae070",
+      "staked_amount": "555000000000",
+      "bonding_purse": "uref-41059a3aa5c5759c7f5e3c826cb47e0b21257ac57ee63a4c00dc305133e55d64-007",
+      "delegatee": "01197f6b23e16c8532c6abc838facd5ea789be0c76b2920334039bfa8b3d368d61"
+    }
+  ]
+}
+```
+
+## V2 format (Casper 2.x)
+
+Nested `delegator` object with a `delegator_kind` union - supports both public-key and purse-based delegation:
+
+```json
+{
+  "validator_public_key": "01197f6b23e16c8532c6abc838facd5ea789be0c76b2920334039bfa8b3d368d61",
+  "bonding_purse": "uref-fafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafafa-007",
+  "staked_amount": "900000000000",
+  "delegation_rate": 0,
+  "inactive": false,
+  "vesting_schedule": null,
+  "delegators": [
+    {
+      "delegator_public_key": "014508a07aa941707f3eb2db94c8897a80b2c1197476b6de213ac273df7d86c4ff",
+      "delegator": {
+        "delegator_kind": {
+          "PublicKey": "01d829cbfb66b2b11ef8d8feb6d3f2155789fc22f407bb57f89b05f6ba4b9ae070"
+        },
+        "staked_amount": "10",
+        "bonding_purse": "uref-fbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfbfb-007",
+        "validator_public_key": "01197f6b23e16c8532c6abc838facd5ea789be0c76b2920334039bfa8b3d368d61",
+        "vesting_schedule": null
+      }
+    }
+  ]
+}
+```
+
+## V1 vs V2 field differences
+
+| Field | V1 location | V2 location |
+|---|---|---|
+| Validator key | (implicit, from auction state key) | `validator_public_key` |
+| Staked amount | `staked_amount` | `staked_amount` |
+| Delegation rate | `delegation_rate` | `delegation_rate` |
+| Delegator key | `delegators[].public_key` | `delegators[].delegator.delegator_kind.PublicKey` |
+| Delegator stake | `delegators[].staked_amount` | `delegators[].delegator.staked_amount` |
+| Delegatee | `delegators[].delegatee` | `delegators[].delegator.validator_public_key` |
+
+## `delegator_kind` union
+
+In V2, a delegator can be identified by either a public key or a URef (purse). The `delegator_kind` field is a tagged union:
+
+```json
+{ "PublicKey": "01abc..." }
+```
+
+or
+
+```json
+{ "Purse": "abc123...def" }
+```
+
+Purse-based delegation is used by smart contracts that delegate on behalf of users.
+
+## Full auction state context
+
+The bids appear inside `getLatestAuctionInfo`:
+
+```json
+{
+  "auction_state": {
+    "state_root_hash": "...",
+    "block_height": 3444515,
+    "era_validators": [...],
+    "bids": [
+      {
+        "public_key": "01197f6b23e16c8532c6abc838facd5ea789be0c76b2920334039bfa8b3d368d61",
+        "bid": { ...bid object above... }
+      }
+    ]
+  }
+}
+```
+
+Each element in `bids` pairs a `public_key` with a `bid` object.
+
+## SDK usage
+
+```ts
+const result = await rpcClient.getLatestAuctionInfo();
+const bids = result.auctionState.bids;
+
+bids.forEach(entry => {
+  const validatorKey = entry.publicKey.toHex();
+  const bid = entry.bid;
+
+  console.log('Validator:', validatorKey);
+  console.log('Staked:', bid.stakedAmount.toString(), 'motes');
+  console.log('Rate:', bid.delegationRate, '%');
+  console.log('Delegators:', bid.delegators.length);
+
+  bid.delegators.forEach(d => {
+    // Works for both V1 and V2
+    const delegatorKey = d.delegatorKind.toHex();
+    console.log(' -', delegatorKey, ':', d.stakedAmount.toString());
+  });
+});
+```
+
+## Amounts
+
+All `staked_amount` values are mote strings. To convert to CSPR:
+```ts
+import { BigNumber } from '@ethersproject/bignumber';
+
+const motes = BigNumber.from(bid.stakedAmount);
+const cspr = motes.div(BigNumber.from('1000000000'));
+console.log(cspr.toString(), 'CSPR');
+```
+
+## `vesting_schedule`
+
+Validators or delegators awarded genesis allocations may have a vesting schedule - the portion of their stake that is locked and cannot be undelegated until the schedule completes. `null` means no vesting constraint.
+
+## Related
+
+- [`getLatestAuctionInfo`](/actions/auction/getLatestAuctionInfo)
+- [`getAuctionInfoByHash`](/actions/auction/getAuctionInfoByHash)
+- [AuctionState type](/types/auction-state)
+- [Bid type](/types/bid)
+- [BidKind type](/types/bid-kind)

@@ -1,0 +1,94 @@
+# TypeScript
+
+The Casper JS SDK is written in TypeScript and ships full type definitions.
+
+## Type Inference
+
+All RPC response types, CLValues, and transaction fields are fully typed:
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+
+const client = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+
+// result is typed as ChainGetBlockResult
+const result = await client.getLatestBlock();
+
+// block is typed as Block
+const block = result.block;
+
+// V2 block fields are typed
+const height = block.getBlockV2()?.header.height; // number | undefined
+```
+
+## Key Types
+
+| Type | Description |
+|---|---|
+| `PublicKey` | ED25519 or SECP256K1 public key |
+| `PrivateKey` | Signing key with algorithm tag |
+| `AccountHash` | blake2b-256 account identifier |
+| `Hash` | 32-byte hash (block, deploy, contract) |
+| `URef` | Unforgeable reference with access rights |
+| `CLValue` | Contract language value |
+| `CLType` | Type descriptor for CLValues |
+| `Args` | Named CLValue container for contract calls |
+| `Transaction` | Unified wrapper over TransactionV1 and Deploy |
+| `Block` | Unified wrapper over BlockV1 and BlockV2 |
+| `ExecutionResult` | Execution outcome (success or failure) |
+| `Transfer` | Transfer record (V1 or V2) |
+
+## Strict Null Checks
+
+The SDK is built with strict null checks. Methods that may not find a result return `T | undefined` rather than throwing:
+
+```ts
+const v2 = block.getBlockV2(); // BlockV2 | undefined
+if (v2) {
+  console.log(v2.header.height);
+}
+```
+
+## Discriminated Unions
+
+Version-specific types use discriminated patterns:
+
+```ts
+// Transfer - check which version is available
+const transfer = transfers[0];
+const v2 = transfer.getTransferV2();
+const v1 = transfer.getTransferV1();
+const t = v2 ?? v1;
+```
+
+## ts-results
+
+The SSE client uses `Result<T, E>` from `ts-results` for subscribe/unsubscribe:
+
+```ts
+import type { Result } from 'ts-results';
+
+const result: Result<boolean, string> = sseClient.subscribe(
+  EventName.BlockAddedEventType,
+  handler
+);
+
+if (result.err) {
+  console.error(result.val); // error string
+} else {
+  console.log('subscribed');
+}
+```
+
+## BigNumber
+
+Large integers (CSPR amounts, U256, U512) use `BigNumber` from `@ethersproject/bignumber`. All numeric CLValue factories accept `BigNumberish` (number, string, or BigNumber):
+
+```ts
+import { BigNumber } from '@ethersproject/bignumber';
+import { CLValue } from 'casper-js-sdk';
+
+CLValue.newCLUInt512(25_000_000_000)
+CLValue.newCLUInt512('25000000000')
+CLValue.newCLUInt512(BigNumber.from('25000000000'))
+```

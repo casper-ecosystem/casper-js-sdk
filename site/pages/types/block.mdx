@@ -1,0 +1,105 @@
+# Block
+
+Block structure with header, body, transactions, and finality proofs. Supports both Casper 1.x and 2.x formats.
+
+## Import
+
+```ts
+import { Block, BlockTransaction, Proof } from 'casper-js-sdk';
+```
+
+## Classes
+
+### `Block`
+
+The unified block type, normalizing differences between `BlockV1` and `BlockV2`.
+
+| Property | Type | Description |
+|---|---|---|
+| `hash` | `Hash` | Block hash |
+| `height` | `number` | Block height |
+| `stateRootHash` | `Hash` | State root hash after this block |
+| `lastSwitchBlockHash` | `Hash \| null` | Hash of the last era-switch block |
+| `parentHash` | `Hash` | Parent block hash |
+| `eraID` | `number` | Era this block belongs to |
+| `timestamp` | `Timestamp` | Block creation timestamp |
+| `accumulatedSeed?` | `Hash` | Accumulated seed for randomness |
+| `randomBit` | `boolean` | Random bit used in seed calculation |
+| `currentGasPrice` | `number` | Current gas price in motes |
+| `proposer` | `Proposer` | Block proposer |
+| `protocolVersion?` | `string` | Protocol version |
+| `eraEnd?` | `EraEnd` | Era-end data (only on switch blocks) |
+| `transactions` | `BlockTransaction[]` | Transactions included in this block |
+| `rewardedSignatures` | `number[][]` | Rewarded finality signatures |
+| `proofs` | `Proof[]` | Finality proofs |
+
+#### Methods
+
+```ts
+// Access the raw V1 or V2 block
+block.getBlockV1(): BlockV1 | undefined
+block.getBlockV2(): BlockV2 | undefined
+```
+
+#### Static Methods
+
+```ts
+Block.newBlockFromBlockWrapper(wrapper: BlockWrapper): Block
+Block.newBlockFromBlockV1(v1: BlockV1): Block
+```
+
+### `BlockTransaction`
+
+A transaction entry recorded in a block.
+
+| Property | Type | Description |
+|---|---|---|
+| `category` | `TransactionCategory` | Transaction category (Mint, Auction, Large, Medium, Small) |
+| `version` | `TransactionVersion` | V1 or Deploy |
+| `hash` | `Hash` | Transaction hash |
+
+#### Static Methods
+
+```ts
+BlockTransaction.fromJSON(data: any): BlockTransaction[]
+```
+
+### `Proof`
+
+A finality signature proof attached to a block.
+
+| Property | Type | Description |
+|---|---|---|
+| `publicKey` | `PublicKey` | Signer's public key |
+| `signature` | `HexBytes` | Signature bytes |
+
+## Usage
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+
+const client = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+
+const { block } = await client.getLatestBlock();
+
+console.log('Height:', block.height);
+console.log('Hash:', block.hash.toHex());
+console.log('Era:', block.eraID);
+console.log('Proposer:', block.proposer.toJSON());
+console.log('Transactions:', block.transactions.length);
+
+if (block.eraEnd) {
+  console.log('Switch block! Next era validators:', block.eraEnd.nextEraValidatorWeights.length);
+}
+
+for (const proof of block.proofs) {
+  console.log('Signed by:', proof.publicKey.toHex());
+}
+```
+
+## See Also
+
+- [`getLatestBlock`](/actions/block/getLatestBlock) - Get the most recent block
+- [`getBlockByHash`](/actions/block/getBlockByHash) - Get a block by hash
+- [`BlockProposer`](/types/block-proposer) - Proposer type
+- [`EraEnd`](/types/era-end) - Era-end data on switch blocks

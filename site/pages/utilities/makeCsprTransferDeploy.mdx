@@ -1,0 +1,53 @@
+# makeCsprTransferDeploy
+
+Creates a legacy `Deploy` for a native CSPR transfer (Casper 1.x format).
+
+## Import
+
+```ts
+import { makeCsprTransferDeploy } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const deploy = makeCsprTransferDeploy({
+  senderPublicKeyHex: privateKey.publicKey.toHex(),
+  recipientPublicKeyHex: recipientPublicKey.toHex(),
+  transferAmount: '2500000000',  // 2.5 CSPR in motes
+  paymentAmount: '100000000',    // 0.1 CSPR gas
+  chainName: 'casper',
+  memo: String(Date.now()),      // optional transfer ID
+});
+
+deploy.sign(privateKey);
+const result = await rpcClient.putDeploy(deploy);
+console.log('Deploy hash:', result.deployHash);
+```
+
+## Parameters
+
+| Parameter | Type | Required | Default |
+|---|---|---|---|
+| `senderPublicKeyHex` | `string` | yes | - |
+| `recipientPublicKeyHex` | `string` | yes | - |
+| `transferAmount` | `string` | yes | - |
+| `paymentAmount` | `string` | no | `'100000000'` |
+| `chainName` | `string` | no | `'casper'` |
+| `memo` | `string` | no | - |
+| `ttl` | `number` | no | `1800000` |
+| `timestamp` | `string` | no | now |
+| `gasPrice` | `number` | no | `1` |
+
+### memo
+
+An optional transfer tag/memo string. Most exchanges require this for deposits to be credited correctly.
+
+## Return Value
+
+`Deploy`
+
+## Related
+
+- [`makeCsprTransferTransaction`](/utilities/makeCsprTransferTransaction) - TransactionV1 format for 2.0 nodes
+- [`NativeTransferBuilder`](/builders/NativeTransferBuilder) - builder pattern alternative

@@ -1,0 +1,56 @@
+# HexBytes
+
+A byte array wrapper with convenient hex string conversion methods.
+
+## Import
+
+```ts
+import { HexBytes } from 'casper-js-sdk';
+```
+
+## Class
+
+### `HexBytes`
+
+| Property | Type | Description |
+|---|---|---|
+| `bytes` | `Uint8Array` | Raw bytes |
+
+#### Constructor
+
+```ts
+new HexBytes(bytes: Uint8Array)
+```
+
+#### Methods
+
+```ts
+hexBytes.toHex(): string            // Returns lowercase hex string
+hexBytes.toJSON(): string           // Same as toHex()
+hexBytes.toString(): string         // Same as toHex()
+```
+
+#### Static Methods
+
+```ts
+HexBytes.fromHex(hexString: string): HexBytes
+HexBytes.fromJSON(json: string): HexBytes
+```
+
+## Usage
+
+```ts
+import { HexBytes } from 'casper-js-sdk';
+
+const hb = new HexBytes(new Uint8Array([0x01, 0xab, 0xff]));
+hb.toHex();     // '01abff'
+hb.toString();  // '01abff'
+
+const parsed = HexBytes.fromHex('01abff');
+// HexBytes { bytes: Uint8Array [1, 171, 255] }
+```
+
+## See Also
+
+- [`ByteConverters`](/types/byte-converters) - Low-level byte serialization
+- [`Conversions`](/types/conversions) - Base16/Base64 encoding utilities

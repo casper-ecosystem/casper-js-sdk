@@ -1,0 +1,76 @@
+# SessionBuilder
+
+Builds a transaction that deploys and executes WASM session code. Used for contract deployment and complex one-off operations.
+
+## Import
+
+```ts
+import { SessionBuilder, Args, CLValue, PublicKey } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+import * as fs from 'fs';
+
+const wasmBytes = fs.readFileSync('contract.wasm');
+
+const args = Args.fromMap({
+  token_name: CLValue.newCLString('MyToken'),
+  token_symbol: CLValue.newCLString('MTK'),
+  total_supply: CLValue.newCLUInt256('1000000000'),
+});
+
+const transaction = new SessionBuilder()
+  .from(deployerPublicKey)
+  .wasm(wasmBytes)
+  .runtimeArgs(args)
+  .chainName('casper')
+  .payment(200_000_000_000)  // WASM deploys require more gas
+  .build();
+
+transaction.sign(privateKey);
+const result = await rpcClient.putTransaction(transaction);
+```
+
+## Methods
+
+### .from(publicKey)
+
+- **Type:** `PublicKey` - required
+
+### .wasm(bytes)
+
+- **Type:** `Uint8Array` - required
+
+The compiled WASM bytecode to execute.
+
+### .runtimeArgs(args)
+
+- **Type:** `Args` - optional
+
+Arguments passed to the WASM's `call` function.
+
+### .chainName(name)
+
+- **Type:** `string` - required
+
+### .payment(motes)
+
+- **Type:** `number` - optional
+
+WASM execution typically requires much higher gas than native transfers (50–500 CSPR depending on contract size and complexity).
+
+## Return Value
+
+`Transaction`
+
+## Notes
+
+- Session code runs in the context of the caller's account.
+- Use `ContractCallBuilder` for calling already-deployed contracts.
+- Gas costs scale with WASM size and execution complexity.
+
+## Related
+
+- [`ContractCallBuilder`](/builders/ContractCallBuilder)

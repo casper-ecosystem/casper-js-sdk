@@ -1,0 +1,45 @@
+# Why Casper JS SDK
+
+<img src="https://cdn.prod.website-files.com/668fef77d8ac075ed5e3f57a/66900f439d0597692b64fcf2_Casper_Wordmark_Red_RGB.png" alt="Casper Network" style={{ height: '36px', marginBottom: '16px' }} />
+
+The Casper JS SDK is the official TypeScript/JavaScript library for building applications on the [Casper Network](https://casper.network). It provides a complete, type-safe interface for key management, transaction construction, node queries, and real-time event streaming.
+
+## Motivation
+
+The Casper blockchain has a unique architecture - two coexisting transaction formats (legacy `Deploy` for 1.x and `TransactionV1` for Casper 2.0), a contract-language value system (CLValues) for all smart contract interactions, and a bytesrepr binary serialization format for hashing and signing.
+
+The SDK handles all of this complexity so you don't have to:
+
+- **No manual serialization** - every type implements `toBytes()` and `toJSON()` correctly
+- **No format guessing** - `CasperNetwork.create()` detects the node version and dispatches automatically
+- **No boilerplate** - fluent transaction builders handle all required fields
+
+## Design Principles
+
+### Type Safety
+Every public API is fully typed. RPC responses, CLValues, transaction fields - everything is a TypeScript type, not `any`.
+
+### Dual Transaction Support
+Casper 2.0 introduced `TransactionV1`. The SDK fully supports both formats and provides version-aware utilities.
+
+### Minimal Dependencies
+Core cryptography uses `@noble/curves`, `@noble/ed25519`, and `@noble/hashes` - audited, dependency-free implementations.
+
+## Comparison
+
+| Feature | casper-js-sdk v5 |
+|---|---|
+| TypeScript | ✅ Full types |
+| TransactionV1 | ✅ Builders + bytesrepr |
+| Legacy Deploy | ✅ Full support |
+| CLValues | ✅ Complete type system |
+| SSE streaming | ✅ All event types |
+| Browser + Node.js | ✅ Dual bundles |
+| Version auto-detection | ✅ CasperNetwork |
+| ED25519 + SECP256K1 | ✅ Both algorithms |
+
+## Next Steps
+
+- [Getting Started](/docs/getting-started) - install and run your first transfer
+- [Clients](/clients/intro) - understand RpcClient and SseClient
+- [Transaction Builders](/builders/introduction) - build and sign transactions

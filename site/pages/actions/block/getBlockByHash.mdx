@@ -1,0 +1,45 @@
+# getBlockByHash
+
+Returns a block by its hex hash string.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getBlockByHash(
+  'abc123def456...'
+);
+
+const block = result.block;
+console.log(block.getBlockV2()?.header.height);
+```
+
+## Parameters
+
+### hash
+
+- **Type:** `string`
+
+The block hash as a hex string (without `0x` prefix, 64 hex characters).
+
+## Return Value
+
+`Promise<ChainGetBlockResult>`
+
+```ts
+interface ChainGetBlockResult {
+  block: Block;
+}
+```
+
+Throws `RpcError` with `ErrorCode.NoSuchBlock` if the hash is not found.
+
+## Related
+
+- [`getLatestBlock`](/actions/block/getLatestBlock)
+- [`getBlockByHeight`](/actions/block/getBlockByHeight)

@@ -1,0 +1,60 @@
+# CLValues
+
+CLValue (Contract Language Value) is the type system used for all data passed to and returned from Casper smart contracts.
+
+## Overview
+
+```ts
+import { CLValue, CLType, Args, CLValueParser } from 'casper-js-sdk';
+
+// Create a value
+const amount = CLValue.newCLUInt512('1000000000');
+
+// Package values into contract args
+const args = Args.fromMap({
+  amount: CLValue.newCLUInt512('1000000000'),
+  recipient: CLValue.newCLPublicKey(recipientKey),
+});
+
+// Parse a value from RPC response
+const clValue = CLValueParser.fromJSON(storedValue.clValue);
+```
+
+## Type Reference
+
+| CLType | Factory | TypeScript |
+|---|---|---|
+| `Bool` | `newCLValueBool(val)` | `boolean` |
+| `I32` | `newCLInt32(val)` | `BigNumberish` |
+| `I64` | `newCLInt64(val)` | `BigNumberish` |
+| `U8` | `newCLUint8(val)` | `BigNumberish` |
+| `U32` | `newCLUInt32(val)` | `BigNumberish` |
+| `U64` | `newCLUint64(val)` | `BigNumberish` |
+| `U128` | `newCLUInt128(val)` | `BigNumberish` |
+| `U256` | `newCLUInt256(val)` | `BigNumberish` |
+| `U512` | `newCLUInt512(val)` | `BigNumberish` |
+| `String` | `newCLString(val)` | `string` |
+| `Unit` | `newCLUnit()` | - |
+| `ByteArray` | `newCLByteArray(val)` | `Uint8Array` |
+| `Key` | `newCLKey(val)` | `Key` |
+| `URef` | `newCLUref(val)` | `URef` |
+| `PublicKey` | `newCLPublicKey(val)` | `PublicKey` |
+| `Any` | `newCLAny(val)` | `Uint8Array` |
+| `List` | `newCLList(type)` | `CLValue[]` |
+| `Map` | `newCLMap(kType, vType)` | `Map` |
+| `Option` | `newCLOption(inner, type?)` | `CLValue \| null` |
+| `Result` | `newCLResult(okT, errT, value, isSuccess)` | `{ok, err}` |
+| `Tuple1/2/3` | `newCLTuple1/2/3(...)` | tuple |
+
+## Factory Pages
+
+- [Numeric Types](/clvalues/numeric) - U8, U32, U64, U128, U256, U512, I32, I64
+- [newCLString](/clvalues/newCLString)
+- [newCLBool](/clvalues/newCLBool)
+- [newCLByteArray](/clvalues/newCLByteArray)
+- [newCLKey](/clvalues/newCLKey)
+- [newCLUref](/clvalues/newCLUref)
+- [newCLPublicKey](/clvalues/newCLPublicKey)
+- [Collections](/clvalues/collections) - List, Map, Option, Result, Tuples
+- [Args](/clvalues/Args)
+- [CLValueParser](/clvalues/CLValueParser)

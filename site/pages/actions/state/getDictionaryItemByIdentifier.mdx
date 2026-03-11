@@ -1,0 +1,61 @@
+# getDictionaryItemByIdentifier
+
+Retrieves a dictionary item using a custom `ParamDictionaryIdentifier`, enabling lookups by contract name, account, or URef.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler, ParamDictionaryIdentifier } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const identifier = new ParamDictionaryIdentifier(
+  undefined,
+  undefined,
+  new ParamDictionaryIdentifierURef(itemKey, dictionaryURef)
+);
+
+const result = await rpcClient.getDictionaryItemByIdentifier(
+  null,
+  identifier
+);
+
+console.log(result.storedValue);
+```
+
+Pass `null` for `stateRootHash` to use the latest state automatically.
+
+## Parameters
+
+### stateRootHash
+
+- **Type:** `string | null`
+
+State root hash as a hex string, or `null` to use the latest state root hash.
+
+### identifier
+
+- **Type:** `ParamDictionaryIdentifier`
+
+Dictionary lookup strategy. Supports lookups by:
+- Account named key
+- Contract named key
+- URef
+
+## Return Value
+
+`Promise<StateGetDictionaryResult>`
+
+```ts
+interface StateGetDictionaryResult {
+  dictionaryKey: string;
+  storedValue: StoredValue;
+}
+```
+
+## Related
+
+- [`getDictionaryItem`](/actions/state/getDictionaryItem)
+- [`queryLatestGlobalState`](/actions/state/queryLatestGlobalState)

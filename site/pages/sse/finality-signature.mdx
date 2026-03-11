@@ -1,0 +1,56 @@
+# FinalitySignature
+
+Fires when a validator submits a finality signature for a block. A block achieves strict finality once validators controlling more than two-thirds of total stake weight have submitted signatures - at that point the block is irreversible.
+
+## Import
+
+```ts
+import { SseClient, EventName } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+sseClient.subscribe(EventName.FinalitySignatureEventType, (raw) => {
+  const result = raw.parseAsFinalitySignatureEvent();
+  if (result.err) return;
+
+  const sig = result.val.finalitySignature;
+
+  // Casper 2.x
+  const v2 = sig.getFinalitySignatureV2();
+  if (v2) {
+    console.log('Block hash:', v2.blockHash);
+    console.log('Validator:', v2.publicKey.toHex());
+    console.log('Chain name hash:', v2.chainNameHash);
+    console.log('Signature:', v2.signature);
+  }
+
+  // Casper 1.x
+  const v1 = sig.getFinalitySignatureV1();
+  if (v1) {
+    console.log('Block hash:', v1.blockHash);
+    console.log('Validator:', v1.publicKey.toHex());
+  }
+});
+```
+
+## Payload
+
+The `FinalitySignature` wrapper holds either a V1 or V2 signature.
+
+| Method | Returns |
+|---|---|
+| `getFinalitySignatureV2()` | `FinalitySignatureV2 \| undefined` |
+| `getFinalitySignatureV1()` | `FinalitySignatureV1 \| undefined` |
+
+### FinalitySignatureV2 Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `blockHash` | `string` | Signed block hash |
+| `blockHeight` | `number` | Block height |
+| `chainNameHash` | `string` | Hash of the chain name |
+| `era` | `number` | Era ID |
+| `publicKey` | `PublicKey` | Signing validator's key |
+| `signature` | `string` | Hex-encoded signature |

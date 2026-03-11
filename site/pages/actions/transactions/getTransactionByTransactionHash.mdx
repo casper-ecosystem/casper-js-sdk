@@ -1,0 +1,55 @@
+# getTransactionByTransactionHash
+
+Retrieves a transaction by its TransactionV1 hash.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getTransactionByTransactionHash(
+  'abc123def456...'
+);
+
+const tx = result.transaction;
+const execResult = tx.executionInfo?.executionResult;
+
+if (execResult?.isSuccess()) {
+  console.log('Transaction succeeded');
+} else {
+  console.log('Failed:', execResult?.getErrorMessage());
+}
+```
+
+## Parameters
+
+### hash
+
+- **Type:** `string`
+
+The TransactionV1 hash as a hex string.
+
+## Return Value
+
+`Promise<InfoGetTransactionResult>`
+
+```ts
+interface InfoGetTransactionResult {
+  transaction: Transaction;
+  // executionInfo is present only after the transaction is finalized
+}
+```
+
+:::note
+The `executionInfo` field is `undefined` if the transaction is still pending. Use [`waitForTransaction`](/actions/transactions/waitForTransaction) to poll until finalization.
+:::
+
+## Related
+
+- [`getTransactionByDeployHash`](/actions/transactions/getTransactionByDeployHash)
+- [`getDeploy`](/actions/transactions/getDeploy)
+- [`waitForTransaction`](/actions/transactions/waitForTransaction)

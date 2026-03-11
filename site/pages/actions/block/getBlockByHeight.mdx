@@ -1,0 +1,37 @@
+# getBlockByHeight
+
+Returns a block at a specific height.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getBlockByHeight(1_000_000);
+
+const block = result.block;
+console.log(block.getBlockV2()?.header.timestamp);
+```
+
+## Parameters
+
+### height
+
+- **Type:** `number`
+
+The block height (0-indexed).
+
+## Return Value
+
+`Promise<ChainGetBlockResult>`
+
+Throws `RpcError` with `ErrorCode.NoSuchBlock` if the height exceeds the current chain tip.
+
+## Related
+
+- [`getLatestBlock`](/actions/block/getLatestBlock)
+- [`getBlockByHash`](/actions/block/getBlockByHash)

@@ -1,0 +1,51 @@
+# getAccountInfoByBlockHash
+
+Returns account information for a public key at a specific block, identified by block hash.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler, PublicKey } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getAccountInfoByBlockHash(
+  'abc123...',
+  publicKey
+);
+
+console.log(result.account.accountHash().toFormattedStr());
+console.log(result.account.mainPurse);
+```
+
+## Parameters
+
+### blockHash
+
+- **Type:** `string`
+
+Block hash as a hex string.
+
+### pub
+
+- **Type:** `PublicKey`
+
+The public key of the account to look up.
+
+## Return Value
+
+`Promise<StateGetAccountInfo>`
+
+```ts
+interface StateGetAccountInfo {
+  account: AccountInfo;
+}
+```
+
+## Related
+
+- [`getAccountInfo`](/actions/account/getAccountInfo)
+- [`getAccountInfoByBlockHeight`](/actions/account/getAccountInfoByBlockHeight)
+- [`getLatestEntity`](/actions/account/getLatestEntity)

@@ -1,0 +1,95 @@
+# Error Handling
+
+The SDK uses several error patterns depending on the layer.
+
+## RpcError
+
+Thrown when the Casper node returns a JSON-RPC error response.
+
+```ts
+import { RpcError, ErrorCode } from 'casper-js-sdk';
+
+try {
+  await rpcClient.queryLatestBalance({
+    mainPurseUnderPublicKey: publicKey.toHex(),
+  });
+} catch (err) {
+  if (err instanceof RpcError) {
+    console.log(err.code);    // ErrorCode number
+    console.log(err.message); // Error description
+    console.log(err.data);    // Optional additional data
+  }
+}
+```
+
+### ErrorCode
+
+| Constant | Value | When |
+|---|---|---|
+| `NoSuchEntity` | -32001 | Account or entity not found |
+| `AccountMigratedToEntity` | -32002 | 1.x account migrated to 2.x entity |
+| `NoSuchBlock` | -32003 | Block hash/height not found |
+| `NoSuchDeploy` | -32004 | Deploy or transaction hash not found |
+| `FailedToGetBalance` | -32005 | Balance query failed |
+
+### Version-Compatible Account Query
+
+The `AccountMigratedToEntity` error is common when querying accounts on Casper 2.0 nodes using the old `getAccountInfo` method:
+
+```ts
+import { RpcError, ErrorCode } from 'casper-js-sdk';
+
+async function getAccount(publicKey: PublicKey) {
+  try {
+    return await rpcClient.getAccountInfo('latest', publicKey);
+  } catch (err) {
+    if (err instanceof RpcError && err.code === ErrorCode.AccountMigratedToEntity) {
+      // Account migrated to Casper 2.0 entity - use the new API
+      return await rpcClient.getLatestEntity({ publicKey: publicKey.toHex() });
+    }
+    throw err;
+  }
+}
+```
+
+## HttpError
+
+Thrown for HTTP transport failures (network errors, non-200 responses).
+
+```ts
+import { HttpError } from 'casper-js-sdk';
+
+try {
+  await rpcClient.getStatus();
+} catch (err) {
+  if (err instanceof HttpError) {
+    console.log(err.statusCode); // HTTP status code
+    console.log(err.message);
+  }
+}
+```
+
+## SSE Result Errors
+
+The SSE client uses `ts-results` `Result<T, string>` for subscribe/unsubscribe:
+
+```ts
+const result = sseClient.subscribe(EventName.BlockAddedEventType, handler);
+if (result.err) {
+  // result.val is the error string
+  console.error('Subscribe failed:', result.val);
+}
+```
+
+Common SSE error strings:
+- `'Already subscribed to this event'` - duplicate subscribe
+- `'Not subscribed to this event'` - unsubscribe when not subscribed
+
+## Custom Error Classes
+
+Some modules throw typed errors for invalid inputs:
+
+- `ErrInvalidPublicKeyAlgo` - unknown key algorithm
+- `ErrInvalidBidAddrTag` - malformed BidAddr tag byte
+
+These are thrown synchronously during construction, not during network calls.
