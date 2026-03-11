@@ -1,0 +1,44 @@
+# Blockchain Responses
+
+This section shows real RPC response payloads and how the SDK parses them into typed objects. All examples come directly from the SDK's test fixtures - real data from the Casper Network.
+
+## Why this matters
+
+Every `rpcClient` method returns a typed object, but the underlying JSON has its own shape. Knowing what the raw response looks like helps you:
+
+- Debug unexpected values
+- Understand version differences (Casper 1.x vs 2.x)
+- Know which fields to expect before writing access code
+- Understand how amounts, keys, and hashes are encoded
+
+## Key encoding conventions
+
+All responses follow these conventions:
+
+| Concept | Wire format | SDK type |
+|---|---|---|
+| Public key | `"01..."` (ED25519) or `"02..."` (SECP256K1) | `PublicKey` |
+| Account hash | `"account-hash-<hex>"` | `AccountHash` |
+| Contract hash | `"hash-<hex>"` | `HashAddr` |
+| URef | `"uref-<hex>-<access>"` | `URef` |
+| Amount (CSPR) | `"900000000000"` (string, motes) | `BigNumber` |
+| Block hash | 64-char hex string | `HexBytes` |
+| Timestamp | ISO 8601 string | `Timestamp` |
+
+## Protocol versions
+
+The Casper Network has two major protocol generations:
+
+- **1.x** (`api_version: "1.5.x"`) - Deploy-based, older field names (`account`, `deploy_hash`, flat delegator structure)
+- **2.x** (`api_version: "2.0.x"`) - Transaction-based, new entity model, `delegator_kind` union type
+
+The SDK handles both transparently via `V1Compatible` wrapper classes.
+
+## Pages in this section
+
+- [Block](/responses/block) - `getBlockByHash` response anatomy
+- [Transaction Result](/responses/transaction) - `getTransactionByTransactionHash` result with execution info
+- [Deploy Result](/responses/deploy) - Legacy `getDeploy` result with transforms
+- [Account](/responses/account) - `getAccountInfo` with named keys
+- [Auction Bid](/responses/auction-bid) - Validator bid structure, V1 vs V2
+- [Node Status](/responses/node-status) - `getStatus` response fields

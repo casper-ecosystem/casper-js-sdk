@@ -1,0 +1,85 @@
+# ContractPackage
+
+Tracks all versions of a deployed contract, including access control groups and disabled versions.
+
+## Import
+
+```ts
+import { ContractPackage, ContractVersion, ContractGroup } from 'casper-js-sdk';
+```
+
+## Classes
+
+### `ContractPackage`
+
+| Property | Type | Description |
+|---|---|---|
+| `accessKey` | `URef` | URef controlling access to this package |
+| `disabledVersions` | `number[][]` | List of disabled version entries |
+| `groups` | `ContractGroup[]` | Access control groups |
+| `versions` | `ContractVersion[]` | All deployed versions |
+| `lockStatus` | `string` | Whether the package is locked |
+
+### `ContractVersion`
+
+Represents a single deployed version of a contract.
+
+| Property | Type | Description |
+|---|---|---|
+| `contractHash` | `ContractHash` | Hash of the specific contract version |
+| `contractVersion` | `number` | Version number |
+| `protocolVersionMajor` | `number` | Major protocol version |
+
+#### Constructor
+
+```ts
+new ContractVersion(
+  contractHash: ContractHash,
+  contractVersion: number,
+  protocolVersionMajor: number
+)
+```
+
+### `ContractGroup`
+
+An access control group containing a set of URefs.
+
+| Property | Type | Description |
+|---|---|---|
+| `groupName` | `string` | Group name |
+| `groupUsers` | `URef[]` | URefs belonging to this group |
+
+#### Static Methods
+
+```ts
+ContractGroup.fromJSON(json: any): ContractGroup | undefined
+```
+
+## Usage
+
+```ts
+// ContractPackage is typically obtained from StoredValue
+const result = await client.queryLatestGlobalState({
+  key: 'hash-abc123...',
+  path: [],
+});
+
+if (result.storedValue.contractPackage) {
+  const pkg = result.storedValue.contractPackage;
+
+  // Get the latest active version
+  const latest = pkg.versions.at(-1);
+  console.log('Latest version:', latest?.contractVersion);
+  console.log('Contract hash:', latest?.contractHash);
+  console.log('Lock status:', pkg.lockStatus);
+
+  for (const group of pkg.groups) {
+    console.log('Group:', group.groupName, 'URefs:', group.groupUsers.length);
+  }
+}
+```
+
+## See Also
+
+- [`Contract`](/types/contract) - A specific contract version
+- [`StoredValue`](/types/stored-value) - Contains `ContractPackage`

@@ -1,0 +1,44 @@
+# getAuctionInfoByHeight
+
+Returns the auction state at a specific block height. Automatically handles both Casper 1.x (V1) and Casper 2.x (V2) node responses.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getAuctionInfoByHeight(1234567);
+
+const bids = result.auctionState.getBids();
+for (const bid of bids) {
+  console.log('Validator:', bid.publicKey.toHex());
+  console.log('Stake:', bid.bid.stakedAmount);
+}
+```
+
+## Parameters
+
+### height
+
+- **Type:** `number`
+
+The block height to query auction info at.
+
+## Return Value
+
+`Promise<StateGetAuctionInfoResult>`
+
+```ts
+interface StateGetAuctionInfoResult {
+  auctionState: AuctionState;
+}
+```
+
+## Related
+
+- [`getLatestAuctionInfo`](/actions/auction/getLatestAuctionInfo)
+- [`getAuctionInfoByHash`](/actions/auction/getAuctionInfoByHash)

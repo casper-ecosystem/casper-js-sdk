@@ -1,0 +1,58 @@
+# BlockAdded
+
+Fires when a new block is finalized and added to the chain.
+
+## Import
+
+```ts
+import { SseClient, EventName } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+sseClient.subscribe(EventName.BlockAddedEventType, (raw) => {
+  const result = raw.parseAsBlockAddedEvent();
+  if (result.err) return;
+
+  const wrapper = result.val.blockAdded;
+
+  // Casper 2.x
+  const v2 = wrapper.getBlockAddedV2();
+  if (v2) {
+    console.log('Height:', v2.block.header.height);
+    console.log('Hash:', v2.blockHash);
+    console.log('Timestamp:', v2.block.header.timestamp);
+  }
+
+  // Casper 1.x fallback
+  const v1 = wrapper.getBlockAddedV1();
+  if (v1) {
+    console.log('Hash:', v1.blockHash);
+  }
+});
+```
+
+## Payload
+
+### BlockAddedWrapper
+
+| Field | Method | Description |
+|---|---|---|
+| V2 block | `getBlockAddedV2()` | Returns `BlockAddedV2 \| undefined` |
+| V1 block | `getBlockAddedV1()` | Returns `BlockAddedV1 \| undefined` |
+
+### BlockAddedV2 Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `blockHash` | `string` | Hex block hash |
+| `block.header.height` | `number` | Block height |
+| `block.header.timestamp` | `string` | ISO timestamp |
+| `block.header.eraId` | `number` | Current era |
+| `block.header.stateRootHash` | `string` | State root after block |
+| `block.body.transactions` | `object[]` | Transactions included |
+
+## Related
+
+- [`getLatestBlock`](/actions/block/getLatestBlock)

@@ -1,0 +1,53 @@
+# makeCep18TransferDeploy
+
+Creates a legacy `Deploy` for transferring CEP-18 (ERC-20 compatible) fungible tokens. For Casper 2.0 nodes use [`makeCep18TransferTransaction`](/utilities/makeCep18TransferTransaction).
+
+## Import
+
+```ts
+import { makeCep18TransferDeploy } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const deploy = makeCep18TransferDeploy({
+  contractPackageHash: 'abc123...',
+  senderPublicKeyHex: privateKey.publicKey.toHex(),
+  recipientPublicKeyHex: recipientPublicKey.toHex(),
+  transferAmount: '1000000000',  // token amount in smallest unit
+  paymentAmount: '3000000000',   // 3 CSPR gas
+  chainName: 'casper',
+});
+
+deploy.sign(privateKey);
+const result = await rpcClient.putDeploy(deploy);
+```
+
+## Parameters
+
+| Parameter | Type | Required | Default |
+|---|---|---|---|
+| `contractPackageHash` | `string` | yes | - |
+| `senderPublicKeyHex` | `string` | yes | - |
+| `recipientPublicKeyHex` | `string` | yes | - |
+| `transferAmount` | `string` | yes | - |
+| `paymentAmount` | `string` | yes | - |
+| `chainName` | `string` | no | `'casper'` |
+| `ttl` | `number` | no | `1800000` |
+| `timestamp` | `string` | no | now |
+| `gasPrice` | `number` | no | `1` |
+
+## Return Value
+
+`Deploy`
+
+## Notes
+
+- CEP-18 is Casper's ERC-20 equivalent standard for fungible tokens.
+- `transferAmount` is in the token's smallest unit - check the contract's `decimals` to convert.
+- For Casper 2.0 nodes use [`makeCep18TransferTransaction`](/utilities/makeCep18TransferTransaction) instead.
+
+## Related
+
+- [`makeCep18TransferTransaction`](/utilities/makeCep18TransferTransaction) - Casper 2.0 version

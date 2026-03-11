@@ -1,0 +1,132 @@
+# Account Response
+
+Raw response from `getAccountInfo` / `getLatestEntity`. Shows the structure of an account with named keys pointing to deployed contracts.
+
+## Raw JSON
+
+```json
+{
+  "api_version": "2.0.0",
+  "account": {
+    "account_hash": "account-hash-65a1bb912303cda45b4c7d10329ea630c50dd742e508539ad4f5c34be2d97291",
+    "named_keys": [
+      {
+        "name": "__cargo_purse",
+        "key": "uref-bcc9f888a3d4d12dee0d96dccfd53aef8871960e8f4837e4edb8559a867682a5-007"
+      },
+      {
+        "name": "cep18_contract_hash_cep18 test",
+        "key": "entity-contract-4ccb642ab6664ec391a9e7505d495172f8cdd9f9d7af2d7c4be0d256cbb8f3b8"
+      },
+      {
+        "name": "cep18_contract_package_cep18 test",
+        "key": "hash-a3781c07228d5b77f70f430392f03f31ab509048c2faf83ee4aa44e2691b809f"
+      },
+      {
+        "name": "cep78_contract_hash_Collection 1",
+        "key": "hash-c7f7d02f161194f3cd64290a8246283f85123f4b817276cb914a7982fdb9da92"
+      }
+    ],
+    "main_purse": "uref-abc123...def-007",
+    "associated_keys": [
+      {
+        "account_hash": "account-hash-65a1bb912303cda45b4c7d10329ea630c50dd742e508539ad4f5c34be2d97291",
+        "weight": 1
+      }
+    ],
+    "action_thresholds": {
+      "deployment": 1,
+      "upgrade_management": 1,
+      "key_management": 1
+    }
+  }
+}
+```
+
+## Field reference
+
+### `account_hash`
+
+The account's unique identifier on-chain. Derived from the public key - it is **not** the same as the public key hex. Format: `account-hash-<64-char hex>`.
+
+To derive an account hash from a public key:
+```ts
+const pubKey = PublicKey.fromHex('01abc...');
+const accountHash = pubKey.toAccountHash(); // AccountHash instance
+console.log(accountHash.toHex()); // 64-char hex
+```
+
+### `named_keys`
+
+A map of user-defined string names to on-chain keys. Used to store references to deployed contracts, purses, or other state. Common naming conventions:
+
+| Pattern | What it stores |
+|---|---|
+| `cep18_contract_hash_<name>` | CEP-18 token contract |
+| `cep18_contract_package_<name>` | CEP-18 contract package (versioned) |
+| `cep78_contract_hash_<name>` | CEP-78 NFT contract |
+| `__cargo_purse` | Secondary CSPR holding purse |
+
+Key prefixes in named_keys values:
+
+| Prefix | Type |
+|---|---|
+| `uref-...-007` | URef (read/write/add access) |
+| `hash-<hex>` | Contract hash (legacy 1.x format) |
+| `entity-contract-<hex>` | Addressable entity hash (2.x format) |
+
+### `main_purse`
+
+The account's primary CSPR purse as a URef. Use this to query balance:
+```ts
+const purseUref = account.mainPurse;
+const balance = await rpcClient.queryLatestBalance({ PurseUref: purseUref });
+```
+
+### `associated_keys`
+
+Multi-sig keys associated with this account, each with a weight. All account operations require cumulative key weight to meet thresholds.
+
+### `action_thresholds`
+
+Minimum cumulative weight required for:
+- `deployment` - sending transactions/deploys
+- `key_management` - adding/removing associated keys
+- `upgrade_management` - upgrading contracts (2.x)
+
+## 1.x vs 2.x differences
+
+On Casper 1.x, contract references use `hash-<hex>`. On 2.x, they may use `entity-contract-<hex>` (the new `AddressableEntity` model). Both can appear in the same account's named keys during migration.
+
+The `getAccountInfo` method returns the 1.x-style `Account` object. Use `getLatestEntity` on 2.x nodes to get the full `AddressableEntity` representation.
+
+## SDK usage
+
+```ts
+const result = await rpcClient.getAccountInfo(
+  null, // latest block
+  { PublicKey: '01abc...' }
+);
+
+const account = result.account!;
+
+console.log('Account hash:', account.accountHash);
+console.log('Main purse:', account.mainPurse?.toHex());
+
+// Find a specific contract
+const cep18Key = account.namedKeys?.find(k => k.name.startsWith('cep18_contract_hash_'));
+if (cep18Key) {
+  console.log('CEP-18 contract:', cep18Key.key);
+}
+
+// Check threshold
+console.log('Deploy threshold:', account.actionThresholds?.deployment);
+```
+
+## Related
+
+- [`getAccountInfo`](/actions/account/getAccountInfo)
+- [`getLatestEntity`](/actions/account/getLatestEntity)
+- [Account type](/types/account)
+- [AddressableEntity type](/types/addressable-entity)
+- [NamedKey type](/types/named-key)

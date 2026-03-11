@@ -1,0 +1,38 @@
+# Fault
+
+Fires when a validator equivocates (signs two conflicting blocks in the same slot).
+
+## Import
+
+```ts
+import { SseClient, EventName } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+sseClient.subscribe(EventName.FaultEventType, (raw) => {
+  const result = raw.parseAsFaultEvent();
+  if (result.err) return;
+
+  const fault = result.val.fault;
+  console.log('Equivocating validator:', fault.publicKey.toHex());
+  console.log('Era ID:', fault.eraId);
+  console.log('Timestamp:', fault.timestamp);
+});
+```
+
+## Payload
+
+### FaultPayload
+
+| Field | Type | Description |
+|---|---|---|
+| `eraId` | `number` | Era in which the fault occurred |
+| `timestamp` | `string` | Time of detection |
+| `publicKey` | `PublicKey` | The equivocating validator's key |
+
+## Notes
+
+- Equivocating validators are slashed (lose part of their stake).
+- This event is rare in practice on well-operated networks.

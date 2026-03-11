@@ -1,0 +1,42 @@
+# getLatestBalance
+
+Returns the balance of a purse by URef at the latest state. This is the legacy balance API for Casper 1.x.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getLatestBalance('uref-abc123...-007');
+console.log(result.balanceValue);
+```
+
+## Parameters
+
+### purseURef
+
+- **Type:** `string`
+
+The purse URef string in the format `uref-{hex}-{octal}`.
+
+## Return Value
+
+`Promise<StateGetBalanceResult>`
+
+```ts
+interface StateGetBalanceResult {
+  balanceValue: string; // balance in motes as a string
+}
+```
+
+:::note
+For Casper 2.x nodes, prefer [`queryLatestBalance`](/actions/balance/queryLatestBalance) which supports multiple identifier types.
+:::
+
+## Related
+
+- [`queryLatestBalance`](/actions/balance/queryLatestBalance)

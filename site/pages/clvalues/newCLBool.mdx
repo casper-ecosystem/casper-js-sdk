@@ -1,0 +1,34 @@
+# CLValue.newCLValueBool
+
+Creates a CLValue of type `Bool`.
+
+## Import
+
+```ts
+import { CLValue } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const value = CLValue.newCLValueBool(true);
+```
+
+## Parameters
+
+### val
+
+- **Type:** `boolean`
+
+## Return Value
+
+`CLValue` with `clType = CLType.Bool`.
+
+## Example
+
+```ts
+const args = Args.fromMap({
+  is_paused: CLValue.newCLValueBool(false),
+  allow_mint: CLValue.newCLValueBool(true),
+});
+```

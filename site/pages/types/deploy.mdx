@@ -1,0 +1,121 @@
+# Deploy
+
+The legacy transaction format used in Casper 1.x. A deploy contains a header, a payment item, a session item, and approvals.
+
+## Import
+
+```ts
+import { Deploy, DeployHeader, DEFAULT_DEPLOY_TTL } from 'casper-js-sdk';
+```
+
+## Constants
+
+```ts
+DEFAULT_DEPLOY_TTL = 1800000  // 30 minutes in milliseconds
+```
+
+## Classes
+
+### `Deploy`
+
+| Property | Type | Description |
+|---|---|---|
+| `hash` | `Hash` | Deploy hash |
+| `header` | `DeployHeader` | Deploy metadata |
+| `payment` | `ExecutableDeployItem` | Payment item |
+| `session` | `ExecutableDeployItem` | Session item (the actual execution) |
+| `approvals` | `Approval[]` | Signatures authorizing this deploy |
+
+#### Methods
+
+```ts
+deploy.validate(): boolean
+deploy.sign(keys: PrivateKey): void
+deploy.toBytes(): Uint8Array
+deploy.isTransfer(): boolean
+deploy.isStandardPayment(): boolean
+```
+
+#### Static Methods
+
+```ts
+Deploy.createNew(
+  session: ExecutableDeployItem,
+  payment: ExecutableDeployItem,
+  header: DeployHeader
+): Deploy
+
+Deploy.makeDeploy(
+  session: ExecutableDeployItem,
+  payment: ExecutableDeployItem,
+  chainName: string,
+  publicKey: PublicKey,
+  ttl?: number
+): Deploy
+
+Deploy.addArgToDeploy(deploy: Deploy, name: string, value: CLValue): Deploy
+Deploy.newTransactionFromDeploy(deploy: Deploy): Transaction
+Deploy.fromJSON(data: any): Deploy
+Deploy.toJSON(deploy: Deploy): any
+Deploy.getDeploySizeInBytes(deploy: Deploy): number
+```
+
+### `DeployHeader`
+
+Metadata describing the deploy's originator, chain, and timing.
+
+| Property | Type | Description |
+|---|---|---|
+| `account?` | `PublicKey` | Account submitting the deploy |
+| `bodyHash?` | `Hash` | Hash of the deploy body |
+| `chainName` | `string` | Target chain name |
+| `dependencies` | `Hash[]` | Deploy hashes this deploy depends on |
+| `gasPrice` | `number` | Gas price in motes |
+| `timestamp` | `Timestamp` | Creation timestamp |
+| `ttl` | `Duration` | Time-to-live |
+
+#### Methods
+
+```ts
+header.toBytes(): Uint8Array
+DeployHeader.default(): DeployHeader
+```
+
+## Usage
+
+```ts
+import {
+  Deploy, ExecutableDeployItem, Args,
+  newCLU512, PrivateKey, KeyAlgorithm
+} from 'casper-js-sdk';
+
+const privateKey = PrivateKey.generate(KeyAlgorithm.ED25519);
+
+// Standard payment
+const payment = ExecutableDeployItem.standardPayment('100000000');
+
+// Session (transfer)
+const session = ExecutableDeployItem.newTransfer({
+  amount: '2500000000',
+  target: recipientPublicKey,
+  id: Date.now(),
+});
+
+const deploy = Deploy.makeDeploy(
+  session,
+  payment,
+  'casper',
+  privateKey.publicKey
+);
+
+deploy.sign(privateKey);
+
+const result = await client.putDeploy(deploy);
+console.log('Deploy hash:', result.deployHash);
+```
+
+## See Also
+
+- [`ExecutableDeployItem`](/types/executable-deploy-item) - Payment and session items
+- [`Transaction`](/types/transaction) - Unified transaction type
+- [`putDeploy`](/actions/transactions/putDeploy) - Submit a deploy

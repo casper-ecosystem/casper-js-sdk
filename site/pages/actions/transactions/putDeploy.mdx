@@ -1,0 +1,56 @@
+# putDeploy
+
+Submits a signed legacy `Deploy` object to the network.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+import { makeCsprTransferDeploy } from 'casper-js-sdk';
+
+const deploy = makeCsprTransferDeploy({
+  from: publicKey,
+  to: targetPublicKey,
+  amount: '2500000000',
+  id: Date.now(),
+  chainName: 'casper',
+});
+
+deploy.sign(privateKey);
+
+const result = await rpcClient.putDeploy(deploy);
+console.log('Deploy hash:', result.deployHash);
+```
+
+## Parameters
+
+### deploy
+
+- **Type:** `Deploy`
+
+A signed `Deploy` object. The legacy transaction format for Casper 1.x.
+
+## Return Value
+
+`Promise<PutDeployResult>`
+
+```ts
+interface PutDeployResult {
+  deployHash: string;
+}
+```
+
+## Notes
+
+- For new code, prefer [`putTransaction`](/actions/transactions/putTransaction) with `NativeTransferBuilder` or other builders.
+- `Deploy` is still supported by all Casper nodes including 2.x.
+
+## Related
+
+- [`putTransaction`](/actions/transactions/putTransaction)
+- [`getDeploy`](/actions/transactions/getDeploy)

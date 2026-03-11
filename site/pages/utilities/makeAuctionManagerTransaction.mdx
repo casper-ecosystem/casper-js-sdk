@@ -1,0 +1,67 @@
+# makeAuctionManagerTransaction
+
+Creates a `Transaction` for auction (staking) operations. Uses native builders for Casper 2.0 nodes and wraps a legacy `Deploy` for 1.x nodes.
+
+## Import
+
+```ts
+import { makeAuctionManagerTransaction, AuctionManagerEntryPoint } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const status = await rpcClient.getStatus();
+
+// Delegate
+const transaction = makeAuctionManagerTransaction({
+  contractEntryPoint: AuctionManagerEntryPoint.delegate,
+  delegatorPublicKeyHex: privateKey.publicKey.toHex(),
+  validatorPublicKeyHex: validatorPublicKey.toHex(),
+  amount: '500000000000',     // 500 CSPR in motes
+  paymentAmount: '2500000000',
+  chainName: 'casper',
+  casperNetworkApiVersion: status.apiVersion,
+});
+
+transaction.sign(privateKey);
+const result = await rpcClient.putTransaction(transaction);
+```
+
+## Parameters
+
+| Parameter | Type | Required | Default |
+|---|---|---|---|
+| `contractEntryPoint` | `AuctionManagerEntryPoint` | yes | - |
+| `delegatorPublicKeyHex` | `string` | yes | - |
+| `validatorPublicKeyHex` | `string` | yes | - |
+| `amount` | `string` | yes | - |
+| `casperNetworkApiVersion` | `string` | yes | - |
+| `newValidatorPublicKeyHex` | `string` | redelegate only | - |
+| `paymentAmount` | `string` | no | - |
+| `chainName` | `CasperNetworkName` | no | `'casper'` |
+| `contractHash` | `string` | no | built-in mainnet hash |
+| `ttl` | `number` | no | `1800000` |
+| `timestamp` | `string` | no | now |
+| `gasPrice` | `number` | no | `1` |
+
+### contractEntryPoint
+
+```ts
+enum AuctionManagerEntryPoint {
+  delegate = 'delegate',
+  undelegate = 'undelegate',
+  redelegate = 'redelegate',
+}
+```
+
+## Return Value
+
+`Transaction`
+
+## Related
+
+- [`makeAuctionManagerDeploy`](/utilities/makeAuctionManagerDeploy) - Deploy-only version
+- [`NativeDelegateBuilder`](/builders/NativeDelegateBuilder)
+- [`NativeUndelegateBuilder`](/builders/NativeUndelegateBuilder)
+- [`NativeRedelegateBuilder`](/builders/NativeRedelegateBuilder)

@@ -1,0 +1,50 @@
+# getValidatorRewardByEraID
+
+Returns the reward earned by a validator in a specific era.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler, PublicKey } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const validator = PublicKey.fromHex('01a8b1...');
+
+const result = await rpcClient.getValidatorRewardByEraID(validator, 1234);
+
+console.log('Reward:', result.amount.toString());
+```
+
+## Parameters
+
+### validator
+
+- **Type:** `PublicKey`
+
+The validator's public key.
+
+### eraID
+
+- **Type:** `number`
+
+The era ID to query the reward for.
+
+## Return Value
+
+`Promise<InfoGetRewardResult>`
+
+```ts
+interface InfoGetRewardResult {
+  delegatorReward: BigNumber;
+  validatorReward: BigNumber;
+}
+```
+
+## Related
+
+- [`getLatestValidatorReward`](/actions/auction/getLatestValidatorReward)
+- [`getValidatorRewardByBlockHash`](/actions/auction/getValidatorRewardByBlockHash)
+- [`getValidatorRewardByBlockHeight`](/actions/auction/getValidatorRewardByBlockHeight)

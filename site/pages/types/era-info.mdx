@@ -1,0 +1,85 @@
+# EraInfo
+
+Contains seigniorage allocation information for an era - how rewards were distributed among validators and delegators.
+
+## Import
+
+```ts
+import { EraInfo, SeigniorageAllocation, ValidatorAllocation, DelegatorAllocation } from 'casper-js-sdk';
+```
+
+## Classes
+
+### `EraInfo`
+
+| Property | Type | Description |
+|---|---|---|
+| `seigniorageAllocations` | `SeigniorageAllocation[]` | All reward allocations for this era |
+
+#### Constructor
+
+```ts
+new EraInfo(seigniorageAllocations?: SeigniorageAllocation[])
+```
+
+### `SeigniorageAllocation`
+
+A discriminated union representing either a validator or delegator reward.
+
+| Property | Type | Description |
+|---|---|---|
+| `validator?` | `ValidatorAllocation` | Validator's reward allocation |
+| `delegator?` | `DelegatorAllocation` | Delegator's reward allocation |
+
+#### Static Methods
+
+```ts
+SeigniorageAllocation.fromJSON(json: any): SeigniorageAllocation
+```
+
+### `ValidatorAllocation`
+
+| Property | Type | Description |
+|---|---|---|
+| `validatorPublicKey` | `PublicKey` | Validator's public key |
+| `amount` | `CLValueUInt512` | Reward amount in motes |
+
+### `DelegatorAllocation`
+
+| Property | Type | Description |
+|---|---|---|
+| `delegatorKind` | `DelegationKind` | Delegator identification |
+| `validatorPublicKey` | `PublicKey` | Validator being delegated to |
+| `amount` | `CLValueUInt512` | Reward amount in motes |
+
+## Usage
+
+```ts
+// EraInfo is stored in global state and returned via EraSummary
+const { eraSummary } = await client.getEraSummaryLatest();
+
+if (eraSummary.storedValue.eraInfo) {
+  const eraInfo = eraSummary.storedValue.eraInfo;
+
+  for (const allocation of eraInfo.seigniorageAllocations) {
+    if (allocation.validator) {
+      console.log(
+        'Validator reward:',
+        allocation.validator.validatorPublicKey.toHex(),
+        allocation.validator.amount.toString()
+      );
+    } else if (allocation.delegator) {
+      console.log(
+        'Delegator reward:',
+        allocation.delegator.amount.toString()
+      );
+    }
+  }
+}
+```
+
+## See Also
+
+- [`EraSummary`](/types/era-summary) - Contains `StoredValue` with `EraInfo`
+- [`getEraSummaryLatest`](/actions/auction/getEraSummaryLatest) - RPC action
+- [`EraEnd`](/types/era-end) - Era-end data on switch blocks

@@ -1,0 +1,89 @@
+# SseClient
+
+The `SseClient` connects to a Casper node's event stream (port 9999) and delivers real-time blockchain events.
+
+## Import
+
+```ts
+import { SseClient, EventName } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const sseClient = new SseClient('http://<Node Address>:9999/events');
+
+sseClient.subscribe(EventName.TransactionProcessedEventType, (raw) => {
+  const event = raw.parseAsTransactionProcessedEvent();
+  if (event.err) return;
+  console.log('Processed:', event.val.transactionProcessed.hash);
+});
+
+sseClient.start();
+```
+
+## Constructor
+
+```ts
+new SseClient(url: string)
+```
+
+### Parameters
+
+#### url
+
+- **Type:** `string`
+
+The SSE endpoint URL. Typically `http://<node>:9999/events`.
+
+## Methods
+
+### subscribe
+
+```ts
+sseClient.subscribe(
+  eventName: EventName,
+  handler: (raw: RawEvent) => void
+): Result<boolean, string>
+```
+
+Registers a handler for the given event type. Returns `Err` if already subscribed.
+
+### unsubscribe
+
+```ts
+sseClient.unsubscribe(eventName: EventName): Result<boolean, string>
+```
+
+Removes the handler for the given event type.
+
+### start
+
+```ts
+sseClient.start(eventId?: number): void
+```
+
+Opens the EventSource connection and begins streaming. Call after all `subscribe()` calls.
+
+Pass `eventId` to resume the stream from a specific event ID.
+
+### stop
+
+```ts
+sseClient.stop(): void
+```
+
+Closes the EventSource connection and stops streaming.
+
+## Available Events
+
+| Event | Description |
+|---|---|
+| [`BlockAdded`](/sse/block-added) | New block finalized |
+| [`TransactionProcessed`](/sse/transaction-processed) | Transaction execution result |
+| [`TransactionAccepted`](/sse/transaction-accepted) | Transaction accepted to mempool |
+| [`TransactionExpired`](/sse/transaction-expired) | Transaction expired before processing |
+| [`DeployProcessed`](/sse/deploy-processed) | Legacy deploy execution result |
+| [`FinalitySignature`](/sse/finality-signature) | Validator finality signature |
+| [`Fault`](/sse/fault) | Validator equivocation |
+| [`Step`](/sse/step) | End-of-era auction step |

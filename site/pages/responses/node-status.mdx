@@ -1,0 +1,175 @@
+# Node Status Response
+
+Raw response from `getStatus`. Useful for checking whether a node is synced, its current era/height, and connected peers.
+
+## Raw JSON
+
+```json
+{
+  "api_version": "2.0.0",
+  "protocol_version": "5.4.3",
+  "build_version": "2.0.0",
+  "chainspec_name": "dev-net",
+  "our_public_signing_key": "01032146b0b9de01e26aaec7b0d1769920de94681dbd432c3530bfe591752ded6c",
+  "round_length": "16s 384ms",
+  "uptime": "1month 1day 17h 40m 43s",
+  "reactor_state": "Validate",
+  "last_progress": "2024-04-13T03:38:19.626Z",
+  "latest_switch_block_hash": "099cc3232b04ebb556c73328597c0b8c518fa4565c7d1f7981bc251414ce8c2f",
+  "starting_state_root_hash": "b275db1f79912c7b2507a8e48f5ef15e6ae3236bed542c7710ce15321622d1cb",
+  "next_upgrade": null,
+  "last_added_block_info": {
+    "hash": "e8637cdc918e901c6e10a050cc7d3be949b892dc8842580088f5aa592a342d39",
+    "timestamp": "2024-05-15T07:52:31.214Z",
+    "era_id": 386,
+    "height": 170022,
+    "state_root_hash": "18502c7912b294d65cadbaaf6a60b9d04b376224d540e31fca184606b16c706c",
+    "creator": "0140afe8f752e5ff100e0189c080bc207e8805b3e5e82f792ec608de2f11f39f6c"
+  },
+  "available_block_range": {
+    "low": 0,
+    "high": 170022
+  },
+  "block_sync": {
+    "historical": {
+      "block_hash": "16ddf28e2b3d2e17f4cef36f8b58827eca917af225d139b0c77df3b4a67dc55e",
+      "block_height": 40,
+      "acquisition_state": "have strict finality(40) for: block hash 16dd..c55e"
+    },
+    "forward": {
+      "block_hash": "59907b1e32a9158169c4d89d9ce5ac9164fc31240bfcfb0969227ece06d74983",
+      "block_height": 6701,
+      "acquisition_state": "have block body(6701) for: block hash 5990..4983"
+    }
+  },
+  "peers": [
+    { "node_id": "tls:4cca..587b", "address": "3.139.219.212:35000" },
+    { "node_id": "tls:743f..dc85", "address": "3.140.9.1:35000" }
+  ]
+}
+```
+
+## Field reference
+
+### Version fields
+
+| Field | Description |
+|---|---|
+| `api_version` | JSON-RPC API version implemented by this node |
+| `protocol_version` | Casper protocol version (chainspec-defined) |
+| `build_version` | Node binary version |
+| `chainspec_name` | Network name: `"casper"`, `"casper-test"`, or a private net name |
+
+### Node state
+
+| Field | Description |
+|---|---|
+| `reactor_state` | Current node state machine state |
+| `uptime` | Human-readable time since node start |
+| `last_progress` | ISO 8601 timestamp of last state machine transition |
+| `round_length` | Consensus round duration (Casper 2.x) |
+| `our_public_signing_key` | This node's validator key (if it's a validator) |
+
+### `reactor_state` values
+
+| Value | Meaning |
+|---|---|
+| `"Initialize"` | Node starting up |
+| `"CatchUp"` | Syncing to current tip |
+| `"Upgrading"` | Applying a protocol upgrade |
+| `"Validate"` | Fully synced, participating in consensus |
+| `"ShutdownForUpgrade"` | Preparing to restart for upgrade |
+
+:::tip
+Wait for `reactor_state === "Validate"` before sending transactions if you need the node to be fully synced.
+:::
+
+### `last_added_block_info`
+
+The most recent block this node knows about:
+
+| Field | Description |
+|---|---|
+| `hash` | Block hash |
+| `height` | Block height |
+| `era_id` | Era this block is in |
+| `timestamp` | Block timestamp |
+| `state_root_hash` | Global state root after this block |
+| `creator` | Validator public key that proposed this block |
+
+### `available_block_range`
+
+```json
+{ "low": 0, "high": 170022 }
+```
+
+The range of block heights this node can serve. If you request a block below `low`, the node may not have it (pruned). Nodes with `low: 0` have full history.
+
+### `block_sync`
+
+Shows the node's sync progress for two sync directions:
+
+- **`historical`** - how far back the node has synced (for nodes joining mid-chain)
+- **`forward`** - current tip sync (real-time block processing)
+
+The `acquisition_state` string describes what data has been downloaded for that block height.
+
+### `next_upgrade`
+
+`null` if no protocol upgrade is scheduled. When non-null:
+```json
+{
+  "activation_point": { "EraId": 1234 },
+  "protocol_version": "3.0.0"
+}
+```
+
+### `peers`
+
+Array of connected peers. Useful for discovering other nodes. Each peer has:
+- `node_id` - TLS-based identifier (partial fingerprint)
+- `address` - `host:port`
+
+## SDK usage
+
+```ts
+const status = await rpcClient.getStatus();
+
+// Check sync state
+if (status.reactorState === 'Validate') {
+  console.log('Node is fully synced');
+}
+
+// Current chain tip
+const tip = status.lastAddedBlockInfo;
+console.log('Height:', tip.height);
+console.log('Era:', tip.eraId);
+console.log('At:', tip.timestamp);
+
+// Protocol version
+console.log('Protocol:', status.protocolVersion);
+console.log('Network:', status.chainspecName);
+
+// Check if node has historical data
+const range = status.availableBlockRange;
+console.log(`Blocks available: ${range.low} – ${range.high}`);
+
+// Peers
+console.log('Connected peers:', status.peers.length);
+```
+
+## Using `getStatus` for version detection
+
+`getStatus` is used internally by `CasperNetwork.create` to auto-detect the protocol version:
+
+```ts
+const network = await CasperNetwork.create(rpcClient);
+// Internally calls getStatus() and reads protocolVersion
+// to determine whether to use Deploy (1.x) or Transaction (2.x) format
+```
+
+## Related
+
+- [`getStatus`](/actions/node/getStatus)
+- [`getPeers`](/actions/node/getPeers)
+- [CasperNetwork](/utilities/CasperNetwork)

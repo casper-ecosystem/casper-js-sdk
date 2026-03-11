@@ -1,0 +1,56 @@
+# NativeUndelegateBuilder
+
+Builds a native undelegate transaction to unstake CSPR from a validator.
+
+## Import
+
+```ts
+import { NativeUndelegateBuilder, PublicKey } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const transaction = new NativeUndelegateBuilder()
+  .from(delegatorPublicKey)
+  .validator(validatorPublicKey)
+  .amount('500000000000')  // 500 CSPR to unstake
+  .chainName('casper')
+  .payment(2_500_000_000)
+  .build();
+
+transaction.sign(privateKey);
+const result = await rpcClient.putTransaction(transaction);
+```
+
+## Methods
+
+### .from(publicKey)
+
+- **Type:** `PublicKey` - required
+
+### .validator(publicKey)
+
+- **Type:** `PublicKey` - required
+
+The validator to unstake from.
+
+### .amount(motes)
+
+- **Type:** `BigNumber | string` - required
+
+Amount to unstake in motes.
+
+### .chainName(name)
+
+- **Type:** `string` - required
+
+## Notes
+
+- After undelegating, there is an **unbonding period** of 7 eras (~14 hours) before funds are returned.
+- During the unbonding period, the stake does not earn rewards.
+
+## Related
+
+- [`NativeDelegateBuilder`](/builders/NativeDelegateBuilder)
+- [`NativeRedelegateBuilder`](/builders/NativeRedelegateBuilder)

@@ -1,0 +1,39 @@
+# getEraSummaryLatest
+
+Returns a summary of the current era, including era ID and validator weights.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getEraSummaryLatest();
+
+console.log('Era ID:', result.eraSummary.eraId);
+console.log('Block hash:', result.eraSummary.blockHash);
+```
+
+## Return Value
+
+`Promise<ChainGetEraSummaryResult>`
+
+```ts
+interface ChainGetEraSummaryResult {
+  eraSummary: EraSummary;
+}
+
+interface EraSummary {
+  eraId: number;
+  blockHash: Hash;
+  storedValue: StoredValue; // EraInfo
+  stateRootHash: Hash;
+}
+```
+
+## Related
+
+- [`getLatestAuctionInfo`](/actions/auction/getLatestAuctionInfo)

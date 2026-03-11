@@ -1,0 +1,184 @@
+# PrivateKey
+
+Represents a cryptographic private key for signing transactions and messages.
+
+## Import
+
+```ts
+import { PrivateKey, KeyAlgorithm } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+// Generate a new key pair
+const privateKey = PrivateKey.generate(KeyAlgorithm.ED25519);
+console.log(privateKey.publicKey.toHex());
+// → '01a8b1...'
+
+// Sign a transaction
+transaction.sign(privateKey);
+```
+
+## Methods
+
+### PrivateKey.generate
+
+Generates a new random private key.
+
+```ts
+PrivateKey.generate(algorithm: KeyAlgorithm): PrivateKey
+```
+
+#### Parameters
+
+##### algorithm
+
+- **Type:** `KeyAlgorithm`
+
+The key algorithm to use. Either `KeyAlgorithm.ED25519` or `KeyAlgorithm.SECP256K1`.
+
+#### Return Value
+
+`PrivateKey`
+
+#### Example
+
+```ts
+const ed25519Key = PrivateKey.generate(KeyAlgorithm.ED25519);
+const secp256k1Key = PrivateKey.generate(KeyAlgorithm.SECP256K1);
+```
+
+---
+
+### PrivateKey.fromPem
+
+Imports a private key from PEM format.
+
+```ts
+PrivateKey.fromPem(content: string, algorithm: KeyAlgorithm): PrivateKey
+```
+
+#### Parameters
+
+##### content
+
+- **Type:** `string`
+
+The PEM-encoded private key string.
+
+##### algorithm
+
+- **Type:** `KeyAlgorithm`
+
+The algorithm used by this key.
+
+#### Return Value
+
+`PrivateKey`
+
+#### Example
+
+```ts
+const pem = `-----BEGIN PRIVATE KEY-----
+MC4CAQAwBQYDK2VwBCIEIMIUKy...
+-----END PRIVATE KEY-----`;
+
+const privateKey = PrivateKey.fromPem(pem, KeyAlgorithm.ED25519);
+```
+
+---
+
+### PrivateKey.fromHex
+
+Imports a private key from a hex string.
+
+```ts
+PrivateKey.fromHex(key: string, algorithm: KeyAlgorithm): PrivateKey
+```
+
+#### Parameters
+
+##### key
+
+- **Type:** `string`
+
+Hex-encoded private key bytes.
+
+##### algorithm
+
+- **Type:** `KeyAlgorithm`
+
+The algorithm used by this key.
+
+#### Return Value
+
+`PrivateKey`
+
+#### Example
+
+```ts
+const privateKey = PrivateKey.fromHex('a1b2c3...', KeyAlgorithm.ED25519);
+```
+
+---
+
+### toPem
+
+Exports the private key as a PEM string.
+
+```ts
+privateKey.toPem(): string
+```
+
+#### Return Value
+
+`string` - PEM-encoded private key, safe for file storage.
+
+#### Example
+
+```ts
+const pem = privateKey.toPem();
+// Store securely
+fs.writeFileSync('secret_key.pem', pem, { mode: 0o600 });
+```
+
+---
+
+### toBytes
+
+Returns the raw private key bytes.
+
+```ts
+privateKey.toBytes(): Uint8Array
+```
+
+---
+
+### sign
+
+Signs a message with this private key.
+
+```ts
+privateKey.sign(message: Uint8Array): Uint8Array
+```
+
+#### Parameters
+
+##### message
+
+- **Type:** `Uint8Array`
+
+The bytes to sign (typically a transaction hash).
+
+#### Return Value
+
+`Uint8Array` - The signature bytes (64 bytes for ED25519, 64 bytes for SECP256K1).
+
+---
+
+## Properties
+
+| Property | Type | Description |
+|---|---|---|
+| `publicKey` | `PublicKey` | The corresponding public key |

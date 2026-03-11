@@ -1,0 +1,42 @@
+# getLatestDelegatorReward
+
+Returns the reward earned by a delegator in the most recent completed era.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler, PublicKey } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const reward = await rpcClient.getLatestDelegatorReward(
+  validatorPublicKey,
+  delegatorPublicKey
+);
+
+console.log('Delegator reward:', reward.reward.toString(), 'motes');
+```
+
+## Parameters
+
+### validator
+
+- **Type:** `PublicKey`
+
+The validator the delegator is staking with.
+
+### delegator
+
+- **Type:** `PublicKey`
+
+The delegator's public key.
+
+## Return Value
+
+`Promise<InfoGetRewardResult>`
+
+## Related
+
+- [`getLatestValidatorReward`](/actions/auction/getLatestValidatorReward)

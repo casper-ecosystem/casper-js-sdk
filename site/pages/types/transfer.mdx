@@ -1,0 +1,91 @@
+# Transfer
+
+Represents a token transfer, supporting both Casper 1.x and 2.x formats.
+
+## Import
+
+```ts
+import { Transfer, TransferV1, TransferV2 } from 'casper-js-sdk';
+```
+
+## Classes
+
+### `Transfer`
+
+Unified transfer type normalizing V1 and V2 formats.
+
+| Property | Type | Description |
+|---|---|---|
+| `amount` | `CLValueUInt512` | Amount transferred in motes |
+| `from` | `InitiatorAddr \| AccountHash` | Sender |
+| `gas` | `number` | Gas used |
+| `id?` | `number` | Optional transfer ID |
+| `source` | `URef` | Source purse |
+| `target` | `URef` | Target purse |
+| `to?` | `AccountHash` | Optional recipient account hash |
+
+#### Methods
+
+```ts
+transfer.getTransferV1(): TransferV1 | undefined
+transfer.getTransferV2(): TransferV2 | undefined
+Transfer.fromJSON(data: any): Transfer
+```
+
+### `TransferV1`
+
+Casper 1.x transfer format.
+
+| Property | Type | Description |
+|---|---|---|
+| `amount` | `CLValueUInt512` | Transfer amount |
+| `deployHash` | `Hash` | Associated deploy hash |
+| `from` | `AccountHash` | Sender account hash |
+| `gas` | `number` | Gas used |
+| `id?` | `number` | Transfer ID |
+| `source` | `URef` | Source purse |
+| `target` | `URef` | Target purse |
+| `to?` | `AccountHash` | Recipient |
+
+### `TransferV2`
+
+Casper 2.x transfer format.
+
+| Property | Type | Description |
+|---|---|---|
+| `amount` | `CLValueUInt512` | Transfer amount |
+| `transactionHash` | `TransactionHash` | Associated transaction hash |
+| `from` | `InitiatorAddr` | Sender (public key or account hash) |
+| `gas` | `number` | Gas used |
+| `id?` | `number` | Transfer ID |
+| `source` | `URef` | Source purse |
+| `target` | `URef` | Target purse |
+| `to?` | `AccountHash` | Recipient |
+
+## Usage
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+
+const client = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+
+// Get block transfers
+const { transfers } = await client.getLatestBlockTransfers();
+
+for (const t of transfers) {
+  console.log('Amount:', t.amount.toString());
+  console.log('Source:', t.source.toJSON());
+  console.log('Target:', t.target.toJSON());
+
+  const v1 = t.getTransferV1();
+  if (v1) {
+    console.log('Deploy hash:', v1.deployHash.toHex());
+  }
+}
+```
+
+## See Also
+
+- [`getLatestBlockTransfers`](/actions/block/getLatestBlockTransfers) - Returns `Transfer[]`
+- [`ExecutionResult`](/types/execution-result) - Contains transfers
+- [`StoredValue`](/types/stored-value) - Contains optional `transfer`

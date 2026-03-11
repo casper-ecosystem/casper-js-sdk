@@ -1,0 +1,65 @@
+# Transaction Builders
+
+Transaction builders provide a fluent API for constructing `TransactionV1` (Casper 2.x) transactions.
+
+## Available Builders
+
+| Builder | Use Case |
+|---|---|
+| [`NativeTransferBuilder`](/builders/NativeTransferBuilder) | Send CSPR to another account |
+| [`NativeDelegateBuilder`](/builders/NativeDelegateBuilder) | Stake CSPR with a validator |
+| [`NativeUndelegateBuilder`](/builders/NativeUndelegateBuilder) | Unstake CSPR from a validator |
+| [`NativeRedelegateBuilder`](/builders/NativeRedelegateBuilder) | Move stake to a different validator |
+| [`ContractCallBuilder`](/builders/ContractCallBuilder) | Call a smart contract entry point |
+| [`SessionBuilder`](/builders/SessionBuilder) | Deploy and run WASM session code |
+
+## General Pattern
+
+All builders follow the same pattern:
+
+```ts
+const transaction = new SomeBuilder()
+  .from(senderPublicKey)    // required: who is sending
+  ./* ...chain options... */
+  .chainName('casper')      // required: network name
+  .payment(100_000_000)     // optional: gas payment in motes
+  .ttl('30m')               // optional: time to live
+  .timestamp(Date.now())    // optional: creation time
+  .build();                 // returns Transaction
+
+transaction.sign(privateKey);  // sign before submitting
+
+const result = await rpcClient.putTransaction(transaction);
+```
+
+## Common Builder Options
+
+| Method | Type | Default | Description |
+|---|---|---|---|
+| `.from(key)` | `PublicKey` | required | Transaction initiator |
+| `.chainName(name)` | `string` | required | `'casper'` or `'casper-test'` |
+| `.payment(motes)` | `number` | varies | Gas payment in motes |
+| `.ttl(duration)` | `string` | `'30m'` | Time-to-live (e.g. `'1h'`, `'2m'`) |
+| `.timestamp(ms)` | `number` | `Date.now()` | Creation timestamp |
+
+## Signing
+
+```ts
+// Single signer
+transaction.sign(privateKey);
+
+// Multi-sig: add additional approvals
+transaction.sign(cosignerPrivateKey);
+
+// External signer (hardware wallet)
+const hashBytes = transaction.getTransactionV1()!.hash.toBytes();
+const signature = await hardwareWallet.sign(hashBytes);
+transaction.setSignature(signature, signerPublicKey);
+```
+
+## Submitting
+
+```ts
+const result = await rpcClient.putTransaction(transaction);
+console.log('Hash:', result.transactionHash);
+```

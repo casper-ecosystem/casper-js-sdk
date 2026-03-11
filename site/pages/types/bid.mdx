@@ -1,0 +1,125 @@
+# Bid
+
+Bid-related types for validators, delegators, and unbonding operations.
+
+## Import
+
+```ts
+import {
+  ValidatorBid,
+  Delegator,
+  VestingSchedule,
+  DelegationKind,
+  Unbond,
+  UnbondEra,
+} from 'casper-js-sdk';
+```
+
+## Classes
+
+### `ValidatorBid`
+
+A validator's active bid in the auction system.
+
+| Property | Type | Description |
+|---|---|---|
+| `validatorPublicKey` | `PublicKey` | Validator's public key |
+| `bondingPurse` | `URef` | Purse holding the staked tokens |
+| `delegationRate` | `number` | Commission rate kept by the validator (0–100, where 100 = 100% commission, 0 = passes all rewards to delegators) |
+| `inactive` | `boolean` | Whether the validator is currently inactive |
+| `stakedAmount` | `CLValueUInt512` | Total staked amount |
+| `minimumDelegationAmount` | `bigint` | Minimum delegation in motes |
+| `maximumDelegationAmount` | `bigint` | Maximum delegation in motes |
+| `reservedSlots` | `number` | Number of reserved delegation slots |
+| `vestingSchedule?` | `VestingSchedule` | Optional vesting schedule |
+
+### `Delegator`
+
+A delegator's bid, representing delegated stake to a validator.
+
+| Property | Type | Description |
+|---|---|---|
+| `bondingPurse` | `URef` | Delegator's bonding purse |
+| `stakedAmount` | `CLValueUInt512` | Delegated amount |
+| `delegatorKind` | `DelegationKind` | Whether delegation is by public key or purse |
+| `validatorPublicKey` | `PublicKey` | Target validator |
+| `vestingSchedule?` | `VestingSchedule` | Optional vesting schedule |
+
+#### Static Methods
+
+```ts
+Delegator.newDelegatorFromDelegatorV1(v1: DelegatorV1): Delegator
+Delegator.fromJSON(json: any): Delegator[]
+```
+
+### `DelegationKind`
+
+Indicates whether delegation is identified by a public key or a URef purse.
+
+| Property | Type | Description |
+|---|---|---|
+| `publicKey?` | `PublicKey` | Public key identifier |
+| `purse?` | `URef` | Purse identifier |
+
+#### Methods
+
+```ts
+delegationKind.toHex(): string
+DelegationKind.fromJSON(json: any): DelegationKind
+```
+
+### `VestingSchedule`
+
+Token vesting schedule for staked amounts.
+
+| Property | Type | Description |
+|---|---|---|
+| `initialReleaseTimestampMillis` | `number` | Unix timestamp when vesting starts |
+| `lockedAmounts` | `CLValueUInt512[]` | Locked amount per milestone |
+
+### `Unbond`
+
+A pending unbonding request.
+
+| Property | Type | Description |
+|---|---|---|
+| `validatorPublicKey` | `PublicKey` | Validator being unbonded from |
+| `eras` | `UnbondEra[]` | Eras in which unbonding occurs |
+
+### `UnbondEra`
+
+A single unbonding era entry.
+
+| Property | Type | Description |
+|---|---|---|
+| `amount` | `CLValueUInt512` | Amount being unbonded |
+
+## Usage
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+
+const client = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+const { auctionState } = await client.getLatestAuctionInfo();
+
+for (const wrapper of auctionState.bids) {
+  const validatorBid = wrapper.bid.validator;
+  if (validatorBid) {
+    console.log('Validator:', wrapper.publicKey.toHex());
+    console.log('Staked:', validatorBid.stakedAmount.toString());
+    console.log('Rate:', validatorBid.delegationRate);
+  }
+
+  const delegator = wrapper.bid.delegator;
+  if (delegator) {
+    console.log('Delegating to:', delegator.validatorPublicKey.toHex());
+    console.log('Amount:', delegator.stakedAmount.toString());
+  }
+}
+```
+
+## See Also
+
+- [`BidKind`](/types/bid-kind) - Container for all bid variants
+- [`AuctionState`](/types/auction-state) - Auction state containing all bids
+- [`UnbondingPurse`](/types/unbonding-purse) - Unbonding purse details

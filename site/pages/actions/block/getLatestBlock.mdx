@@ -1,0 +1,53 @@
+# getLatestBlock
+
+Returns the most recent block on the chain.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const rpcClient = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+
+const result = await rpcClient.getLatestBlock();
+
+const block = result.block;
+const v2 = block.getBlockV2();
+console.log(v2?.header.height);     // block height
+console.log(v2?.header.timestamp);  // block timestamp
+```
+
+## Return Value
+
+`Promise<ChainGetBlockResult>`
+
+```ts
+interface ChainGetBlockResult {
+  block: Block;
+}
+```
+
+The `Block` wrapper holds either a V1 or V2 block. Use:
+- `block.getBlockV2()` - for Casper 2.x nodes (returns `BlockV2 | undefined`)
+- `block.getBlockV1()` - for Casper 1.x nodes (returns `BlockV1 | undefined`)
+
+## BlockV2 Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `hash` | `Hash` | Block hash |
+| `header.height` | `number` | Block height |
+| `header.timestamp` | `string` | ISO timestamp |
+| `header.stateRootHash` | `Hash` | State root after this block |
+| `header.parentHash` | `Hash` | Previous block hash |
+| `header.era_id` | `number` | Era this block belongs to |
+| `body.transactions` | `TransactionHash[]` | Transactions included |
+
+## Related
+
+- [`getBlockByHash`](/actions/block/getBlockByHash)
+- [`getBlockByHeight`](/actions/block/getBlockByHeight)

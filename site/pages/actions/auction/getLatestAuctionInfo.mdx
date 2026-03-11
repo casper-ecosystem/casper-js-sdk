@@ -1,0 +1,43 @@
+# getLatestAuctionInfo
+
+Returns the current auction state including all validator bids and delegations.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getLatestAuctionInfo();
+
+const bids = result.auctionState.getBids();
+for (const bid of bids) {
+  console.log('Validator:', bid.publicKey.toHex());
+  console.log('Stake:', bid.bid.stakedAmount);
+}
+```
+
+## Return Value
+
+`Promise<StateGetAuctionInfoResult>`
+
+```ts
+interface StateGetAuctionInfoResult {
+  auctionState: AuctionState;
+}
+```
+
+## AuctionState Methods
+
+| Method | Return Type | Description |
+|---|---|---|
+| `getBids()` | `ValidatorBid[]` | All validator bids |
+| `getEraValidators()` | `EraValidators[]` | Validators per era |
+
+## Related
+
+- [`getEraSummaryLatest`](/actions/auction/getEraSummaryLatest)
+- [`getLatestValidatorReward`](/actions/auction/getLatestValidatorReward)

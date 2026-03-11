@@ -1,0 +1,39 @@
+# getEraInfoLatest
+
+Returns the era info for the most recent block, including switch block transfers.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getEraInfoLatest();
+
+if (result.eraSummary) {
+  console.log('Era ID:', result.eraSummary.eraId);
+}
+```
+
+## Return Value
+
+`Promise<ChainGetEraInfoResult>`
+
+```ts
+interface ChainGetEraInfoResult {
+  eraSummary?: EraSummary;
+}
+```
+
+:::note
+`eraSummary` is only present in the result if the queried block is a switch block (i.e., the last block of an era).
+:::
+
+## Related
+
+- [`getEraInfoByBlockHash`](/actions/auction/getEraInfoByBlockHash)
+- [`getEraInfoByBlockHeight`](/actions/auction/getEraInfoByBlockHeight)
+- [`getEraSummaryLatest`](/actions/auction/getEraSummaryLatest)

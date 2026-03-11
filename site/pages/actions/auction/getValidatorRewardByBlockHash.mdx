@@ -1,0 +1,53 @@
+# getValidatorRewardByBlockHash
+
+Returns the reward earned by a validator at the era corresponding to a specific block hash.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler, PublicKey } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const validator = PublicKey.fromHex('01a8b1...');
+
+const result = await rpcClient.getValidatorRewardByBlockHash(
+  validator,
+  'abc123...'
+);
+
+console.log('Reward:', result.validatorReward.toString());
+```
+
+## Parameters
+
+### validator
+
+- **Type:** `PublicKey`
+
+The validator's public key.
+
+### blockHash
+
+- **Type:** `string`
+
+Block hash as a hex string. The era is determined from this block.
+
+## Return Value
+
+`Promise<InfoGetRewardResult>`
+
+```ts
+interface InfoGetRewardResult {
+  delegatorReward: BigNumber;
+  validatorReward: BigNumber;
+}
+```
+
+## Related
+
+- [`getLatestValidatorReward`](/actions/auction/getLatestValidatorReward)
+- [`getValidatorRewardByEraID`](/actions/auction/getValidatorRewardByEraID)
+- [`getValidatorRewardByBlockHeight`](/actions/auction/getValidatorRewardByBlockHeight)

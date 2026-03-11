@@ -1,0 +1,86 @@
+# TransactionProcessed
+
+Fires when a transaction finishes execution on the network. This is the primary event for monitoring transaction outcomes.
+
+## Import
+
+```ts
+import { SseClient, EventName } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+sseClient.subscribe(EventName.TransactionProcessedEventType, (raw) => {
+  const result = raw.parseAsTransactionProcessedEvent();
+  if (result.err) return;
+
+  const payload = result.val.transactionProcessed;
+
+  console.log('Hash:', payload.hash);
+  console.log('Block:', payload.blockHash);
+
+  if (payload.executionResult.isSuccess()) {
+    const transfers = payload.executionResult.getSuccessTransfers();
+    console.log('Transfers:', transfers?.length);
+  } else {
+    console.error('Failed:', payload.executionResult.getErrorMessage());
+  }
+});
+```
+
+## Payload
+
+### TransactionProcessedPayload
+
+| Field | Type | Description |
+|---|---|---|
+| `hash` | `TransactionHash` | Transaction or deploy hash |
+| `initiatorAddr` | `InitiatorAddr` | Account that signed the transaction |
+| `timestamp` | `string` | When the transaction was submitted |
+| `ttl` | `string` | Time-to-live |
+| `blockHash` | `Hash` | Block the transaction was included in |
+| `executionResult` | `ExecutionResult` | Success or failure with effects |
+
+### ExecutionResult Methods
+
+| Method | Return | Description |
+|---|---|---|
+| `isSuccess()` | `boolean` | True if execution succeeded |
+| `isFailure()` | `boolean` | True if execution failed |
+| `getErrorMessage()` | `string \| undefined` | Error message on failure |
+| `getSuccessTransfers()` | `Transfer[] \| undefined` | Native transfers on success |
+| `getSuccessCost()` | `string \| undefined` | Gas cost on success |
+
+## Exchange Deposit Detection Example
+
+```ts
+const myAddresses = new Set([
+  'account-hash-abc...',
+  'account-hash-def...',
+]);
+
+sseClient.subscribe(EventName.TransactionProcessedEventType, (raw) => {
+  const result = raw.parseAsTransactionProcessedEvent();
+  if (result.err) return;
+
+  const { executionResult } = result.val.transactionProcessed;
+  if (!executionResult.isSuccess()) return;
+
+  const transfers = executionResult.getSuccessTransfers() ?? [];
+  for (const t of transfers) {
+    const transfer = t.getTransferV2() ?? t.getTransferV1();
+    if (!transfer) continue;
+
+    const to = transfer.to?.toFormattedStr();
+    if (to && myAddresses.has(to)) {
+      console.log(`Deposit: ${transfer.amount} motes to ${to}`);
+    }
+  }
+});
+```
+
+## Related
+
+- [`waitForTransaction`](/actions/transactions/waitForTransaction) - polling alternative
+- [`TransactionAccepted`](/sse/transaction-accepted)

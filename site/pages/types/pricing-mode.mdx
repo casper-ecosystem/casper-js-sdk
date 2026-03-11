@@ -1,0 +1,100 @@
+# PricingMode
+
+Specifies how a transaction's execution cost is calculated and paid. Casper 2.x supports three pricing modes.
+
+## Import
+
+```ts
+import { PricingMode, PaymentLimitedMode, FixedMode, PrepaidMode } from 'casper-js-sdk';
+```
+
+## Classes
+
+### `PricingMode`
+
+A discriminated union - exactly one mode is active.
+
+| Property | Type | Description |
+|---|---|---|
+| `paymentLimited?` | `PaymentLimitedMode` | Classic payment with an explicit amount |
+| `fixed?` | `FixedMode` | Fixed-cost execution |
+| `prepaid?` | `PrepaidMode` | Pre-paid via a receipt |
+
+#### Methods
+
+```ts
+pricingMode.toBytes(): Uint8Array
+```
+
+### `PaymentLimitedMode`
+
+Classic payment model: the caller sets a maximum payment amount.
+
+| Property | Type | Description |
+|---|---|---|
+| `gasPriceTolerance` | `number` | Maximum acceptable gas price multiplier |
+| `paymentAmount` | `number` | Maximum payment in motes |
+| `standardPayment` | `boolean` | Whether to use the standard payment contract |
+
+#### Methods
+
+```ts
+mode.toBytes(): Uint8Array
+```
+
+### `FixedMode`
+
+Fixed-cost execution - used by the system for auction and mint transactions.
+
+| Property | Type | Description |
+|---|---|---|
+| `gasPriceTolerance` | `number` | Maximum acceptable gas price multiplier |
+| `additionalComputationFactor` | `number` | Extra computation factor |
+
+#### Methods
+
+```ts
+mode.toBytes(): Uint8Array
+```
+
+### `PrepaidMode`
+
+Execution paid for by a pre-purchased receipt.
+
+| Property | Type | Description |
+|---|---|---|
+| `receipt` | `Hash` | Pre-payment receipt hash |
+
+#### Methods
+
+```ts
+mode.toBytes(): Uint8Array
+```
+
+## Usage
+
+```ts
+import { PricingMode, PaymentLimitedMode, FixedMode } from 'casper-js-sdk';
+
+// Payment limited mode (most common for user transactions)
+const paymentLimited = new PricingMode();
+paymentLimited.paymentLimited = new PaymentLimitedMode();
+paymentLimited.paymentLimited.paymentAmount = 100_000_000;
+paymentLimited.paymentLimited.gasPriceTolerance = 1;
+paymentLimited.paymentLimited.standardPayment = true;
+
+// Fixed mode (for auction/mint calls)
+const fixed = new PricingMode();
+fixed.fixed = new FixedMode();
+fixed.fixed.gasPriceTolerance = 1;
+fixed.fixed.additionalComputationFactor = 0;
+```
+
+:::tip
+Transaction builders like `NativeTransferBuilder` set the pricing mode automatically. You only need to configure it manually when building raw `TransactionV1Payload` objects.
+:::
+
+## See Also
+
+- [`TransactionV1Payload`](/types/transaction-v1-payload) - Uses `PricingMode`
+- [Transaction Builders](/builders/introduction) - Handle pricing automatically

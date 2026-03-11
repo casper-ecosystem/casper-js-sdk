@@ -1,0 +1,124 @@
+# TransactionV1Payload
+
+The payload of a Casper 2.x `TransactionV1`, containing all fields needed to build, sign, and submit a transaction.
+
+## Import
+
+```ts
+import { TransactionV1Payload, PayloadFields, ITransactionPayloadBuildParams } from 'casper-js-sdk';
+```
+
+## Interface
+
+### `ITransactionPayloadBuildParams`
+
+Builder parameters for constructing a payload.
+
+| Property | Type | Description |
+|---|---|---|
+| `initiatorAddr` | `InitiatorAddr` | Who is sending the transaction |
+| `args` | `Args` | Transaction arguments |
+| `ttl` | `Duration` | Time-to-live |
+| `entryPoint` | `TransactionEntryPoint` | Target entry point |
+| `pricingMode` | `PricingMode` | Pricing strategy |
+| `timestamp` | `Timestamp` | Creation timestamp |
+| `transactionTarget` | `TransactionTarget` | Execution target |
+| `scheduling` | `TransactionScheduling` | Scheduling strategy |
+| `chainName` | `string` | Target chain |
+
+## Classes
+
+### `TransactionV1Payload`
+
+| Property | Type | Description |
+|---|---|---|
+| `initiatorAddr` | `InitiatorAddr` | Transaction initiator |
+| `timestamp` | `Timestamp` | Creation timestamp |
+| `ttl` | `Duration` | Time-to-live |
+| `pricingMode` | `PricingMode` | Pricing mode |
+| `chainName` | `string` | Chain name |
+| `fields` | `PayloadFields` | Encoded payload fields |
+
+#### Methods
+
+```ts
+payload.toBytes(): Uint8Array
+TransactionV1Payload.build(params: ITransactionPayloadBuildParams): TransactionV1Payload
+```
+
+### `PayloadFields`
+
+Internal representation of the serialized payload fields map.
+
+| Property | Type | Description |
+|---|---|---|
+| `args` | `Args` | Transaction arguments |
+| `target` | `TransactionTarget` | Execution target |
+| `entryPoint` | `TransactionEntryPoint` | Entry point |
+| `scheduling` | `TransactionScheduling` | Scheduling |
+| `fields` | `Map<number, Uint8Array>` | Raw serialized fields |
+
+#### Methods
+
+```ts
+fields.addField(field: number, value: Uint8Array): void
+fields.getFieldValue(fieldIndex: number): Uint8Array | undefined
+fields.toBytes(): Uint8Array
+
+PayloadFields.build(
+  args: Args,
+  transactionTarget: TransactionTarget,
+  transactionEntryPoint: TransactionEntryPoint,
+  transactionScheduling: TransactionScheduling
+): PayloadFields
+```
+
+## Usage
+
+```ts
+import {
+  TransactionV1Payload, TransactionV1,
+  InitiatorAddr, Args, Duration, Timestamp,
+  TransactionEntryPoint, TransactionEntryPointEnum,
+  PricingMode, PaymentLimitedMode,
+  TransactionTarget, TransactionScheduling,
+  newCLU512, PrivateKey, KeyAlgorithm,
+} from 'casper-js-sdk';
+
+const privateKey = PrivateKey.generate(KeyAlgorithm.ED25519);
+
+const payload = TransactionV1Payload.build({
+  initiatorAddr: new InitiatorAddr(privateKey.publicKey),
+  chainName: 'casper',
+  timestamp: new Timestamp(new Date()),
+  ttl: Duration.fromJSON('30m'),
+  args: Args.fromMap({ amount: newCLU512('2500000000') }),
+  entryPoint: new TransactionEntryPoint(TransactionEntryPointEnum.Transfer),
+  transactionTarget: new TransactionTarget({}),
+  scheduling: new TransactionScheduling({}),
+  pricingMode: (() => {
+    const pm = new PricingMode();
+    pm.paymentLimited = Object.assign(new PaymentLimitedMode(), {
+      paymentAmount: 100_000_000,
+      gasPriceTolerance: 1,
+      standardPayment: true,
+    });
+    return pm;
+  })(),
+});
+
+const tx = TransactionV1.newTransactionV1(payload);
+tx.sign(privateKey);
+```
+
+:::tip
+Use transaction builders like `NativeTransferBuilder` instead of building payloads manually - they handle all of this automatically.
+:::
+
+## See Also
+
+- [Transaction Builders](/builders/introduction) - High-level API
+- [`Transaction`](/types/transaction) - Wrapper type
+- [`TransactionTarget`](/types/transaction-target) - Target field
+- [`TransactionEntryPoint`](/types/transaction-entry-point) - Entry point field
+- [`PricingMode`](/types/pricing-mode) - Pricing field

@@ -1,0 +1,221 @@
+# CasperNetwork
+
+A high-level, version-aware client that auto-detects whether the node is Casper 1.x or 2.0 and dispatches transactions in the correct format automatically.
+
+## Import
+
+```ts
+import { CasperNetwork } from 'casper-js-sdk';
+```
+
+## CasperNetwork.create
+
+Creates a new `CasperNetwork` instance. Queries the node's status to detect its API version unless `apiVersion` is provided explicitly.
+
+```ts
+CasperNetwork.create(
+  rpcClient: RpcClient,
+  apiVersion?: number
+): Promise<CasperNetwork>
+```
+
+### Parameters
+
+#### rpcClient
+
+- **Type:** `RpcClient`
+
+An already-configured RPC client.
+
+#### apiVersion
+
+- **Type:** `number` (optional)
+
+Override the API version instead of detecting it. Use `1` for Casper 1.x nodes, `2` for Casper 2.0 nodes.
+
+### Return Value
+
+`Promise<CasperNetwork>`
+
+## Usage
+
+```ts
+import { CasperNetwork, RpcClient, HttpHandler, PrivateKey, KeyAlgorithm, PublicKey } from 'casper-js-sdk';
+
+const rpcClient = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+const network = await CasperNetwork.create(rpcClient);
+
+const privateKey = PrivateKey.generate(KeyAlgorithm.ED25519);
+
+// Build a version-appropriate transfer transaction
+const tx = network.createTransferTransaction(
+  privateKey.publicKey,
+  recipientPublicKey,
+  'casper',
+  '2500000000', // amount in motes
+  100_000_000,  // deploy cost
+  1800000,      // TTL in ms
+  Date.now(),   // transfer ID
+);
+
+tx.sign(privateKey);
+await network.putTransaction(tx);
+```
+
+## Methods
+
+### createTransferTransaction
+
+Builds a transfer transaction for the detected node version.
+
+```ts
+network.createTransferTransaction(
+  senderPublicKey: PublicKey,
+  recipientPublicKey: PublicKey,
+  networkName: string,
+  amountMotes: string,
+  deployCost: number,
+  ttl: number,
+  id: number,
+  gasPriceTolerance?: number
+): Transaction
+```
+
+### createDelegateTransaction
+
+Builds a delegation transaction.
+
+```ts
+network.createDelegateTransaction(
+  delegatorPublicKey: PublicKey,
+  validatorPublicKey: PublicKey,
+  networkName: string,
+  amountMotes: string | BigNumber,
+  deployCost: number,
+  ttl: number,
+  auctionContractHash?: string,  // required for 1.x nodes
+  gasPriceTolerance?: number
+): Transaction
+```
+
+### createUndelegateTransaction
+
+Builds an undelegation transaction.
+
+```ts
+network.createUndelegateTransaction(
+  delegatorPublicKey: PublicKey,
+  validatorPublicKey: PublicKey,
+  networkName: string,
+  amountMotes: string | BigNumber,
+  deployCost: number,
+  ttl: number,
+  auctionContractHash?: string,
+  gasPriceTolerance?: number
+): Transaction
+```
+
+### createRedelegateTransaction
+
+Builds a redelegation transaction (move stake to a different validator).
+
+```ts
+network.createRedelegateTransaction(
+  delegatorPublicKey: PublicKey,
+  validatorPublicKey: PublicKey,
+  newValidatorPublicKey: PublicKey,
+  networkName: string,
+  amountMotes: string | BigNumber,
+  deployCost: number,
+  ttl: number,
+  auctionContractHash?: string,
+  gasPriceTolerance?: number
+): Transaction
+```
+
+### createContractCallTransaction
+
+Builds a contract call transaction by contract hash.
+
+```ts
+network.createContractCallTransaction(
+  senderPublicKey: PublicKey,
+  contractHash: string,
+  entryPoint: string,
+  networkName: string,
+  deployCost: number,
+  ttl: number,
+  args: Args,
+  gasPriceTolerance?: number
+): Transaction
+```
+
+### createContractPackageCallTransaction
+
+Builds a contract call transaction by package hash.
+
+```ts
+network.createContractPackageCallTransaction(
+  senderPublicKey: PublicKey,
+  contractPackageHash: string,
+  entryPoint: string,
+  networkName: string,
+  deployCost: number,
+  args: Args,
+  ttl: number,
+  contractVersion?: number,
+  gasPriceTolerance?: number
+): Transaction
+```
+
+### createSessionWasmTransaction
+
+Builds an inline WASM session transaction.
+
+```ts
+network.createSessionWasmTransaction(
+  senderPublicKey: PublicKey,
+  networkName: string,
+  deployCost: number,
+  ttl: number,
+  bytes: Uint8Array,
+  args: Args,
+  gasPriceTolerance?: number
+): Transaction
+```
+
+### putTransaction
+
+Submits a transaction to the node. Uses `putTransaction` for 2.0 nodes and `putDeploy` for 1.x nodes automatically.
+
+```ts
+network.putTransaction(
+  transaction: Transaction
+): Promise<PutTransactionResult | PutDeployResult>
+```
+
+### getTransaction
+
+Fetches a transaction by hash, handling both `TransactionV1` and `Deploy` hash types.
+
+```ts
+network.getTransaction(
+  hash: TransactionHash | Hash | string
+): Promise<InfoGetTransactionResult>
+```
+
+### queryLatestBalance
+
+Queries the latest balance for a purse identifier.
+
+```ts
+network.queryLatestBalance(
+  identifier: PurseIdentifier
+): Promise<QueryBalanceResult | undefined>
+```
+
+## Notes
+
+- For 1.x nodes, `createDelegateTransaction`, `createUndelegateTransaction`, and `createRedelegateTransaction` require `auctionContractHash`.
+- All `create*` methods return a `Transaction` that still needs to be signed before calling `putTransaction`.
+- Access the underlying RPC client directly via `new RpcClient(...)` for all other RPC operations.

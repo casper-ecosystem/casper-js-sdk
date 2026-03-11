@@ -1,0 +1,90 @@
+# AddressableEntity
+
+Represents an addressable entity in Casper 2.x - a unified concept encompassing accounts, smart contracts, and system entities.
+
+## Import
+
+```ts
+import { AddressableEntity, EntityKind, EntityActionThresholds, NamedEntryPoint } from 'casper-js-sdk';
+```
+
+## Classes
+
+### `AddressableEntity`
+
+The Casper 2.x equivalent of both `Account` and `Contract`. All on-chain principals are represented as addressable entities.
+
+| Property | Type | Description |
+|---|---|---|
+| `entityKind` | `EntityKind` | Whether this is a system entity, account, or smart contract |
+| `packageHash` | `string` | Package hash associated with this entity |
+| `byteCodeHash` | `string` | Hash of the entity's bytecode |
+| `associatedKeys` | `AssociatedKey[]` | Keys with their permission weights |
+| `actionThresholds` | `EntityActionThresholds` | Weight thresholds for actions |
+| `mainPurse` | `URef` | Entity's main purse |
+| `protocolVersion` | `string` | Protocol version used by this entity |
+
+### `EntityKind`
+
+Discriminated union indicating the kind of entity. Exactly one of the three properties is set:
+
+| Property | Type | When set | Description |
+|---|---|---|---|
+| `system?` | `string` | For built-in system contracts | System entity name - e.g. `"Mint"`, `"HandlePayment"`, `"Auction"`, `"StandardPayment"` |
+| `account?` | `AccountHash` | For user accounts | The account's 32-byte hash identifier |
+| `smartContract?` | `TransactionRuntime` | For deployed contracts | The Wasm runtime version used by this contract |
+
+### `EntityActionThresholds`
+
+Extends action thresholds with an additional upgrade management threshold.
+
+| Property | Type | Description |
+|---|---|---|
+| `deployment` | `number` | Weight required to deploy |
+| `upgradeManagement` | `number` | Weight required to upgrade |
+| `keyManagement` | `number` | Weight required to manage keys |
+
+### `NamedEntryPoint`
+
+A named entry point defined on an entity.
+
+| Property | Type | Description |
+|---|---|---|
+| `name` | `string` | Entry point name |
+| `entryPoint` | `EntryPointV1` | Entry point definition |
+
+#### Static Methods
+
+```ts
+NamedEntryPoint.fromJSON(json: any): NamedEntryPoint
+```
+
+Supports both Casper 1.x and 2.x JSON formats.
+
+## Usage
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+
+const client = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+
+const result = await client.getLatestEntity({
+  entityIdentifier: { publicKey: '01abc...' },
+});
+
+const entity = result.addressableEntity;
+console.log(entity.packageHash);
+console.log(entity.protocolVersion);
+
+if (entity.entityKind.account) {
+  console.log('Account hash:', entity.entityKind.account.toHex());
+} else if (entity.entityKind.smartContract) {
+  console.log('Runtime:', entity.entityKind.smartContract.toJSON());
+}
+```
+
+## See Also
+
+- [`getLatestEntity`](/actions/account/getLatestEntity) - RPC action that returns an `AddressableEntity`
+- [`Account`](/types/account) - Casper 1.x account type
+- [`EntryPoint`](/types/entry-point) - Entry point definitions

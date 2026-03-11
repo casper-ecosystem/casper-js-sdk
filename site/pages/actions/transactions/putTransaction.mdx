@@ -1,0 +1,56 @@
+# putTransaction
+
+Submits a signed `Transaction` (TransactionV1 or Deploy wrapper) to the network.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const transaction = new NativeTransferBuilder()
+  .from(publicKey)
+  .target(targetPublicKey)
+  .amount('2500000000')
+  .id(Date.now())
+  .chainName('casper')
+  .payment(100_000_000)
+  .build();
+
+transaction.sign(privateKey);
+
+const result = await rpcClient.putTransaction(transaction);
+console.log('Hash:', result.transactionHash);
+```
+
+## Parameters
+
+### transaction
+
+- **Type:** `Transaction`
+
+A signed `Transaction` object. Must be signed before submitting - call `transaction.sign(privateKey)` first.
+
+## Return Value
+
+`Promise<PutTransactionResult>`
+
+```ts
+interface PutTransactionResult {
+  transactionHash: string;
+}
+```
+
+## Notes
+
+- The transaction must be signed. Unsigned transactions will be rejected.
+- The returned hash can be used with [`waitForTransaction`](/actions/transactions/waitForTransaction).
+- Use [`putDeploy`](/actions/transactions/putDeploy) only for raw `Deploy` objects (legacy API).
+
+## Related
+
+- [`putDeploy`](/actions/transactions/putDeploy)
+- [`waitForTransaction`](/actions/transactions/waitForTransaction)

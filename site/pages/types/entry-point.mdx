@@ -1,0 +1,165 @@
+# EntryPoint
+
+Entry point definitions for smart contracts - access controls, argument types, return types, and payment options.
+
+## Import
+
+```ts
+import {
+  EntryPointV1,
+  EntryPointV2,
+  EntryPointValue,
+  EntryPointAccess,
+  EntryPointArg,
+  EntryPointType,
+  EntryPointPayment,
+} from 'casper-js-sdk';
+```
+
+## Enums
+
+### `EntryPointType`
+
+Specifies the context in which an entry point executes.
+
+| Value | Description |
+|---|---|
+| `Caller` | Executes in the caller's context |
+| `Called` | Executes in the contract's context |
+| `Factory` | Factory entry point |
+| `Contract` | Standard contract entry point |
+| `Session` | Session entry point |
+
+### `EntryPointPayment`
+
+Who pays for the execution.
+
+| Value | Description |
+|---|---|
+| `Caller` | Caller must cover the cost |
+| `DirectInvocationOnly` | Contract pays for itself only |
+| `SelfOnward` | Contract pays for itself and all downstream calls |
+
+## Classes
+
+### `EntryPointAccess`
+
+Defines who can call an entry point.
+
+| Property | Type | Description |
+|---|---|---|
+| `isPublic` | `boolean` | If `true`, anyone can call this entry point |
+| `groups` | `string[] \| null` | Restricted to these group names (empty = not callable externally) |
+| `isTemplate` | `boolean` | Template entry points are kept in WASM but not callable |
+
+#### Constructor
+
+```ts
+new EntryPointAccess(
+  isPublic?: boolean,
+  groups?: string[] | null,
+  isTemplate?: boolean
+)
+```
+
+#### Methods
+
+```ts
+access.toJSON(): any  // 'Public' | 'Template' | { groups: string[] }
+EntryPointAccess.fromJSON(json: any): EntryPointAccess | undefined
+```
+
+### `EntryPointArg`
+
+A named argument with a CL type.
+
+| Property | Type | Description |
+|---|---|---|
+| `name` | `string` | Argument name |
+| `clType` | `CLTypeRaw` | Argument type |
+
+#### Constructor
+
+```ts
+new EntryPointArg(name: string, clType: CLTypeRaw)
+```
+
+### `EntryPointV1`
+
+A Casper VM v1 entry point definition.
+
+| Property | Type | Description |
+|---|---|---|
+| `name` | `string` | Entry point name |
+| `access` | `EntryPointAccess` | Access control |
+| `args` | `EntryPointArg[]` | Input arguments |
+| `entryPointType` | `EntryPointType` | Execution context |
+| `entryPointPayment` | `EntryPointPayment` | Payment responsibility |
+| `ret` | `CLTypeRaw` | Return type |
+
+#### Constructor
+
+```ts
+new EntryPointV1(
+  access: EntryPointAccess,
+  args: EntryPointArg[],
+  entryPointType: EntryPointType,
+  entryPointPayment: EntryPointPayment,
+  name: string,
+  ret: CLTypeRaw
+)
+```
+
+### `EntryPointV2`
+
+A Casper VM v2 entry point (simpler, uses function index).
+
+| Property | Type | Description |
+|---|---|---|
+| `flags` | `number` | Entry point flags |
+| `functionIndex` | `number` | WASM function table index |
+
+#### Constructor
+
+```ts
+new EntryPointV2(flags?: number, functionIndex?: number)
+```
+
+### `EntryPointValue`
+
+A versioned wrapper holding either a V1 or V2 entry point.
+
+| Property | Type | Description |
+|---|---|---|
+| `v1CasperVm?` | `EntryPointV1` | V1 entry point |
+| `v2CasperVm?` | `EntryPointV2` | V2 entry point |
+
+#### Constructor
+
+```ts
+new EntryPointValue(v1CasperVm?: EntryPointV1, v2CasperVm?: EntryPointV2)
+```
+
+## Usage
+
+```ts
+// Entry points are typically read from a Contract
+const contract = storedValue.contract;
+
+for (const namedEp of contract.entryPoints) {
+  const ep = namedEp.entryPoint;
+  console.log('Name:', namedEp.name);
+  console.log('Public:', ep.access.isPublic);
+  console.log('Args:', ep.args.map(a => `${a.name}: ${a.clType}`).join(', '));
+}
+
+// Creating access for contract call builders
+const publicAccess = new EntryPointAccess(true);
+const groupAccess = new EntryPointAccess(false, ['admin_group']);
+```
+
+## See Also
+
+- [`Contract`](/types/contract) - Contains `NamedEntryPoint[]`
+- [`AddressableEntity`](/types/addressable-entity) - Contains `NamedEntryPoint[]` in 2.x
+- [`TransactionEntryPoint`](/types/transaction-entry-point) - Entry point selector in transactions

@@ -1,0 +1,64 @@
+# InitiatorAddr
+
+Identifies the initiator of a transaction - either by public key or account hash.
+
+## Import
+
+```ts
+import { InitiatorAddr } from 'casper-js-sdk';
+```
+
+## Class
+
+### `InitiatorAddr`
+
+| Property | Type | Description |
+|---|---|---|
+| `publicKey?` | `PublicKey` | Initiator's public key |
+| `accountHash?` | `AccountHash` | Initiator's account hash |
+
+#### Constructor
+
+```ts
+new InitiatorAddr(publicKey?: PublicKey, accountHash?: AccountHash)
+```
+
+#### Methods
+
+```ts
+addr.toBytes(): Uint8Array
+addr.toJSON(): unknown
+InitiatorAddr.fromJSON(json: any): InitiatorAddr
+```
+
+## Usage
+
+```ts
+import { InitiatorAddr, PublicKey } from 'casper-js-sdk';
+
+// From public key
+const addr = new InitiatorAddr(somePublicKey);
+
+// From JSON (as returned by RPC)
+const addr2 = InitiatorAddr.fromJSON({
+  PublicKey: '01abc...'
+});
+
+// Or account hash
+const addr3 = InitiatorAddr.fromJSON({
+  AccountHash: 'account-hash-abc...'
+});
+
+// Check which type it is
+if (addr2.publicKey) {
+  console.log('Public key initiator:', addr2.publicKey.toHex());
+} else if (addr2.accountHash) {
+  console.log('Account hash initiator:', addr2.accountHash.toHex());
+}
+```
+
+## See Also
+
+- [`Transaction`](/types/transaction) - Uses `InitiatorAddr`
+- [`ExecutionResult`](/types/execution-result) - Contains `initiator: InitiatorAddr`
+- [`TransactionV1Payload`](/types/transaction-v1-payload) - Payload field

@@ -1,0 +1,105 @@
+# NativeTransferBuilder
+
+Builds a native CSPR transfer transaction (TransactionV1 format).
+
+## Import
+
+```ts
+import { NativeTransferBuilder, PublicKey } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const transaction = new NativeTransferBuilder()
+  .from(senderPublicKey)
+  .target(recipientPublicKey)
+  .amount('2500000000')   // 2.5 CSPR in motes
+  .id(Date.now())         // transfer memo ID
+  .chainName('casper')
+  .payment(100_000_000)
+  .build();
+
+transaction.sign(privateKey);
+
+const result = await rpcClient.putTransaction(transaction);
+console.log('Hash:', result.transactionHash);
+```
+
+## Methods
+
+### .from(publicKey)
+
+- **Type:** `PublicKey` - required
+
+The sender's public key.
+
+### .target(publicKey)
+
+- **Type:** `PublicKey` - required
+
+The recipient's public key.
+
+### .amount(motes)
+
+- **Type:** `BigNumber | string` - required
+
+Transfer amount in motes. 1 CSPR = 1,000,000,000 motes.
+
+### .id(transferId)
+
+- **Type:** `number` - required
+
+Transfer memo ID. Used as a unique identifier for this transfer. Typically `Date.now()`.
+
+### .chainName(name)
+
+- **Type:** `string` - required
+
+`'casper'` for mainnet, `'casper-test'` for testnet.
+
+### .payment(motes)
+
+- **Type:** `number` - optional, default `100_000_000`
+
+Gas payment in motes.
+
+### .ttl(milliseconds)
+
+- **Type:** `number` - optional, default `1800000` (30 minutes)
+
+Transaction time-to-live in milliseconds.
+
+### .timestamp(ts)
+
+- **Type:** `Timestamp` - optional, default `new Timestamp(new Date())`
+
+Transaction timestamp. Create with `new Timestamp(new Date())`.
+
+```ts
+import { Timestamp } from 'casper-js-sdk';
+
+const transaction = new NativeTransferBuilder()
+  // ...
+  .timestamp(new Timestamp(new Date()))
+  .ttl(1800000) // 30 minutes in ms
+  .build();
+```
+
+### .build()
+
+Returns the built `Transaction`.
+
+## Return Value
+
+`Transaction` wrapping a `TransactionV1`.
+
+## Notes
+
+- Minimum transfer amount is `2_500_000_000` motes (2.5 CSPR) on mainnet.
+- The recipient receives exactly `amount` motes; gas is paid separately from the sender's balance.
+
+## Related
+
+- [`makeCsprTransferDeploy`](/utilities/makeCsprTransferDeploy) - legacy Deploy format
+- [`CasperNetwork`](/utilities/CasperNetwork) - auto-selects format by version

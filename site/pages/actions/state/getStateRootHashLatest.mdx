@@ -1,0 +1,42 @@
+# getStateRootHashLatest
+
+Returns the state root hash of the latest block. Used as a consistent snapshot reference for state queries.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const { stateRootHash } = await rpcClient.getStateRootHashLatest();
+
+// Use for consistent state queries
+const balance = await rpcClient.getDictionaryItem(
+  stateRootHash,
+  dictionaryURef,
+  itemKey
+);
+```
+
+## Return Value
+
+`Promise<ChainGetStateRootHashResult>`
+
+```ts
+interface ChainGetStateRootHashResult {
+  stateRootHash: string; // hex string
+}
+```
+
+## Notes
+
+- State root hashes change with every block.
+- Pass the same `stateRootHash` to multiple queries to get a consistent snapshot.
+
+## Related
+
+- [`getDictionaryItem`](/actions/state/getDictionaryItem)
+- [`queryLatestGlobalState`](/actions/state/queryLatestGlobalState)

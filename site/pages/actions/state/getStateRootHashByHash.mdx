@@ -1,0 +1,41 @@
+# getStateRootHashByHash
+
+Returns the state root hash for a specific block, identified by its block hash.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getStateRootHashByHash('abc123...');
+
+console.log(result.stateRootHash.toHex());
+```
+
+## Parameters
+
+### blockHash
+
+- **Type:** `string`
+
+Block hash as a hex string.
+
+## Return Value
+
+`Promise<ChainGetStateRootHashResult>`
+
+```ts
+interface ChainGetStateRootHashResult {
+  stateRootHash: Hash;
+}
+```
+
+## Related
+
+- [`getStateRootHashLatest`](/actions/state/getStateRootHashLatest)
+- [`getStateRootHashByHeight`](/actions/state/getStateRootHashByHeight)
+- [`queryGlobalStateByStateHash`](/actions/state/queryGlobalStateByStateHash)

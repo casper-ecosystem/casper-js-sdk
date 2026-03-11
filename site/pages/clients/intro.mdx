@@ -1,0 +1,63 @@
+# Introduction to Clients & Transports
+
+The Casper JS SDK uses a client-based architecture similar to viem. A **Client** groups related methods and is backed by a **Transport** that handles the actual network communication.
+
+## Client Types
+
+| Client | Purpose | Port |
+|---|---|---|
+| `RpcClient` | Query chain state, submit transactions | 7777 |
+| `SseClient` | Subscribe to real-time events | 9999 |
+| `SpeculativeClient` | Dry-run transactions without submitting | 7778 |
+
+## Transport
+
+Currently, `HttpHandler` is the only transport. It wraps axios for HTTP/HTTPS requests.
+
+```ts
+import { HttpHandler } from 'casper-js-sdk';
+
+const handler = new HttpHandler('http://<Node Address>:7777/rpc', {
+  timeout: 30_000,         // optional, ms
+  headers: { 'X-Api-Key': 'secret' },  // optional
+});
+```
+
+## Creating an RPC Client
+
+```ts
+import { HttpHandler, RpcClient } from 'casper-js-sdk';
+
+const handler = new HttpHandler('http://<Node Address>:7777/rpc');
+const rpcClient = new RpcClient(handler);
+
+const status = await rpcClient.getStatus();
+console.log(status.chainspecName); // 'casper' or 'casper-test'
+```
+
+## Creating an SSE Client
+
+```ts
+import { SseClient, EventName } from 'casper-js-sdk';
+
+const sseClient = new SseClient('http://<Node Address>:9999/events');
+
+sseClient.subscribe(EventName.BlockAddedEventType, (raw) => {
+  const event = raw.parseAsBlockAddedEvent();
+  if (!event.err) console.log('New block!');
+});
+
+sseClient.start();
+```
+
+## CasperNetwork (High-Level Client)
+
+For most applications, `CasperNetwork` wraps everything and auto-detects the node version:
+
+```ts
+import { CasperNetwork } from 'casper-js-sdk';
+
+const rpcClient = new RpcClient(new HttpHandler('http://<Node Address>:7777/rpc'));
+const network = await CasperNetwork.create(rpcClient);
+// auto-detects node version (1.x or 2.0) from getStatus()
+```

@@ -1,0 +1,118 @@
+# TransactionScheduling
+
+Controls when a transaction executes - immediately, at a future era, or at a future timestamp.
+
+## Import
+
+```ts
+import {
+  TransactionScheduling,
+  FutureEraScheduling,
+  FutureTimestampScheduling,
+  TransactionSchedulingTag,
+} from 'casper-js-sdk';
+```
+
+## Enum
+
+### `TransactionSchedulingTag`
+
+| Value | Description |
+|---|---|
+| `Native` (0) | Execute immediately in the current block |
+| `FutureEra` (1) | Execute at or after a specific era |
+| `FutureTimestamp` (2) | Execute at or after a specific timestamp |
+
+## Classes
+
+### `TransactionScheduling`
+
+| Property | Type | Description |
+|---|---|---|
+| `standard?` | `object` | Standard (immediate) scheduling |
+| `futureEra?` | `FutureEraScheduling` | Future era scheduling |
+| `futureTimestamp?` | `FutureTimestampScheduling` | Future timestamp scheduling |
+
+#### Methods
+
+```ts
+scheduling.tag(): TransactionSchedulingTag
+scheduling.toBytes(): Uint8Array
+scheduling.toJSON(): unknown
+TransactionScheduling.fromJSON(json: any): TransactionScheduling
+TransactionScheduling.fromBytes(bytes: Uint8Array): TransactionScheduling
+```
+
+### `FutureEraScheduling`
+
+| Property | Type | Description |
+|---|---|---|
+| `eraID` | `number` | Era ID at which to execute |
+
+#### Constructor
+
+```ts
+new FutureEraScheduling(eraID: number)
+```
+
+#### Methods
+
+```ts
+scheduling.toBytes(): Uint8Array
+```
+
+### `FutureTimestampScheduling`
+
+| Property | Type | Description |
+|---|---|---|
+| `timestamp` | `Timestamp` | Timestamp at which to execute |
+
+#### Constructor
+
+```ts
+new FutureTimestampScheduling(timestamp: Timestamp)
+```
+
+#### Methods
+
+```ts
+scheduling.toBytes(): Uint8Array
+```
+
+## Usage
+
+```ts
+import {
+  TransactionScheduling,
+  FutureEraScheduling,
+  FutureTimestampScheduling,
+  Timestamp,
+} from 'casper-js-sdk';
+
+// Standard (execute now)
+const immediate = new TransactionScheduling({});
+
+// Future era
+const futureEra = new TransactionScheduling(
+  undefined,
+  new FutureEraScheduling(100)
+);
+
+// Future timestamp
+const futureTime = new TransactionScheduling(
+  undefined,
+  undefined,
+  new FutureTimestampScheduling(
+    new Timestamp(new Date(Date.now() + 60_000))  // 1 minute from now
+  )
+);
+```
+
+:::note
+Most transactions use standard (immediate) scheduling. Future era and timestamp scheduling are advanced features for time-locked operations.
+:::
+
+## See Also
+
+- [`TransactionV1Payload`](/types/transaction-v1-payload) - Contains `scheduling`
+- [`Time`](/types/time) - `Timestamp` type used by `FutureTimestampScheduling`

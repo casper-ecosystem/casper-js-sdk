@@ -1,0 +1,37 @@
+# getStatus
+
+Returns the current status and metadata of the connected node.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const status = await rpcClient.getStatus();
+
+console.log(status.chainspecName); // 'casper' or 'casper-test'
+console.log(status.buildVersion);  // e.g., '2.0.0-abc1234'
+console.log(status.isSyncing);     // false when fully synced
+console.log(status.lastProgress?.timestamp); // latest block time
+```
+
+## Return Value
+
+`Promise<InfoGetStatusResult>`
+
+| Field | Type | Description |
+|---|---|---|
+| `chainspecName` | `string` | Network name (`casper`, `casper-test`) |
+| `buildVersion` | `string` | Node software version |
+| `isSyncing` | `boolean` | Whether node is still syncing |
+| `lastProgress` | `LastProgress` | Latest sync progress |
+| `ourPublicSigningKey` | `PublicKey` | Node's own key (if validator) |
+| `peers` | `Peer[]` | Connected peers summary |
+
+## Related
+
+- [`getPeers`](/actions/node/getPeers)

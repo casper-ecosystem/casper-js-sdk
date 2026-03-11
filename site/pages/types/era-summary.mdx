@@ -1,0 +1,57 @@
+# EraSummary
+
+Summary of an era retrieved from the blockchain, including a merkle proof for verification.
+
+## Import
+
+```ts
+import { EraSummary } from 'casper-js-sdk';
+```
+
+## Class
+
+### `EraSummary`
+
+| Property | Type | Description |
+|---|---|---|
+| `blockHash` | `Hash` | Hash of the block this summary is from |
+| `eraID` | `number` | Era identifier |
+| `storedValue` | `StoredValue` | The stored value (typically contains `EraInfo`) |
+| `stateRootHash` | `Hash` | State root hash at time of query |
+| `merkleProof` | `string` | Merkle proof string for verification |
+
+#### Constructor
+
+```ts
+new EraSummary(
+  blockHash: Hash,
+  eraID: number,
+  storedValue: StoredValue,
+  stateRootHash: Hash,
+  merkleProof: string
+)
+```
+
+## Usage
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+
+const client = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+
+const { eraSummary } = await client.getEraSummaryLatest();
+
+console.log('Era ID:', eraSummary.eraID);
+console.log('Block hash:', eraSummary.blockHash.toHex());
+
+const eraInfo = eraSummary.storedValue.eraInfo;
+if (eraInfo) {
+  console.log('Allocations:', eraInfo.seigniorageAllocations.length);
+}
+```
+
+## See Also
+
+- [`getEraSummaryLatest`](/actions/auction/getEraSummaryLatest) - RPC action returning `EraSummary`
+- [`EraInfo`](/types/era-info) - Seigniorage allocations
+- [`StoredValue`](/types/stored-value) - Contains `EraInfo`

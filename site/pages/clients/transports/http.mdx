@@ -1,0 +1,76 @@
+# HTTP Transport
+
+`HttpHandler` is the HTTP transport for `RpcClient` and `SpeculativeClient`. It sends JSON-RPC 2.0 requests using axios.
+
+## Import
+
+```ts
+import { HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const handler = new HttpHandler('http://<Node Address>:7777/rpc');
+```
+
+## Constructor
+
+```ts
+new HttpHandler(endpoint: string, client?: 'axios' | 'fetch')
+```
+
+### Parameters
+
+#### endpoint
+
+- **Type:** `string`
+
+The full RPC endpoint URL including port and path. Example: `http://65.21.235.219:7777/rpc`
+
+#### client
+
+- **Type:** `'axios' | 'fetch'` (optional, default `'axios'`)
+
+The underlying HTTP client to use.
+
+## Methods
+
+### setCustomHeaders
+
+Sets custom HTTP headers to include with every request.
+
+```ts
+handler.setCustomHeaders(headers: Record<string, string>): void
+```
+
+### setReferrer
+
+Sets the HTTP `Referer` header for every request.
+
+```ts
+handler.setReferrer(url: string): void
+```
+
+## Examples
+
+### Basic usage
+
+```ts
+const handler = new HttpHandler('http://node:7777/rpc');
+```
+
+### Using fetch instead of axios
+
+```ts
+const handler = new HttpHandler('http://node:7777/rpc', 'fetch');
+```
+
+### Custom headers
+
+```ts
+const handler = new HttpHandler('http://node:7777/rpc');
+handler.setCustomHeaders({
+  'Authorization': 'Bearer my-token',
+  'X-Request-Source': 'my-app',
+});

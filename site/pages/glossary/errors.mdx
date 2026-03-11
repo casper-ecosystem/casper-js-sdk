@@ -1,0 +1,50 @@
+# Errors
+
+Reference for all error types and codes in the Casper JS SDK.
+
+## RpcError
+
+Thrown when the node returns a JSON-RPC error.
+
+```ts
+class RpcError extends Error {
+  readonly code: number;     // ErrorCode value
+  readonly data?: unknown;   // Optional additional info
+}
+```
+
+## ErrorCode
+
+| Constant | Value | Description |
+|---|---|---|
+| `NoSuchEntity` | -32001 | Account or entity not found (not funded) |
+| `AccountMigratedToEntity` | -32002 | 1.x account migrated to 2.x entity format |
+| `NoSuchBlock` | -32003 | Block hash or height not found |
+| `NoSuchDeploy` | -32004 | Transaction or deploy hash not found |
+| `FailedToGetBalance` | -32005 | Balance query failed |
+
+## HttpError
+
+Thrown for HTTP transport failures.
+
+```ts
+class HttpError extends Error {
+  readonly statusCode: number; // HTTP status (e.g., 503)
+}
+```
+
+## SSE Result Errors
+
+The SSE client returns `Result<boolean, string>` from `ts-results`:
+
+| String | When |
+|---|---|
+| `'Already subscribed to this event'` | `subscribe()` called twice for same event |
+| `'Not subscribed to this event'` | `unsubscribe()` called when not subscribed |
+
+## Custom Errors
+
+| Class | When thrown |
+|---|---|
+| `ErrInvalidPublicKeyAlgo` | Unknown key algorithm prefix byte |
+| `ErrInvalidBidAddrTag` | Invalid BidAddr tag byte |

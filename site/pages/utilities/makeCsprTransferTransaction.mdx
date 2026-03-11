@@ -1,0 +1,57 @@
+# makeCsprTransferTransaction
+
+Creates a `Transaction` for a native CSPR transfer. Uses `NativeTransferBuilder` for Casper 2.0 nodes and wraps a legacy `Deploy` for 1.x nodes.
+
+## Import
+
+```ts
+import { makeCsprTransferTransaction } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const status = await rpcClient.getStatus();
+
+const transaction = makeCsprTransferTransaction({
+  senderPublicKeyHex: privateKey.publicKey.toHex(),
+  recipientPublicKeyHex: recipientPublicKey.toHex(),
+  transferAmount: '2500000000',   // 2.5 CSPR in motes
+  paymentAmount: '100000000',     // 0.1 CSPR gas
+  chainName: 'casper',
+  memo: String(Date.now()),
+  casperNetworkApiVersion: status.apiVersion,
+});
+
+transaction.sign(privateKey);
+const result = await rpcClient.putTransaction(transaction);
+console.log('Hash:', result.transactionHash);
+```
+
+## Parameters
+
+| Parameter | Type | Required | Default |
+|---|---|---|---|
+| `senderPublicKeyHex` | `string` | yes | - |
+| `recipientPublicKeyHex` | `string` | yes | - |
+| `transferAmount` | `string` | yes | - |
+| `casperNetworkApiVersion` | `string` | yes | - |
+| `paymentAmount` | `string` | no | `'100000000'` |
+| `chainName` | `string` | no | `'casper'` |
+| `memo` | `string` | no | - |
+| `ttl` | `number` | no | `1800000` |
+| `timestamp` | `string` | no | now |
+| `gasPrice` | `number` | no | `1` |
+
+### casperNetworkApiVersion
+
+Pass the API version string from `rpcClient.getStatus()`. If it starts with `'2'`, a `TransactionV1` is built. Otherwise a legacy `Deploy` is wrapped.
+
+## Return Value
+
+`Transaction`
+
+## Related
+
+- [`makeCsprTransferDeploy`](/utilities/makeCsprTransferDeploy) - Deploy-only version
+- [`NativeTransferBuilder`](/builders/NativeTransferBuilder) - builder pattern alternative

@@ -1,0 +1,88 @@
+# Args
+
+A named container of CLValues, used as the runtime arguments for contract entry point calls.
+
+## Import
+
+```ts
+import { Args, CLValue } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const args = Args.fromMap({
+  amount: CLValue.newCLUInt512('1000000000'),
+  recipient: CLValue.newCLPublicKey(recipientPublicKey),
+  memo: CLValue.newCLString('payment'),
+});
+
+const transaction = new ContractCallBuilder()
+  .from(senderPublicKey)
+  .byHash('hash-abc...')
+  .entryPoint('transfer')
+  .runtimeArgs(args)
+  .build();
+```
+
+## Methods
+
+### Args.fromMap
+
+Creates `Args` from a plain object of name → CLValue.
+
+```ts
+Args.fromMap(map: Record<string, CLValue>): Args
+```
+
+The most convenient way to create arguments.
+
+---
+
+### Args.fromNamedArgs
+
+Creates `Args` from an array of `NamedArg` objects.
+
+```ts
+Args.fromNamedArgs(namedArgs: NamedArg[]): Args
+```
+
+```ts
+const args = Args.fromNamedArgs([
+  { name: 'amount', clValue: CLValue.newCLUInt512('1000') },
+  { name: 'recipient', clValue: CLValue.newCLPublicKey(key) },
+]);
+```
+
+---
+
+### args.args
+
+- **Type:** `Map<string, CLValue>`
+
+Access the underlying map of arguments.
+
+---
+
+### args.toBytes()
+
+```ts
+args.toBytes(): Uint8Array
+```
+
+Serializes all arguments in bytesrepr format for inclusion in transaction bytes.
+
+---
+
+### args.toJSON()
+
+```ts
+args.toJSON(): object
+```
+
+Serializes for RPC submission.
+
+## Notes
+
+- Argument names must match exactly what the smart contract expects.
+- Order within `Args` does not matter - contract entry points use named arguments.

@@ -1,0 +1,62 @@
+# queryBalanceDetailsByBlockHash
+
+Returns detailed CSPR balance information at a specific block, identified by hash.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.queryBalanceDetailsByBlockHash(
+  { mainPurseUnderPublicKey: publicKey.toHex() },
+  'abc123...'
+);
+
+console.log(result.totalBalance.toString());
+console.log(result.availableBalance.toString());
+```
+
+## Parameters
+
+### purseIdentifier
+
+- **Type:** `PurseIdentifier`
+
+Specifies which balance to query. Exactly one field must be set:
+
+```ts
+type PurseIdentifier =
+  | { mainPurseUnderPublicKey: string }
+  | { mainPurseUnderAccountHash: string }
+  | { mainPurseUnderEntityAddr: string }
+  | { purseURef: string }
+```
+
+### blockHash
+
+- **Type:** `string`
+
+Block hash as a hex string.
+
+## Return Value
+
+`Promise<QueryBalanceDetailsResult>`
+
+```ts
+interface QueryBalanceDetailsResult {
+  totalBalance: BigNumber;
+  availableBalance: BigNumber;
+  totalBalanceProof: string;
+  holds: BalanceHold[];
+}
+```
+
+## Related
+
+- [`queryLatestBalanceDetails`](/actions/balance/queryLatestBalanceDetails)
+- [`queryBalanceDetailsByBlockHeight`](/actions/balance/queryBalanceDetailsByBlockHeight)
+- [`queryBalanceDetailsByStateRootHash`](/actions/balance/queryBalanceDetailsByStateRootHash)

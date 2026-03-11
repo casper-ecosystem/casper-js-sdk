@@ -1,0 +1,44 @@
+# DeployInfo
+
+Information about an executed deploy, including gas used, the initiating account, and associated transfers.
+
+## Import
+
+```ts
+import { DeployInfo } from 'casper-js-sdk';
+```
+
+## Class
+
+### `DeployInfo`
+
+| Property | Type | Description |
+|---|---|---|
+| `deployHash` | `Hash` | Hash of the deploy |
+| `from` | `AccountHash` | Account hash that submitted the deploy |
+| `gas` | `string` | Gas consumed (in motes) |
+| `source` | `URef` | Source purse |
+| `transfers` | `TransferHash[]` | Hashes of transfers created by this deploy |
+
+## Usage
+
+```ts
+// DeployInfo is typically obtained from StoredValue
+const result = await client.queryLatestGlobalState({
+  key: 'deploy-abc123...',
+  path: [],
+});
+
+if (result.storedValue.deployInfo) {
+  const info = result.storedValue.deployInfo;
+  console.log('Gas used:', info.gas);
+  console.log('From:', info.from.toHex());
+  console.log('Transfers:', info.transfers.length);
+}
+```
+
+## See Also
+
+- [`Deploy`](/types/deploy) - The deploy structure itself
+- [`StoredValue`](/types/stored-value) - Contains `DeployInfo`
+- [`ExecutionResult`](/types/execution-result) - Detailed execution effects

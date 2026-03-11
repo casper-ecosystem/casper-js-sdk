@@ -1,0 +1,102 @@
+# ByteConverters
+
+Low-level utility functions for serializing numbers and data structures to and from byte arrays in little-endian format.
+
+## Import
+
+```ts
+import {
+  toBytesU8, toBytesU32, toBytesU64, toBytesU512,
+  toBytesString, fromBytesString,
+  byteHash,
+} from 'casper-js-sdk';
+```
+
+## Functions
+
+### Integer Serialization
+
+All integer functions produce little-endian `Uint8Array` output.
+
+```ts
+toBytesU8(value: BigNumberish): Uint8Array    // 1 byte
+toBytesU16(value: BigNumberish): Uint8Array   // 2 bytes
+toBytesI32(value: BigNumberish): Uint8Array   // 4 bytes, signed
+toBytesU32(value: BigNumberish): Uint8Array   // 4 bytes
+toBytesU64(value: BigNumberish): Uint8Array   // 8 bytes
+toBytesI64(value: BigNumberish): Uint8Array   // 8 bytes, signed
+toBytesU128(value: BigNumberish): Uint8Array  // variable-length
+toBytesU256(value: BigNumberish): Uint8Array  // variable-length
+toBytesU512(value: BigNumberish): Uint8Array  // variable-length
+```
+
+### String Serialization
+
+Strings are serialized with a u32 length prefix (4 bytes) followed by UTF-8 bytes.
+
+```ts
+toBytesString(str: string): Uint8Array
+fromBytesString(bytes: Uint8Array): string
+```
+
+### Array Serialization
+
+```ts
+toBytesArrayU8(arr: Uint8Array): Uint8Array  // u32 length + bytes
+```
+
+### Parsing
+
+```ts
+parseU16(bytes: Uint8Array): number
+parseU32(bytes: Uint8Array): number
+fromBytesU64(bytes: Uint8Array): BigNumber
+```
+
+### Hashing
+
+```ts
+byteHash(x: Uint8Array): Uint8Array  // Blake2b 256-bit hash
+```
+
+### DataView Helpers
+
+```ts
+writeInteger(view: DataView, offset: number, value: number): number
+writeUShort(view: DataView, offset: number, value: number): number
+writeBytes(view: DataView, offset: number, value: Uint8Array): number
+expandBuffer(currentBuffer: ArrayBuffer, requiredSize: number): ArrayBuffer
+```
+
+### Factory
+
+```ts
+// Create a serializer for any integer type
+toBytesNumber(bitSize: number, signed: boolean): (value: BigNumberish) => Uint8Array
+```
+
+## Usage
+
+```ts
+import { toBytesU32, toBytesU64, toBytesString, fromBytesString, byteHash } from 'casper-js-sdk';
+
+// Serialize a u32
+const bytes = toBytesU32(42);
+// Uint8Array [42, 0, 0, 0]
+
+// Serialize a string
+const strBytes = toBytesString('hello');
+// [5, 0, 0, 0, 104, 101, 108, 108, 111]
+
+const str = fromBytesString(strBytes);
+// 'hello'
+
+// Compute a Blake2b hash
+const hash = byteHash(new Uint8Array([1, 2, 3]));
+// Uint8Array(32) [...]
+```
+
+## See Also
+
+- [`Conversions`](/types/conversions) - Base64/hex encoding and CSPR↔motes conversion
+- [`HexBytes`](/types/hex-bytes) - Hex string wrapper

@@ -1,0 +1,104 @@
+# Getting Started
+
+Get up and running with the Casper JS SDK in minutes.
+
+## Installation
+
+:::code-group
+
+```bash [npm]
+npm install casper-js-sdk
+```
+
+```bash [yarn]
+yarn add casper-js-sdk
+```
+
+```bash [pnpm]
+pnpm add casper-js-sdk
+```
+
+:::
+
+## Quick Start
+
+The fastest path: generate a key, build a transfer, and submit it.
+
+```ts
+import {
+  HttpHandler,
+  RpcClient,
+  NativeTransferBuilder,
+  PrivateKey,
+  KeyAlgorithm,
+  PublicKey,
+} from 'casper-js-sdk';
+
+// 1. Connect to a node
+const handler = new HttpHandler('http://<Node Address>:7777/rpc');
+const rpcClient = new RpcClient(handler);
+
+// 2. Generate a key pair
+const privateKey = PrivateKey.generate(KeyAlgorithm.ED25519);
+console.log('Public key:', privateKey.publicKey.toHex());
+
+// 3. Build a transfer transaction
+const transaction = new NativeTransferBuilder()
+  .from(privateKey.publicKey)
+  .target(PublicKey.fromHex('0202f5a92ab6da536e7b1a351406f3744224bec85d7acbab1497b65de48a1a707b64'))
+  .amount('2500000000') // 2.5 CSPR (in motes)
+  .id(Date.now())
+  .chainName('casper')
+  .payment(100_000_000)
+  .build();
+
+// 4. Sign and submit
+transaction.sign(privateKey);
+const result = await rpcClient.putTransaction(transaction);
+console.log('Transaction hash:', result.transactionHash);
+
+// 5. Wait for confirmation (pass the Transaction object, default timeout 6s)
+const confirmed = await rpcClient.waitForTransaction(transaction, 60_000);
+const execution = confirmed.executionInfo?.executionResult;
+console.log(execution?.errorMessage ? 'Failed:' : 'Success! Consumed:', execution?.errorMessage ?? execution?.consumed);
+```
+
+## Node URLs
+
+| Network | RPC URL |
+|---|---|
+| Mainnet | `http://65.21.235.219:7777/rpc` |
+| Testnet | `http://195.201.174.222:7777/rpc` |
+
+The RPC port is `7777`. The SSE (event stream) port is `9999`.
+
+## CasperNetwork (Version-Aware)
+
+If you're connecting to a mixed-version network or want automatic format selection, use `CasperNetwork`:
+
+```ts
+import { CasperNetwork, RpcClient, HttpHandler } from 'casper-js-sdk';
+
+const rpcClient = new RpcClient(new HttpHandler('http://<Node Address>:7777/rpc'));
+const network = await CasperNetwork.create(rpcClient);
+// Auto-detects 1.x vs 2.x from the node's getStatus() response
+
+const tx = network.createTransferTransaction(
+  privateKey.publicKey,
+  recipientPublicKey,
+  'casper',
+  '2500000000', // amount in motes
+  100_000_000,  // deploy cost
+  1800000,      // TTL ms
+  Date.now(),   // transfer ID
+);
+tx.sign(privateKey);
+await network.putTransaction(tx);
+```
+
+## Next Steps
+
+- [Accounts](/accounts/private-key) - key generation and management
+- [Transaction Builders](/builders/introduction) - all builder types
+- [RPC Client](/clients/rpc-client) - full query interface
+- [SSE Events](/sse/introduction) - real-time event streaming

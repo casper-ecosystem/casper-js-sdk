@@ -1,0 +1,36 @@
+# CLValue.newCLString
+
+Creates a CLValue of type `String`.
+
+## Import
+
+```ts
+import { CLValue } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const value = CLValue.newCLString('hello world');
+```
+
+## Parameters
+
+### val
+
+- **Type:** `string`
+
+A UTF-8 string.
+
+## Return Value
+
+`CLValue` with `clType = CLType.String`.
+
+## Example
+
+```ts
+const args = Args.fromMap({
+  name: CLValue.newCLString('MyToken'),
+  symbol: CLValue.newCLString('MTK'),
+});
+```

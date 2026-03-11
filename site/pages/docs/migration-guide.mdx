@@ -1,0 +1,130 @@
+# Migration Guide (v2 → v5)
+
+This guide covers breaking changes when upgrading from casper-js-sdk v2 to v5.
+
+## Key Changes
+
+### Package name unchanged
+```bash
+npm install casper-js-sdk
+```
+
+### Entry point changed
+
+v2:
+```ts
+import { CasperClient, DeployUtil, CLValue } from 'casper-js-sdk';
+```
+
+v5:
+```ts
+import { RpcClient, HttpHandler, CLValue, Transaction } from 'casper-js-sdk';
+```
+
+### CasperClient → RpcClient
+
+The monolithic `CasperClient` is replaced by a focused `RpcClient` with `HttpHandler` transport.
+
+v2:
+```ts
+const client = new CasperClient('http://node:7777/rpc');
+const balance = await client.balanceOfByPublicKey(publicKey);
+```
+
+v5:
+```ts
+const client = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+const result = await client.queryLatestBalance({
+  mainPurseUnderPublicKey: publicKey.toHex(),
+});
+const balance = result.balance;
+```
+
+### DeployUtil → Transaction Builders
+
+v2:
+```ts
+const deployParams = new DeployUtil.DeployParams(publicKey, 'casper');
+const transfer = DeployUtil.ExecutableDeployItem.newTransfer(amount, target, null, id);
+const payment = DeployUtil.standardPayment(100_000_000);
+const deploy = DeployUtil.makeDeploy(deployParams, transfer, payment);
+```
+
+v5:
+```ts
+const transaction = new NativeTransferBuilder()
+  .from(publicKey)
+  .target(targetPublicKey)
+  .amount(amount.toString())
+  .id(id)
+  .chainName('casper')
+  .payment(100_000_000)
+  .build();
+```
+
+### CLValue factories renamed
+
+| v2 | v5 |
+|---|---|
+| `CLValueBuilder.u512(n)` | `CLValue.newCLUInt512(n)` |
+| `CLValueBuilder.publicKey(key)` | `CLValue.newCLPublicKey(key)` |
+| `CLValueBuilder.string(s)` | `CLValue.newCLString(s)` |
+| `CLValueBuilder.bool(b)` | `CLValue.newCLValueBool(b)` |
+| `CLValueBuilder.byteArray(bytes)` | `CLValue.newCLByteArray(bytes)` |
+| `CLValueBuilder.option(inner)` | `CLValue.newCLOption(inner)` |
+| `CLValueBuilder.list(items)` | `CLValue.newCLList(type)` |
+
+### RuntimeArgs → Args
+
+v2:
+```ts
+const args = RuntimeArgs.fromMap({ amount: CLValueBuilder.u512(100) });
+```
+
+v5:
+```ts
+const args = Args.fromMap({ amount: CLValue.newCLUInt512('100') });
+```
+
+### Key derivation
+
+v2:
+```ts
+const keys = await Keys.Ed25519.new();
+const publicKey = keys.publicKey;
+```
+
+v5:
+```ts
+const privateKey = PrivateKey.generate(KeyAlgorithm.ED25519);
+const publicKey = privateKey.publicKey;
+```
+
+### Account hash
+
+v2:
+```ts
+const accountHash = publicKey.toAccountHashStr();
+```
+
+v5:
+```ts
+const accountHash = publicKey.accountHash().toFormattedStr();
+// → 'account-hash-abc123...'
+```
+
+### putDeploy → putTransaction
+
+v2:
+```ts
+await client.putDeploy(deploy);
+```
+
+v5:
+```ts
+// For modern TransactionV1:
+await rpcClient.putTransaction(transaction);
+
+// For legacy Deploy:
+await rpcClient.putDeploy(deploy);
+```

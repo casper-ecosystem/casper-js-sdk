@@ -1,0 +1,153 @@
+---
+layout: landing
+---
+
+import { HomePage } from 'vocs/components'
+
+<HomePage.Root>
+  <img
+    src="https://cdn.prod.website-files.com/668fef77d8ac075ed5e3f57a/66900f439d0597692b64fcf2_Casper_Wordmark_Red_RGB.png"
+    alt="Casper Network"
+    style={{ height: '100px', width: "200px", display: 'block', margin: '0 auto 24px' }}
+  />
+  <HomePage.Tagline>Casper JS SDK</HomePage.Tagline>
+  <HomePage.Description>
+    A complete TypeScript/JavaScript interface for the Casper Network.
+    Build wallets, exchanges, dApps, and infrastructure with full type safety.
+  </HomePage.Description>
+  <HomePage.Buttons>
+    <HomePage.Button href="/docs/getting-started" variant="accent">Get Started</HomePage.Button>
+    <HomePage.Button href="/docs/introduction">Why Casper JS SDK</HomePage.Button>
+  </HomePage.Buttons>
+  <HomePage.InstallPackage name="casper-js-sdk" type="install" />
+</HomePage.Root>
+
+<div style={{ maxWidth: '900px', margin: '64px auto 0', padding: '0 24px' }}>
+
+## Overview
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '16px', margin: '24px 0 48px' }}>
+
+<div style={{ border: '1px solid var(--vocs-color_border)', borderRadius: '12px', padding: '20px 24px' }}>
+  <div style={{ fontSize: '24px', marginBottom: '8px' }}>🔐</div>
+  <strong>Type-Safe Keys</strong>
+  <p style={{ color: 'var(--vocs-color_text3)', margin: '8px 0 0', fontSize: '14px' }}>Full TypeScript types for ED25519 and SECP256K1 keys. Generate, import from PEM, sign, and verify - all with autocompletion.</p>
+</div>
+
+<div style={{ border: '1px solid var(--vocs-color_border)', borderRadius: '12px', padding: '20px 24px' }}>
+  <div style={{ fontSize: '24px', marginBottom: '8px' }}>⚡</div>
+  <strong>Fluent Transaction Builders</strong>
+  <p style={{ color: 'var(--vocs-color_text3)', margin: '8px 0 0', fontSize: '14px' }}>Chainable builders for transfers, staking, contract calls, and WASM deploys. No manual serialization.</p>
+</div>
+
+<div style={{ border: '1px solid var(--vocs-color_border)', borderRadius: '12px', padding: '20px 24px' }}>
+  <div style={{ fontSize: '24px', marginBottom: '8px' }}>🔌</div>
+  <strong>Full RPC Coverage</strong>
+  <p style={{ color: 'var(--vocs-color_text3)', margin: '8px 0 0', fontSize: '14px' }}>80+ typed RPC methods: blocks, balances, transactions, auction state, global state queries, and more.</p>
+</div>
+
+<div style={{ border: '1px solid var(--vocs-color_border)', borderRadius: '12px', padding: '20px 24px' }}>
+  <div style={{ fontSize: '24px', marginBottom: '8px' }}>📡</div>
+  <strong>Real-Time Event Streaming</strong>
+  <p style={{ color: 'var(--vocs-color_text3)', margin: '8px 0 0', fontSize: '14px' }}>SSE client with typed handlers for block additions, transaction outcomes, finality signatures, and era steps.</p>
+</div>
+
+<div style={{ border: '1px solid var(--vocs-color_border)', borderRadius: '12px', padding: '20px 24px' }}>
+  <div style={{ fontSize: '24px', marginBottom: '8px' }}>🔀</div>
+  <strong>Casper 1.x & 2.x Support</strong>
+  <p style={{ color: 'var(--vocs-color_text3)', margin: '8px 0 0', fontSize: '14px' }}>Full support for both legacy Deploy and modern TransactionV1. <code>CasperNetwork</code> auto-detects the node version.</p>
+</div>
+
+<div style={{ border: '1px solid var(--vocs-color_border)', borderRadius: '12px', padding: '20px 24px' }}>
+  <div style={{ fontSize: '24px', marginBottom: '8px' }}>🌐</div>
+  <strong>Browser & Node.js</strong>
+  <p style={{ color: 'var(--vocs-color_text3)', margin: '8px 0 0', fontSize: '14px' }}>Dual bundles: CommonJS for Node.js and UMD for browsers. Zero configuration needed.</p>
+</div>
+
+</div>
+
+## Quick Start
+
+```ts
+import {
+  HttpHandler, RpcClient, NativeTransferBuilder,
+  PrivateKey, KeyAlgorithm, PublicKey,
+} from 'casper-js-sdk';
+
+// Connect to a node
+const rpcClient = new RpcClient(new HttpHandler('http://node:7777/rpc'));
+
+// Generate keys
+const privateKey = PrivateKey.generate(KeyAlgorithm.ED25519);
+
+// Build, sign, and submit a transfer
+const tx = new NativeTransferBuilder()
+  .from(privateKey.publicKey)
+  .target(PublicKey.fromHex('0202f5a92ab6da536e7b1a351406f3744224bec85d7acbab1497b65de48a1a707b64'))
+  .amount('2500000000') // 2.5 CSPR in motes
+  .id(Date.now())
+  .chainName('casper')
+  .payment(100_000_000)
+  .build();
+
+tx.sign(privateKey);
+
+const result = await rpcClient.putTransaction(tx);
+console.log('Hash:', result.transactionHash);
+```
+
+## Community & Support
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '16px', margin: '24px 0 48px' }}>
+
+<a href="https://github.com/casper-ecosystem/casper-js-sdk" style={{ textDecoration: 'none' }}>
+  <div style={{ border: '1px solid var(--vocs-color_border)', borderRadius: '12px', padding: '20px 24px', transition: 'border-color 0.2s' }}>
+    <div style={{ fontSize: '24px', marginBottom: '8px' }}>⭐</div>
+    <strong style={{ color: 'var(--vocs-color_text)' }}>GitHub</strong>
+    <p style={{ color: 'var(--vocs-color_text3)', margin: '8px 0 0', fontSize: '14px' }}>Source code, issues, and pull requests. Star the repo to follow updates.</p>
+  </div>
+</a>
+
+<a href="https://github.com/casper-ecosystem/casper-js-sdk/issues" style={{ textDecoration: 'none' }}>
+  <div style={{ border: '1px solid var(--vocs-color_border)', borderRadius: '12px', padding: '20px 24px' }}>
+    <div style={{ fontSize: '24px', marginBottom: '8px' }}>🐛</div>
+    <strong style={{ color: 'var(--vocs-color_text)' }}>Bug Reports</strong>
+    <p style={{ color: 'var(--vocs-color_text3)', margin: '8px 0 0', fontSize: '14px' }}>Found an issue? Open a GitHub issue with a minimal reproduction.</p>
+  </div>
+</a>
+
+<a href="https://github.com/casper-ecosystem/casper-js-sdk/releases" style={{ textDecoration: 'none' }}>
+  <div style={{ border: '1px solid var(--vocs-color_border)', borderRadius: '12px', padding: '20px 24px' }}>
+    <div style={{ fontSize: '24px', marginBottom: '8px' }}>📦</div>
+    <strong style={{ color: 'var(--vocs-color_text)' }}>Changelog</strong>
+    <p style={{ color: 'var(--vocs-color_text3)', margin: '8px 0 0', fontSize: '14px' }}>Release notes and version history for every SDK release.</p>
+  </div>
+</a>
+
+<a href="http://discord.com/invite/caspernetwork" style={{ textDecoration: 'none' }}>
+  <div style={{ border: '1px solid var(--vocs-color_border)', borderRadius: '12px', padding: '20px 24px' }}>
+    <div style={{ fontSize: '24px', marginBottom: '8px' }}>💬</div>
+    <strong style={{ color: 'var(--vocs-color_text)' }}>Discord</strong>
+    <p style={{ color: 'var(--vocs-color_text3)', margin: '8px 0 0', fontSize: '14px' }}>Chat with the Casper developer community and get help from the team.</p>
+  </div>
+</a>
+
+<a href="https://docs.casper.network" style={{ textDecoration: 'none' }}>
+  <div style={{ border: '1px solid var(--vocs-color_border)', borderRadius: '12px', padding: '20px 24px' }}>
+    <div style={{ fontSize: '24px', marginBottom: '8px' }}>📖</div>
+    <strong style={{ color: 'var(--vocs-color_text)' }}>Protocol Docs</strong>
+    <p style={{ color: 'var(--vocs-color_text3)', margin: '8px 0 0', fontSize: '14px' }}>Official Casper Network documentation covering the protocol and node operation.</p>
+  </div>
+</a>
+
+<a href="https://www.npmjs.com/package/casper-js-sdk" style={{ textDecoration: 'none' }}>
+  <div style={{ border: '1px solid var(--vocs-color_border)', borderRadius: '12px', padding: '20px 24px' }}>
+    <div style={{ fontSize: '24px', marginBottom: '8px' }}>📬</div>
+    <strong style={{ color: 'var(--vocs-color_text)' }}>npm Package</strong>
+    <p style={{ color: 'var(--vocs-color_text3)', margin: '8px 0 0', fontSize: '14px' }}>Package info, version history, and download stats on npm.</p>
+  </div>
+</a>
+
+</div>
+
+</div>

@@ -1,0 +1,44 @@
+# DeployProcessed
+
+Fires when a legacy Deploy (Casper 1.x format) completes execution.
+
+## Import
+
+```ts
+import { SseClient, EventName } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+sseClient.subscribe(EventName.DeployProcessedEventType, (raw) => {
+  const result = raw.parseAsDeployProcessedEvent();
+  if (result.err) return;
+
+  const payload = result.val.deployProcessed;
+  console.log('Deploy hash:', payload.deployHash);
+  console.log('Account:', payload.account);
+  console.log('Block hash:', payload.blockHash);
+});
+```
+
+## Payload
+
+### DeployProcessedPayload
+
+| Field | Type | Description |
+|---|---|---|
+| `deployHash` | `string` | Hash of the deploy |
+| `account` | `string` | Public key hex of the submitter |
+| `timestamp` | `string` | Submission time |
+| `ttl` | `string` | Time-to-live |
+| `blockHash` | `string` | Block the deploy was included in |
+| `executionResult` | `object` | Execution outcome |
+
+## Notes
+
+- For Casper 2.x, listen to [`TransactionProcessed`](/sse/transaction-processed) instead, which covers both deploys and transactions.
+
+## Related
+
+- [`TransactionProcessed`](/sse/transaction-processed)

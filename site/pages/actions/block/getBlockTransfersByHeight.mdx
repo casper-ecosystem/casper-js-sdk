@@ -1,0 +1,34 @@
+# getBlockTransfersByHeight
+
+Returns the transfers included in a specific block, identified by height.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getBlockTransfersByHeight(1_000_000);
+
+console.log(`Block has ${result.transfers.length} transfers`);
+```
+
+## Parameters
+
+### height
+
+- **Type:** `number`
+
+Block height.
+
+## Return Value
+
+`Promise<ChainGetBlockTransfersResult>`
+
+## Related
+
+- [`getLatestBlockTransfers`](/actions/block/getLatestBlockTransfers)
+- [`getBlockTransfersByHash`](/actions/block/getBlockTransfersByHash)

@@ -1,0 +1,43 @@
+# getTransactionFinalizedApprovalByTransactionHash
+
+Retrieves a transaction along with its finalized approvals using a V1 transaction hash - the approvals used during execution, which may differ from those originally submitted.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getTransactionFinalizedApprovalByTransactionHash(
+  'abc123...'
+);
+
+console.log(result.transaction?.hash.toHex());
+```
+
+## Parameters
+
+### transactionHash
+
+- **Type:** `string`
+
+The transaction hash as a hex string.
+
+## Return Value
+
+`Promise<InfoGetTransactionResult>`
+
+```ts
+interface InfoGetTransactionResult {
+  transaction?: Transaction;
+  executionInfo?: ExecutionInfo;
+}
+```
+
+## Related
+
+- [`getTransactionByTransactionHash`](/actions/transactions/getTransactionByTransactionHash)
+- [`getTransactionFinalizedApprovalByDeployHash`](/actions/transactions/getTransactionFinalizedApprovalByDeployHash)

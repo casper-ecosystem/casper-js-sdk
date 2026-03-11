@@ -1,0 +1,57 @@
+# getEntityByBlockHeight
+
+Returns an addressable entity (account or smart contract) at a specific block height. This is the Casper 2.x equivalent of `getAccountInfo`.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.getEntityByBlockHeight(
+  { publicKey: publicKey.toHex() },
+  1234567
+);
+
+console.log(result.entity);
+```
+
+## Parameters
+
+### entityIdentifier
+
+- **Type:** `EntityIdentifier`
+
+Identifies the entity to look up. One of:
+
+```ts
+type EntityIdentifier =
+  | { publicKey: string }         // public key hex
+  | { accountHash: string }       // 'account-hash-abc...'
+  | { entityAddr: string }        // 'entity-account-abc...'
+```
+
+### height
+
+- **Type:** `number`
+
+The block height to query at.
+
+## Return Value
+
+`Promise<StateGetEntityResult>`
+
+```ts
+interface StateGetEntityResult {
+  entity: AddressableEntity | LegacyAccount;
+}
+```
+
+## Related
+
+- [`getLatestEntity`](/actions/account/getLatestEntity)
+- [`getEntityByBlockHash`](/actions/account/getEntityByBlockHash)
+- [`getAccountInfoByBlockHeight`](/actions/account/getAccountInfoByBlockHeight)

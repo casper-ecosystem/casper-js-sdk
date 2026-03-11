@@ -1,0 +1,61 @@
+# queryGlobalStateByBlockHeight
+
+Queries a value from global state at a specific block height.
+
+## Import
+
+```ts
+import { RpcClient, HttpHandler } from 'casper-js-sdk';
+```
+
+## Usage
+
+```ts
+const result = await rpcClient.queryGlobalStateByBlockHeight(
+  1234567,
+  'hash-contract-abc...',
+  ['total_supply']
+);
+
+const clValue = CLValueParser.fromJSON(result.storedValue.clValue);
+```
+
+## Parameters
+
+### blockHeight
+
+- **Type:** `number`
+
+The block height to query at.
+
+### key
+
+- **Type:** `string`
+
+The global state key to query. Formats:
+- `hash-{hex}` - contract or package hash
+- `account-hash-{hex}` - account
+- `uref-{hex}-{octal}` - URef
+
+### path
+
+- **Type:** `string[]`
+
+Storage path to traverse from the key. Use `[]` for the root value.
+
+## Return Value
+
+`Promise<QueryGlobalStateResult>`
+
+```ts
+interface QueryGlobalStateResult {
+  storedValue: StoredValue;
+  blockHeader: BlockHeader;
+}
+```
+
+## Related
+
+- [`queryLatestGlobalState`](/actions/state/queryLatestGlobalState)
+- [`queryGlobalStateByBlockHash`](/actions/state/queryGlobalStateByBlockHash)
+- [`queryGlobalStateByStateHash`](/actions/state/queryGlobalStateByStateHash)

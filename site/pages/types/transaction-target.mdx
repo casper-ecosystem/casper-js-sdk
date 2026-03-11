@@ -1,0 +1,140 @@
+# TransactionTarget
+
+Specifies where a transaction executes - natively on the platform, in a stored contract, or via an inline WASM session.
+
+## Import
+
+```ts
+import {
+  TransactionTarget,
+  StoredTarget,
+  SessionTarget,
+  TransactionInvocationTarget,
+  TransactionRuntime,
+} from 'casper-js-sdk';
+```
+
+## Classes
+
+### `TransactionTarget`
+
+A discriminated union - exactly one variant is set.
+
+| Property | Type | Description |
+|---|---|---|
+| `native?` | `object` | Native target (mint/auction operations) |
+| `stored?` | `StoredTarget` | Call a stored contract |
+| `session?` | `SessionTarget` | Execute inline WASM |
+
+#### Methods
+
+```ts
+target.toBytes(): Uint8Array
+target.toJSON(): any
+TransactionTarget.fromJSON(json: any): TransactionTarget
+TransactionTarget.newTransactionTargetFromSession(session: ExecutableDeployItem): TransactionTarget
+```
+
+### `StoredTarget`
+
+Calls a contract already deployed on-chain.
+
+| Property | Type | Description |
+|---|---|---|
+| `id` | `TransactionInvocationTarget` | How to identify the contract |
+| `runtime` | `TransactionRuntime` | Execution runtime (VmCasperV1 or VmCasperV2) |
+
+#### Methods
+
+```ts
+target.toBytes(): Uint8Array
+```
+
+### `SessionTarget`
+
+Executes inline WASM bytecode.
+
+| Property | Type | Description |
+|---|---|---|
+| `moduleBytes` | `Uint8Array` | WASM bytecode |
+| `runtime` | `TransactionRuntime` | Execution runtime |
+| `isInstallUpgrade` | `boolean` | Whether this is a contract install or upgrade |
+
+#### Methods
+
+```ts
+target.toBytes(): Uint8Array
+```
+
+### `TransactionInvocationTarget`
+
+Identifies the contract to call. Exactly one variant is set.
+
+| Property | Type | Description |
+|---|---|---|
+| `byHash?` | `Hash` | Contract hash |
+| `byName?` | `string` | Named key |
+| `byPackageHash?` | `ByPackageHashInvocationTarget` | Package hash with optional version |
+| `byPackageName?` | `ByPackageNameInvocationTarget` | Package named key with optional version |
+
+#### Methods
+
+```ts
+target.toBytes(): Uint8Array
+TransactionInvocationTarget.fromBytes(bytes: Uint8Array): TransactionInvocationTarget
+```
+
+### `TransactionRuntime`
+
+| Value | Description |
+|---|---|
+| `VmCasperV1` | Casper VM version 1 |
+| `VmCasperV2` | Casper VM version 2 |
+
+#### Static Methods
+
+```ts
+TransactionRuntime.vmCasperV1(): TransactionRuntime
+TransactionRuntime.vmCasperV2(): TransactionRuntime
+TransactionRuntime.fromJSON(json: string): TransactionRuntime
+```
+
+#### Methods
+
+```ts
+runtime.toJSON(): string
+runtime.toBytes(): Uint8Array
+```
+
+## Usage
+
+```ts
+import {
+  TransactionTarget,
+  StoredTarget,
+  TransactionInvocationTarget,
+  TransactionRuntime,
+} from 'casper-js-sdk';
+
+// Native target (for staking/mint operations)
+const native = new TransactionTarget({});
+
+// Call stored contract by hash
+const invocationTarget = new TransactionInvocationTarget();
+invocationTarget.byHash = 'contract-hash-abc123...';
+
+const stored = new TransactionTarget(
+  undefined,
+  new StoredTarget(invocationTarget, TransactionRuntime.vmCasperV1())
+);
+```
+
+:::tip
+Transaction builders handle target construction automatically. Use `ContractCallBuilder` for contract calls and `SessionBuilder` for WASM sessions.
+:::
+
+## See Also
+
+- [`TransactionV1Payload`](/types/transaction-v1-payload) - Contains `target`
+- [`ContractCallBuilder`](/builders/ContractCallBuilder) - Sets `StoredTarget`
+- [`SessionBuilder`](/builders/SessionBuilder) - Sets `SessionTarget`
