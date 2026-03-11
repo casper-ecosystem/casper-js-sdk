@@ -1,0 +1,28 @@
+import{u as a,j as e}from"./index-BN4kMdYu.js";const d={title:"getLatestDelegatorReward",description:"undefined"};function i(s){const r={a:"a",code:"code",div:"div",h1:"h1",h2:"h2",h3:"h3",header:"header",li:"li",p:"p",pre:"pre",span:"span",strong:"strong",ul:"ul",...a(),...s.components};return e.jsxs(e.Fragment,{children:[e.jsx(r.header,{children:e.jsxs(r.h1,{id:"getlatestdelegatorreward",children:["getLatestDelegatorReward",e.jsx(r.a,{"aria-hidden":"true",tabIndex:"-1",href:"#getlatestdelegatorreward",children:e.jsx(r.div,{"data-autolink-icon":!0})})]})}),`
+`,e.jsx(r.p,{children:"Returns the reward earned by a delegator in the most recent completed era."}),`
+`,e.jsxs(r.h2,{id:"import",children:["Import",e.jsx(r.a,{"aria-hidden":"true",tabIndex:"-1",href:"#import",children:e.jsx(r.div,{"data-autolink-icon":!0})})]}),`
+`,e.jsx(e.Fragment,{children:e.jsx(r.pre,{className:"shiki shiki-themes github-light github-dark-dimmed",style:{backgroundColor:"#fff","--shiki-dark-bg":"#22272e",color:"#24292e","--shiki-dark":"#adbac7"},tabIndex:"0",children:e.jsx(r.code,{children:e.jsxs(r.span,{className:"line",children:[e.jsx(r.span,{style:{color:"#D73A49","--shiki-dark":"#F47067"},children:"import"}),e.jsx(r.span,{style:{color:"#24292E","--shiki-dark":"#ADBAC7"},children:" { RpcClient, HttpHandler, PublicKey } "}),e.jsx(r.span,{style:{color:"#D73A49","--shiki-dark":"#F47067"},children:"from"}),e.jsx(r.span,{style:{color:"#032F62","--shiki-dark":"#96D0FF"},children:" 'casper-js-sdk'"}),e.jsx(r.span,{style:{color:"#24292E","--shiki-dark":"#ADBAC7"},children:";"})]})})})}),`
+`,e.jsxs(r.h2,{id:"usage",children:["Usage",e.jsx(r.a,{"aria-hidden":"true",tabIndex:"-1",href:"#usage",children:e.jsx(r.div,{"data-autolink-icon":!0})})]}),`
+`,e.jsx(e.Fragment,{children:e.jsx(r.pre,{className:"shiki shiki-themes github-light github-dark-dimmed",style:{backgroundColor:"#fff","--shiki-dark-bg":"#22272e",color:"#24292e","--shiki-dark":"#adbac7"},tabIndex:"0",children:e.jsxs(r.code,{children:[e.jsxs(r.span,{className:"line",children:[e.jsx(r.span,{style:{color:"#D73A49","--shiki-dark":"#F47067"},children:"const"}),e.jsx(r.span,{style:{color:"#005CC5","--shiki-dark":"#6CB6FF"},children:" reward"}),e.jsx(r.span,{style:{color:"#D73A49","--shiki-dark":"#F47067"},children:" ="}),e.jsx(r.span,{style:{color:"#D73A49","--shiki-dark":"#F47067"},children:" await"}),e.jsx(r.span,{style:{color:"#24292E","--shiki-dark":"#ADBAC7"},children:" rpcClient."}),e.jsx(r.span,{style:{color:"#6F42C1","--shiki-dark":"#DCBDFB"},children:"getLatestDelegatorReward"}),e.jsx(r.span,{style:{color:"#24292E","--shiki-dark":"#ADBAC7"},children:"("})]}),`
+`,e.jsx(r.span,{className:"line",children:e.jsx(r.span,{style:{color:"#24292E","--shiki-dark":"#ADBAC7"},children:"  validatorPublicKey,"})}),`
+`,e.jsx(r.span,{className:"line",children:e.jsx(r.span,{style:{color:"#24292E","--shiki-dark":"#ADBAC7"},children:"  delegatorPublicKey"})}),`
+`,e.jsx(r.span,{className:"line",children:e.jsx(r.span,{style:{color:"#24292E","--shiki-dark":"#ADBAC7"},children:");"})}),`
+`,e.jsx(r.span,{className:"line","data-empty-line":!0,children:" "}),`
+`,e.jsxs(r.span,{className:"line",children:[e.jsx(r.span,{style:{color:"#24292E","--shiki-dark":"#ADBAC7"},children:"console."}),e.jsx(r.span,{style:{color:"#6F42C1","--shiki-dark":"#DCBDFB"},children:"log"}),e.jsx(r.span,{style:{color:"#24292E","--shiki-dark":"#ADBAC7"},children:"("}),e.jsx(r.span,{style:{color:"#032F62","--shiki-dark":"#96D0FF"},children:"'Delegator reward:'"}),e.jsx(r.span,{style:{color:"#24292E","--shiki-dark":"#ADBAC7"},children:", reward.reward."}),e.jsx(r.span,{style:{color:"#6F42C1","--shiki-dark":"#DCBDFB"},children:"toString"}),e.jsx(r.span,{style:{color:"#24292E","--shiki-dark":"#ADBAC7"},children:"(), "}),e.jsx(r.span,{style:{color:"#032F62","--shiki-dark":"#96D0FF"},children:"'motes'"}),e.jsx(r.span,{style:{color:"#24292E","--shiki-dark":"#ADBAC7"},children:");"})]})]})})}),`
+`,e.jsxs(r.h2,{id:"parameters",children:["Parameters",e.jsx(r.a,{"aria-hidden":"true",tabIndex:"-1",href:"#parameters",children:e.jsx(r.div,{"data-autolink-icon":!0})})]}),`
+`,e.jsxs(r.h3,{id:"validator",children:["validator",e.jsx(r.a,{"aria-hidden":"true",tabIndex:"-1",href:"#validator",children:e.jsx(r.div,{"data-autolink-icon":!0})})]}),`
+`,e.jsxs(r.ul,{children:[`
+`,e.jsxs(r.li,{children:[e.jsx(r.strong,{children:"Type:"})," ",e.jsx(r.code,{children:"PublicKey"})]}),`
+`]}),`
+`,e.jsx(r.p,{children:"The validator the delegator is staking with."}),`
+`,e.jsxs(r.h3,{id:"delegator",children:["delegator",e.jsx(r.a,{"aria-hidden":"true",tabIndex:"-1",href:"#delegator",children:e.jsx(r.div,{"data-autolink-icon":!0})})]}),`
+`,e.jsxs(r.ul,{children:[`
+`,e.jsxs(r.li,{children:[e.jsx(r.strong,{children:"Type:"})," ",e.jsx(r.code,{children:"PublicKey"})]}),`
+`]}),`
+`,e.jsx(r.p,{children:"The delegator's public key."}),`
+`,e.jsxs(r.h2,{id:"return-value",children:["Return Value",e.jsx(r.a,{"aria-hidden":"true",tabIndex:"-1",href:"#return-value",children:e.jsx(r.div,{"data-autolink-icon":!0})})]}),`
+`,e.jsx(r.p,{children:e.jsx(r.code,{children:"Promise<InfoGetRewardResult>"})}),`
+`,e.jsxs(r.h2,{id:"related",children:["Related",e.jsx(r.a,{"aria-hidden":"true",tabIndex:"-1",href:"#related",children:e.jsx(r.div,{"data-autolink-icon":!0})})]}),`
+`,e.jsxs(r.ul,{children:[`
+`,e.jsx(r.li,{children:e.jsx(r.a,{href:"/actions/auction/getLatestValidatorReward",children:e.jsx(r.code,{children:"getLatestValidatorReward"})})}),`
+`]})]})}function l(s={}){const{wrapper:r}={...a(),...s.components};return r?e.jsx(r,{...s,children:e.jsx(i,{...s})}):i(s)}export{l as default,d as frontmatter};
