@@ -3,6 +3,10 @@ import path from 'path';
 import { version } from '../package.json';
 
 export default defineConfig({
+  aiCta: {
+    query: ({ location }) =>
+      `Using the Casper JS SDK docs at https://casper-ecosystem.github.io/casper-js-sdk/llms-full.txt, answer the following about this page: ${location}`,
+  },
   title: 'Casper JS SDK',
   description: 'TypeScript/JavaScript SDK for the Casper Network',
   rootDir: '.',
@@ -574,5 +578,8 @@ export default defineConfig({
   ],
   theme: {
     accentColor: { dark: '#FF4D55', light: '#FF0012' }
+  },
+  llms: {
+    generateMarkdown: true
   }
 });
