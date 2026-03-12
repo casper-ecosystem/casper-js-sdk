@@ -4,161 +4,161 @@
 
 ## Docs
 
-- [CasperNetwork](/casper-js-sdk/utilities/CasperNetwork): A high-level, version-aware client that auto-detects whether the node is Casper 1.x or 2.0 and dispatches transactions in the correct format automatically.
-- [makeAuctionManagerDeploy](/casper-js-sdk/utilities/makeAuctionManagerDeploy): Creates a legacy `Deploy` for auction (staking) operations: delegate, undelegate, or redelegate.
-- [makeAuctionManagerTransaction](/casper-js-sdk/utilities/makeAuctionManagerTransaction): Creates a `Transaction` for auction (staking) operations. Uses native builders for Casper 2.0 nodes and wraps a legacy `Deploy` for 1.x nodes.
-- [makeCep18TransferDeploy](/casper-js-sdk/utilities/makeCep18TransferDeploy): Creates a legacy `Deploy` for transferring CEP-18 (ERC-20 compatible) fungible tokens. For Casper 2.0 nodes use [`makeCep18TransferTransaction`](/utilities/makeCep18TransferTransaction).
-- [makeCep18TransferTransaction](/casper-js-sdk/utilities/makeCep18TransferTransaction): Creates a `Transaction` for transferring CEP-18 (ERC-20 compatible) fungible tokens. Supports both Casper 1.x (wraps a Deploy) and Casper 2.0 (uses `ContractCallBuilder`).
-- [makeCsprTransferDeploy](/casper-js-sdk/utilities/makeCsprTransferDeploy): Creates a legacy `Deploy` for a native CSPR transfer (Casper 1.x format).
-- [makeCsprTransferTransaction](/casper-js-sdk/utilities/makeCsprTransferTransaction): Creates a `Transaction` for a native CSPR transfer. Uses `NativeTransferBuilder` for Casper 2.0 nodes and wraps a legacy `Deploy` for 1.x nodes.
-- [makeNftTransferDeploy](/casper-js-sdk/utilities/makeNftTransferDeploy): Creates a legacy `Deploy` for transferring an NFT. Supports CEP-47, CEP-78, and CEP-95 standards.
-- [makeNftTransferTransaction](/casper-js-sdk/utilities/makeNftTransferTransaction): Creates a `Transaction` for transferring an NFT. Supports CEP-47, CEP-78, and CEP-95 standards. Works with both Casper 1.x (wraps a Deploy) and Casper 2.0.
-- [Account](/casper-js-sdk/types/account): Represents an on-chain account with associated keys, action thresholds, and a main purse.
-- [AddressableEntity](/casper-js-sdk/types/addressable-entity): Represents an addressable entity in Casper 2.x - a unified concept encompassing accounts, smart contracts, and system entities.
-- [Args](/casper-js-sdk/types/args): Named argument map used to pass parameters to contract entry points and deploy sessions.
-- [AuctionState](/casper-js-sdk/types/auction-state): Represents the current state of the Casper auction system, including all active bids and era validator weights.
-- [BidKind](/casper-js-sdk/types/bid-kind): A polymorphic container for all bid variants in the Casper 2.x auction system.
-- [Bid](/casper-js-sdk/types/bid): Bid-related types for validators, delegators, and unbonding operations.
-- [BlockProposer](/casper-js-sdk/types/block-proposer): Represents the entity that proposed a block. Can be the system itself or a validator identified by public key.
-- [Block](/casper-js-sdk/types/block): Block structure with header, body, transactions, and finality proofs. Supports both Casper 1.x and 2.x formats.
-- [ByteCode](/casper-js-sdk/types/byte-code): Represents system bytecode stored on-chain, identified by a kind tag and raw bytes.
-- [ByteConverters](/casper-js-sdk/types/byte-converters): Low-level utility functions for serializing numbers and data structures to and from byte arrays in little-endian format.
-- [ContractPackage](/casper-js-sdk/types/contract-package): Tracks all versions of a deployed contract, including access control groups and disabled versions.
-- [ContractWasm](/casper-js-sdk/types/contract-wasm): A container for the raw WASM bytecode of a deployed contract.
-- [Contract](/casper-js-sdk/types/contract): Represents a smart contract stored on-chain, including its entry points, named keys, and package/wasm hashes.
-- [Conversions](/casper-js-sdk/types/conversions): Utility class for encoding/decoding between Base16, Base64, and hex, plus CSPR ↔ motes conversion.
-- [DeployInfo](/casper-js-sdk/types/deploy-info): Information about an executed deploy, including gas used, the initiating account, and associated transfers.
-- [Deploy](/casper-js-sdk/types/deploy): The legacy transaction format used in Casper 1.x. A deploy contains a header, a payment item, a session item, and approvals.
-- [EntryPoint](/casper-js-sdk/types/entry-point): Entry point definitions for smart contracts - access controls, argument types, return types, and payment options.
-- [EraEnd](/casper-js-sdk/types/era-end): Data attached to a **switch block** - the last finalized block of an era - marking the end of that era. Contains equivocators, inactive validators, seigniorage rewards, and the validator weights for the next era. Only present on switch blocks; `block.eraEnd` is `null` for all other blocks.
-- [EraInfo](/casper-js-sdk/types/era-info): Contains seigniorage allocation information for an era - how rewards were distributed among validators and delegators.
-- [EraSummary](/casper-js-sdk/types/era-summary): Summary of an era retrieved from the blockchain, including a merkle proof for verification.
-- [ExecutableDeployItem](/casper-js-sdk/types/executable-deploy-item): The polymorphic item type used for the `payment` and `session` fields of a Casper 1.x `Deploy`.
-- [ExecutionResult](/casper-js-sdk/types/execution-result): The outcome of executing a deploy or transaction, including gas consumed, error messages, transfers, and state effects.
-- [HexBytes](/casper-js-sdk/types/hex-bytes): A byte array wrapper with convenient hex string conversion methods.
-- [InitiatorAddr](/casper-js-sdk/types/initiator-addr): Identifies the initiator of a transaction - either by public key or account hash.
-- [MinimalBlockInfo](/casper-js-sdk/types/minimal-block-info): Lightweight block summary containing only the most commonly needed fields.
-- [NamedKey](/casper-js-sdk/types/named-key): Named keys allow accounts and contracts to store human-readable labels for global state keys.
-- [PricingMode](/casper-js-sdk/types/pricing-mode): Specifies how a transaction's execution cost is calculated and paid. Casper 2.x supports three pricing modes.
-- [StoredValue](/casper-js-sdk/types/stored-value): A discriminated union representing any value that can be stored in global state. The active field indicates which type is present.
-- [Time](/casper-js-sdk/types/time): `Timestamp` and `Duration` types for handling block and transaction timing.
-- [TransactionEntryPoint](/casper-js-sdk/types/transaction-entry-point): Specifies which entry point a transaction targets - built-in system entry points or a custom contract entry point.
-- [TransactionScheduling](/casper-js-sdk/types/transaction-scheduling): Controls when a transaction executes - immediately, at a future era, or at a future timestamp.
-- [TransactionTarget](/casper-js-sdk/types/transaction-target): Specifies where a transaction executes - natively on the platform, in a stored contract, or via an inline WASM session.
-- [TransactionV1Payload](/casper-js-sdk/types/transaction-v1-payload): The payload of a Casper 2.x `TransactionV1`, containing all fields needed to build, sign, and submit a transaction.
-- [Transaction](/casper-js-sdk/types/transaction): The unified transaction type supporting both Casper 1.x `Deploy` and 2.x `TransactionV1` formats.
-- [Transfer](/casper-js-sdk/types/transfer): Represents a token transfer, supporting both Casper 1.x and 2.x formats.
-- [Transform](/casper-js-sdk/types/transform): Represents a state transformation - a change to a specific key in global state as a result of transaction execution.
-- [UnbondingPurse](/casper-js-sdk/types/unbonding-purse): Represents a pending unbonding (unstaking) request for a validator or delegator.
-- [BlockAdded](/casper-js-sdk/sse/block-added): Fires when a new block is finalized and added to the chain.
-- [DeployProcessed](/casper-js-sdk/sse/deploy-processed): Fires when a legacy Deploy (Casper 1.x format) completes execution.
-- [Fault](/casper-js-sdk/sse/fault): Fires when a validator equivocates (signs two conflicting blocks in the same slot).
-- [FinalitySignature](/casper-js-sdk/sse/finality-signature): Fires when a validator submits a finality signature for a block. A block achieves strict finality once validators controlling more than two-thirds of total stake weight have submitted signatures - at that point the block is irreversible.
-- [SSE Events](/casper-js-sdk/sse/introduction): The Casper node exposes a Server-Sent Events (SSE) stream on port 9999 for real-time blockchain events.
-- [Step](/casper-js-sdk/sse/step): Fires at the end of each era when the auction step executes, distributing rewards and updating validator weights.
-- [TransactionAccepted](/casper-js-sdk/sse/transaction-accepted): Fires when a transaction is accepted into the node's mempool (before execution).
-- [TransactionExpired](/casper-js-sdk/sse/transaction-expired): Fires when a transaction's time-to-live (TTL) expires before it was processed.
-- [TransactionProcessed](/casper-js-sdk/sse/transaction-processed): Fires when a transaction finishes execution on the network. This is the primary event for monitoring transaction outcomes.
-- [Account Response](/casper-js-sdk/responses/account): Raw response from `getAccountInfo` / `getLatestEntity`. Shows the structure of an account with named keys pointing to deployed contracts.
-- [Auction Bid Response](/casper-js-sdk/responses/auction-bid): Raw bid structures from `getLatestAuctionInfo`. The format changed significantly between Casper 1.x and 2.x - both are shown here.
-- [Block Response](/casper-js-sdk/responses/block): Raw response from `getBlockByHash` / `getLatestBlock` on a Casper 2.x node.
-- [Deploy Result Response](/casper-js-sdk/responses/deploy): Raw response from `getDeploy` on a Casper 1.x node. Deploys are the legacy transaction format, still valid on 2.x nodes.
-- [Blockchain Responses](/casper-js-sdk/responses/introduction): This section shows real RPC response payloads and how the SDK parses them into typed objects. All examples come directly from the SDK's test fixtures - real data from the Casper Network.
-- [Node Status Response](/casper-js-sdk/responses/node-status): Raw response from `getStatus`. Useful for checking whether a node is synced, its current era/height, and connected peers.
-- [Transaction Result Response](/casper-js-sdk/responses/transaction): Raw response from `getTransactionByTransactionHash` on a Casper 2.x node (V1-compatible format, wrapping a legacy Deploy).
-- [Errors](/casper-js-sdk/glossary/errors): Reference for all error types and codes in the Casper JS SDK.
-- [Terms](/casper-js-sdk/glossary/terms): Glossary of Casper Network and SDK terminology.
-- [Types](/casper-js-sdk/glossary/types): Reference for key TypeScript types in the Casper JS SDK.
-- [Error Handling](/casper-js-sdk/docs/error-handling): The SDK uses several error patterns depending on the layer.
-- [FAQ](/casper-js-sdk/docs/faq): Casper has two transaction formats:
-- [Getting Started](/casper-js-sdk/docs/getting-started): Get up and running with the Casper JS SDK in minutes.
-- [Installation](/casper-js-sdk/docs/installation): For browser use without a bundler:
-- [Why Casper JS SDK](/casper-js-sdk/docs/introduction): The Casper JS SDK is the official TypeScript/JavaScript library for building applications on the [Casper Network](https://casper.network). It provides a complete, type-safe interface for key management, transaction construction, node queries, and real-time event streaming.
-- [Migration Guide (v2 → v5)](/casper-js-sdk/docs/migration-guide): This guide covers breaking changes when upgrading from casper-js-sdk v2 to v5.
-- [TypeScript](/casper-js-sdk/docs/typescript): The Casper JS SDK is written in TypeScript and ships full type definitions.
-- [Args](/casper-js-sdk/clvalues/Args): A named container of CLValues, used as the runtime arguments for contract entry point calls.
-- [CLValueParser](/casper-js-sdk/clvalues/CLValueParser): Parses CLValues from JSON (RPC responses) or binary bytes.
-- [Collection Types](/casper-js-sdk/clvalues/collections): CLValue factories for List, Map, Option, Result, and Tuple types.
-- [CLValues](/casper-js-sdk/clvalues/introduction): CLValue (Contract Language Value) is the type system used for all data passed to and returned from Casper smart contracts.
-- [CLValue.newCLValueBool](/casper-js-sdk/clvalues/newCLBool): Creates a CLValue of type `Bool`.
-- [CLValue.newCLByteArray](/casper-js-sdk/clvalues/newCLByteArray): Creates a CLValue of type `ByteArray` from a `Uint8Array`.
-- [CLValue.newCLKey](/casper-js-sdk/clvalues/newCLKey): Creates a CLValue of type `Key` wrapping any Casper key variant.
-- [CLValue.newCLPublicKey](/casper-js-sdk/clvalues/newCLPublicKey): Creates a CLValue of type `PublicKey`.
-- [CLValue.newCLString](/casper-js-sdk/clvalues/newCLString): Creates a CLValue of type `String`.
-- [CLValue.newCLUref](/casper-js-sdk/clvalues/newCLUref): Creates a CLValue of type `URef` (Unforgeable Reference).
-- [Numeric Types](/casper-js-sdk/clvalues/numeric): CLValue factories for all integer types.
-- [Introduction to Clients & Transports](/casper-js-sdk/clients/intro): The Casper JS SDK uses a client-based architecture similar to viem. A **Client** groups related methods and is backed by a **Transport** that handles the actual network communication.
-- [RpcClient](/casper-js-sdk/clients/rpc-client): The `RpcClient` is the primary interface for querying the Casper Network. It implements the full Casper JSON-RPC 2.0 API.
-- [SpeculativeClient](/casper-js-sdk/clients/speculative): The `SpeculativeClient` allows dry-running transactions against the current chain state without submitting them on-chain.
-- [SseClient](/casper-js-sdk/clients/sse-client): The `SseClient` connects to a Casper node's event stream (port 9999) and delivers real-time blockchain events.
-- [HTTP Transport](/casper-js-sdk/clients/transports/http): `HttpHandler` is the HTTP transport for `RpcClient` and `SpeculativeClient`. It sends JSON-RPC 2.0 requests using axios.
-- [ContractCallBuilder](/casper-js-sdk/builders/ContractCallBuilder): Builds a transaction that calls an entry point on a deployed smart contract.
-- [NativeDelegateBuilder](/casper-js-sdk/builders/NativeDelegateBuilder): Builds a native delegate (stake) transaction to stake CSPR with a validator.
-- [NativeRedelegateBuilder](/casper-js-sdk/builders/NativeRedelegateBuilder): Builds a native redelegate transaction to move stake from one validator to another without waiting for the unbonding period.
-- [NativeTransferBuilder](/casper-js-sdk/builders/NativeTransferBuilder): Builds a native CSPR transfer transaction (TransactionV1 format).
-- [NativeUndelegateBuilder](/casper-js-sdk/builders/NativeUndelegateBuilder): Builds a native undelegate transaction to unstake CSPR from a validator.
-- [SessionBuilder](/casper-js-sdk/builders/SessionBuilder): Builds a transaction that deploys and executes WASM session code. Used for contract deployment and complex one-off operations.
-- [Transaction Builders](/casper-js-sdk/builders/introduction): Transaction builders provide a fluent API for constructing `TransactionV1` (Casper 2.x) transactions.
-- [getDeploy](/casper-js-sdk/actions/transactions/getDeploy): Retrieves a legacy deploy by its hash.
-- [getDeployFinalizedApproval](/casper-js-sdk/actions/transactions/getDeployFinalizedApproval): Retrieves a deploy along with its finalized approvals - the set of approvals used during execution, which may differ from the approvals originally submitted.
-- [getTransactionByDeployHash](/casper-js-sdk/actions/transactions/getTransactionByDeployHash): Retrieves a transaction by its legacy deploy hash, returning it in the unified `Transaction` wrapper.
-- [getTransactionByTransactionHash](/casper-js-sdk/actions/transactions/getTransactionByTransactionHash): Retrieves a transaction by its TransactionV1 hash.
-- [getTransactionFinalizedApprovalByDeployHash](/casper-js-sdk/actions/transactions/getTransactionFinalizedApprovalByDeployHash): Retrieves a transaction along with its finalized approvals using a legacy deploy hash - the approvals used during execution, which may differ from those originally submitted.
-- [getTransactionFinalizedApprovalByTransactionHash](/casper-js-sdk/actions/transactions/getTransactionFinalizedApprovalByTransactionHash): Retrieves a transaction along with its finalized approvals using a V1 transaction hash - the approvals used during execution, which may differ from those originally submitted.
-- [putDeploy](/casper-js-sdk/actions/transactions/putDeploy): Submits a signed legacy `Deploy` object to the network.
-- [putTransaction](/casper-js-sdk/actions/transactions/putTransaction): Submits a signed `Transaction` (TransactionV1 or Deploy wrapper) to the network.
-- [waitForDeploy](/casper-js-sdk/actions/transactions/waitForDeploy): Polls the node until a legacy deploy is confirmed on-chain (i.e., has an execution result), or throws if the timeout is reached.
-- [waitForTransaction](/casper-js-sdk/actions/transactions/waitForTransaction): Polls the node until a `TransactionV1` is finalized, then returns the result.
-- [getDictionaryItem](/casper-js-sdk/actions/state/getDictionaryItem): Reads a single entry from a contract dictionary by its URef seed and key.
-- [getDictionaryItemByIdentifier](/casper-js-sdk/actions/state/getDictionaryItemByIdentifier): Retrieves a dictionary item using a custom `ParamDictionaryIdentifier`, enabling lookups by contract name, account, or URef.
-- [getStateRootHashByHash](/casper-js-sdk/actions/state/getStateRootHashByHash): Returns the state root hash for a specific block, identified by its block hash.
-- [getStateRootHashByHeight](/casper-js-sdk/actions/state/getStateRootHashByHeight): Returns the state root hash for a specific block height.
-- [getStateRootHashLatest](/casper-js-sdk/actions/state/getStateRootHashLatest): Returns the state root hash of the latest block. Used as a consistent snapshot reference for state queries.
-- [queryGlobalStateByBlockHash](/casper-js-sdk/actions/state/queryGlobalStateByBlockHash): Queries a value from global state at a specific block, identified by hash.
-- [queryGlobalStateByBlockHeight](/casper-js-sdk/actions/state/queryGlobalStateByBlockHeight): Queries a value from global state at a specific block height.
-- [queryGlobalStateByStateHash](/casper-js-sdk/actions/state/queryGlobalStateByStateHash): Queries a value from global state at a specific state root hash.
-- [queryLatestGlobalState](/casper-js-sdk/actions/state/queryLatestGlobalState): Queries a value from global state at the latest block.
-- [getChainspec](/casper-js-sdk/actions/node/getChainspec): Returns the chain specification of the connected network.
-- [getPeers](/casper-js-sdk/actions/node/getPeers): Returns the list of peers connected to the node.
-- [getStatus](/casper-js-sdk/actions/node/getStatus): Returns the current status and metadata of the connected node.
-- [getBlockByHash](/casper-js-sdk/actions/block/getBlockByHash): Returns a block by its hex hash string.
-- [getBlockByHeight](/casper-js-sdk/actions/block/getBlockByHeight): Returns a block at a specific height.
-- [getBlockTransfersByHash](/casper-js-sdk/actions/block/getBlockTransfersByHash): Returns the transfers included in a specific block, identified by hash.
-- [getBlockTransfersByHeight](/casper-js-sdk/actions/block/getBlockTransfersByHeight): Returns the transfers included in a specific block, identified by height.
-- [getLatestBlock](/casper-js-sdk/actions/block/getLatestBlock): Returns the most recent block on the chain.
-- [getLatestBlockTransfers](/casper-js-sdk/actions/block/getLatestBlockTransfers): Returns the transfers included in the most recent block.
-- [getLatestBalance](/casper-js-sdk/actions/balance/getLatestBalance): Returns the balance of a purse by URef at the latest state. This is the legacy balance API for Casper 1.x.
-- [queryBalanceByBlockHash](/casper-js-sdk/actions/balance/queryBalanceByBlockHash): Returns the CSPR balance at a specific block, identified by hash.
-- [queryBalanceByBlockHeight](/casper-js-sdk/actions/balance/queryBalanceByBlockHeight): Returns the CSPR balance at a specific block height.
-- [queryBalanceByStateRootHash](/casper-js-sdk/actions/balance/queryBalanceByStateRootHash): Returns the CSPR balance of an account or purse at a specific state root hash.
-- [queryBalanceDetailsByBlockHash](/casper-js-sdk/actions/balance/queryBalanceDetailsByBlockHash): Returns detailed CSPR balance information at a specific block, identified by hash.
-- [queryBalanceDetailsByBlockHeight](/casper-js-sdk/actions/balance/queryBalanceDetailsByBlockHeight): Returns detailed CSPR balance information at a specific block height, including locked amounts and vesting schedules.
-- [queryBalanceDetailsByStateRootHash](/casper-js-sdk/actions/balance/queryBalanceDetailsByStateRootHash): Returns detailed CSPR balance information at a specific state root hash, including locked amounts and vesting schedules.
-- [queryLatestBalance](/casper-js-sdk/actions/balance/queryLatestBalance): Returns the CSPR balance of an account or purse at the latest block.
-- [queryLatestBalanceDetails](/casper-js-sdk/actions/balance/queryLatestBalanceDetails): Returns the CSPR balance of an account including a breakdown of holds (locked amounts).
-- [getAuctionInfoByHash](/casper-js-sdk/actions/auction/getAuctionInfoByHash): Returns the auction state at a specific block, identified by block hash. Automatically handles both Casper 1.x (V1) and Casper 2.x (V2) node responses.
-- [getAuctionInfoByHeight](/casper-js-sdk/actions/auction/getAuctionInfoByHeight): Returns the auction state at a specific block height. Automatically handles both Casper 1.x (V1) and Casper 2.x (V2) node responses.
-- [getDelegatorRewardByBlockHash](/casper-js-sdk/actions/auction/getDelegatorRewardByBlockHash): Returns the reward earned by a delegator for a specific validator at the era corresponding to a specific block hash.
-- [getDelegatorRewardByBlockHeight](/casper-js-sdk/actions/auction/getDelegatorRewardByBlockHeight): Returns the reward earned by a delegator for a specific validator at the era corresponding to a specific block height.
-- [getDelegatorRewardByEraID](/casper-js-sdk/actions/auction/getDelegatorRewardByEraID): Returns the reward earned by a delegator for a specific validator in a specific era.
-- [getEraInfoByBlockHash](/casper-js-sdk/actions/auction/getEraInfoByBlockHash): Returns the era info at a specific block, identified by block hash.
-- [getEraInfoByBlockHeight](/casper-js-sdk/actions/auction/getEraInfoByBlockHeight): Returns the era info at a specific block height.
-- [getEraInfoLatest](/casper-js-sdk/actions/auction/getEraInfoLatest): Returns the era info for the most recent block, including switch block transfers.
-- [getEraSummaryByHash](/casper-js-sdk/actions/auction/getEraSummaryByHash): Returns the era summary for a specific block, identified by block hash.
-- [getEraSummaryByHeight](/casper-js-sdk/actions/auction/getEraSummaryByHeight): Returns the era summary at a specific block height.
-- [getEraSummaryLatest](/casper-js-sdk/actions/auction/getEraSummaryLatest): Returns a summary of the current era, including era ID and validator weights.
-- [getLatestAuctionInfo](/casper-js-sdk/actions/auction/getLatestAuctionInfo): Returns the current auction state including all validator bids and delegations.
-- [getLatestDelegatorReward](/casper-js-sdk/actions/auction/getLatestDelegatorReward): Returns the reward earned by a delegator in the most recent completed era.
-- [getLatestValidatorReward](/casper-js-sdk/actions/auction/getLatestValidatorReward): Returns the reward earned by a validator in the most recent completed era.
-- [getValidatorChangesInfo](/casper-js-sdk/actions/auction/getValidatorChangesInfo): Returns a list of validators whose status changed in the most recent era.
-- [getValidatorRewardByBlockHash](/casper-js-sdk/actions/auction/getValidatorRewardByBlockHash): Returns the reward earned by a validator at the era corresponding to a specific block hash.
-- [getValidatorRewardByBlockHeight](/casper-js-sdk/actions/auction/getValidatorRewardByBlockHeight): Returns the reward earned by a validator at the era corresponding to a specific block height.
-- [getValidatorRewardByEraID](/casper-js-sdk/actions/auction/getValidatorRewardByEraID): Returns the reward earned by a validator in a specific era.
-- [getAccountInfo](/casper-js-sdk/actions/account/getAccountInfo): Returns account information for an account identifier, optionally scoped to a specific block (Casper 1.x format).
-- [getAccountInfoByBlockHash](/casper-js-sdk/actions/account/getAccountInfoByBlockHash): Returns account information for a public key at a specific block, identified by block hash.
-- [getAccountInfoByBlockHeight](/casper-js-sdk/actions/account/getAccountInfoByBlockHeight): Returns account information for a public key at a specific block height.
-- [getEntityByBlockHash](/casper-js-sdk/actions/account/getEntityByBlockHash): Returns an addressable entity (account or smart contract) at a specific block, identified by block hash. This is the Casper 2.x equivalent of `getAccountInfo`.
-- [getEntityByBlockHeight](/casper-js-sdk/actions/account/getEntityByBlockHeight): Returns an addressable entity (account or smart contract) at a specific block height. This is the Casper 2.x equivalent of `getAccountInfo`.
-- [getLatestEntity](/casper-js-sdk/actions/account/getLatestEntity): Returns the addressable entity for an account or contract (Casper 2.x format).
-- [PrivateKey](/casper-js-sdk/accounts/private-key): Represents a cryptographic private key for signing transactions and messages.
-- [PublicKey](/casper-js-sdk/accounts/public-key): Represents a cryptographic public key. Used for account identification, signature verification, and deriving account hashes.
+- [CasperNetwork](/casper-js-sdk/utilities/CasperNetwork.md): A high-level, version-aware client that auto-detects whether the node is Casper 1.x or 2.0 and dispatches transactions in the correct format automatically.
+- [makeAuctionManagerDeploy](/casper-js-sdk/utilities/makeAuctionManagerDeploy.md): Creates a legacy `Deploy` for auction (staking) operations: delegate, undelegate, or redelegate.
+- [makeAuctionManagerTransaction](/casper-js-sdk/utilities/makeAuctionManagerTransaction.md): Creates a `Transaction` for auction (staking) operations. Uses native builders for Casper 2.0 nodes and wraps a legacy `Deploy` for 1.x nodes.
+- [makeCep18TransferDeploy](/casper-js-sdk/utilities/makeCep18TransferDeploy.md): Creates a legacy `Deploy` for transferring CEP-18 (ERC-20 compatible) fungible tokens. For Casper 2.0 nodes use [`makeCep18TransferTransaction`](/utilities/makeCep18TransferTransaction).
+- [makeCep18TransferTransaction](/casper-js-sdk/utilities/makeCep18TransferTransaction.md): Creates a `Transaction` for transferring CEP-18 (ERC-20 compatible) fungible tokens. Supports both Casper 1.x (wraps a Deploy) and Casper 2.0 (uses `ContractCallBuilder`).
+- [makeCsprTransferDeploy](/casper-js-sdk/utilities/makeCsprTransferDeploy.md): Creates a legacy `Deploy` for a native CSPR transfer (Casper 1.x format).
+- [makeCsprTransferTransaction](/casper-js-sdk/utilities/makeCsprTransferTransaction.md): Creates a `Transaction` for a native CSPR transfer. Uses `NativeTransferBuilder` for Casper 2.0 nodes and wraps a legacy `Deploy` for 1.x nodes.
+- [makeNftTransferDeploy](/casper-js-sdk/utilities/makeNftTransferDeploy.md): Creates a legacy `Deploy` for transferring an NFT. Supports CEP-47, CEP-78, and CEP-95 standards.
+- [makeNftTransferTransaction](/casper-js-sdk/utilities/makeNftTransferTransaction.md): Creates a `Transaction` for transferring an NFT. Supports CEP-47, CEP-78, and CEP-95 standards. Works with both Casper 1.x (wraps a Deploy) and Casper 2.0.
+- [Account](/casper-js-sdk/types/account.md): Represents an on-chain account with associated keys, action thresholds, and a main purse.
+- [AddressableEntity](/casper-js-sdk/types/addressable-entity.md): Represents an addressable entity in Casper 2.x - a unified concept encompassing accounts, smart contracts, and system entities.
+- [Args](/casper-js-sdk/types/args.md): Named argument map used to pass parameters to contract entry points and deploy sessions.
+- [AuctionState](/casper-js-sdk/types/auction-state.md): Represents the current state of the Casper auction system, including all active bids and era validator weights.
+- [BidKind](/casper-js-sdk/types/bid-kind.md): A polymorphic container for all bid variants in the Casper 2.x auction system.
+- [Bid](/casper-js-sdk/types/bid.md): Bid-related types for validators, delegators, and unbonding operations.
+- [BlockProposer](/casper-js-sdk/types/block-proposer.md): Represents the entity that proposed a block. Can be the system itself or a validator identified by public key.
+- [Block](/casper-js-sdk/types/block.md): Block structure with header, body, transactions, and finality proofs. Supports both Casper 1.x and 2.x formats.
+- [ByteCode](/casper-js-sdk/types/byte-code.md): Represents system bytecode stored on-chain, identified by a kind tag and raw bytes.
+- [ByteConverters](/casper-js-sdk/types/byte-converters.md): Low-level utility functions for serializing numbers and data structures to and from byte arrays in little-endian format.
+- [ContractPackage](/casper-js-sdk/types/contract-package.md): Tracks all versions of a deployed contract, including access control groups and disabled versions.
+- [ContractWasm](/casper-js-sdk/types/contract-wasm.md): A container for the raw WASM bytecode of a deployed contract.
+- [Contract](/casper-js-sdk/types/contract.md): Represents a smart contract stored on-chain, including its entry points, named keys, and package/wasm hashes.
+- [Conversions](/casper-js-sdk/types/conversions.md): Utility class for encoding/decoding between Base16, Base64, and hex, plus CSPR ↔ motes conversion.
+- [DeployInfo](/casper-js-sdk/types/deploy-info.md): Information about an executed deploy, including gas used, the initiating account, and associated transfers.
+- [Deploy](/casper-js-sdk/types/deploy.md): The legacy transaction format used in Casper 1.x. A deploy contains a header, a payment item, a session item, and approvals.
+- [EntryPoint](/casper-js-sdk/types/entry-point.md): Entry point definitions for smart contracts - access controls, argument types, return types, and payment options.
+- [EraEnd](/casper-js-sdk/types/era-end.md): Data attached to a **switch block** - the last finalized block of an era - marking the end of that era. Contains equivocators, inactive validators, seigniorage rewards, and the validator weights for the next era. Only present on switch blocks; `block.eraEnd` is `null` for all other blocks.
+- [EraInfo](/casper-js-sdk/types/era-info.md): Contains seigniorage allocation information for an era - how rewards were distributed among validators and delegators.
+- [EraSummary](/casper-js-sdk/types/era-summary.md): Summary of an era retrieved from the blockchain, including a merkle proof for verification.
+- [ExecutableDeployItem](/casper-js-sdk/types/executable-deploy-item.md): The polymorphic item type used for the `payment` and `session` fields of a Casper 1.x `Deploy`.
+- [ExecutionResult](/casper-js-sdk/types/execution-result.md): The outcome of executing a deploy or transaction, including gas consumed, error messages, transfers, and state effects.
+- [HexBytes](/casper-js-sdk/types/hex-bytes.md): A byte array wrapper with convenient hex string conversion methods.
+- [InitiatorAddr](/casper-js-sdk/types/initiator-addr.md): Identifies the initiator of a transaction - either by public key or account hash.
+- [MinimalBlockInfo](/casper-js-sdk/types/minimal-block-info.md): Lightweight block summary containing only the most commonly needed fields.
+- [NamedKey](/casper-js-sdk/types/named-key.md): Named keys allow accounts and contracts to store human-readable labels for global state keys.
+- [PricingMode](/casper-js-sdk/types/pricing-mode.md): Specifies how a transaction's execution cost is calculated and paid. Casper 2.x supports three pricing modes.
+- [StoredValue](/casper-js-sdk/types/stored-value.md): A discriminated union representing any value that can be stored in global state. The active field indicates which type is present.
+- [Time](/casper-js-sdk/types/time.md): `Timestamp` and `Duration` types for handling block and transaction timing.
+- [TransactionEntryPoint](/casper-js-sdk/types/transaction-entry-point.md): Specifies which entry point a transaction targets - built-in system entry points or a custom contract entry point.
+- [TransactionScheduling](/casper-js-sdk/types/transaction-scheduling.md): Controls when a transaction executes - immediately, at a future era, or at a future timestamp.
+- [TransactionTarget](/casper-js-sdk/types/transaction-target.md): Specifies where a transaction executes - natively on the platform, in a stored contract, or via an inline WASM session.
+- [TransactionV1Payload](/casper-js-sdk/types/transaction-v1-payload.md): The payload of a Casper 2.x `TransactionV1`, containing all fields needed to build, sign, and submit a transaction.
+- [Transaction](/casper-js-sdk/types/transaction.md): The unified transaction type supporting both Casper 1.x `Deploy` and 2.x `TransactionV1` formats.
+- [Transfer](/casper-js-sdk/types/transfer.md): Represents a token transfer, supporting both Casper 1.x and 2.x formats.
+- [Transform](/casper-js-sdk/types/transform.md): Represents a state transformation - a change to a specific key in global state as a result of transaction execution.
+- [UnbondingPurse](/casper-js-sdk/types/unbonding-purse.md): Represents a pending unbonding (unstaking) request for a validator or delegator.
+- [BlockAdded](/casper-js-sdk/sse/block-added.md): Fires when a new block is finalized and added to the chain.
+- [DeployProcessed](/casper-js-sdk/sse/deploy-processed.md): Fires when a legacy Deploy (Casper 1.x format) completes execution.
+- [Fault](/casper-js-sdk/sse/fault.md): Fires when a validator equivocates (signs two conflicting blocks in the same slot).
+- [FinalitySignature](/casper-js-sdk/sse/finality-signature.md): Fires when a validator submits a finality signature for a block. A block achieves strict finality once validators controlling more than two-thirds of total stake weight have submitted signatures - at that point the block is irreversible.
+- [SSE Events](/casper-js-sdk/sse/introduction.md): The Casper node exposes a Server-Sent Events (SSE) stream on port 9999 for real-time blockchain events.
+- [Step](/casper-js-sdk/sse/step.md): Fires at the end of each era when the auction step executes, distributing rewards and updating validator weights.
+- [TransactionAccepted](/casper-js-sdk/sse/transaction-accepted.md): Fires when a transaction is accepted into the node's mempool (before execution).
+- [TransactionExpired](/casper-js-sdk/sse/transaction-expired.md): Fires when a transaction's time-to-live (TTL) expires before it was processed.
+- [TransactionProcessed](/casper-js-sdk/sse/transaction-processed.md): Fires when a transaction finishes execution on the network. This is the primary event for monitoring transaction outcomes.
+- [Account Response](/casper-js-sdk/responses/account.md): Raw response from `getAccountInfo` / `getLatestEntity`. Shows the structure of an account with named keys pointing to deployed contracts.
+- [Auction Bid Response](/casper-js-sdk/responses/auction-bid.md): Raw bid structures from `getLatestAuctionInfo`. The format changed significantly between Casper 1.x and 2.x - both are shown here.
+- [Block Response](/casper-js-sdk/responses/block.md): Raw response from `getBlockByHash` / `getLatestBlock` on a Casper 2.x node.
+- [Deploy Result Response](/casper-js-sdk/responses/deploy.md): Raw response from `getDeploy` on a Casper 1.x node. Deploys are the legacy transaction format, still valid on 2.x nodes.
+- [Blockchain Responses](/casper-js-sdk/responses/introduction.md): This section shows real RPC response payloads and how the SDK parses them into typed objects. All examples come directly from the SDK's test fixtures - real data from the Casper Network.
+- [Node Status Response](/casper-js-sdk/responses/node-status.md): Raw response from `getStatus`. Useful for checking whether a node is synced, its current era/height, and connected peers.
+- [Transaction Result Response](/casper-js-sdk/responses/transaction.md): Raw response from `getTransactionByTransactionHash` on a Casper 2.x node (V1-compatible format, wrapping a legacy Deploy).
+- [Errors](/casper-js-sdk/glossary/errors.md): Reference for all error types and codes in the Casper JS SDK.
+- [Terms](/casper-js-sdk/glossary/terms.md): Glossary of Casper Network and SDK terminology.
+- [Types](/casper-js-sdk/glossary/types.md): Reference for key TypeScript types in the Casper JS SDK.
+- [Error Handling](/casper-js-sdk/docs/error-handling.md): The SDK uses several error patterns depending on the layer.
+- [FAQ](/casper-js-sdk/docs/faq.md): Casper has two transaction formats:
+- [Getting Started](/casper-js-sdk/docs/getting-started.md): Get up and running with the Casper JS SDK in minutes.
+- [Installation](/casper-js-sdk/docs/installation.md): For browser use without a bundler:
+- [Why Casper JS SDK](/casper-js-sdk/docs/introduction.md): The Casper JS SDK is the official TypeScript/JavaScript library for building applications on the [Casper Network](https://casper.network). It provides a complete, type-safe interface for key management, transaction construction, node queries, and real-time event streaming.
+- [Migration Guide (v2 → v5)](/casper-js-sdk/docs/migration-guide.md): `Casper JS SDK V5` introduces significant **breaking changes**, essentially rewriting the SDK from the ground up to enhance usability, align it with Casper SDKs in other languages, and incorporate new features for the Casper 2.0 update.
+- [TypeScript](/casper-js-sdk/docs/typescript.md): The Casper JS SDK is written in TypeScript and ships full type definitions.
+- [Args](/casper-js-sdk/clvalues/Args.md): A named container of CLValues, used as the runtime arguments for contract entry point calls.
+- [CLValueParser](/casper-js-sdk/clvalues/CLValueParser.md): Parses CLValues from JSON (RPC responses) or binary bytes.
+- [Collection Types](/casper-js-sdk/clvalues/collections.md): CLValue factories for List, Map, Option, Result, and Tuple types.
+- [CLValues](/casper-js-sdk/clvalues/introduction.md): CLValue (Contract Language Value) is the type system used for all data passed to and returned from Casper smart contracts.
+- [CLValue.newCLValueBool](/casper-js-sdk/clvalues/newCLBool.md): Creates a CLValue of type `Bool`.
+- [CLValue.newCLByteArray](/casper-js-sdk/clvalues/newCLByteArray.md): Creates a CLValue of type `ByteArray` from a `Uint8Array`.
+- [CLValue.newCLKey](/casper-js-sdk/clvalues/newCLKey.md): Creates a CLValue of type `Key` wrapping any Casper key variant.
+- [CLValue.newCLPublicKey](/casper-js-sdk/clvalues/newCLPublicKey.md): Creates a CLValue of type `PublicKey`.
+- [CLValue.newCLString](/casper-js-sdk/clvalues/newCLString.md): Creates a CLValue of type `String`.
+- [CLValue.newCLUref](/casper-js-sdk/clvalues/newCLUref.md): Creates a CLValue of type `URef` (Unforgeable Reference).
+- [Numeric Types](/casper-js-sdk/clvalues/numeric.md): CLValue factories for all integer types.
+- [Introduction to Clients & Transports](/casper-js-sdk/clients/intro.md): The Casper JS SDK uses a client-based architecture similar to viem. A **Client** groups related methods and is backed by a **Transport** that handles the actual network communication.
+- [RpcClient](/casper-js-sdk/clients/rpc-client.md): The `RpcClient` is the primary interface for querying the Casper Network. It implements the full Casper JSON-RPC 2.0 API.
+- [SpeculativeClient](/casper-js-sdk/clients/speculative.md): The `SpeculativeClient` allows dry-running transactions against the current chain state without submitting them on-chain.
+- [SseClient](/casper-js-sdk/clients/sse-client.md): The `SseClient` connects to a Casper node's event stream (port 9999) and delivers real-time blockchain events.
+- [HTTP Transport](/casper-js-sdk/clients/transports/http.md): `HttpHandler` is the HTTP transport for `RpcClient` and `SpeculativeClient`. It sends JSON-RPC 2.0 requests using axios.
+- [ContractCallBuilder](/casper-js-sdk/builders/ContractCallBuilder.md): Builds a transaction that calls an entry point on a deployed smart contract.
+- [NativeDelegateBuilder](/casper-js-sdk/builders/NativeDelegateBuilder.md): Builds a native delegate (stake) transaction to stake CSPR with a validator.
+- [NativeRedelegateBuilder](/casper-js-sdk/builders/NativeRedelegateBuilder.md): Builds a native redelegate transaction to move stake from one validator to another without waiting for the unbonding period.
+- [NativeTransferBuilder](/casper-js-sdk/builders/NativeTransferBuilder.md): Builds a native CSPR transfer transaction (TransactionV1 format).
+- [NativeUndelegateBuilder](/casper-js-sdk/builders/NativeUndelegateBuilder.md): Builds a native undelegate transaction to unstake CSPR from a validator.
+- [SessionBuilder](/casper-js-sdk/builders/SessionBuilder.md): Builds a transaction that deploys and executes WASM session code. Used for contract deployment and complex one-off operations.
+- [Transaction Builders](/casper-js-sdk/builders/introduction.md): Transaction builders provide a fluent API for constructing `TransactionV1` (Casper 2.x) transactions.
+- [getDeploy](/casper-js-sdk/actions/transactions/getDeploy.md): Retrieves a legacy deploy by its hash.
+- [getDeployFinalizedApproval](/casper-js-sdk/actions/transactions/getDeployFinalizedApproval.md): Retrieves a deploy along with its finalized approvals - the set of approvals used during execution, which may differ from the approvals originally submitted.
+- [getTransactionByDeployHash](/casper-js-sdk/actions/transactions/getTransactionByDeployHash.md): Retrieves a transaction by its legacy deploy hash, returning it in the unified `Transaction` wrapper.
+- [getTransactionByTransactionHash](/casper-js-sdk/actions/transactions/getTransactionByTransactionHash.md): Retrieves a transaction by its TransactionV1 hash.
+- [getTransactionFinalizedApprovalByDeployHash](/casper-js-sdk/actions/transactions/getTransactionFinalizedApprovalByDeployHash.md): Retrieves a transaction along with its finalized approvals using a legacy deploy hash - the approvals used during execution, which may differ from those originally submitted.
+- [getTransactionFinalizedApprovalByTransactionHash](/casper-js-sdk/actions/transactions/getTransactionFinalizedApprovalByTransactionHash.md): Retrieves a transaction along with its finalized approvals using a V1 transaction hash - the approvals used during execution, which may differ from those originally submitted.
+- [putDeploy](/casper-js-sdk/actions/transactions/putDeploy.md): Submits a signed legacy `Deploy` object to the network.
+- [putTransaction](/casper-js-sdk/actions/transactions/putTransaction.md): Submits a signed `Transaction` (TransactionV1 or Deploy wrapper) to the network.
+- [waitForDeploy](/casper-js-sdk/actions/transactions/waitForDeploy.md): Polls the node until a legacy deploy is confirmed on-chain (i.e., has an execution result), or throws if the timeout is reached.
+- [waitForTransaction](/casper-js-sdk/actions/transactions/waitForTransaction.md): Polls the node until a `TransactionV1` is finalized, then returns the result.
+- [getDictionaryItem](/casper-js-sdk/actions/state/getDictionaryItem.md): Reads a single entry from a contract dictionary by its URef seed and key.
+- [getDictionaryItemByIdentifier](/casper-js-sdk/actions/state/getDictionaryItemByIdentifier.md): Retrieves a dictionary item using a custom `ParamDictionaryIdentifier`, enabling lookups by contract name, account, or URef.
+- [getStateRootHashByHash](/casper-js-sdk/actions/state/getStateRootHashByHash.md): Returns the state root hash for a specific block, identified by its block hash.
+- [getStateRootHashByHeight](/casper-js-sdk/actions/state/getStateRootHashByHeight.md): Returns the state root hash for a specific block height.
+- [getStateRootHashLatest](/casper-js-sdk/actions/state/getStateRootHashLatest.md): Returns the state root hash of the latest block. Used as a consistent snapshot reference for state queries.
+- [queryGlobalStateByBlockHash](/casper-js-sdk/actions/state/queryGlobalStateByBlockHash.md): Queries a value from global state at a specific block, identified by hash.
+- [queryGlobalStateByBlockHeight](/casper-js-sdk/actions/state/queryGlobalStateByBlockHeight.md): Queries a value from global state at a specific block height.
+- [queryGlobalStateByStateHash](/casper-js-sdk/actions/state/queryGlobalStateByStateHash.md): Queries a value from global state at a specific state root hash.
+- [queryLatestGlobalState](/casper-js-sdk/actions/state/queryLatestGlobalState.md): Queries a value from global state at the latest block.
+- [getChainspec](/casper-js-sdk/actions/node/getChainspec.md): Returns the chain specification of the connected network.
+- [getPeers](/casper-js-sdk/actions/node/getPeers.md): Returns the list of peers connected to the node.
+- [getStatus](/casper-js-sdk/actions/node/getStatus.md): Returns the current status and metadata of the connected node.
+- [getBlockByHash](/casper-js-sdk/actions/block/getBlockByHash.md): Returns a block by its hex hash string.
+- [getBlockByHeight](/casper-js-sdk/actions/block/getBlockByHeight.md): Returns a block at a specific height.
+- [getBlockTransfersByHash](/casper-js-sdk/actions/block/getBlockTransfersByHash.md): Returns the transfers included in a specific block, identified by hash.
+- [getBlockTransfersByHeight](/casper-js-sdk/actions/block/getBlockTransfersByHeight.md): Returns the transfers included in a specific block, identified by height.
+- [getLatestBlock](/casper-js-sdk/actions/block/getLatestBlock.md): Returns the most recent block on the chain.
+- [getLatestBlockTransfers](/casper-js-sdk/actions/block/getLatestBlockTransfers.md): Returns the transfers included in the most recent block.
+- [getLatestBalance](/casper-js-sdk/actions/balance/getLatestBalance.md): Returns the balance of a purse by URef at the latest state. This is the legacy balance API for Casper 1.x.
+- [queryBalanceByBlockHash](/casper-js-sdk/actions/balance/queryBalanceByBlockHash.md): Returns the CSPR balance at a specific block, identified by hash.
+- [queryBalanceByBlockHeight](/casper-js-sdk/actions/balance/queryBalanceByBlockHeight.md): Returns the CSPR balance at a specific block height.
+- [queryBalanceByStateRootHash](/casper-js-sdk/actions/balance/queryBalanceByStateRootHash.md): Returns the CSPR balance of an account or purse at a specific state root hash.
+- [queryBalanceDetailsByBlockHash](/casper-js-sdk/actions/balance/queryBalanceDetailsByBlockHash.md): Returns detailed CSPR balance information at a specific block, identified by hash.
+- [queryBalanceDetailsByBlockHeight](/casper-js-sdk/actions/balance/queryBalanceDetailsByBlockHeight.md): Returns detailed CSPR balance information at a specific block height, including locked amounts and vesting schedules.
+- [queryBalanceDetailsByStateRootHash](/casper-js-sdk/actions/balance/queryBalanceDetailsByStateRootHash.md): Returns detailed CSPR balance information at a specific state root hash, including locked amounts and vesting schedules.
+- [queryLatestBalance](/casper-js-sdk/actions/balance/queryLatestBalance.md): Returns the CSPR balance of an account or purse at the latest block.
+- [queryLatestBalanceDetails](/casper-js-sdk/actions/balance/queryLatestBalanceDetails.md): Returns the CSPR balance of an account including a breakdown of holds (locked amounts).
+- [getAuctionInfoByHash](/casper-js-sdk/actions/auction/getAuctionInfoByHash.md): Returns the auction state at a specific block, identified by block hash. Automatically handles both Casper 1.x (V1) and Casper 2.x (V2) node responses.
+- [getAuctionInfoByHeight](/casper-js-sdk/actions/auction/getAuctionInfoByHeight.md): Returns the auction state at a specific block height. Automatically handles both Casper 1.x (V1) and Casper 2.x (V2) node responses.
+- [getDelegatorRewardByBlockHash](/casper-js-sdk/actions/auction/getDelegatorRewardByBlockHash.md): Returns the reward earned by a delegator for a specific validator at the era corresponding to a specific block hash.
+- [getDelegatorRewardByBlockHeight](/casper-js-sdk/actions/auction/getDelegatorRewardByBlockHeight.md): Returns the reward earned by a delegator for a specific validator at the era corresponding to a specific block height.
+- [getDelegatorRewardByEraID](/casper-js-sdk/actions/auction/getDelegatorRewardByEraID.md): Returns the reward earned by a delegator for a specific validator in a specific era.
+- [getEraInfoByBlockHash](/casper-js-sdk/actions/auction/getEraInfoByBlockHash.md): Returns the era info at a specific block, identified by block hash.
+- [getEraInfoByBlockHeight](/casper-js-sdk/actions/auction/getEraInfoByBlockHeight.md): Returns the era info at a specific block height.
+- [getEraInfoLatest](/casper-js-sdk/actions/auction/getEraInfoLatest.md): Returns the era info for the most recent block, including switch block transfers.
+- [getEraSummaryByHash](/casper-js-sdk/actions/auction/getEraSummaryByHash.md): Returns the era summary for a specific block, identified by block hash.
+- [getEraSummaryByHeight](/casper-js-sdk/actions/auction/getEraSummaryByHeight.md): Returns the era summary at a specific block height.
+- [getEraSummaryLatest](/casper-js-sdk/actions/auction/getEraSummaryLatest.md): Returns a summary of the current era, including era ID and validator weights.
+- [getLatestAuctionInfo](/casper-js-sdk/actions/auction/getLatestAuctionInfo.md): Returns the current auction state including all validator bids and delegations.
+- [getLatestDelegatorReward](/casper-js-sdk/actions/auction/getLatestDelegatorReward.md): Returns the reward earned by a delegator in the most recent completed era.
+- [getLatestValidatorReward](/casper-js-sdk/actions/auction/getLatestValidatorReward.md): Returns the reward earned by a validator in the most recent completed era.
+- [getValidatorChangesInfo](/casper-js-sdk/actions/auction/getValidatorChangesInfo.md): Returns a list of validators whose status changed in the most recent era.
+- [getValidatorRewardByBlockHash](/casper-js-sdk/actions/auction/getValidatorRewardByBlockHash.md): Returns the reward earned by a validator at the era corresponding to a specific block hash.
+- [getValidatorRewardByBlockHeight](/casper-js-sdk/actions/auction/getValidatorRewardByBlockHeight.md): Returns the reward earned by a validator at the era corresponding to a specific block height.
+- [getValidatorRewardByEraID](/casper-js-sdk/actions/auction/getValidatorRewardByEraID.md): Returns the reward earned by a validator in a specific era.
+- [getAccountInfo](/casper-js-sdk/actions/account/getAccountInfo.md): Returns account information for an account identifier, optionally scoped to a specific block (Casper 1.x format).
+- [getAccountInfoByBlockHash](/casper-js-sdk/actions/account/getAccountInfoByBlockHash.md): Returns account information for a public key at a specific block, identified by block hash.
+- [getAccountInfoByBlockHeight](/casper-js-sdk/actions/account/getAccountInfoByBlockHeight.md): Returns account information for a public key at a specific block height.
+- [getEntityByBlockHash](/casper-js-sdk/actions/account/getEntityByBlockHash.md): Returns an addressable entity (account or smart contract) at a specific block, identified by block hash. This is the Casper 2.x equivalent of `getAccountInfo`.
+- [getEntityByBlockHeight](/casper-js-sdk/actions/account/getEntityByBlockHeight.md): Returns an addressable entity (account or smart contract) at a specific block height. This is the Casper 2.x equivalent of `getAccountInfo`.
+- [getLatestEntity](/casper-js-sdk/actions/account/getLatestEntity.md): Returns the addressable entity for an account or contract (Casper 2.x format).
+- [PrivateKey](/casper-js-sdk/accounts/private-key.md): Represents a cryptographic private key for signing transactions and messages.
+- [PublicKey](/casper-js-sdk/accounts/public-key.md): Represents a cryptographic public key. Used for account identification, signature verification, and deriving account hashes.
