@@ -125,7 +125,32 @@
     "elliptic": "^6.6.1",
     "minimatch": "^10.2.3",
     "bn.js": "^5.2.1",
-    "@types/d3-dispatch": "3.0.6"
+    "@types/d3-dispatch": "3.0.6",
+    "brace-expansion": "^5.0.5",
+    "@rollup/pluginutils": {
+      "picomatch": "^4.0.4"
+    },
+    "@vanilla-extract/compiler": {
+      "picomatch": "^4.0.4",
+      "yaml": "^2.8.3"
+    },
+    "tinyglobby": {
+      "picomatch": "^4.0.4"
+    },
+    "vite-node": {
+      "picomatch": "^4.0.4",
+      "yaml": "^2.8.3"
+    },
+    "vocs": {
+      "picomatch": "^4.0.4",
+      "yaml": "^2.8.3"
+    },
+    "remark-mdx-frontmatter": {
+      "yaml": "^2.8.3"
+    },
+    "vfile-matter": {
+      "yaml": "^2.8.3"
+    }
   },
   "dependencies": {
     "@ethersproject/bignumber": "^5.0.8",
