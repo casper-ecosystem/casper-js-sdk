@@ -61,7 +61,7 @@ jobs:
         run: npm run lint:ci
 
       - name: Unit Test
-        run: npm run test:node:unit
+        run: ${{ matrix.node-version == '22.x' && 'npm run test:node:unit:node22' || 'npm run test:node:unit' }}
 
       - name: Test build
         run: npm run build
