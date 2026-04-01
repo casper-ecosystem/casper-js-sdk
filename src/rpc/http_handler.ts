@@ -28,7 +28,7 @@ export class HttpHandler implements IHandler {
     this.endpoint = endpoint;
     this.client = client;
     if (client === 'axios') {
-      this.httpClient = axios.create();
+      this.httpClient = axios.create({ adapter: 'fetch' });
     }
   }
 
@@ -91,8 +91,9 @@ export class HttpHandler implements IHandler {
   }
 
   private async processFetchRequest(body: string): Promise<RpcResponse> {
+    let response: Response;
     try {
-      const response = await fetch(this.endpoint, {
+      response = await fetch(this.endpoint, {
         method: 'POST',
         ...(this.referrer ? { referrer: this.referrer } : {}),
         headers: {
@@ -101,16 +102,16 @@ export class HttpHandler implements IHandler {
         },
         body
       });
-
-      if (response.status < 200 || response.status >= 300) {
-        throw new HttpError(response.status, new Error(response.statusText));
-      }
-
-      return response.json();
     } catch (err) {
       throw new Error(
         `${ErrProcessHttpRequest.message}, details: ${err.message}`
       );
     }
+
+    if (response.status < 200 || response.status >= 300) {
+      throw new HttpError(response.status, new Error(response.statusText));
+    }
+
+    return response.json();
   }
 }

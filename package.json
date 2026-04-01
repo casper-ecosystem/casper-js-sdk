@@ -9,8 +9,17 @@
     "url": "https://github.com/casper-ecosystem/casper-js-sdk.git"
   },
   "main": "dist/lib.node.js",
+  "module": "dist/lib.esm.js",
   "browser": "dist/lib.web.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/lib.esm.js",
+      "require": "./dist/lib.node.js",
+      "default": "./dist/lib.node.js"
+    }
+  },
   "scripts": {
     "prepare": "husky-run install",
     "lint": "eslint src/ --fix",
@@ -31,6 +40,9 @@
     "docs:dev": "cd site && NODE_OPTIONS=--unhandled-rejections=none vocs dev",
     "docs:preview": "cd site && vocs preview",
     "prepublishOnly": "npm run build && npm run test:node:unit:node22"
+  },
+  "engines": {
+    "node": ">=18"
   },
   "keywords": [
     "Casper",
@@ -123,7 +135,6 @@
     "@noble/ed25519": "^1.7.3",
     "@noble/hashes": "^1.2.0",
     "@noble/secp256k1": "^1.7.1",
-    "@open-rpc/client-js": "^1.8.1",
     "@scure/bip32": "^1.1.5",
     "@scure/bip39": "^1.2.0",
     "@types/ws": "^8.2.2",
