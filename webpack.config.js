@@ -1,8 +1,8 @@
 const path = require('path');
 const copyPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
-const BundleAnalyzerPlugin =
-  require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
+  .BundleAnalyzerPlugin;
 const nodeExternals = require('webpack-node-externals');
 
 /** @type { import('webpack').Configuration } */
@@ -94,4 +94,46 @@ const bundlerConfig = {
 };
 
 /** @type { import('webpack').Configuration } */
-module.exports = [serverConfig, clientConfig, bundlerConfig];
+const esmConfig = {
+  ...common,
+  target: 'node',
+  externalsType: 'module',
+  module: {
+    rules: [
+      {
+        test: /\.ts?$/,
+        use: {
+          loader: 'ts-loader',
+          options: {
+            configFile: 'tsconfig.build.json',
+            compilerOptions: {
+              module: 'esnext',
+              moduleResolution: 'node'
+            }
+          }
+        },
+        exclude: /node_modules/
+      }
+    ]
+  },
+  experiments: {
+    outputModule: true
+  },
+  // BundleAnalyzerPlugin has known issues with outputModule: true — exclude it
+  plugins: [],
+  externals: [nodeExternals({ importType: 'module' })],
+  externalsPresets: {
+    node: true
+  },
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    filename: 'lib.esm.mjs',
+    chunkFormat: 'module',
+    library: {
+      type: 'module'
+    }
+  }
+};
+
+/** @type { import('webpack').Configuration } */
+module.exports = [serverConfig, clientConfig, bundlerConfig, esmConfig];

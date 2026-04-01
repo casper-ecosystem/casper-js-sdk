@@ -242,7 +242,7 @@ export class VestingSchedule {
   /**
    * The list of locked amounts associated with this vesting schedule.
    */
-  @jsonArrayMember(CLValueUInt512, {
+  @jsonArrayMember(() => CLValueUInt512, {
     name: 'locked_amounts',
     serializer: (value: CLValueUInt512[]) => value.map(it => it.toJSON()),
     deserializer: (json: any) =>
