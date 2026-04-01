@@ -1,4 +1,3 @@
-import isNull from 'lodash/isNull.js';
 import { BigNumber } from '@ethersproject/bignumber';
 import { concat } from '@ethersproject/bytes';
 
@@ -18,6 +17,7 @@ import {
   byteArrayJsonDeserializer,
   byteArrayJsonSerializer
 } from './SerializationUtils';
+import { isNull } from '../utils';
 
 /**
  * Represents a runtime environment for Casper transactions.
