@@ -22,3 +22,5 @@ export const arrayEquals = (a: Uint8Array, b: Uint8Array): boolean => {
  */
 export const sleep = (ms: number): Promise<void> =>
   new Promise(resolve => setTimeout(resolve, ms));
+
+export const isNull = (value: unknown): value is null => value === null;
