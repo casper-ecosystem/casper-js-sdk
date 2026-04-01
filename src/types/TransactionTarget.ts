@@ -1,4 +1,4 @@
-import isNull from 'lodash/isNull';
+import isNull from 'lodash/isNull.js';
 import { BigNumber } from '@ethersproject/bignumber';
 import { concat } from '@ethersproject/bytes';
 

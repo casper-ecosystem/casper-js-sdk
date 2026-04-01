@@ -97,18 +97,37 @@ const bundlerConfig = {
 const esmConfig = {
   ...common,
   target: 'node',
+  externalsType: 'module',
+  module: {
+    rules: [
+      {
+        test: /\.ts?$/,
+        use: {
+          loader: 'ts-loader',
+          options: {
+            configFile: 'tsconfig.build.json',
+            compilerOptions: {
+              module: 'esnext',
+              moduleResolution: 'node'
+            }
+          }
+        },
+        exclude: /node_modules/
+      }
+    ]
+  },
   experiments: {
     outputModule: true
   },
   // BundleAnalyzerPlugin has known issues with outputModule: true — exclude it
   plugins: [],
-  externals: [nodeExternals()],
+  externals: [nodeExternals({ importType: 'module' })],
   externalsPresets: {
     node: true
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'lib.esm.js',
+    filename: 'lib.esm.mjs',
     chunkFormat: 'module',
     library: {
       type: 'module'
