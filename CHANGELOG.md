@@ -13,6 +13,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [5.0.11] - 2026-04-01
+
+### Added
+
+- ESM build output (`dist/lib.esm.mjs`) via webpack `experiments.outputModule`, enabling native named imports in modern TypeScript and Node.js ESM projects
+- `"exports"` field in `package.json` routing ESM consumers (`import`) to `lib.esm.mjs` and CJS consumers (`require`) to `lib.node.js`
+- `"module"` field in `package.json` for bundler tools (Vite, Rollup, esbuild) that use it for tree-shaking
+- `"engines": { "node": ">=18" }` to formally declare the minimum Node.js version required by the fetch adapter
+- Unit tests for `HttpHandler` covering both `axios` and `fetch` client paths, including success, HTTP errors, and network failures
+
+### Fixed
+
+- `DEP0169` deprecation warning (`url.parse()`) on Node.js 22 from two sources:
+  - Removed unused `@open-rpc/client-js` dependency whose compiled mock (`build/__mocks__/requestData.js`) called `url.parse()` during test runs
+  - Switched `axios` to its built-in `fetch` adapter (`adapter: 'fetch'`), bypassing `follow-redirects` which called `url.parse()` on every RPC request
+- `HttpError` being silently swallowed in `processFetchRequest`: the status check is now outside the `try/catch` so `HttpError` propagates correctly to callers instead of being re-wrapped as a generic `Error`
+- Named imports failing with `SyntaxError` in modern TypeScript projects using `"module": "ESNext"` — caused by the lack of an `"exports"` field and the UMD bundle being unanalyzable by Node.js `cjs-module-lexer`
+
 ### [5.0.10] - 2026-02-24
 
 ### Added
