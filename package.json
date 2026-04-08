@@ -15,10 +15,14 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "browser": "./dist/lib.web.js",
       "import": "./dist/lib.esm.mjs",
       "require": "./dist/lib.node.js",
+      "node": "./dist/lib.node.js",
       "default": "./dist/lib.node.js"
-    }
+    },
+    "./web": "./dist/lib.web.js",
+    "./node": "./dist/lib.node.js"
   },
   "scripts": {
     "prepare": "husky-run install",

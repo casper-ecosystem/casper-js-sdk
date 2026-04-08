@@ -13,6 +13,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [5.0.12] - 2026-04-08
+
+### Fixed
+
+- Browser package resolution for bundlers by adding conditional exports in `package.json`:
+  - Added `exports["."].browser` -> `./dist/lib.web.js` for browser-aware bundlers (Vite, Webpack, Rollup, esbuild)
+  - Added `exports["."].node` -> `./dist/lib.node.js` and kept `require`/`default` on Node build for Node.js compatibility
+  - Added explicit subpath exports `./web` and `./node` for deterministic environment-specific imports
+- Prevented browser apps from resolving Node-oriented paths that can trigger runtime errors
+
 ### [5.0.11] - 2026-04-01
 
 ### Added
