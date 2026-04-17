@@ -15,6 +15,8 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
+      "react-native": "./dist/lib.web.js",
+      "browser": "./dist/lib.web.js",
       "import": "./dist/lib.esm.mjs",
       "require": "./dist/lib.node.js",
       "default": "./dist/lib.node.js"
