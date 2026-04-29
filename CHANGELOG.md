@@ -13,6 +13,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [5.0.12] - 2026-04-29
+
+### Added
+
+- `"react-native"` and `"browser"` conditions to `package.json` `"exports"` - fixes resolution under Metro (React Native 0.85+) and web bundlers that honor Package Exports, which previously fell through to the Node build and pulled in Node core modules unavailable in those environments. Conditions are placed above `require`/`default` so conditional resolution matches them first.
+
+### Removed
+
+- ESM build output (`dist/lib.esm.mjs`) and the corresponding webpack `esmConfig`
+- `"import"` condition from `"exports"` and the `"module"` field from `package.json`
+
+### Fixed
+
+- Import failures in downstream projects caused by the ESM bundle introduced in 5.0.11
+
 ### [5.0.11] - 2026-04-01
 
 ### Added
