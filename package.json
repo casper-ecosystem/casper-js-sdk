@@ -9,13 +9,13 @@
     "url": "https://github.com/casper-ecosystem/casper-js-sdk.git"
   },
   "main": "dist/lib.node.js",
-  "module": "dist/lib.esm.mjs",
   "browser": "dist/lib.web.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/lib.esm.mjs",
+      "react-native": "./dist/lib.web.js",
+      "browser": "./dist/lib.web.js",
       "require": "./dist/lib.node.js",
       "default": "./dist/lib.node.js"
     }
@@ -33,7 +33,6 @@
     "test:node:unit:coverage": "nyc npm run test:node:unit",
     "test:browser:unit": "cross-env NODE_ENV=test karma start karma.conf.js --single-run",
     "test:unit": "cross-env NODE_ENV=test npm run test:node:unit && npm run test:browser:unit",
-    "test:esm:smoke": "node ./scripts/esm-smoke-test.mjs",
     "test:node:e2e": "cross-env NODE_ENV=test TS_NODE_FILES=true mocha -r ts-node/register \"e2e/**/*.test.ts\" --timeout 5000000 --exit",
     "test:e2e": "cross-env NODE_ENV=test npm run test:node:e2e",
     "test": "npm run test:unit && npm run test:e2e",
