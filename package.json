@@ -73,6 +73,7 @@
     "@types/node": "^14.14.31",
     "@types/node-fetch": "^2.6.4",
     "@types/sinon": "^10.0.13",
+    "@types/ws": "^8.2.2",
     "@typescript-eslint/eslint-plugin": "^5.52.0",
     "@typescript-eslint/parser": "^5.52.0",
     "assert": "^2.0.0",
@@ -115,6 +116,7 @@
     "typescript": "^4.9.5",
     "url": "^0.11.0",
     "util": "^0.12.5",
+    "vocs": "^1.4.1",
     "webpack": "^5.76.3",
     "webpack-bundle-analyzer": "^4.8.0",
     "webpack-cli": "^4.5.0",
@@ -126,6 +128,7 @@
     "bn.js": "^5.2.1",
     "@types/d3-dispatch": "3.0.6",
     "brace-expansion": "^5.0.5",
+    "follow-redirects": "^1.16.0",
     "@rollup/pluginutils": {
       "picomatch": "^4.0.4"
     },
@@ -161,9 +164,8 @@
     "@noble/secp256k1": "^1.7.1",
     "@scure/bip32": "^1.1.5",
     "@scure/bip39": "^1.2.0",
-    "@types/ws": "^8.2.2",
     "asn1.js": "^5.4.1",
-    "axios": "^1.8.4",
+    "axios": "^1.15.0",
     "bn.js": "^5.2.1",
     "eventsource": "^2.0.2",
     "glob": "^7.1.6",
@@ -171,7 +173,6 @@
     "node-fetch": "2.6.13",
     "reflect-metadata": "^0.1.13",
     "ts-results": "npm:@casperlabs/ts-results@^3.3.4",
-    "typedjson": "^1.6.0-rc2",
-    "vocs": "^1.4.1"
+    "typedjson": "^1.6.0-rc2"
   }
 }
