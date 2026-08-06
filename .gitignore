@@ -4,6 +4,9 @@ node_modules
 /docs/
 /dist/
 
+# Internal working documents — never committed, never published
+/internal-docs/
+
 .eslintcache
 .nyc_output
 
