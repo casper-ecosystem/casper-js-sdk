@@ -1,0 +1,47 @@
+{
+  "name": "casper-js-sdk-site",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Documentation site for casper-js-sdk, built with vocs. Isolated from the SDK package so the docs toolchain's dependency tree never reaches the SDK's lockfile or `npm audit`.",
+  "license": "Apache 2.0",
+  "scripts": {
+    "dev": "NODE_OPTIONS=--unhandled-rejections=none vocs dev",
+    "build": "vocs build -o ../docs",
+    "preview": "vocs preview"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "vocs": "^1.4.1"
+  },
+  "overrides": {
+    "@types/d3-dispatch": "3.0.6",
+    "@rollup/pluginutils": {
+      "picomatch": "^4.0.4"
+    },
+    "@vanilla-extract/compiler": {
+      "picomatch": "^4.0.4",
+      "yaml": "^2.8.3"
+    },
+    "tinyglobby": {
+      "picomatch": "^4.0.4"
+    },
+    "vite-node": {
+      "picomatch": "^4.0.4",
+      "yaml": "^2.8.3"
+    },
+    "vocs": {
+      "picomatch": "^4.0.4",
+      "yaml": "^2.8.3"
+    },
+    "remark-mdx-frontmatter": {
+      "yaml": "^2.8.3"
+    },
+    "vfile-matter": {
+      "yaml": "^2.8.3"
+    }
+  }
+}

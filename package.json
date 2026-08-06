@@ -28,7 +28,7 @@
     }
   },
   "scripts": {
-    "prepare": "husky-run install",
+    "prepare": "husky",
     "lint": "eslint src/ --fix",
     "lint:ci": "eslint src/ --max-warnings=0",
     "knip": "knip --include dependencies,unlisted,binaries,unresolved",
@@ -45,9 +45,9 @@
     "test:node:e2e": "cross-env NODE_ENV=test TS_NODE_FILES=true mocha -r ts-node/register \"e2e/**/*.test.ts\" --timeout 5000000 --exit",
     "test:e2e": "cross-env NODE_ENV=test npm run test:node:e2e",
     "test": "npm run test:unit && npm run test:e2e",
-    "docs:build": "cd site && vocs build -o ../docs && cd .. && typedoc --out docs/api",
-    "docs:dev": "cd site && NODE_OPTIONS=--unhandled-rejections=none vocs dev",
-    "docs:preview": "cd site && vocs preview",
+    "docs:build": "cd site && npm ci && npm run build && cd .. && typedoc --out docs/api",
+    "docs:dev": "cd site && npm install && npm run dev",
+    "docs:preview": "cd site && npm run preview",
     "prepublishOnly": "npm run build && npm run test:node:unit:node22"
   },
   "engines": {
@@ -61,38 +61,31 @@
   "author": "Jan Hoffmann <jan@casperlabs.io>",
   "lint-staged": {
     "src/**/*.{ts,tsx}": [
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ],
     "*.{js,css,md}": "prettier --write"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
   },
   "devDependencies": {
     "@types/bn.js": "^5.2.0",
     "@types/chai": "^4.1.7",
     "@types/eventsource": "^1.1.15",
     "@types/humanize-duration": "^3.27.4",
-    "@types/mocha": "^5.2.7",
+    "@types/mocha": "^10.0.10",
     "@types/node": "^18",
-    "@types/sinon": "^10.0.13",
-    "@typescript-eslint/eslint-plugin": "^5.52.0",
-    "@typescript-eslint/parser": "^5.52.0",
+    "@types/sinon": "^21.0.1",
     "assert": "^2.1.0",
     "browserify-zlib": "^0.2.0",
     "buffer": "^6.0.3",
     "chai": "^4.2.0",
-    "copy-webpack-plugin": "^9.0.1",
+    "copy-webpack-plugin": "^14.0.0",
     "cross-env": "^7.0.3",
     "crypto-browserify": "^3.12.1",
     "dotenv": "^16.0.3",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.1.0",
+    "eslint": "^10.6.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.7.0",
     "https-browserify": "^1.0.0",
-    "husky": "^4.3.8",
+    "husky": "^9.1.7",
     "karma": "^6.4.1",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^3.1.1",
@@ -101,59 +94,35 @@
     "karma-spec-reporter": "^0.0.36",
     "karma-webpack": "^5.0.0",
     "knip": "^6.32.0",
-    "lint-staged": "^10.5.4",
+    "lint-staged": "^17.0.0",
     "mocha": "^10.1.0",
     "nyc": "^15.1.0",
-    "prettier": "^1.18.2",
+    "prettier": "^3.9.4",
     "process": "^0.11.10",
-    "sinon": "^15.0.3",
+    "sinon": "^22.0.0",
     "stream-browserify": "^3.0.0",
     "stream-http": "^3.2.0",
-    "ts-loader": "^9.4.2",
+    "ts-loader": "^9.6.2",
     "ts-node": "^10.9.2",
     "typedoc": "^0.23.25",
     "typescript": "^4.9.5",
+    "typescript-eslint": "^8.62.1",
     "url": "^0.11.4",
     "util": "^0.12.5",
-    "vocs": "^1.4.1",
-    "webpack": "^5.76.3",
-    "webpack-bundle-analyzer": "^4.8.0",
-    "webpack-cli": "^4.5.0",
-    "webpack-node-externals": "^2.5.2"
+    "webpack": "^5.108.3",
+    "webpack-bundle-analyzer": "^5.3.0",
+    "webpack-cli": "^7.1.0",
+    "webpack-node-externals": "^3.0.0"
   },
   "overrides": {
     "elliptic": "^6.6.1",
     "minimatch": "^10.2.3",
     "bn.js": "^5.2.4",
-    "@types/d3-dispatch": "3.0.6",
     "brace-expansion": "^5.0.9",
     "follow-redirects": "^1.16.0",
+    "serialize-javascript": "^7.0.7",
     "lodash": "^4.18.1",
-    "lodash-es": "^4.18.1",
-    "@rollup/pluginutils": {
-      "picomatch": "^4.0.4"
-    },
-    "@vanilla-extract/compiler": {
-      "picomatch": "^4.0.4",
-      "yaml": "^2.8.3"
-    },
-    "tinyglobby": {
-      "picomatch": "^4.0.4"
-    },
-    "vite-node": {
-      "picomatch": "^4.0.4",
-      "yaml": "^2.8.3"
-    },
-    "vocs": {
-      "picomatch": "^4.0.4",
-      "yaml": "^2.8.3"
-    },
-    "remark-mdx-frontmatter": {
-      "yaml": "^2.8.3"
-    },
-    "vfile-matter": {
-      "yaml": "^2.8.3"
-    }
+    "lodash-es": "^4.18.1"
   },
   "dependencies": {
     "@ethersproject/bignumber": "^5.8.0",
