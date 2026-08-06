@@ -11,6 +11,13 @@
   "main": "dist/lib.node.js",
   "browser": "dist/lib.web.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "resources",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
