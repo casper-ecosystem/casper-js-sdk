@@ -13,6 +13,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [5.0.13] - 2026-08-06
+
+### Changed
+
+- `axios` bumped to `^1.19.0`. The previous `^1.15.0` floor let the lockfile keep `1.15.2`, which carried 18 advisories — ReDoS via cookie name injection, unbounded allocation, and several prototype-pollution gadgets. The advisory range closes below `1.18.0`. No source change was required: the SDK's use of `axios.create({ adapter: 'fetch' })`, `request()` and `isAxiosError()` is stable across the bump
+- `brace-expansion` override raised from `^5.0.5` to `^5.0.9`, clearing four DoS advisories. The old override was itself the problem — it pinned the vulnerable `5.0.5` as its floor
+- `form-data` now resolves to `4.0.6`, which fixes a CRLF injection advisory. `axios@1.19.0` requires it, so the floor is enforced rather than incidental
+- `package-lock.json` fully regenerated. Every fix above was already published within the declared ranges, but `npm install` never replaces a locked version that still satisfies its range
+
+### Removed
+
+- `glob` production dependency. It had zero usage anywhere in the repo and was the only path to `inflight@1.0.6`, an abandoned package with a memory-leak advisory (`sonatype-2023-4801`) that has no fixed version and no GHSA entry — meaning `npm audit` could not report it. Removing `glob` also drops `inflight`, `minimatch`, `brace-expansion`, `balanced-match`, `once`, `wrappy`, `fs.realpath` and `path-is-absolute` from the production tree, taking it from 59 packages to 54
+
+### Fixed
+
+- All production-reachable dependency advisories: `npm audit --omit=dev` now reports 0 vulnerabilities, restoring the CI audit gate
+
 ### [5.0.12] - 2026-04-29
 
 ### Added
