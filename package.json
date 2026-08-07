@@ -1,6 +1,6 @@
 {
   "name": "casper-js-sdk",
-  "version": "5.0.12",
+  "version": "5.0.13",
   "license": "Apache 2.0",
   "description": "SDK to interact with the Casper blockchain",
   "homepage": "https://github.com/casper-ecosystem/casper-js-sdk#README.md",
@@ -11,6 +11,13 @@
   "main": "dist/lib.node.js",
   "browser": "dist/lib.web.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "resources",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -127,7 +134,7 @@
     "minimatch": "^10.2.3",
     "bn.js": "^5.2.1",
     "@types/d3-dispatch": "3.0.6",
-    "brace-expansion": "^5.0.5",
+    "brace-expansion": "^5.0.9",
     "follow-redirects": "^1.16.0",
     "@rollup/pluginutils": {
       "picomatch": "^4.0.4"
@@ -165,10 +172,9 @@
     "@scure/bip32": "^1.1.5",
     "@scure/bip39": "^1.2.0",
     "asn1.js": "^5.4.1",
-    "axios": "^1.15.0",
+    "axios": "^1.19.0",
     "bn.js": "^5.2.1",
     "eventsource": "^2.0.2",
-    "glob": "^7.1.6",
     "humanize-duration": "^3.24.0",
     "node-fetch": "2.6.13",
     "reflect-metadata": "^0.1.13",

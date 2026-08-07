@@ -13,6 +13,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [5.0.13] - 2026-08-06
+
+### Changed
+
+- Restricted the published package to `dist`, `resources`, `README.md`, `CHANGELOG.md` and `LICENSE` via a `files` whitelist — the docs site, CI workflows and build configs no longer ship
+- Raised `axios` to `^1.19.0`, the `brace-expansion` override to `^5.0.9` and `form-data` to `4.0.6`, and fully regenerated `package-lock.json`. No source change was required
+
+### Removed
+
+- Unused `glob` production dependency, and with it the abandoned `inflight` and the rest of its transitive tree
+
+### Fixed
+
+- Security vulnerabilities in production dependencies
+
 ### [5.0.12] - 2026-04-29
 
 ### Added
