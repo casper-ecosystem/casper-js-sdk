@@ -15,35 +15,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### [5.1.0] - 2026-08-07
 
-No runtime or API change. `dist/` behaves exactly as in `5.0.13` and `engines.node` stays `">=18"` — the release is a dependency and toolchain pass, so the only consumer-visible effects are a smaller production dependency tree and refreshed transitive versions.
-
-### Added
-
-- `knip` as a blocking CI gate for dependency-level findings — `npm run knip` (dependencies, unlisted, binaries, unresolved) and `npm run knip:all` for the full report. It produced the removal list below, and it covers the class a repo-wide grep structurally cannot see: phantom dependencies, imported but undeclared and masked by npm hoisting. The baseline reported none. Every `ignoreDependencies` entry in `knip.json` names the mechanism by which the dependency is genuinely used
-- Node `24.x` to the CI matrix, now `[18.x, 22.x, 24.x]`. `18.x` remains the consumer-compatibility leg for as long as the published `engines.node` is `">=18"`; `24.x` is the Active LTS. Node 20 is skipped as EOL
-- `eslint.config.js` (flat config) and `.prettierignore`
-- `site/package.json` with its own lockfile — the docs site is now a separate package rather than part of the SDK tree
+No runtime or API change — `dist/` behaves exactly as in `5.0.13` and `engines.node` stays `">=18"`. The rest of the release is an internal toolchain update with no effect on consumers.
 
 ### Changed
 
-- Production dependencies bumped within their majors, with no source change: `@ethersproject/{bignumber,bytes,constants}` `^5.8.0`, `@noble/curves` `^1.9.7`, `@noble/hashes` `^1.8.0`, `@noble/ed25519` `^1.7.5`, `@noble/secp256k1` `^1.7.2`, `bn.js` `^5.2.4`, `humanize-duration` `^3.34.0`, `ts-results` `^3.3.5`, `typedjson` `^1.8.0`. The noble/ethers _replacements_ are deliberately not part of this release; these versions are the resting state for the whole 5.x line
-- Dev toolchain modernized: ESLint `7` → `10` on flat config with the `typescript-eslint@8` meta-package (a deliberate 1:1 port of the previous rule set, which is why it lands with zero source changes), Prettier `1` → `3`, husky `4` → `9`, lint-staged `10` → `17`, sinon `15` → `22`, and the webpack stack (`webpack@5.108`, `webpack-cli@7`, `copy-webpack-plugin@14`, `webpack-bundle-analyzer@5`, `webpack-node-externals@3`, `ts-loader@9.6`)
-- The docs site moved to `site/package.json` with its own lockfile rather than an npm workspace — a workspace shares the root lockfile, so `vocs` would still have shown up in the SDK's audit. This removes `vocs` and eight override hacks from the root tree, and with them the `@hono/node-server`, `react-router` and `nuqs` advisories. `docs:build` / `docs:dev` / `docs:preview` install `site/` on demand
-- `overrides` gained `serialize-javascript` `^7.0.7` and `lodash` / `lodash-es` `^4.18.1`, clearing the multi-rooted dev-only code-injection and RCE/DoS advisories that parent upgrades cannot fix on their own
-- CI now gates the lint, knip and build steps to the `22.x`/`24.x` legs: `eslint@10`, `knip@6`, `webpack-cli@7`, `copy-webpack-plugin@14` and `webpack-bundle-analyzer@5` all require Node ≥20.9, and `serialize-javascript@7` reads global `crypto` at load. The `18.x` leg keeps install, audit and the unit suite. This gates the dev toolchain only — the published `engines.node` is unchanged
-- The `node22` unit-test variant (which disables native TS type-stripping) now also runs on `24.x`, since Node ≥23 enables stripping by default
-- `package-lock.json` regenerated. npm could not resolve incrementally against the stale `@typescript-eslint@5` entries. The production closure is unchanged: all 45 packages resolve to the same versions
+- Production dependencies bumped within their majors, with no source change: `@ethersproject/{bignumber,bytes,constants}`, `@noble/{curves,hashes,ed25519,secp256k1}`, `bn.js`, `humanize-duration`, `ts-results` and `typedjson`
 
 ### Removed
 
-- Production dependencies with zero imports anywhere in the repo: `node-fetch` (`src/rpc/http_handler.ts` uses the axios fetch adapter and native `global.fetch`), `@scure/bip32` and `@scure/bip39` (no HD-wallet or mnemonic code), and `reflect-metadata`. **`reflect-metadata` is safe to drop, not merely unimported**: typedjson guards every `Reflect.getMetadata` access behind `isReflectMetadataSupported`, every `@jsonMember` passes an explicit constructor, so the reflection path is never taken, and tslib's `__metadata` is a guarded no-op when `Reflect.metadata` is absent. typedjson does not declare it as a peer dependency either. Consumers who were relying on the SDK to pull `reflect-metadata` into their own tree must now declare it themselves
-- Dead devDependencies: `casper-node-launcher-js` (unreferenced, and the sole root of a HIGH `@oclif` advisory), `chai-as-promised`, `serve`, `karma-coverage-istanbul-reporter` and `@jsdevtools/coverage-istanbul-loader` (both unwired), the three ESLint plugins whose rules were never enabled (`eslint-plugin-jsdoc`, `eslint-plugin-lodash`, `eslint-plugin-prefer-arrow`), and the types for the removed packages (`@types/node-fetch`, `@types/chai-as-promised`, `@types/ws`)
-- `.eslintrc.js`, superseded by `eslint.config.js`, and the `husky.hooks` block from `package.json`
-
-### Fixed
-
-- The broken mixed husky state: `package.json` carried a v4 `husky.hooks` block and `prepare: "husky-run install"` while a v5-style `.husky/pre-commit` also existed, running the full test suite including e2e plus a stray `pre-commit` line that would have failed as command-not-found. The hook now runs `lint-staged` only, and the obsolete `git add` step is dropped — lint-staged has auto-staged since v11
-- Full `npm audit` drops from 14 advisories to 7, with all HIGH cleared. `npm audit --omit=dev` remains 0
+- Unused production dependencies `node-fetch`, `@scure/bip32` and `@scure/bip39`, shrinking the installed dependency tree
+- `reflect-metadata`. The SDK never took typedjson's reflection path — every decorator declares its type explicitly — so nothing in `dist/` needs it. Consumers who relied on the SDK to pull `reflect-metadata` into their own tree must now declare it themselves
 
 ### [5.0.13] - 2026-08-06
 
