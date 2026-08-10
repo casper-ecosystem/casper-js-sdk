@@ -1,5 +1,5 @@
 import { TypedJSON } from 'typedjson';
-import { expect } from 'chai';
+import { expect } from 'vitest';
 
 import { Bid } from '../../types';
 import { auctionBidV1Json, auctionBidV2Json } from '../data';

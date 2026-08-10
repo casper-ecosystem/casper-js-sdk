@@ -3,7 +3,7 @@ import { concat } from '@ethersproject/bytes';
 
 import { Hash } from './Hash';
 import { IResultWithBytes } from '../clvalue';
-import { PrefixName } from './Key';
+import { PrefixName } from './PrefixName';
 
 /**
  * Enum representing the types of entities within the system.

@@ -1,6 +1,6 @@
 import { jsonMember, jsonObject } from 'typedjson';
 import { Hash } from './Hash';
-import { PrefixName } from './Key';
+import { PrefixName } from './PrefixName';
 
 /**
  * Represents a contract package hash within the system, with support for prefixed and JSON representations.

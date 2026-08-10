@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from 'vitest';
 
 import { KeyAlgorithm, PrivateKey, PublicKey } from '../../../types';
 

@@ -1,5 +1,5 @@
 import { TypedJSON } from 'typedjson';
-import { expect } from 'chai';
+import { expect } from 'vitest';
 
 import { EraSummary } from '../../types';
 import { eraSummaryJson, eraSummaryV2DelegatorKindJson } from '../data';
@@ -99,8 +99,7 @@ const validateDelegatorAllocationTest2 = (
   ).to.deep.equal(jsonDelegator?.amount);
 };
 
-describe('EraSummary', function () {
-  this.timeout(10000);
+describe('EraSummary', () => {
   it('should correctly parse and match the era summary json', () => {
     const serializer = new TypedJSON(EraSummary);
     const jsonRes = serializer.parse(eraSummaryJson);

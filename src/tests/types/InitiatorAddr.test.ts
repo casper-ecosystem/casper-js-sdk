@@ -1,5 +1,5 @@
 import { TypedJSON, jsonMember, jsonObject } from 'typedjson';
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import { fail } from 'assert';
 
 import { InitiatorAddr } from '../../types';

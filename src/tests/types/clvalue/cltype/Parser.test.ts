@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from 'vitest';
 
 import { CLTypeParser, Conversions, CLTypeByteArray, TypeID } from '../../../../types';
 
