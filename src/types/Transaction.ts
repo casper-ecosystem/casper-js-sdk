@@ -115,10 +115,18 @@ export class TransactionHash extends Hash {
     // `super` call at all. That is a `ReferenceError` under native ES classes and
     // only went unnoticed because `target: es5` downlevels classes to functions.
     //
-    // The bytes handed to `Hash` are never observable: this class overrides
-    // `toBytes`/`toHex`/`toJSON`, all of which read `getHash()` rather than the
-    // inherited `hashBytes`. They only have to satisfy `Hash`'s length check.
-    super(new Uint8Array(Hash.ByteHashLen));
+    // Pass the real bytes where there are any. The overrides below (`toBytes`,
+    // `toHex`, `toJSON`, `equals`) all read `getHash()`, so the inherited
+    // `hashBytes` is invisible through this class — but not through `Hash`
+    // itself, whose own methods still read the field. A zero-filled placeholder
+    // therefore made `Hash.prototype.toHex.call(hash)` return 64 zeros. The
+    // fallback covers only the zero-argument path typedjson uses before it
+    // populates the members.
+    super(
+      deploy?.toBytes() ??
+        transactionV1?.toBytes() ??
+        new Uint8Array(Hash.ByteHashLen)
+    );
 
     if (deploy) {
       this.deploy = deploy;

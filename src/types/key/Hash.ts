@@ -137,9 +137,16 @@ export class Hash {
    * @returns True if the hashes are equal, false otherwise.
    */
   equals(other: Hash): boolean {
-    if (this.hashBytes.length !== other.hashBytes.length) return false;
-    return this.hashBytes.every(
-      (byte, index) => byte === other.hashBytes[index]
-    );
+    // Read both sides through `toBytes()` rather than the private `hashBytes`.
+    // Private access is class-scoped, not instance-scoped, so reaching into
+    // `other.hashBytes` bypassed any subclass override — `TransactionHash`
+    // keeps its real bytes behind one, which made `a.equals(b)` and
+    // `b.equals(a)` disagree for the same pair.
+    const ours = this.toBytes();
+    const theirs = other.toBytes();
+
+    if (ours.length !== theirs.length) return false;
+
+    return ours.every((byte, index) => byte === theirs[index]);
   }
 }

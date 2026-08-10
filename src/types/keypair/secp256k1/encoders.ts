@@ -61,9 +61,16 @@ const toBuffer = (bytes: ArrayBuffer): Buffer => Buffer.from(bytes);
 
 /** PEM body wrapped at the conventional 64 characters, with no trailing newline. */
 const toPem = (der: ArrayBuffer, label: string): string => {
-  const body = toBuffer(der)
-    .toString('base64')
-    .replace(/(.{64})/g, '$1\n');
+  // Chunk with `match`, not `replace(/(.{64})/g, '$1\n')`: the replace form
+  // also appends a newline after the *final* chunk when the body length is an
+  // exact multiple of 64, leaving a blank line before the footer that OpenSSL
+  // and Node's `crypto.createPrivateKey` both reject as
+  // `DECODER routines::unsupported`.
+  const body = (
+    toBuffer(der)
+      .toString('base64')
+      .match(/.{1,64}/g) ?? []
+  ).join('\n');
 
   return `-----BEGIN ${label}-----\n${body}\n-----END ${label}-----`;
 };

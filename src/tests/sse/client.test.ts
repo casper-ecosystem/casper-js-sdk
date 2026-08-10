@@ -79,21 +79,44 @@ describe('SseClient', () => {
     (await lastStream()).onerror?.({ message: 'Unauthorized', code: 401 });
 
     expect(errors).to.have.lengthOf(1);
-    expect(errors[0]).to.be.instanceOf(SseError);
+    // `SseError.isSseError`, not `instanceof`: under `target: es5` the emitted
+    // `_super.call(this, …) || this` returns a plain Error, so `instanceof` is
+    // false in the shipped bundle even though it passes under the test
+    // transform's native classes. The guard holds in both.
+    expect(SseError.isSseError(errors[0])).to.be.true;
     expect(errors[0].code).to.equal(401);
     expect(errors[0].message).to.equal('Unauthorized');
   });
 
-  it('should throw a described error when no callback is supplied', async () => {
+  it('should keep the prototype chain intact so instanceof works in the bundle too', () => {
+    const error = new SseError('boom', 401);
+
+    expect(error instanceof SseError).to.be.true;
+    expect(error instanceof Error).to.be.true;
+    expect(SseError.isSseError(error)).to.be.true;
+    expect(SseError.isSseError(new Error('boom'))).to.be.false;
+    expect(SseError.isSseError(undefined)).to.be.false;
+  });
+
+  it('should report stream errors without throwing when no callback is supplied', async () => {
     const client = new SseClient('http://localhost:9999/events');
     client.start();
     const stream = await lastStream();
+    const logged = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
 
-    // The pre-3.x client re-threw the raw event, which carried neither a stack
-    // nor a readable message.
-    expect(() => stream.onerror?.({ code: 403 })).to.throw(
-      'Event stream failed with status 403'
-    );
+    try {
+      // eventsource invokes onerror from inside its own fetch promise chain, so
+      // a throw here is either swallowed whole or escapes as an unhandled
+      // rejection that kills the host process — and in the latter case it
+      // pre-empts the reconnect the library was about to schedule.
+      expect(() => stream.onerror?.({ code: 403 })).to.not.throw();
+      expect(logged).toHaveBeenCalledTimes(1);
+      expect(String(logged.mock.calls[0][0])).to.include('403');
+    } finally {
+      logged.mockRestore();
+    }
   });
 
   it('should close the underlying stream on stop', async () => {

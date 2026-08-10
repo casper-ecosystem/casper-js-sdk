@@ -126,8 +126,7 @@ describe('Test Transaction', () => {
     const json = {
       deploy: {
         approvals: [],
-        hash:
-          '076E77DE17De7F262c5531017c214afd664D9702D4b5b771996aE4dcAf9C01f9',
+        hash: '076E77DE17De7F262c5531017c214afd664D9702D4b5b771996aE4dcAf9C01f9',
         header: {
           account:
             '02024570ae3c361650d5b1Bcd1724a1aF09ffe067d7F69ebd75B567c10c8379a7719',
@@ -156,8 +155,7 @@ describe('Test Transaction', () => {
         },
         session: {
           StoredVersionedContractByHash: {
-            hash:
-              '6497c59f1bcfBBBC468Dc889dd73dCd542827fb966a24Eb33e4140Ab5BB4aE28',
+            hash: '6497c59f1bcfBBBC468Dc889dd73dCd542827fb966a24Eb33e4140Ab5BB4aE28',
             version: null,
             entry_point: 'mint',
             args: [
@@ -202,6 +200,10 @@ describe('Test Transaction', () => {
       '076e77de17de7f262c5531017c214afd664d9702d4b5b771996ae4dcaf9c01f9'
     );
     expect(tx.hash.equals(deployHash)).to.equal(true);
+    // Both directions must agree. `Hash#equals` used to read the private
+    // `hashBytes` off its argument, which bypassed `TransactionHash`'s override
+    // and made this comparison answer false while the one above answered true.
+    expect(deployHash.equals(tx.hash)).to.equal(true);
 
     const txBytes = tx.toBytes();
     assert.deepEqual(txBytes[0], 0x00);
