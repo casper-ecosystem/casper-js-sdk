@@ -65,7 +65,6 @@
     "*.{js,css,md}": "prettier --write"
   },
   "devDependencies": {
-    "@types/eventsource": "^1.1.15",
     "@types/humanize-duration": "^3.27.4",
     "@types/node": "^22.20.1",
     "@types/sinon": "^21.0.1",
@@ -121,7 +120,7 @@
     "@noble/hashes": "^1.8.0",
     "@noble/secp256k1": "^1.7.2",
     "axios": "^1.19.0",
-    "eventsource": "^2.0.2",
+    "eventsource": "^3.0.7",
     "humanize-duration": "^3.34.0",
     "ts-results": "npm:@casperlabs/ts-results@^3.3.5",
     "typedjson": "^1.8.0"
