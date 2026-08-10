@@ -22,16 +22,20 @@ export class TransferHash extends Hash {
    * @param source - A hex string or Uint8Array representing the hash.
    */
   constructor(source: string | Uint8Array) {
-    if (typeof source === 'string') {
-      const { hashBytes, originPrefix } = TransferHash.initializeFromSource(
-        source
-      );
-      // @ts-ignore
-      super(hashBytes);
-      this.originPrefix = originPrefix;
-    } else {
-      super(source);
-    }
+    // `super` must be called unconditionally and before anything else touches
+    // `this`. The previous form called it from inside both branches of an
+    // `if`, which only worked because `target: es5` downlevels classes to
+    // functions: under native ES classes the field initializer above
+    // (`originPrefix = PrefixNameTransfer`) is hoisted ahead of a non-leading
+    // `super(...)` and throws `Must call super constructor in derived class
+    // before accessing 'this'`.
+    const { hashBytes, originPrefix } =
+      typeof source === 'string'
+        ? TransferHash.initializeFromSource(source)
+        : { hashBytes: source, originPrefix: PrefixNameTransfer };
+
+    super(hashBytes);
+    this.originPrefix = originPrefix;
   }
 
   /**

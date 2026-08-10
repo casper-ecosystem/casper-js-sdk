@@ -1,6 +1,6 @@
 import { concat } from '@ethersproject/bytes';
 import { Hash } from './Hash';
-import { PrefixName } from './Key';
+import { PrefixName } from './PrefixName';
 import { IResultWithBytes } from '../clvalue';
 
 /**

@@ -1,7 +1,7 @@
 import { jsonArrayMember, jsonMember, jsonObject } from 'typedjson';
 
 import { UnbondingPurse } from './UnbondingPurse';
-import { NamedKeyKind } from './Transform';
+import { NamedKeyKind } from './NamedKeyKind';
 import { AddressableEntity } from './AddressableEntity';
 import { Package } from './Package';
 import { BidKind } from './BidKind';

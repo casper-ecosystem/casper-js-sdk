@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import * as secp256k1 from '@noble/secp256k1';
 import { encodePrivate, encodePublic } from '../../../types/keypair/secp256k1/encoders';
 

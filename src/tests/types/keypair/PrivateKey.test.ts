@@ -1,5 +1,5 @@
 import * as Crypto from 'crypto';
-import { expect } from 'chai';
+import { expect } from 'vitest';
 
 import {
   Conversions,
@@ -7,6 +7,10 @@ import {
   PrivateKey,
   PublicKey
 } from '../../../types';
+
+// `window` exists only in the `--browser` run; the node run has
+// `environment: 'node'`, so this is false there.
+const isBrowser = typeof window !== 'undefined';
 
 describe('PrivateKey', () => {
   it('should generate PEM file for Secp256K1 correctly', () => {
@@ -65,33 +69,45 @@ cs0BmUY0rz+KBwlNMWYL9fR/hoFl8Q==
     expect(Conversions.encodeBase64(signPrivateKeyPair2.toBytes())).to.equal(
       Conversions.encodeBase64(signPrivateKeyPair2.toBytes())
     );
-
-    // import pem file to nodejs std library
-    const pubKeyImported = Crypto.createPublicKey(publicKeyInPem);
-    const priKeyImported = Crypto.createPrivateKey(privateKeyInPem);
-    expect(pubKeyImported.asymmetricKeyType).to.equal('ed25519');
-
-    // expect nodejs std lib export the same pem.
-    const publicKeyInPemFromNode = pubKeyImported.export({
-      type: 'spki',
-      format: 'pem'
-    });
-    const privateKeyInPemFromNode = priKeyImported.export({
-      type: 'pkcs8',
-      format: 'pem'
-    });
-    expect(publicKeyInPemFromNode).to.equal(publicKeyInPem);
-    expect(privateKeyInPemFromNode).to.equal(privateKeyInPem);
-
-    // expect both of they generate the same signature
-    const message = Buffer.from('hello world');
-    const signatureByNode = Crypto.sign(null, message, priKeyImported);
-    const signatureByNacl = naclKeyPair.sign(message);
-    expect(Conversions.encodeBase64(signatureByNode)).to.eq(
-      Conversions.encodeBase64(signatureByNacl)
-    );
-
-    expect(Crypto.verify(null, message, pubKeyImported, signatureByNode)).to
-      .true;
   });
+
+  // Cross-checks the SDK's PEM/DER output against Node's own crypto
+  // implementation. It is a Node-only assertion by construction, so it is
+  // skipped in the browser run rather than being allowed to fail there.
+  it.skipIf(isBrowser)(
+    'should produce Ed25519 PEM that Node crypto reads back identically',
+    () => {
+      const naclKeyPair = PrivateKey.generate(KeyAlgorithm.ED25519);
+      const publicKeyInPem = naclKeyPair.publicKey.toPem();
+      const privateKeyInPem = naclKeyPair.toPem();
+
+      // import pem file to nodejs std library
+      const pubKeyImported = Crypto.createPublicKey(publicKeyInPem);
+      const priKeyImported = Crypto.createPrivateKey(privateKeyInPem);
+      expect(pubKeyImported.asymmetricKeyType).to.equal('ed25519');
+
+      // expect nodejs std lib export the same pem.
+      const publicKeyInPemFromNode = pubKeyImported.export({
+        type: 'spki',
+        format: 'pem'
+      });
+      const privateKeyInPemFromNode = priKeyImported.export({
+        type: 'pkcs8',
+        format: 'pem'
+      });
+      expect(publicKeyInPemFromNode).to.equal(publicKeyInPem);
+      expect(privateKeyInPemFromNode).to.equal(privateKeyInPem);
+
+      // expect both of they generate the same signature
+      const message = Buffer.from('hello world');
+      const signatureByNode = Crypto.sign(null, message, priKeyImported);
+      const signatureByNacl = naclKeyPair.sign(message);
+      expect(Conversions.encodeBase64(signatureByNode)).to.eq(
+        Conversions.encodeBase64(signatureByNacl)
+      );
+
+      expect(Crypto.verify(null, message, pubKeyImported, signatureByNode)).to
+        .true;
+    }
+  );
 });

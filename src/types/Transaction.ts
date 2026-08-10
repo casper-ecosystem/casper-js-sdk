@@ -109,12 +109,21 @@ export class TransactionHash extends Hash {
    * @param transactionV1 The hash of the version 1 transaction, if applicable.
    */
   private constructor(deploy?: Hash, transactionV1?: Hash) {
+    // `super` must be called unconditionally and first. The previous form put
+    // it inside two `if` branches, so constructing with neither argument — which
+    // is exactly what typedjson does before populating the members — produced no
+    // `super` call at all. That is a `ReferenceError` under native ES classes and
+    // only went unnoticed because `target: es5` downlevels classes to functions.
+    //
+    // The bytes handed to `Hash` are never observable: this class overrides
+    // `toBytes`/`toHex`/`toJSON`, all of which read `getHash()` rather than the
+    // inherited `hashBytes`. They only have to satisfy `Hash`'s length check.
+    super(new Uint8Array(Hash.ByteHashLen));
+
     if (deploy) {
-      super(deploy.toBytes());
       this.deploy = deploy;
     }
     if (transactionV1) {
-      super(transactionV1.toBytes());
       this.transactionV1 = transactionV1;
     }
   }

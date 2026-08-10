@@ -1,4 +1,4 @@
-import { assert, expect } from 'chai';
+import { assert, expect } from 'vitest';
 import { TypedJSON } from 'typedjson';
 
 import { Transform, TransformKey, TransformKind, CLValue } from '../../types';
