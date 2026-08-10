@@ -1,4 +1,5 @@
 import { BigNumber } from '@ethersproject/bignumber';
+import { TypedJSON } from 'typedjson';
 import { assert, expect } from 'vitest';
 
 import {
@@ -22,7 +23,8 @@ import {
   CLValue,
   TransactionV1Payload,
   NativeTransferBuilder,
-  Hash
+  Hash,
+  TransactionHash
 } from '../../types';
 
 describe('Test Transaction', () => {
@@ -207,5 +209,48 @@ describe('Test Transaction', () => {
 
     const txBytes = tx.toBytes();
     assert.deepEqual(txBytes[0], 0x00);
+  });
+});
+
+// `TransactionHash` is deserialized by typedjson at Transfer.ts:115/:217,
+// rpc/response.ts and sse/event.ts — always through the argument-less
+// constructor, with the members assigned afterwards. Nothing covered that path.
+describe('TransactionHash', () => {
+  const hex =
+    '076e77de17de7f262c5531017c214afd664d9702d4b5b771996ae4dcaf9c01f9';
+
+  it('should round-trip the Deploy variant through typedjson', () => {
+    const serializer = new TypedJSON(TransactionHash);
+    const parsed = serializer.parse({ Deploy: hex })!;
+
+    expect(parsed.deploy?.toHex()).to.equal(hex);
+    expect(parsed.transactionV1).to.be.undefined;
+    expect(parsed.toHex()).to.equal(hex);
+    expect(serializer.toPlainJson(parsed)).to.deep.equal({ Deploy: hex });
+  });
+
+  it('should round-trip the Version1 variant through typedjson', () => {
+    const serializer = new TypedJSON(TransactionHash);
+    const parsed = serializer.parse({ Version1: hex })!;
+
+    expect(parsed.transactionV1?.toHex()).to.equal(hex);
+    expect(parsed.deploy).to.be.undefined;
+    expect(parsed.toHex()).to.equal(hex);
+    expect(serializer.toPlainJson(parsed)).to.deep.equal({ Version1: hex });
+  });
+
+  it('should compare equal to a plain Hash in both directions, however built', () => {
+    const hash = Hash.fromHex(hex);
+    const fromFactory = TransactionHash.fromDeployHash(hash);
+    const fromJson = new TypedJSON(TransactionHash).parse({ Deploy: hex })!;
+
+    for (const transactionHash of [fromFactory, fromJson]) {
+      expect(transactionHash.equals(hash)).to.equal(true);
+      expect(hash.equals(transactionHash)).to.equal(true);
+    }
+
+    const other = Hash.fromHex('bb'.repeat(32));
+    expect(other.equals(fromFactory)).to.equal(false);
+    expect(fromFactory.equals(other)).to.equal(false);
   });
 });
