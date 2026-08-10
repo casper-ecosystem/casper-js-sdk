@@ -21,6 +21,7 @@ No consumer-facing change — `dist/` behaves exactly as in `5.1.1`, the public 
 
 - `eventsource` 2 → 3. Errors reported by the event stream now arrive as an exported `SseError` carrying the HTTP status code (`401`, `403`, …) instead of a raw event object with no message or stack, and `SseClient.start()` accepts an optional error callback. Without that callback the error is still thrown, so existing behaviour is unchanged unless you opt in
 - `PublicKey.fromBuffer()` accepts a `Uint8Array` in addition to an `ArrayBuffer`, which is what every call site inside the SDK already passed
+- secp256k1 key import now rejects keys that are structurally valid but not secp256k1. Previously a P-256 or P-384 PEM, a private key of the wrong length, or an unexpected `ECPrivateKey` version was accepted silently and then used as a secp256k1 key. Such files now throw instead of being imported
 
 ### Fixed
 
@@ -29,7 +30,7 @@ No consumer-facing change — `dist/` behaves exactly as in `5.1.1`, the public 
 
 ### Removed
 
-- `asn1.js` and `bn.js`, replaced by a hand-written SEC1/SPKI DER codec that emits byte-identical output — existing PEM and DER key files keep parsing unchanged
+- `asn1.js` and `bn.js`, replaced by `@peculiar/asn1-ecc`. The emitted DER and PEM are byte-identical, so existing key files keep parsing unchanged. `asn1.js` had been unmaintained since 2020 and only worked here because the package forced `bn.js@5` on it through an override
 - The `/// <reference types="node" />` directives that used to head three of the emitted `.d.ts` files. TypeScript 6 no longer emits them. A few declarations still mention `Buffer`, so if your `tsconfig.json` restricts `compilerOptions.types` and excludes `node`, add `"node"` to that list
 
 ### [5.1.1] - 2026-09-02
