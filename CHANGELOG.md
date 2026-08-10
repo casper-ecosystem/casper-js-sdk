@@ -15,23 +15,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### [5.2.0] - 2026-08-10
 
-No consumer-facing change — `dist/` behaves exactly as in `5.1.1`, the public API is unchanged, and `engines.node` stays `">=18"`. The release is an internal toolchain and dependency update.
+Mostly an internal toolchain and dependency update, and `engines.node` stays `">=18"`. Three things do reach consumers and are worth reading before upgrading: the SSE client no longer throws from its default error path, `SseError` is new, and several published type signatures widened so the emitted `.d.ts` no longer requires `@types/node`. Nothing was removed or renamed.
 
 ### Changed
 
-- `eventsource` 2 → 3. Errors reported by the event stream now arrive as an exported `SseError` carrying the HTTP status code (`401`, `403`, …) instead of a raw event object with no message or stack, and `SseClient.start()` accepts an optional error callback. Without that callback the error is still thrown, so existing behaviour is unchanged unless you opt in
+- `eventsource` 2 → 3. Errors reported by the event stream now arrive as an exported `SseError` carrying the HTTP status code (`401`, `403`, …) instead of a raw event object with no message or stack, and `SseClient.start()` accepts an optional error callback
+- **`SseClient.start()` no longer throws when no error callback is supplied.** It logs through `console.error` and lets the stream reconnect. The previous `throw` ran inside `eventsource`'s own fetch promise chain, where an HTTP failure was swallowed whole — the stream died silently — and a transport failure escaped as an unhandled rejection that terminated the host process, cancelling the reconnect it was about to schedule. If you relied on the throw, pass the callback
 - `PublicKey.fromBuffer()` accepts a `Uint8Array` in addition to an `ArrayBuffer`, which is what every call site inside the SDK already passed
+- `Hash.fromBuffer()` and the secp256k1 `encodePrivate()` / `encodePublic()` helpers now declare `Uint8Array` where they declared `Buffer`. A `Buffer` is a `Uint8Array`, so every existing call still type-checks; the point is that the published `.d.ts` no longer requires `@types/node`
+- `encodePrivate()` declares its return as `string` rather than `any`. It always returned a string; the `any` came from the untyped `asn1.js`. Only deep importers of `casper-js-sdk/dist/types/keypair/secp256k1/encoders` see this, and only if they assigned the result to a non-`string`
 - secp256k1 key import now rejects keys that are structurally valid but not secp256k1. Previously a P-256 or P-384 PEM, a private key of the wrong length, or an unexpected `ECPrivateKey` version was accepted silently and then used as a secp256k1 key. Such files now throw instead of being imported
 
 ### Fixed
 
 - `TransferHash` and `TransactionHash` called their base constructor conditionally, leaving the object half-built on some paths. Harmless while the bundles target ES5, but a hard failure for anyone consuming the sources directly or bundling them to modern output
 - Two import cycles (`Key` ↔ `Account`, `Transform` ↔ `TransformRaw`) that threw at import time under native ES modules. `PrefixName` and `NamedKeyKind` now live in their own modules and are re-exported from their previous homes, so every import path still resolves
+- `Hash.equals()` compared against the other object's raw field, bypassing subclass overrides, so `deployHash.equals(transaction.hash)` returned `false` while `transaction.hash.equals(deployHash)` returned `true` for the same pair. Both directions now agree
+- `SseError` lost its prototype chain in the ES5 bundle, making `error instanceof SseError` false for a genuine `SseError`. The chain is restored, and a `SseError.isSseError()` guard is available for code that may see instances from a second copy of the SDK
+- The PEM writer emitted a blank line before the footer when the base64 body length was an exact multiple of 64, producing a file OpenSSL and Node's `crypto.createPrivateKey` both reject
 
 ### Removed
 
 - `asn1.js` and `bn.js`, replaced by `@peculiar/asn1-ecc`. The emitted DER and PEM are byte-identical, so existing key files keep parsing unchanged. `asn1.js` had been unmaintained since 2020 and only worked here because the package forced `bn.js@5` on it through an override
-- The `/// <reference types="node" />` directives that used to head three of the emitted `.d.ts` files. TypeScript 6 no longer emits them. A few declarations still mention `Buffer`, so if your `tsconfig.json` restricts `compilerOptions.types` and excludes `node`, add `"node"` to that list
+- The `/// <reference types="node" />` directives that used to head three of the emitted `.d.ts` files. TypeScript 6 no longer emits them, so the declarations no longer name `Buffer` at all — see the signature widenings above. The published types now compile with `compilerOptions.types` set to `[]` and `skipLibCheck: false`, which they did not in `5.1.0`
 
 ### [5.1.1] - 2026-09-02
 

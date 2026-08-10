@@ -171,22 +171,26 @@ const getUncompressedPublicKeyHexFromPrivateHex = (privateKeyHex: string) => {
   return Buffer.from(pubBytes).toString('hex');
 };
 
-const decodePrivateKey = (der: Buffer): ECPrivateKey => {
+const decodePrivateKey = (der: Uint8Array): ECPrivateKey => {
   const key = AsnConvert.parse(der, ECPrivateKey);
   assertSecp256k1PrivateKey(key);
 
   return key;
 };
 
-const decodePublicKey = (der: Buffer): SubjectPublicKeyInfo => {
+const decodePublicKey = (der: Uint8Array): SubjectPublicKeyInfo => {
   const info = AsnConvert.parse(der, SubjectPublicKeyInfo);
   assertSecp256k1PublicKey(info);
 
   return info;
 };
 
+// `Uint8Array` rather than `Buffer` in the signature: TypeScript 6 no longer
+// emits the `/// <reference types="node" />` directive into declaration output,
+// so naming `Buffer` here would make the published `.d.ts` require
+// `@types/node`. A `Buffer` is a `Uint8Array`, so callers are unaffected.
 export function encodePrivate(
-  privateKey: string | Buffer,
+  privateKey: string | Uint8Array,
   originalFormat: KeyFormat,
   destinationFormat: KeyFormat
 ): string {
@@ -201,13 +205,17 @@ export function encodePrivate(
     const rawPublicKey = getUncompressedPublicKeyHexFromPrivateHex(privateKey);
     privateKeyObject = privateKeyObjectFn(privateKey, rawPublicKey);
   } else if (originalFormat === 'der') {
+    let der: Uint8Array;
+
     if (typeof privateKey === 'string') {
-      privateKey = Buffer.from(privateKey, 'hex');
-    } else if (!Buffer.isBuffer(privateKey)) {
+      der = Buffer.from(privateKey, 'hex');
+    } else if (privateKey instanceof Uint8Array) {
+      der = privateKey;
+    } else {
       throw new Error('private key must be a buffer or a string');
     }
 
-    privateKeyObject = decodePrivateKey(privateKey);
+    privateKeyObject = decodePrivateKey(der);
   } else if (originalFormat === 'pem') {
     if (typeof privateKey !== 'string') {
       throw new Error('private key must be a string');
@@ -236,7 +244,7 @@ export function encodePrivate(
 }
 
 export function encodePublic(
-  publicKey: string | Buffer,
+  publicKey: string | Uint8Array,
   originalFormat: KeyFormat,
   destinationFormat: KeyFormat
 ): string {
@@ -250,13 +258,17 @@ export function encodePublic(
 
     publicKeyObject = publicKeyObjectFn(publicKey);
   } else if (originalFormat === 'der') {
+    let der: Uint8Array;
+
     if (typeof publicKey === 'string') {
-      publicKey = Buffer.from(publicKey, 'hex');
-    } else if (!Buffer.isBuffer(publicKey)) {
+      der = Buffer.from(publicKey, 'hex');
+    } else if (publicKey instanceof Uint8Array) {
+      der = publicKey;
+    } else {
       throw new Error('public key must be a buffer or a string');
     }
 
-    publicKeyObject = decodePublicKey(publicKey);
+    publicKeyObject = decodePublicKey(der);
   } else if (originalFormat === 'pem') {
     if (typeof publicKey !== 'string') {
       throw new Error('public key must be a string');

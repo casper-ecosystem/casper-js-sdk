@@ -97,12 +97,18 @@ export class Hash {
   }
 
   /**
-   * Creates a Hash instance from a Buffer.
-   * @param buffer - The Buffer containing the hash bytes.
+   * Creates a Hash instance from a byte array.
+   *
+   * Declared as `Uint8Array` rather than `Buffer` so the published `.d.ts` does
+   * not require `@types/node`: TypeScript 6 stopped emitting the
+   * `/// <reference types="node" />` directive that used to pull it in. A
+   * `Buffer` is a `Uint8Array`, so every existing call site still type-checks.
+   *
+   * @param buffer - The bytes containing the hash.
    * @returns A new Hash instance.
    * @throws Error if the buffer length is less than the required hash length.
    */
-  static fromBuffer(buffer: Buffer): Hash {
+  static fromBuffer(buffer: Uint8Array): Hash {
     if (buffer.length < Hash.ByteHashLen) {
       throw new Error('Key length is not equal to 32 bytes.');
     }

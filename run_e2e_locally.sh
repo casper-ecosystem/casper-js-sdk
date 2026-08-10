@@ -8,4 +8,16 @@ export VERSION_QUERY='{"jsonrpc": "2.0", "id": "1", "method": "info_get_status"}
 export MAINNET_NODE_URL='https://rpc.mainnet.casperlabs.io/rpc'
 export TESTNET_NODE_URL='https://rpc.testnet.casperlabs.io/rpc'
 
+# The e2e config sets `passWithNoTests`, because `e2e/` currently holds only
+# `config.ts` and the wasm fixtures — the suite itself is restored in a later
+# phase. Without the notice below, this script exits 0 having executed nothing
+# and reads exactly like a passing run against your node, which is the same
+# "Executed 0 of 0 SUCCESS" misread the unit-side guard exists to prevent.
+if ! ls e2e/**/*.test.ts e2e/*.test.ts >/dev/null 2>&1; then
+  echo
+  echo "WARNING: e2e/ contains no *.test.ts files — there is nothing to run."
+  echo "         The command below will exit 0 without testing your node."
+  echo
+fi
+
 npm run test:node:e2e
