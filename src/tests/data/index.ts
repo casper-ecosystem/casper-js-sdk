@@ -5,3 +5,4 @@ export * from './era';
 export * from './deploy';
 export * from './transaction';
 export * from './account';
+export * from './keypair';
