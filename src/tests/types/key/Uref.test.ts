@@ -22,7 +22,11 @@ describe('CLUref', () => {
   it('Should be valid by construction', () => {
     const badFn1 = () =>
       new URef(Conversions.decodeBase16('3a3a3a'), UrefAccess.ReadAddWrite);
-    const badFn2 = () => new URef(Conversions.decodeBase16(urefAddr), 10);
+    // Deliberately out of range: the point of the case is the runtime guard.
+    // TypeScript 6 rejects the bare literal, so the cast is what keeps the
+    // negative test compilable.
+    const badFn2 = () =>
+      new URef(Conversions.decodeBase16(urefAddr), 10 as UrefAccess);
 
     expect(RWExampleURef).to.be.an.instanceof(URef);
     expect(badFn1).to.throw('Invalid URef data length; expected 32');

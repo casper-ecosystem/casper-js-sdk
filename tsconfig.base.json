@@ -1,5 +1,22 @@
 {
   "compilerOptions": {
+    // TS 6 flipped three defaults. All three are pinned back to what 4.9 did,
+    // so this upgrade emits exactly what the previous compiler emitted:
+    //
+    // `strict` now defaults to true, and `strictPropertyInitialization` would
+    // reject the ~58 typedjson `@jsonObject` classes, none of which initialize
+    // their fields (typedjson populates them after construction). Adopting full
+    // strict is a separate effort.
+    "strict": false,
+    // `types` now defaults to [], which drops the ambient Node globals and
+    // breaks 27 build files on `Buffer`. This restores the internal build only
+    // — it is NOT the consumer-facing problem that the shipped .d.ts requires
+    // @types/node, and `@types/node` must not move to `dependencies` for it.
+    "types": ["node"],
+    // `target: es5` and `moduleResolution: node10` are both deprecated in 6.0.
+    // They stay for the whole 5.x line; the es2020 bump is scheduled for v6,
+    // where the bigint work cannot compile without it.
+    "ignoreDeprecations": "6.0",
     "outDir": "./dist/",
     "alwaysStrict": true,
     "declaration": true,

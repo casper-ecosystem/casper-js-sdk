@@ -1,11 +1,9 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    // `globals: true` in vitest.config.ts puts describe/it/expect on globalThis;
-    // this is what makes them visible to tsc and to the lint pass. It is scoped
-    // to this dev config on purpose — tsconfig.build.json (which produces the
-    // shipped .d.ts) must not see vitest's ambient types.
-    "types": ["node", "vitest/globals"]
+    // Same TS5011 requirement as tsconfig.build.json. "." is what 4.9 inferred
+    // for this config, since it spans both `src/` and `e2e/`.
+    "rootDir": "."
   },
-  "include": ["./src/**/*.ts", "./e2e/**/*.ts"]
+  "include": ["./src/**/*.ts", "./e2e/**/*.ts", "./vitest-globals.d.ts"]
 }
