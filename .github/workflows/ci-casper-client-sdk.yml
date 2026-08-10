@@ -22,14 +22,14 @@ on:
       - '**.md'
 
 jobs:
+  # The maintained legs: they run the whole dev toolchain. Node 18 is handled by
+  # `node18-consumer` below — from PHASE-3 it can no longer run the dev suite at
+  # all (vitest@4 engines: ^20 || ^22 || >=24).
   build:
     strategy:
       fail-fast: false
       matrix:
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        # 18.x is the consumer-compatibility leg (published `engines.node` is ">=18");
-        # 22.x/24.x are the maintained legs that also run the Node->=20.9 dev toolchain.
-        node-version: [18.x, 22.x, 24.x]
+        node-version: [22.x, 24.x]
         os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     env:
@@ -59,25 +59,73 @@ jobs:
       - name: Audits
         run: npm audit --omit=dev
 
-      # eslint@10 engines: ^20.19.0 || ^22.13.0 || >=24 — cannot execute on Node 18.
       - name: Lints
-        if: matrix.node-version != '18.x'
         run: npm run lint:ci
 
       - name: Knip (dead & phantom dependencies)
-        if: matrix.node-version != '18.x' # knip@6 engines: ^20.19.0 || >=22.12.0
         run: npm run knip
 
-      # node22 variant on 22.x and 24.x (Node >=23 enables native TS type-stripping
-      # by default, so the --no-experimental-strip-types flag applies to both);
-      # plain variant on the 18.x leg.
-      - name: Unit Test
-        run: ${{ matrix.node-version != '18.x' && 'npm run test:node:unit:node22' || 'npm run test:node:unit' }}
+      - name: Unit Test (node)
+        run: npm run test:node:unit
 
-      # webpack-cli@7 / copy-webpack-plugin@14 / webpack-bundle-analyzer@5 all need
-      # Node >=20.9, and `prebuild` runs eslint@10 — so the build is 22/24 only.
-      # The published `engines.node` stays ">=18": this gates the dev toolchain, not
-      # the shipped bundles (PHASE-3 converts the 18.x leg to pack-and-smoke).
+      # Browser mode drives a real Chromium. This is the first CI run of the
+      # browser suite: the karma setup it replaces preprocessed globs that no
+      # test file had matched since 2025-01, and the workflow never invoked it.
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Unit Test (browser)
+        run: npm run test:browser:unit
+
       - name: Test build
-        if: matrix.node-version != '18.x'
         run: npm run build
+
+      # The tarball the Node 18 job consumes. Built here because the build
+      # toolchain (webpack-cli@7, eslint@10) needs Node >=20.9.
+      - name: Pack
+        if: matrix.node-version == '22.x'
+        run: npm pack --pack-destination ./pack
+
+      - name: Upload tarball
+        if: matrix.node-version == '22.x'
+        uses: actions/upload-artifact@v4
+        with:
+          name: package-tarball
+          path: ./pack/*.tgz
+          retention-days: 1
+
+  # The consumer-compatibility leg for the published `engines.node ">=18"`.
+  # It installs the built tarball into a clean project and runs it with plain
+  # `node`, which is what a Node 18 consumer actually does — and what the dev
+  # suite never covered, since that suite runs TypeScript sources and never
+  # touches `dist/`.
+  node18-consumer:
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
+        with:
+          node-version: 18.x
+
+      - name: Download tarball
+        uses: actions/download-artifact@v4
+        with:
+          name: package-tarball
+          path: ./pack
+
+      - name: Install the tarball into a clean project
+        run: |
+          mkdir -p "$RUNNER_TEMP/consumer"
+          cp ./pack/*.tgz "$RUNNER_TEMP/consumer/"
+          cp scripts/smoke.js "$RUNNER_TEMP/consumer/"
+          cd "$RUNNER_TEMP/consumer"
+          npm init -y >/dev/null
+          npm install ./*.tgz
+
+      - name: Smoke test the published artifact
+        run: node "$RUNNER_TEMP/consumer/smoke.js"
+        working-directory: ${{ runner.temp }}/consumer

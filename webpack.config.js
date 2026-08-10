@@ -58,20 +58,14 @@ const serverConfig = {
 const clientConfig = {
   ...common,
   target: 'web',
-  resolve: {
-    ...common.resolve,
-    fallback: {
-      assert: require.resolve('assert'),
-      crypto: require.resolve('crypto-browserify'),
-      stream: require.resolve('stream-browserify'),
-      http: require.resolve('stream-http'),
-      url: require.resolve('url'),
-      util: require.resolve('util'),
-      zlib: require.resolve('browserify-zlib'),
-      fs: false,
-      https: require.resolve('https-browserify')
-    }
-  },
+  // No `resolve.fallback` here on purpose. It used to shim nine Node builtins;
+  // none of them is reachable from `src` (the SDK's crypto is `@noble/*`, and
+  // axios resolves to its browser build), and `dist/lib.web.js` was verified
+  // byte-identical with the block present and absent. Carrying it pulled the
+  // `elliptic`/`browserify-sign`/`create-ecdh` advisory chain into the tree for
+  // nothing. `Buffer` and `process` are the two globals that *are* used, and
+  // they come from the ProvidePlugins below.
+  resolve: common.resolve,
   plugins: [
     new webpack.ProvidePlugin({
       process: 'process/browser.js'

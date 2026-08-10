@@ -1,6 +1,5 @@
 import { TypedJSON, jsonMember, jsonObject } from 'typedjson';
-import { expect } from 'vitest';
-import { fail } from 'assert';
+import { assert, expect } from 'vitest';
 
 import { InitiatorAddr } from '../../types';
 
@@ -27,7 +26,7 @@ describe('InitiatorAddr', () => {
       const reserialized = JSON.parse(serializer.stringify(parsed));
       expect(reserialized).to.deep.eq(mockJson);
     } else {
-      fail('InitiatorAddr is undefined');
+      assert.fail('InitiatorAddr is undefined');
     }
   });
   it('should parse InitiatorAddr::AccountHash correctly', () => {
@@ -42,7 +41,7 @@ describe('InitiatorAddr', () => {
       const reserialized = JSON.parse(serializer.stringify(parsed));
       expect(reserialized).to.deep.eq(mockJson);
     } else {
-      fail('InitiatorAddr is undefined');
+      assert.fail('InitiatorAddr is undefined');
     }
   });
 });
