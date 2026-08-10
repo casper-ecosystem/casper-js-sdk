@@ -55,6 +55,25 @@ describe('secp256k1 encoders (noble)', () => {
     expect(() => encodePublic('abcd', 'raw', 'invalid' as any)).to.throw();
   });
 
+  it('should not emit a blank line when the base64 body lands on a 64-char boundary', () => {
+    // A SEC1 ECPrivateKey carrying the curve parameters but no optional public
+    // key: SEQUENCE(46) { INTEGER 1, OCTET STRING(32), [0] OID secp256k1 }.
+    // 48 DER bytes encode to exactly 64 base64 characters, and wrapping with
+    // `replace(/(.{64})/g, '$1\n')` appended a newline after that final chunk —
+    // leaving a blank line before the footer, which OpenSSL and Node's
+    // `crypto.createPrivateKey` both reject with `DECODER routines::unsupported`.
+    const der =
+      '302e' + '020101' + '0420' + '01'.repeat(32) + 'a00706052b8104000a';
+
+    expect(Buffer.from(der, 'hex')).to.have.lengthOf(48);
+
+    const pem = encodePrivate(der, 'der', 'pem');
+
+    expect(Buffer.from(der, 'hex').toString('base64')).to.have.lengthOf(64);
+    expect(pem.split('\n').filter(line => line === '')).to.have.lengthOf(0);
+    expect(encodePrivate(pem, 'pem', 'der')).to.equal(der);
+  });
+
   // Both of these are structurally valid EC keys that are simply not
   // secp256k1. Neither asn1.js nor the codec that replaced it looked at the
   // curve, the version or the key length, so a P-256 or P-384 file was
