@@ -13,6 +13,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [5.2.0] - 2026-08-10
+
+No consumer-facing change — `dist/` behaves exactly as in `5.1.1`, the public API is unchanged, and `engines.node` stays `">=18"`. The release is an internal toolchain and dependency update.
+
+### Changed
+
+- `eventsource` 2 → 3. Errors reported by the event stream now arrive as an exported `SseError` carrying the HTTP status code (`401`, `403`, …) instead of a raw event object with no message or stack, and `SseClient.start()` accepts an optional error callback. Without that callback the error is still thrown, so existing behaviour is unchanged unless you opt in
+- `PublicKey.fromBuffer()` accepts a `Uint8Array` in addition to an `ArrayBuffer`, which is what every call site inside the SDK already passed
+
+### Fixed
+
+- `TransferHash` and `TransactionHash` called their base constructor conditionally, leaving the object half-built on some paths. Harmless while the bundles target ES5, but a hard failure for anyone consuming the sources directly or bundling them to modern output
+- Two import cycles (`Key` ↔ `Account`, `Transform` ↔ `TransformRaw`) that threw at import time under native ES modules. `PrefixName` and `NamedKeyKind` now live in their own modules and are re-exported from their previous homes, so every import path still resolves
+
+### Removed
+
+- `asn1.js` and `bn.js`, replaced by a hand-written SEC1/SPKI DER codec that emits byte-identical output — existing PEM and DER key files keep parsing unchanged
+- The `/// <reference types="node" />` directives that used to head three of the emitted `.d.ts` files. TypeScript 6 no longer emits them. A few declarations still mention `Buffer`, so if your `tsconfig.json` restricts `compilerOptions.types` and excludes `node`, add `"node"` to that list
+
 ### [5.1.1] - 2026-09-02
 
 ### Fixed

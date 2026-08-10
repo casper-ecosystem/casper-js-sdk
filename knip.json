@@ -10,17 +10,12 @@
   // genuinely used and knip cannot see it. "knip is wrong" is not a reason.
   // If no such mechanism exists, the dependency is dead — remove it instead.
   "ignoreDependencies": [
-    // All four are browser polyfills wired up in `webpack.config.js`, but their
-    // package names collide with Node builtins (or are reached only via a plugin
-    // string), so knip resolves the builtin instead of the package:
-    //   assert/url/util — `require.resolve('<name>')` in `resolve.fallback`
-    //   buffer          — `new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })`
-    // The unambiguous fallbacks (crypto-browserify, stream-browserify, stream-http,
-    // browserify-zlib, https-browserify, process) knip resolves on its own and are
-    // deliberately NOT listed here.
-    "assert",
-    "url",
-    "util",
+    // `buffer` is reached only through a plugin string —
+    // `new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })` — so knip
+    // cannot see the reference. The `resolve.fallback` entries that used to
+    // need the same treatment (assert/url/util) are gone: PHASE-3 deleted the
+    // whole fallback block after proving `dist/lib.web.js` is byte-identical
+    // without it. `process` knip resolves on its own from its ProvidePlugin.
     "buffer"
   ]
 }
