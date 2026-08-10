@@ -33,6 +33,7 @@ Mostly an internal toolchain and dependency update, and `engines.node` stays `">
 - `Hash.equals()` compared against the other object's raw field, bypassing subclass overrides, so `deployHash.equals(transaction.hash)` returned `false` while `transaction.hash.equals(deployHash)` returned `true` for the same pair. Both directions now agree
 - `SseError` lost its prototype chain in the ES5 bundle, making `error instanceof SseError` false for a genuine `SseError`. The chain is restored, and a `SseError.isSseError()` guard is available for code that may see instances from a second copy of the SDK
 - The PEM writer emitted a blank line before the footer when the base64 body length was an exact multiple of 64, producing a file OpenSSL and Node's `crypto.createPrivateKey` both reject
+- Three exported members had no declared return type, so TypeScript 6 printed its own inference into the emitted declarations — `StoredTarget.toBytes()`, `splitAt()` and `parseKey()` gained the generic `Uint8Array<ArrayBufferLike>` form, which does not compile on TypeScript below 5.7 with `skipLibCheck: false`. All three are annotated, and `splitAt()` now declares the two-element tuple it always returned
 
 ### Removed
 

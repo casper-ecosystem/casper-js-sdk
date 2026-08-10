@@ -21,6 +21,14 @@ on:
     paths-ignore:
       - '**.md'
 
+# Branch protection on `dev` requires exactly one status check — `mergefreeze`.
+# None of the jobs below is required, so a red CI run does not by itself block a
+# merge. Worth knowing when reading the guards in here: they fail loudly, but
+# only a human reading the run decides what that means. If these are ever made
+# required, the names to add are `build (22.x, ubuntu-22.04)`,
+# `build (24.x, ubuntu-22.04)`, `node18-consumer` and `node18-typings` — and note
+# that `build (18.x, ubuntu-22.04)` no longer exists, since the 18.x leg became
+# the separate `node18-consumer` job.
 jobs:
   # The maintained legs: they run the whole dev toolchain. Node 18 is handled by
   # `node18-consumer` below — from PHASE-3 it can no longer run the dev suite at
@@ -96,7 +104,7 @@ jobs:
 
       - name: Upload tarball
         if: matrix.node-version == '22.x'
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
         with:
           name: package-tarball
           path: ./pack/*.tgz
@@ -120,7 +128,7 @@ jobs:
           node-version: 18.x
 
       - name: Download tarball
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 #v4.3.0
         with:
           name: package-tarball
           path: ./pack

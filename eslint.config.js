@@ -39,5 +39,38 @@ module.exports = defineConfig([
       '@typescript-eslint/no-unused-vars': ['error', { caughtErrors: 'none' }]
     }
   },
+  {
+    // `vitest-globals.d.ts` is in tsconfig.json's `include`, and an ambient
+    // declaration applies to the whole program — it cannot be scoped to the test
+    // directory by moving the file. So `describe`/`it`/`expect`/`vi` resolve
+    // inside `src/` too, and a stray one left in shipped code type-checks in the
+    // editor and passes `lint:ci`, failing only later at `npm run build`, which
+    // uses tsconfig.build.json and excludes the globals.
+    //
+    // This closes that gap at the lint stage, where the feedback is immediate.
+    files: ['src/**/*.ts'],
+    ignores: ['src/tests/**/*.ts'],
+    rules: {
+      'no-restricted-globals': [
+        'error',
+        ...[
+          'describe',
+          'it',
+          'test',
+          'suite',
+          'expect',
+          'assert',
+          'vi',
+          'beforeAll',
+          'afterAll',
+          'beforeEach',
+          'afterEach'
+        ].map(name => ({
+          name,
+          message: `"${name}" is a vitest global and must not appear in shipped code — it is not defined at runtime outside the test suite.`
+        }))
+      ]
+    }
+  },
   prettier // MUST stay last so it disables conflicting stylistic rules
 ]);

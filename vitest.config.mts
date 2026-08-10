@@ -20,15 +20,21 @@ export default defineConfig({
       instances: [{ browser: 'chromium' }]
     }
   },
-  // The SDK's shared code paths use Node globals (Buffer, process) that the
-  // webpack web build polyfills via `resolve.fallback`. Browser-mode tests go
-  // through Vite instead, so the same shims have to be declared here.
+  // The SDK's shared code paths use the Node globals `Buffer` and `process`,
+  // which the webpack web build supplies through its two ProvidePlugins.
+  // Browser-mode tests go through Vite instead, so the same two shims are
+  // declared here.
+  //
+  // Only those two. Aliases for `stream` and `util` used to sit here as well,
+  // pointing at `stream-browserify` and `util/` — packages this project does not
+  // depend on, so Vite would have failed to resolve them the moment anything
+  // actually reached for either builtin. Nothing does: the same audit that
+  // deleted webpack's `resolve.fallback` block confirmed no `src` module imports
+  // them, directly or transitively.
   resolve: {
     alias: {
       buffer: 'buffer/',
-      process: 'process/browser',
-      stream: 'stream-browserify',
-      util: 'util/'
+      process: 'process/browser'
     }
   },
   define: {
