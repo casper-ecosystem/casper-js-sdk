@@ -8,4 +8,4 @@ export VERSION_QUERY='{"jsonrpc": "2.0", "id": "1", "method": "info_get_status"}
 export MAINNET_NODE_URL='https://rpc.mainnet.casperlabs.io/rpc'
 export TESTNET_NODE_URL='https://rpc.testnet.casperlabs.io/rpc'
 
-yarn cross-env NODE_ENV=test TS_NODE_FILES=true mocha -r ts-node/register \"e2e/**/*.test.ts\" --timeout 50000 --exit
+npm run test:node:e2e
