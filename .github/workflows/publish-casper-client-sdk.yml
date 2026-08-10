@@ -18,12 +18,12 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 #v6.1.0
         with:
           fetch-depth: 0 # needed for `git describe` (previous tag) and the dev-ancestry guard
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 #v6.5.0
         with:
           node-version: 22.x
           cache: 'npm'
@@ -85,7 +85,7 @@ jobs:
           fi
 
       - name: Upload build artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
         with:
           name: publish-artifacts
           path: |
@@ -104,10 +104,10 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 #v6.1.0
 
       - name: Setup Node.js
-        uses: actions/setup-node@v6
+        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 #v6.5.0
         with:
           node-version: 22.x
           registry-url: 'https://registry.npmjs.org'
@@ -122,7 +122,7 @@ jobs:
         run: npm ci
 
       - name: Download build artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 #v4.3.0
         with:
           name: publish-artifacts
 
@@ -133,7 +133,7 @@ jobs:
         run: cp dist/lib.node.js casper-js-sdk.v${{ github.ref_name }}.js
 
       - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 #v2.6.2
         with:
           name: Casper JS SDK v${{ github.ref_name }}
           body_path: RELEASE_NOTES.md
