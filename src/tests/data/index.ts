@@ -6,3 +6,4 @@ export * from './deploy';
 export * from './transaction';
 export * from './account';
 export * from './keypair';
+export * from './compat';
