@@ -4,6 +4,9 @@ node_modules
 /docs/
 /dist/
 
+# api-extractor's scratch copy of the API report. The reviewed one is /etc/.
+/temp/
+
 # Internal working documents — never committed, never published
 /internal-docs/
 
