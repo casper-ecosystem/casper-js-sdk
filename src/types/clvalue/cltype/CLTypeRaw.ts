@@ -31,7 +31,9 @@ export class CLTypeRaw {
     try {
       return CLTypeParser.fromRawJson(json);
     } catch (error) {
-      throw new Error(`Error parsing CLType: ${toError(error).message}`);
+      throw new Error(`Error parsing CLType: ${toError(error).message}`, {
+        cause: error
+      });
     }
   }
 

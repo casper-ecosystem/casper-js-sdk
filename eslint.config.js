@@ -118,7 +118,14 @@ module.exports = defineConfig([
           requireDefaultForNonUnion: true
         }
       ],
-      '@typescript-eslint/no-unsafe-enum-comparison': 'error'
+      '@typescript-eslint/no-unsafe-enum-comparison': 'error',
+
+      // --- PHASE-3.5 Task 4: async and error-handling discipline ---
+      '@typescript-eslint/return-await': ['error', 'always'],
+      '@typescript-eslint/await-thenable': 'error',
+      '@typescript-eslint/only-throw-error': 'error',
+      '@typescript-eslint/prefer-promise-reject-errors': 'error',
+      'preserve-caught-error': 'error'
     }
   },
   prettier // MUST stay last so it disables conflicting stylistic rules

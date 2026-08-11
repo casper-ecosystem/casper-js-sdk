@@ -87,7 +87,9 @@ export class SpeculativeClient {
 
       return SpeculativeExecResult.fromJSON(data);
     } catch (error) {
-      throw new Error(`Error parsing JSON, details: ${error}`);
+      throw new Error(`Error parsing JSON, details: ${error}`, {
+        cause: error
+      });
     }
   }
 }

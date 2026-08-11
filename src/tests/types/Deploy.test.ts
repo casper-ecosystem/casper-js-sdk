@@ -16,8 +16,8 @@ import {
 } from '../../types';
 
 describe('Deploy', () => {
-  it('should stringify/parse DeployHeader correctly', async function() {
-    const key = await PrivateKey.generate(KeyAlgorithm.ED25519);
+  it('should stringify/parse DeployHeader correctly', async function () {
+    const key = PrivateKey.generate(KeyAlgorithm.ED25519);
 
     const deployHeader = new DeployHeader(
       'test-network',
@@ -35,9 +35,9 @@ describe('Deploy', () => {
     expect(deployHeader1).to.deep.equal(deployHeader);
   });
 
-  it('should allow to extract data from Transfer', async function() {
-    const senderKey = await PrivateKey.generate(KeyAlgorithm.ED25519);
-    const recipientKey = await PrivateKey.generate(KeyAlgorithm.ED25519);
+  it('should allow to extract data from Transfer', async function () {
+    const senderKey = PrivateKey.generate(KeyAlgorithm.ED25519);
+    const recipientKey = PrivateKey.generate(KeyAlgorithm.ED25519);
     const networkName = 'test-network';
     const paymentAmount = '10000000000000';
     const transferAmount = '10';
@@ -124,8 +124,8 @@ describe('Deploy', () => {
   });
 
   it('Is possible to chain deploys using dependencies', async () => {
-    const senderKey = await PrivateKey.generate(KeyAlgorithm.ED25519);
-    const recipientKey = await PrivateKey.generate(KeyAlgorithm.ED25519);
+    const senderKey = PrivateKey.generate(KeyAlgorithm.ED25519);
+    const recipientKey = PrivateKey.generate(KeyAlgorithm.ED25519);
     const networkName = 'test-network';
     const paymentAmount = '10000000000000';
     const transferAmount = '10';

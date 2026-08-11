@@ -426,7 +426,9 @@ export class TransactionV1 {
         throw ErrTransactionV1FromJson;
       }
     } catch (e) {
-      throw new Error(`Serialization error: ${toError(e).message}`);
+      throw new Error(`Serialization error: ${toError(e).message}`, {
+        cause: e
+      });
     }
 
     tx.validate();

@@ -144,7 +144,7 @@ describe('TransactionBuilder', () => {
 
   describe('ProtocolVersionMajor', () => {
     it('ByPackageHashNoVersionTest', async () => {
-      const testKey = await PrivateKey.generate(KeyAlgorithm.SECP256K1);
+      const testKey = PrivateKey.generate(KeyAlgorithm.SECP256K1);
       const runtimeArgs = Args.fromMap({});
 
       const transaction = new ContractCallBuilder()
@@ -172,7 +172,7 @@ describe('TransactionBuilder', () => {
     });
 
     it('ByPackageHashWithVersionTest', async () => {
-      const testKey = await PrivateKey.generate(KeyAlgorithm.SECP256K1);
+      const testKey = PrivateKey.generate(KeyAlgorithm.SECP256K1);
       const runtimeArgs = Args.fromMap({});
 
       const transaction = new ContractCallBuilder()
@@ -202,7 +202,7 @@ describe('TransactionBuilder', () => {
     });
 
     it('ByPackageNameNoVersionTest', async () => {
-      const testKey = await PrivateKey.generate(KeyAlgorithm.SECP256K1);
+      const testKey = PrivateKey.generate(KeyAlgorithm.SECP256K1);
       const runtimeArgs = Args.fromMap({});
 
       const transaction = new ContractCallBuilder()
@@ -226,7 +226,7 @@ describe('TransactionBuilder', () => {
     });
 
     it('ByPackageNameWithVersionTest', async () => {
-      const testKey = await PrivateKey.generate(KeyAlgorithm.SECP256K1);
+      const testKey = PrivateKey.generate(KeyAlgorithm.SECP256K1);
       const runtimeArgs = Args.fromMap({});
 
       const transaction = new ContractCallBuilder()
@@ -250,7 +250,7 @@ describe('TransactionBuilder', () => {
     });
 
     it('ByPackageNameNoVersionJsonTest', async () => {
-      const testKey = await PrivateKey.generate(KeyAlgorithm.SECP256K1);
+      const testKey = PrivateKey.generate(KeyAlgorithm.SECP256K1);
       const runtimeArgs = Args.fromMap({});
 
       const transaction = new ContractCallBuilder()
@@ -272,7 +272,7 @@ describe('TransactionBuilder', () => {
     });
 
     it('ByPackageNameWithVersionJsonTest', async () => {
-      const testKey = await PrivateKey.generate(KeyAlgorithm.SECP256K1);
+      const testKey = PrivateKey.generate(KeyAlgorithm.SECP256K1);
       const runtimeArgs = Args.fromMap({});
 
       const transaction = new ContractCallBuilder()

@@ -107,7 +107,7 @@ export class PublicKey {
       const compressedKey = point.toRawBytes(true);
       key = compressedKey;
     } catch (error) {
-      throw new Error('Invalid public key');
+      throw new Error('Invalid public key', { cause: error });
     }
 
     return new PublicKey(key);
