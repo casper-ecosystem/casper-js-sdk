@@ -65,7 +65,6 @@ export class NamedArg {
     const valueBytes = CLValueParser.toBytesWithType(source.value);
     if (offset + valueBytes.length > buffer.byteLength) {
       buffer = expandBuffer(buffer, offset + valueBytes.length);
-      view = new DataView(buffer);
     }
     new Uint8Array(buffer, offset).set(valueBytes);
     offset += valueBytes.length;

@@ -65,6 +65,7 @@
     "*.{js,css,md}": "prettier --write"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/humanize-duration": "^3.27.4",
     "@types/node": "^22.20.1",
     "@types/sinon": "^21.0.1",

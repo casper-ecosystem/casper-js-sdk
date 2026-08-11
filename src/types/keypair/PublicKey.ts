@@ -279,7 +279,7 @@ export class PublicKey {
    * @throws Error if the content cannot be properly parsed.
    */
   public static fromPem(content: string, algorithm: KeyAlgorithm) {
-    let key: PublicKeyInternal | null = null;
+    let key: PublicKeyInternal;
 
     switch (algorithm) {
       case KeyAlgorithm.ED25519:
