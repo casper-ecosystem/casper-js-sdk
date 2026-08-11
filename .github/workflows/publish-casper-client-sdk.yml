@@ -5,17 +5,102 @@ on:
     tags:
       - '*.*.*'
 
-permissions:
-  contents: write
-  id-token: write
+concurrency:
+  group: publish-${{ github.ref_name }}
+  cancel-in-progress: false # never cancel a run that may already have published
 
 jobs:
-  publish:
+  verify:
     runs-on: ubuntu-24.04
 
-    strategy:
-      matrix:
-        node-version: [22.x]
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0 # needed for `git describe` (previous tag) and the dev-ancestry guard
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Verify the tag sits on dev
+        run: |
+          git fetch --no-tags origin dev
+          git merge-base --is-ancestor "$GITHUB_SHA" origin/dev \
+            || { echo "::error::tag ${GITHUB_REF_NAME} is not an ancestor of dev"; exit 1; }
+
+      - name: Pre-flight
+        run: |
+          # 1. the tag must match the version actually being published.
+          #    npm publishes package.json's `version`, NOT the tag — there is no link between them.
+          pkg=$(node -p "require('./package.json').version")
+          [ "$pkg" = "$GITHUB_REF_NAME" ] \
+            || { echo "::error::tag $GITHUB_REF_NAME != package.json version $pkg"; exit 1; }
+
+          # 2. fail fast if the version is already on npm, instead of burning a full
+          #    build + prepublishOnly test run only to hit EPUBLISHCONFLICT (403) at the end.
+          #    `npm view pkg@version` exits 0 when it exists and exits 1 (E404) when it does not,
+          #    so it MUST be wrapped in `if`, or GitHub's `bash -e` kills the step on the healthy path.
+          if npm view "casper-js-sdk@$GITHUB_REF_NAME" version >/dev/null 2>&1; then
+            echo "::error::casper-js-sdk@$GITHUB_REF_NAME is already published"; exit 1
+          fi
+
+      - name: Build
+        run: npm run build
+
+      - name: Extract release notes from CHANGELOG
+        env:
+          GH_TOKEN: ${{ github.token }} # for the `gh api` contributor lookup below
+        run: |
+          awk -v v="$GITHUB_REF_NAME" '
+            $0 ~ "^### \\[" v "\\]" { on = 1; next }
+            on && /^### \[[0-9]/     { exit }
+            on                       { print }
+          ' CHANGELOG.md > RELEASE_NOTES.md
+          test -s RELEASE_NOTES.md \
+            || { echo "::error::no CHANGELOG.md entry for $GITHUB_REF_NAME"; exit 1; }
+          prev=$(git describe --tags --abbrev=0 "$GITHUB_REF_NAME^") || prev=''
+          if [ -n "$prev" ]; then
+            printf '\n\n**Full Changelog**: %s/compare/%s...%s\n' \
+              "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY" "$prev" "$GITHUB_REF_NAME" >> RELEASE_NOTES.md
+            contributors=$(gh api "repos/$GITHUB_REPOSITORY/compare/$prev...$GITHUB_REF_NAME" \
+              --jq '.commits[].author.login // empty' \
+              | grep -v '\[bot\]$' | sort -u \
+              | awk '{ printf "%s@%s", (NR > 1 ? ", " : ""), $0 }')   # NOT `paste -sd', '`: paste
+                                                                     # cycles its delimiter list and
+                                                                     # emits `a,b c` for 3+ entries
+            # `if`, not `[ … ] && printf`: as the trailing statement of a `bash -e` script the
+            # latter exits 1 when there is no linked author to credit, failing an otherwise fine step.
+            if [ -n "$contributors" ]; then
+              printf '\n**Contributors**: %s\n' "$contributors" >> RELEASE_NOTES.md
+            fi
+          fi
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: publish-artifacts
+          path: |
+            dist/
+            RELEASE_NOTES.md
+          retention-days: 1
+
+  publish:
+    needs: verify
+    runs-on: ubuntu-24.04
+    environment: npm-publish
+
+    permissions:
+      contents: write
+      id-token: write
 
     steps:
       - name: Checkout
@@ -24,7 +109,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v6
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 22.x
           registry-url: 'https://registry.npmjs.org'
           cache: 'npm'
 
@@ -36,8 +121,10 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Build
-        run: npm run build
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: publish-artifacts
 
       - name: Publish to npm
         run: npm publish --access public --tag latest
@@ -48,6 +135,7 @@ jobs:
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          generate_release_notes: true
+          name: Casper JS SDK v${{ github.ref_name }}
+          body_path: RELEASE_NOTES.md
           files: |
             casper-js-sdk.v${{ github.ref_name }}.js

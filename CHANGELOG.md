@@ -13,6 +13,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [5.1.0] - 2026-08-07
+
+No runtime or API change — `dist/` behaves exactly as in `5.0.13` and `engines.node` stays `">=18"`. The rest of the release is an internal toolchain update with no effect on consumers.
+
+### Changed
+
+- Production dependencies bumped within their majors, with no source change: `@ethersproject/{bignumber,bytes,constants}`, `@noble/{curves,hashes,ed25519,secp256k1}`, `bn.js`, `humanize-duration`, `ts-results` and `typedjson`
+
+### Removed
+
+- Unused production dependencies `node-fetch`, `@scure/bip32` and `@scure/bip39`, shrinking the installed dependency tree
+- `reflect-metadata`. The SDK never took typedjson's reflection path — every decorator declares its type explicitly — so nothing in `dist/` needs it. Consumers who relied on the SDK to pull `reflect-metadata` into their own tree must now declare it themselves
+
 ### [5.0.13] - 2026-08-06
 
 ### Changed

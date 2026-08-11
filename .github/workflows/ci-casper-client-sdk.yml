@@ -27,7 +27,9 @@ jobs:
       fail-fast: false
       matrix:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        node-version: [18.x, 22.x]
+        # 18.x is the consumer-compatibility leg (published `engines.node` is ">=18");
+        # 22.x/24.x are the maintained legs that also run the Node->=20.9 dev toolchain.
+        node-version: [18.x, 22.x, 24.x]
         os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     env:
@@ -57,11 +59,25 @@ jobs:
       - name: Audits
         run: npm audit --omit=dev
 
+      # eslint@10 engines: ^20.19.0 || ^22.13.0 || >=24 — cannot execute on Node 18.
       - name: Lints
+        if: matrix.node-version != '18.x'
         run: npm run lint:ci
 
-      - name: Unit Test
-        run: ${{ matrix.node-version == '22.x' && 'npm run test:node:unit:node22' || 'npm run test:node:unit' }}
+      - name: Knip (dead & phantom dependencies)
+        if: matrix.node-version != '18.x' # knip@6 engines: ^20.19.0 || >=22.12.0
+        run: npm run knip
 
+      # node22 variant on 22.x and 24.x (Node >=23 enables native TS type-stripping
+      # by default, so the --no-experimental-strip-types flag applies to both);
+      # plain variant on the 18.x leg.
+      - name: Unit Test
+        run: ${{ matrix.node-version != '18.x' && 'npm run test:node:unit:node22' || 'npm run test:node:unit' }}
+
+      # webpack-cli@7 / copy-webpack-plugin@14 / webpack-bundle-analyzer@5 all need
+      # Node >=20.9, and `prebuild` runs eslint@10 — so the build is 22/24 only.
+      # The published `engines.node` stays ">=18": this gates the dev toolchain, not
+      # the shipped bundles (PHASE-3 converts the 18.x leg to pack-and-smoke).
       - name: Test build
+        if: matrix.node-version != '18.x'
         run: npm run build

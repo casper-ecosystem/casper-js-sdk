@@ -1,6 +1,6 @@
 const webpackConfig = require('./webpack.config.karma');
 
-module.exports = function(config) {
+module.exports = function (config) {
   config.set({
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
     frameworks: ['webpack', 'mocha', 'chai'],

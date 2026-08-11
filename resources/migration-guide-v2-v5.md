@@ -550,12 +550,10 @@ const result = await casperNetwork.putTransaction(transaction);
 You can retrieve a transaction or deploy information by simply providing the appropriate hash. The method will automatically determine if the hash corresponds to a deploy or a transaction.
 
 ```typescript
-const deployTransactionHash = TransactionHash.fromDeployHash(
-  DEPLOY_HASH
-); // For a deploy
-const transactionHash = TransactionHash.fromTransactionHash(
-  TRANSACTION_HASH
-); // For a transaction
+const deployTransactionHash =
+  TransactionHash.fromDeployHash(DEPLOY_HASH); // For a deploy
+const transactionHash =
+  TransactionHash.fromTransactionHash(TRANSACTION_HASH); // For a transaction
 
 // Retrieve the transaction or deploy information (the method automatically detects the type)
 // You can provide `transaction.hash` from a created transaction object,
