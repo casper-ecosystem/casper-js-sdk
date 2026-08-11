@@ -64,6 +64,12 @@ jobs:
       - name: Audits
         run: npm audit --omit=dev
 
+      # Advisories are only half of it: this checks that every package in the
+      # installed tree carries a valid registry signature, which is what catches
+      # a tarball swapped out from under a version that already resolved.
+      - name: Registry signatures and provenance attestations
+        run: npm audit signatures
+
       - name: Lints
         run: npm run lint:ci
 
@@ -97,6 +103,20 @@ jobs:
       # `etc/casper-js-sdk.api.md`. Regenerate with `npm run api:update`.
       - name: Public API tripwire
         run: npm run api:check
+
+      # This is a dual Node/browser CJS package that already had to revert one
+      # ESM attempt, so the packaging is checked rather than assumed: publint on
+      # the manifest, attw on whether the declarations resolve the same way the
+      # runtime entries do, and a consumer-shaped type-check with no @types/node.
+      #
+      # attw's `named-exports` rule is ignored, and that ignore is a finding, not
+      # a shrug: none of the 440 named exports is statically detectable in the
+      # webpack bundle, so `import { PublicKey } from 'casper-js-sdk'` under Node
+      # ESM resolves the types and then crashes at runtime. Fixing it is the
+      # whole point of the ESM packaging phase; until then the rule would mask
+      # every other regression this step exists to catch. Drop the ignore there.
+      - name: Package shape
+        run: npm run check:package
 
       # The tarball the Node 18 job consumes. Built here because the build
       # toolchain (webpack-cli@7, eslint@10) needs Node >=20.9.

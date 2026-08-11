@@ -1,0 +1,29 @@
+{
+  // What a consumer's compiler sees, with nothing this repo provides.
+  //
+  // `types: []` disables automatic `@types/*` inclusion, so a `Buffer` or any
+  // other Node global left in a published signature fails to resolve here — the
+  // TS2580/TS2688 pair a consumer without `@types/node` would hit. The fix for
+  // that is always to widen the signature (`Buffer` is a `Uint8Array`), never to
+  // add `@types/node` to `dependencies`, which pushes Node typings onto every
+  // browser consumer instead of removing the need for them.
+  //
+  // `skipLibCheck: false` because the declarations are the subject here, not a
+  // dependency being trusted.
+  //
+  // Scope: it proves `dist/**/*.d.ts` does not itself name a Node global. A
+  // dependency that pulls `@types/node` in via a triple-slash reference would
+  // still resolve, since this runs against the repo's own `node_modules`.
+  "compilerOptions": {
+    "noEmit": true,
+    "strict": true,
+    "skipLibCheck": false,
+    "types": [],
+    "target": "es2020",
+    "lib": ["es2020", "dom"],
+    "module": "commonjs",
+    "moduleResolution": "node10",
+    "ignoreDeprecations": "6.0"
+  },
+  "files": ["dist/index.d.ts"]
+}
