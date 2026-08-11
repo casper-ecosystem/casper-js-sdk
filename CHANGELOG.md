@@ -13,7 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
-### [5.1.0] - 2026-08-07
+### [5.1.0] - 2026-08-11
 
 No runtime or API change — `dist/` behaves exactly as in `5.0.13` and `engines.node` stays `">=18"`. The rest of the release is an internal toolchain update with no effect on consumers.
 
