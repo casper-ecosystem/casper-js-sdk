@@ -129,7 +129,13 @@ module.exports = defineConfig([
       'no-param-reassign': 'error',
       eqeqeq: ['error', 'always', { null: 'ignore' }],
       'guard-for-in': 'error',
-      '@typescript-eslint/no-unused-vars': 'error'
+      '@typescript-eslint/no-unused-vars': 'error',
+
+      // --- PHASE-3.5 Task 6: deprecated-API sweep in crypto and byte paths ---
+      '@typescript-eslint/no-deprecated': 'error',
+      '@typescript-eslint/unbound-method': 'error',
+      '@typescript-eslint/no-base-to-string': 'error',
+      '@typescript-eslint/restrict-plus-operands': 'error'
     }
   },
   {

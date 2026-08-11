@@ -1,7 +1,31 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { MaxUint256, NegativeOne, One, Zero } from '@ethersproject/constants';
 import { arrayify, concat } from '@ethersproject/bytes';
-import { blake2b } from '@noble/hashes/blake2b';
+import { blake2b } from '@noble/hashes/blake2';
+
+/**
+ * Renders a `BigNumberish` for the out-of-bounds error message below. `Bytes`
+ * (`ArrayLike<number>`) has no `toString` in its type, so the type checker
+ * cannot prove `+ value` or `String(value)` avoids `Object`'s default
+ * `[object Object]` stringification — even though every value reaching this
+ * point is actually a primitive, a `BigNumber`, or a real array/typed array.
+ * Handling each case explicitly proves it, and reproduces exactly what the
+ * implicit coercion produced before: primitives and `BigNumber` via their own
+ * `toString`, a byte array comma-joined like `Array.prototype.toString` does.
+ */
+const describeValue = (value: BigNumberish): string => {
+  if (
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'bigint'
+  ) {
+    return String(value);
+  }
+  if (BigNumber.isBigNumber(value)) {
+    return value.toString();
+  }
+  return Array.from(value).join(',');
+};
 
 /**
  * Converts a BigNumberish value to bytes with specified bit size and signedness.
@@ -21,10 +45,10 @@ export const toBytesNumber = (bitSize: number, signed: boolean) => (
     // Calculate signed bounds for the given bit size
     const bounds = maxUintValue.mask(bitSize - 1);
     if (val.gt(bounds) || val.lt(bounds.add(One).mul(NegativeOne))) {
-      throw new Error('value out-of-bounds, value: ' + value);
+      throw new Error('value out-of-bounds, value: ' + describeValue(value));
     }
   } else if (val.lt(Zero) || val.gt(maxUintValue.mask(bitSize))) {
-    throw new Error('value out-of-bounds, value: ' + value);
+    throw new Error('value out-of-bounds, value: ' + describeValue(value));
   }
 
   const valTwos = val.toTwos(bitSize).mask(bitSize);
