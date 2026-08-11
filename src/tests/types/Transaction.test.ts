@@ -29,7 +29,7 @@ import {
 
 describe('Test Transaction', () => {
   it('should create a TransactionV1 with correct payload instance', async () => {
-    const keys = await PrivateKey.generate(KeyAlgorithm.ED25519);
+    const keys = PrivateKey.generate(KeyAlgorithm.ED25519);
     const paymentAmount = 20000000000000;
 
     const pricingMode = new PricingMode();
@@ -94,7 +94,7 @@ describe('Test Transaction', () => {
   });
 
   it('should create native transfer TransactionV1 with builder', async () => {
-    const sender = await PrivateKey.generate(KeyAlgorithm.ED25519);
+    const sender = PrivateKey.generate(KeyAlgorithm.ED25519);
 
     const transaction = new NativeTransferBuilder()
       .from(sender.publicKey)

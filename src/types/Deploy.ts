@@ -471,7 +471,9 @@ export class Deploy {
         throw new Error("The JSON can't be parsed as a Deploy.");
       }
     } catch (e) {
-      throw new Error(`Serialization error: ${toError(e).message}`);
+      throw new Error(`Serialization error: ${toError(e).message}`, {
+        cause: e
+      });
     }
 
     const isDeployValid = deploy.validate();

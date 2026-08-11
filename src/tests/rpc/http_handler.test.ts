@@ -195,6 +195,24 @@ describe('HttpHandler', () => {
         );
       }
     });
+
+    it('attaches the original failure as the error cause', async () => {
+      const underlying = new Error('socket hang up');
+      fetchStub.rejects(underlying);
+      const handler = new HttpHandler(endpoint, 'fetch');
+
+      try {
+        await handler.processCall(mockRequest);
+        expect.fail('expected the call to reject');
+      } catch (err) {
+        // The message contract is unchanged — consumers match on it.
+        expect((err as Error).message).to.include(
+          ErrProcessHttpRequest.message
+        );
+        // ...and the original is now recoverable.
+        expect((err as Error).cause).to.equal(underlying);
+      }
+    });
   });
 
   describe('processCall — axios client', () => {

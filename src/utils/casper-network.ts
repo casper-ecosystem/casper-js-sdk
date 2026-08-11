@@ -314,7 +314,9 @@ export class CasperNetwork {
       return await this.rpcClient.putDeploy(deploy);
     }
 
-    return Promise.reject(
+    // Was `Promise.reject(<string>)`, which handed callers a bare string to
+    // catch. The text is unchanged; it is now the message of an Error.
+    throw new Error(
       'Legacy deploy transaction is required when submitting to Casper Network 1.5'
     );
   }
@@ -377,7 +379,7 @@ export class CasperNetwork {
 
   public async queryLatestBalance(identifier: PurseIdentifier) {
     if (this.apiVersion === 2) {
-      return this.rpcClient.queryLatestBalance(identifier);
+      return await this.rpcClient.queryLatestBalance(identifier);
     }
 
     const purseUref = identifier?.purseUref;

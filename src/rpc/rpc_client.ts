@@ -504,7 +504,7 @@ export class RpcClient implements IClient {
     uref: string,
     key: string
   ): Promise<StateGetDictionaryResult> {
-    return this.getDictionaryItemByIdentifier(
+    return await this.getDictionaryItemByIdentifier(
       stateRootHash,
       new ParamDictionaryIdentifier(
         undefined,
@@ -1430,7 +1430,8 @@ export class RpcClient implements IClient {
         if (attempts >= maxRetries) {
           clearTimeout(timer);
           throw new Error(
-            `Failed after ${maxRetries} retries: ${toError(error).message}`
+            `Failed after ${maxRetries} retries: ${toError(error).message}`,
+            { cause: error }
           );
         }
         attempts++;
@@ -1457,7 +1458,7 @@ export class RpcClient implements IClient {
     transaction: Transaction,
     timeout = 6000
   ): Promise<InfoGetTransactionResult> {
-    return this.waitForConfirmation(
+    return await this.waitForConfirmation(
       this.getTransactionByTransactionHash.bind(this),
       transaction?.hash?.toHex(),
       timeout
@@ -1475,7 +1476,7 @@ export class RpcClient implements IClient {
     deploy: Deploy,
     timeout = 60000
   ): Promise<InfoGetDeployResult> {
-    return this.waitForConfirmation(
+    return await this.waitForConfirmation(
       this.getDeploy.bind(this),
       deploy?.hash?.toHex(),
       timeout
