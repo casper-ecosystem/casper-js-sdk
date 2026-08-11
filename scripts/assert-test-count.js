@@ -24,7 +24,7 @@ const fs = require('fs');
 /** Every `*.test.ts` under `src/`, as matched by the vitest `include` glob. */
 const MIN_TEST_FILES = 33;
 /** Total assertions-bearing cases across those files. */
-const MIN_TESTS = 367;
+const MIN_TESTS = 368;
 /**
  * The browser leg skips one Node-`crypto` cross-check (`PrivateKey.test.ts`,
  * guarded by `it.skipIf(isBrowser)`); anything beyond that is a skip somebody

@@ -40,6 +40,20 @@ export enum TransactionEntryPointTag {
 }
 
 /**
+ * Narrows a raw tag byte to the enum, or returns undefined when the byte is
+ * not a known variant. Keeping this in one place is what makes the switch
+ * below exhaustive-checkable, and what stops a renumbered enum from silently
+ * re-routing a decode.
+ */
+function toEntryPointTag(
+  tag: number
+): TransactionEntryPointTag | undefined {
+  return (Object.values(TransactionEntryPointTag) as unknown[]).includes(tag)
+    ? (tag as TransactionEntryPointTag)
+    : undefined;
+}
+
+/**
  * Represents a transaction entry point, which defines an action to be executed within the system.
  * This class supports predefined entry points as well as custom-defined actions.
  */
@@ -224,7 +238,10 @@ export class TransactionEntryPoint {
       throw new Error('Invalid tag bytes');
     }
 
-    const tag = tagBytes[0];
+    const tag = toEntryPointTag(tagBytes[0]);
+    if (tag === undefined) {
+      throw new Error('Unknown tag');
+    }
 
     const type = (() => {
       switch (tag) {
@@ -252,8 +269,6 @@ export class TransactionEntryPoint {
           return TransactionEntryPointEnum.CancelReservations;
         case TransactionEntryPointTag.Custom:
           return TransactionEntryPointEnum.Custom;
-        default:
-          throw new Error('Unknown tag');
       }
     })();
 
