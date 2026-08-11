@@ -118,9 +118,9 @@ export class BidAddr {
           );
         }
         if (bidAddrTag === BidAddrTag.UnifiedTag) {
-          bidAddr.unified = Hash.fromBytes(hexBytes.slice(1, 33))?.result;
+          bidAddr.unified = Hash.fromBytes(hexBytes.subarray(1, 33))?.result;
         } else {
-          bidAddr.validator = Hash.fromBytes(hexBytes.slice(1, 33))?.result;
+          bidAddr.validator = Hash.fromBytes(hexBytes.subarray(1, 33))?.result;
         }
         break;
 
@@ -132,8 +132,10 @@ export class BidAddr {
             `Wrong key length for ${BidAddrTag[bidAddrTag]} BidAddr. Expected 65 bytes.`
           );
         }
-        bidAddr.validator = Hash.fromBytes(hexBytes.slice(1, 33))?.result;
-        bidAddr.delegatorAccount = Hash.fromBytes(hexBytes.slice(33))?.result;
+        bidAddr.validator = Hash.fromBytes(hexBytes.subarray(1, 33))?.result;
+        bidAddr.delegatorAccount = Hash.fromBytes(
+          hexBytes.subarray(33)
+        )?.result;
         break;
 
       case BidAddrTag.DelegatedPurseTag:
@@ -145,9 +147,9 @@ export class BidAddr {
           );
         }
 
-        bidAddr.validator = Hash.fromBytes(hexBytes.slice(1, 33))?.result;
+        bidAddr.validator = Hash.fromBytes(hexBytes.subarray(1, 33))?.result;
         bidAddr.delegatorPurseAddress = new HexBytes(
-          hexBytes.slice(33)
+          hexBytes.subarray(33)
         ).toHex();
         break;
 
@@ -157,7 +159,7 @@ export class BidAddr {
             'Wrong key length for Credit BidAddr. Expected 41 bytes.'
           );
         }
-        bidAddr.validator = Hash.fromBytes(hexBytes.slice(1, 33))?.result;
+        bidAddr.validator = Hash.fromBytes(hexBytes.subarray(1, 33))?.result;
         bidAddr.eraId = hexBytes.readUInt32LE(33);
         break;
 
@@ -404,7 +406,10 @@ export class BidAddr {
     const concatBuffers = (buffers: Buffer[]): Buffer => Buffer.concat(buffers);
 
     const createBuffer = (tag: number, ...parts: Uint8Array[]): Buffer => {
-      return concatBuffers([Buffer.from([tag]), ...parts.map(Buffer.from)]);
+      return concatBuffers([
+        Buffer.from([tag]),
+        ...parts.map(part => Buffer.from(part))
+      ]);
     };
 
     switch (typeByte) {
