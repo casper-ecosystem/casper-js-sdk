@@ -1,20 +1,19 @@
 const { defineConfig } = require('eslint/config');
+const js = require('@eslint/js');
 const tseslint = require('typescript-eslint');
 const prettier = require('eslint-config-prettier/flat');
 const globals = require('globals');
 
-// Flat config (ESLint 10), ported 1:1 from the old `.eslintrc.js`.
-//
-// Deliberately does NOT pull in `@eslint/js`'s `js.configs.recommended`: the old
-// config extended only `plugin:@typescript-eslint/recommended` + `prettier`, and
-// `@typescript-eslint/recommended` never enabled eslint core's recommended set.
-// Adding it here would surface 61 pre-existing style findings in `src/` that are
-// out of scope for a dev-only toolchain change — they are tracked separately.
+// Flat config (ESLint 10). Layers eslint core's `recommended` set underneath
+// `typescript-eslint`'s `recommended`, plus the project-specific rule blocks
+// added across PHASE-3.5, then `prettier` last to disable anything stylistic
+// those sets turned on.
 //
 // `lint`/`lint:ci` only ever point eslint at `src/`, but the ignores below keep
 // the config correct if that scope ever widens.
 module.exports = defineConfig([
   { ignores: ['dist/', 'docs/', 'site/'] },
+  js.configs.recommended,
   tseslint.configs.recommended,
   {
     languageOptions: {
@@ -32,11 +31,9 @@ module.exports = defineConfig([
       // Renamed: no-var-requires (deprecated in v8) -> no-require-imports
       '@typescript-eslint/no-require-imports': 'off',
       // New in typescript-eslint v8's `recommended`; off for parity with v5.
-      // Nearly every hit is a chai assertion (`expect(x).to.be.true`), which is a
-      // bare expression by design.
-      '@typescript-eslint/no-unused-expressions': 'off',
-      // v8 flipped the default to `caughtErrors: 'all'`; v5 used 'none'.
-      '@typescript-eslint/no-unused-vars': ['error', { caughtErrors: 'none' }]
+      // Nearly every hit is a Vitest assertion (`expect(x).to.be.true`), which
+      // is a bare expression by design.
+      '@typescript-eslint/no-unused-expressions': 'off'
     }
   },
   {
@@ -125,7 +122,31 @@ module.exports = defineConfig([
       '@typescript-eslint/await-thenable': 'error',
       '@typescript-eslint/only-throw-error': 'error',
       '@typescript-eslint/prefer-promise-reject-errors': 'error',
-      'preserve-caught-error': 'error'
+      'preserve-caught-error': 'error',
+
+      // --- PHASE-3.5 Task 5: ESLint core `recommended` and scoping rules ---
+      '@typescript-eslint/no-shadow': 'error',
+      'no-param-reassign': 'error',
+      eqeqeq: ['error', 'always', { null: 'ignore' }],
+      'guard-for-in': 'error',
+      '@typescript-eslint/no-unused-vars': 'error'
+    }
+  },
+  {
+    // `KeyTypeID`/`KeyTypeName` and `TransactionVersion` have members named
+    // after domain classes these files also import — `Hash`, `URef`, `BidAddr`,
+    // `ByteCode`, `Era`, `Deploy`. A TS enum body is its own scope, so each
+    // member declaration trips `no-shadow` against the outer import. Renaming
+    // the member would break a published enum; aliasing the import would rename
+    // a class throughout the file to satisfy a declaration that shadows
+    // nothing at any use site. Scoped to these two files so the rule keeps its
+    // full strength everywhere else.
+    files: ['src/types/key/Key.ts', 'src/types/Transaction.ts'],
+    rules: {
+      '@typescript-eslint/no-shadow': [
+        'error',
+        { allow: ['Hash', 'URef', 'BidAddr', 'ByteCode', 'Era', 'Deploy'] }
+      ]
     }
   },
   prettier // MUST stay last so it disables conflicting stylistic rules

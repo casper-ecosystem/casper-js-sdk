@@ -52,13 +52,14 @@ export class CasperNetwork {
     rpcClient: RpcClient,
     apiVersion?: number
   ): Promise<CasperNetwork> {
-    if (!apiVersion) {
+    let resolvedApiVersion = apiVersion;
+    if (!resolvedApiVersion) {
       const status = await rpcClient.getStatus();
 
-      apiVersion = status.apiVersion.startsWith('2.') ? 2 : 1;
+      resolvedApiVersion = status.apiVersion.startsWith('2.') ? 2 : 1;
     }
 
-    return new CasperNetwork(rpcClient, apiVersion);
+    return new CasperNetwork(rpcClient, resolvedApiVersion);
   }
 
   public createDelegateTransaction(
@@ -305,7 +306,7 @@ export class CasperNetwork {
   public async putTransaction(
     transaction: Transaction
   ): Promise<PutTransactionResult | PutDeployResult> {
-    if (this.apiVersion == 2) {
+    if (this.apiVersion === 2) {
       return await this.rpcClient.putTransaction(transaction);
     }
 
@@ -324,15 +325,13 @@ export class CasperNetwork {
   public async getTransaction(
     hash: TransactionHash | Hash | string
   ): Promise<InfoGetTransactionResult> {
-    if (typeof hash === 'string') {
-      hash = Hash.fromHex(hash);
-    }
+    const resolvedHash = typeof hash === 'string' ? Hash.fromHex(hash) : hash;
 
     if (this.apiVersion === 2) {
-      return await this.getTransactionOnCasper2x(hash);
+      return await this.getTransactionOnCasper2x(resolvedHash);
     }
 
-    return await this.getTransactionOnCasper1x(hash);
+    return await this.getTransactionOnCasper1x(resolvedHash);
   }
 
   private async getTransactionOnCasper2x(

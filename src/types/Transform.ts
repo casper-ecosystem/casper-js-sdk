@@ -556,12 +556,14 @@ export class TransformKind {
    */
   private containsKeyRecursive(obj: any, name: string): boolean {
     for (const key in obj) {
-      if (key.includes(name)) {
-        return true;
-      }
-      if (typeof obj[key] === 'object' && obj[key] !== null) {
-        if (this.containsKeyRecursive(obj[key], name)) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        if (key.includes(name)) {
           return true;
+        }
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+          if (this.containsKeyRecursive(obj[key], name)) {
+            return true;
+          }
         }
       }
     }
