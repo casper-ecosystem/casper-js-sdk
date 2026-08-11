@@ -126,8 +126,12 @@ jobs:
         with:
           name: publish-artifacts
 
+      # --provenance signs the tarball with the job's OIDC identity (hence
+      # `id-token: write` above), so npmjs.com can attest which repo, workflow
+      # and commit produced it. A stolen publish token no longer buys a
+      # convincing release.
       - name: Publish to npm
-        run: npm publish --access public --tag latest
+        run: npm publish --access public --tag latest --provenance
 
       - name: Rename package
         run: cp dist/lib.node.js casper-js-sdk.v${{ github.ref_name }}.js

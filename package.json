@@ -35,6 +35,7 @@
     "knip:all": "knip",
     "api:check": "api-extractor run",
     "api:update": "api-extractor run --local",
+    "check:package": "publint && attw --pack . --ignore-rules named-exports && tsc -p tsconfig.dts-consumer.json",
     "prebuild": "npm run clean && npm run lint",
     "build": "webpack --config webpack.config.js",
     "clean": "rm -rf ./dist",
@@ -49,7 +50,7 @@
     "docs:build": "cd site && npm ci && npm run build && cd .. && typedoc --out docs/api",
     "docs:dev": "cd site && npm install && npm run dev",
     "docs:preview": "cd site && npm run preview",
-    "prepublishOnly": "npm run build && npm run test:node:unit"
+    "prepublishOnly": "npm run build && npm run test:node:unit && npm run check:package"
   },
   "engines": {
     "node": ">=18"
@@ -67,6 +68,7 @@
     "*.{js,css,md}": "prettier --write"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
     "@eslint/js": "^10.0.1",
     "@microsoft/api-extractor": "^7.58.12",
     "@types/humanize-duration": "^3.27.4",
@@ -87,6 +89,7 @@
     "playwright": "^1.62.1",
     "prettier": "^3.9.4",
     "process": "^0.11.10",
+    "publint": "^0.3.23",
     "sinon": "^22.0.0",
     "ts-loader": "^9.6.2",
     "typedoc": "^0.28.20",
