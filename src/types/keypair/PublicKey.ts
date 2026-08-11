@@ -28,6 +28,18 @@ enum KeyAlgorithm {
   SECP256K1 = 2
 }
 
+/**
+ * Narrows a raw algorithm byte to the enum, or returns undefined when the
+ * byte is not a known variant. Keeping this in one place is what stops a
+ * renumbered enum from silently re-routing which key implementation decodes
+ * the following bytes.
+ */
+function toKeyAlgorithm(tag: number): KeyAlgorithm | undefined {
+  return (Object.values(KeyAlgorithm) as unknown[]).includes(tag)
+    ? (tag as KeyAlgorithm)
+    : undefined;
+}
+
 const SMALL_BYTES_COUNT = 75;
 // prettier-ignore
 const HEX_CHARS = [
@@ -309,7 +321,10 @@ export class PublicKey {
    * @throws Error if the public key algorithm is invalid.
    */
   static fromBytes(source: Uint8Array): IResultWithBytes<PublicKey> {
-    const alg = source[0];
+    const alg = toKeyAlgorithm(source[0]);
+    if (alg === undefined) {
+      throw ErrInvalidPublicKeyAlgo;
+    }
     let key: PublicKeyInternal | null = null;
     let expectedPublicKeySize;
 
@@ -326,8 +341,6 @@ export class PublicKey {
           source.subarray(1, expectedPublicKeySize + 1)
         );
         break;
-      default:
-        throw ErrInvalidPublicKeyAlgo;
     }
 
     return {

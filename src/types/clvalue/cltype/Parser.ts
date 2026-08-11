@@ -30,6 +30,18 @@ import { IResultWithBytes } from '../CLValue';
 import { CLValueUInt32 } from '../Numeric';
 
 /**
+ * Narrows a raw tag byte to the enum, or returns undefined when the byte is
+ * not a known variant. Keeping this in one place is what makes the switch
+ * below exhaustive-checkable, and what stops a renumbered enum from silently
+ * re-routing a decode.
+ */
+function toCLTypeTag(tag: number): TypeID | undefined {
+  return (Object.values(TypeID) as unknown[]).includes(tag)
+    ? (tag as TypeID)
+    : undefined;
+}
+
+/**
  * A utility class for parsing various CLTypes from different formats, such as JSON, strings, and bytes.
  * This class includes static methods for handling both simple and complex types, along with error handling for unsupported or unrecognized formats.
  */
@@ -138,8 +150,12 @@ export class CLTypeParser {
    * @throws BufferConstructorNotDetectedError if the type is not recognized.
    */
   static matchBytesToCLType(bytes: Uint8Array): IResultWithBytes<CLType> {
-    const tag = bytes[0];
+    const tag = toCLTypeTag(bytes[0]);
     const remainder = bytes.subarray(1);
+
+    if (tag === undefined) {
+      throw CLTypeParser.BufferConstructorNotDetectedError;
+    }
 
     switch (tag) {
       case TypeID.Bool:
@@ -263,8 +279,6 @@ export class CLTypeParser {
           result: new CLTypeTuple3(innerType1, innerType2, innerType3),
           bytes: innerType3Byte
         };
-      default:
-        throw CLTypeParser.BufferConstructorNotDetectedError;
     }
   }
 

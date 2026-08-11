@@ -137,6 +137,11 @@ export class Duration {
         case 'd':
           totalMs += value * 86400000;
           break;
+        default:
+          // An unrecognized unit contributes nothing, which is what this switch
+          // did before the default was written out. The regex above only ever
+          // yields s/m/h/d, so it is unreachable through `fromString`.
+          break;
       }
     }
     return totalMs;

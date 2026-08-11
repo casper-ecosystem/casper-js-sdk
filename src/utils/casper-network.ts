@@ -8,9 +8,9 @@ import {
   RpcClient
 } from '../rpc';
 // Imported from the file directly, not the `../rpc` barrel: pulling `HttpError`
-// in as a runtime value (for `instanceof`) through the barrel closes an
-// import cycle back through `rpc_client.ts` -> `../utils`, which throws a TDZ
-// error under the native-class test transform (see CLAUDE.md on import cycles).
+// in as a runtime value through the barrel closes an import cycle back through
+// `rpc_client.ts` -> `../utils`, which throws a TDZ error under the
+// native-class test transform (see CLAUDE.md on import cycles).
 import { HttpError } from '../rpc/error';
 import {
   Args,
@@ -27,6 +27,17 @@ import {
   Hash
 } from '../types';
 import { ErrorCode } from '../@types';
+
+/**
+ * `HttpError.statusCode` carries an HTTP status from the transport and a
+ * JSON-RPC error code from the client — two numeric namespaces in one field.
+ * Narrowing here is what keeps the comparison below meaningful.
+ */
+function toRpcErrorCode(code: number): ErrorCode | undefined {
+  return (Object.values(ErrorCode) as unknown[]).includes(code)
+    ? (code as ErrorCode)
+    : undefined;
+}
 
 export class CasperNetwork {
   private rpcClient: RpcClient;
@@ -349,7 +360,7 @@ export class CasperNetwork {
       // of the class.
       if (
         HttpError.isHttpError(error) &&
-        error.statusCode === ErrorCode.NoSuchTransaction
+        toRpcErrorCode(error.statusCode) === ErrorCode.NoSuchTransaction
       ) {
         return await this.rpcClient.getTransactionByDeployHash(hash.toHex());
       }

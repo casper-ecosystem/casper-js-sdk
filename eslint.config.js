@@ -108,7 +108,17 @@ module.exports = defineConfig([
 
       // --- misc correctness ---
       'no-prototype-builtins': 'error',
-      'no-template-curly-in-string': 'error'
+      'no-template-curly-in-string': 'error',
+
+      // --- PHASE-3.5 Task 3: exhaustiveness and the byte→enum boundary ---
+      '@typescript-eslint/switch-exhaustiveness-check': [
+        'error',
+        {
+          considerDefaultExhaustiveForUnions: false,
+          requireDefaultForNonUnion: true
+        }
+      ],
+      '@typescript-eslint/no-unsafe-enum-comparison': 'error'
     }
   },
   prettier // MUST stay last so it disables conflicting stylistic rules

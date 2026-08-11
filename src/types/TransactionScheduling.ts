@@ -18,6 +18,20 @@ export enum TransactionSchedulingTag {
 }
 
 /**
+ * Narrows a raw tag byte to the enum, or returns undefined when the byte is
+ * not a known variant. Keeping this in one place is what makes the switch
+ * below exhaustive-checkable, and what stops a renumbered enum from silently
+ * re-routing a decode.
+ */
+function toTransactionSchedulingTag(
+  tag: number
+): TransactionSchedulingTag | undefined {
+  return (Object.values(TransactionSchedulingTag) as unknown[]).includes(tag)
+    ? (tag as TransactionSchedulingTag)
+    : undefined;
+}
+
+/**
  * Represents the scheduling for a transaction in a future era.
  */
 @jsonObject
@@ -240,7 +254,11 @@ export class TransactionScheduling {
         'Invalid or missing tag in serialized TransactionScheduling'
       );
     }
-    const tag = tagBytes[0];
+    const rawTag = tagBytes[0];
+    const tag = toTransactionSchedulingTag(rawTag);
+    if (tag === undefined) {
+      throw new Error(`Unknown TransactionSchedulingTag: ${rawTag}`);
+    }
 
     switch (tag) {
       case TransactionSchedulingTag.Native:
@@ -273,9 +291,6 @@ export class TransactionScheduling {
           new FutureTimestampScheduling(timestamp)
         );
       }
-
-      default:
-        throw new Error(`Unknown TransactionSchedulingTag: ${tag}`);
     }
   }
 }
