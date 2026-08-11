@@ -5,6 +5,7 @@ import { HttpError } from './error';
 import { RpcRequest } from './request';
 import { RpcResponse } from './response';
 import { IHandler } from './client';
+import { toError } from '../utils/errors';
 
 export const ErrParamsJsonStringifyHandler = new Error(
   "failed to stringify json rpc request's params"
@@ -49,7 +50,9 @@ export class HttpHandler implements IHandler {
       body = serializer.stringify(params);
     } catch (err) {
       throw new Error(
-        `${ErrParamsJsonStringifyHandler.message}, details: ${err.message}`
+        `${ErrParamsJsonStringifyHandler.message}, details: ${
+          toError(err).message
+        }`
       );
     }
 
@@ -85,7 +88,7 @@ export class HttpHandler implements IHandler {
         );
       }
       throw new Error(
-        `${ErrProcessHttpRequest.message}, details: ${err.message}`
+        `${ErrProcessHttpRequest.message}, details: ${toError(err).message}`
       );
     }
   }
@@ -104,7 +107,7 @@ export class HttpHandler implements IHandler {
       });
     } catch (err) {
       throw new Error(
-        `${ErrProcessHttpRequest.message}, details: ${err.message}`
+        `${ErrProcessHttpRequest.message}, details: ${toError(err).message}`
       );
     }
 

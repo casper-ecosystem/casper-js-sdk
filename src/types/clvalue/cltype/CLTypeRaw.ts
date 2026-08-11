@@ -1,6 +1,7 @@
 import { jsonObject } from 'typedjson';
 import { CLType } from './CLType';
 import { CLTypeParser } from './Parser';
+import { toError } from '../../../utils/errors';
 
 /**
  * Represents a raw CLType message that can be parsed into a `CLType` instance.
@@ -30,7 +31,7 @@ export class CLTypeRaw {
     try {
       return CLTypeParser.fromRawJson(json);
     } catch (error) {
-      throw new Error(`Error parsing CLType: ${error.message}`);
+      throw new Error(`Error parsing CLType: ${toError(error).message}`);
     }
   }
 

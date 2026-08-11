@@ -1,6 +1,7 @@
 import { jsonArrayMember, jsonMember, jsonObject, TypedJSON } from 'typedjson';
 import { concat } from '@ethersproject/bytes';
 
+import { toError } from '../utils/errors';
 import { Hash } from './key';
 import { HexBytes } from './HexBytes';
 import { PublicKey, PrivateKey } from './keypair';
@@ -470,7 +471,7 @@ export class Deploy {
         throw new Error("The JSON can't be parsed as a Deploy.");
       }
     } catch (e) {
-      throw new Error(`Serialization error: ${e.message}`);
+      throw new Error(`Serialization error: ${toError(e).message}`);
     }
 
     const isDeployValid = deploy.validate();
