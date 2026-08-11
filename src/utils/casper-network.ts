@@ -7,6 +7,11 @@ import {
   PutTransactionResult,
   RpcClient
 } from '../rpc';
+// Imported from the file directly, not the `../rpc` barrel: pulling `HttpError`
+// in as a runtime value (for `instanceof`) through the barrel closes an
+// import cycle back through `rpc_client.ts` -> `../utils`, which throws a TDZ
+// error under the native-class test transform (see CLAUDE.md on import cycles).
+import { HttpError } from '../rpc/error';
 import {
   Args,
   CLValue,
@@ -339,7 +344,13 @@ export class CasperNetwork {
     try {
       return await this.rpcClient.getTransactionByTransactionHash(hash.toHex());
     } catch (error) {
-      if (error?.statusCode === ErrorCode.NoSuchTransaction) {
+      // The structural guard, not `instanceof`: it reproduces the optional-chain
+      // check this replaced, and survives a bundle that ends up with two copies
+      // of the class.
+      if (
+        HttpError.isHttpError(error) &&
+        error.statusCode === ErrorCode.NoSuchTransaction
+      ) {
         return await this.rpcClient.getTransactionByDeployHash(hash.toHex());
       }
       throw error;

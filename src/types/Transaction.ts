@@ -1,6 +1,7 @@
 import { jsonObject, jsonMember, jsonArrayMember, TypedJSON } from 'typedjson';
 import { concat } from '@ethersproject/bytes';
 
+import { toError } from '../utils/errors';
 import { Hash } from './key';
 import { Deploy } from './Deploy';
 import { Duration, Timestamp } from './Time';
@@ -425,7 +426,7 @@ export class TransactionV1 {
         throw ErrTransactionV1FromJson;
       }
     } catch (e) {
-      throw new Error(`Serialization error: ${e.message}`);
+      throw new Error(`Serialization error: ${toError(e).message}`);
     }
 
     tx.validate();

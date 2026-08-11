@@ -424,7 +424,7 @@ export function isValidPublicKey(key: string) {
 }
 
 function bytesToNibbles(bytes: Uint8Array): Uint8Array {
-  const outputNibbles = bytes.reduce((accum, byte) => {
+  const outputNibbles = bytes.reduce<Uint8Array>((accum, byte) => {
     return concat([accum, Uint8Array.of(byte >>> 4, byte & 0x0f)]);
   }, new Uint8Array());
 

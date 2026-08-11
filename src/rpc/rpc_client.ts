@@ -68,6 +68,7 @@ import {
 } from '../types';
 import { HttpError } from './error';
 import { sleep } from '../utils';
+import { toError } from '../utils/errors';
 
 export class RpcClient implements IClient {
   private handler: IHandler;
@@ -794,7 +795,7 @@ export class RpcClient implements IClient {
       auctionInfoResult.rawJSON = auctionInfoV2.rawJSON;
       return auctionInfoResult;
     } catch (err) {
-      const errorMessage = err?.message || '';
+      const errorMessage = toError(err).message;
       if (!errorMessage.includes('Method not found')) {
         throw err;
       }
@@ -839,7 +840,7 @@ export class RpcClient implements IClient {
       result.rawJSON = resV2.rawJSON;
       return result;
     } catch (err) {
-      const errorMessage = err?.message || '';
+      const errorMessage = toError(err).message;
       if (!errorMessage.includes('Method not found')) {
         throw err;
       }
@@ -898,7 +899,7 @@ export class RpcClient implements IClient {
       result.rawJSON = resV2.rawJSON;
       return result;
     } catch (err) {
-      const errorMessage = err?.message || '';
+      const errorMessage = toError(err).message;
       if (!errorMessage.includes('Method not found')) {
         throw err;
       }
@@ -1429,12 +1430,14 @@ export class RpcClient implements IClient {
         if (attempts >= maxRetries) {
           clearTimeout(timer);
           throw new Error(
-            `Failed after ${maxRetries} retries: ${error.message}`
+            `Failed after ${maxRetries} retries: ${toError(error).message}`
           );
         }
         attempts++;
         console.warn(
-          `Attempt ${attempts} failed: ${error.message}. Retrying in ${retryDelay}ms...`
+          `Attempt ${attempts} failed: ${
+            toError(error).message
+          }. Retrying in ${retryDelay}ms...`
         );
         await sleep(retryDelay);
         continue;
