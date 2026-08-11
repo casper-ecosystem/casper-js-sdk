@@ -857,5 +857,60 @@
       "forwardBlockHeight": 6701,
       "forwardAcquisitionState": "have block body(6701) for: block hash 5990..4983"
     }
+  },
+  "infoGetStatusSerialized": {
+    "api_version": "2.0.0",
+    "protocol_version": "5.4.3",
+    "build_version": "2.0.0",
+    "chainspec_name": "dev-net",
+    "last_added_block_info": {
+      "creator": "0140afe8f752e5ff100e0189c080bc207e8805b3e5e82f792ec608de2f11f39f6c",
+      "era_id": 386,
+      "hash": "e8637cdc918e901c6e10a050cc7d3be949b892dc8842580088f5aa592a342d39",
+      "height": 170022,
+      "state_root_hash": "18502c7912b294d65cadbaaf6a60b9d04b376224d540e31fca184606b16c706c",
+      "timestamp": "2024-05-15T07:52:31.214Z"
+    },
+    "our_public_signing_key": "01032146b0b9de01e26aaec7b0d1769920de94681dbd432c3530bfe591752ded6c",
+    "peers": [
+      {
+        "node_id": "tls:4cca..587b",
+        "address": "3.139.219.212:35000"
+      },
+      {
+        "node_id": "tls:743f..dc85",
+        "address": "3.140.9.1:35000"
+      },
+      {
+        "node_id": "tls:8eca..0f34",
+        "address": "3.14.48.188:35000"
+      },
+      {
+        "node_id": "tls:9f05..8d58",
+        "address": "18.218.51.191:35000"
+      },
+      {
+        "node_id": "tls:e582..3681",
+        "address": "18.221.38.28:35000"
+      }
+    ],
+    "round_length": "16s 384ms",
+    "starting_state_root_hash": "b275db1f79912c7b2507a8e48f5ef15e6ae3236bed542c7710ce15321622d1cb",
+    "uptime": "1month 1day 17h 40m 43s",
+    "reactor_state": "Validate",
+    "last_progress": "2024-04-13T03:38:19.626Z",
+    "latest_switch_block_hash": "099cc3232b04ebb556c73328597c0b8c518fa4565c7d1f7981bc251414ce8c2f",
+    "block_sync": {
+      "historical": {
+        "block_hash": "16ddf28e2b3d2e17f4cef36f8b58827eca917af225d139b0c77df3b4a67dc55e",
+        "block_height": 40,
+        "acquisition_state": "have strict finality(40) for: block hash 16dd..c55e"
+      },
+      "forward": {
+        "block_hash": "59907b1e32a9158169c4d89d9ce5ac9164fc31240bfcfb0969227ece06d74983",
+        "block_height": 6701,
+        "acquisition_state": "have block body(6701) for: block hash 5990..4983"
+      }
+    }
   }
 }

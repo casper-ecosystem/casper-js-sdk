@@ -527,11 +527,21 @@ for (const algorithm of [
 //    reaches them the way the SDK does — through PrivateKey/PublicKey PEM.
 // ---------------------------------------------------------------------------
 
-// The parse-side record for the one class that cannot be round-tripped. What a
-// consumer of `info_get_status` actually depends on is that the values come out
-// of the JSON unchanged.
+// `InfoGetStatusResult` gets its own record rather than a corpus digest,
+// because it is the one class whose output is deliberately *not* identical:
+// 5.1.0 could not serialize `available_block_range` at all and silently dropped
+// it. Both the parsed values and the exact document 5.1.0 emitted are recorded,
+// so the test can assert that the only difference is the restored field.
+const statusSerializer = new TypedJSON(sdk.InfoGetStatusResult);
 const statusJson = readFixture('rpc_response/get_status.json').result;
-const status = new TypedJSON(sdk.InfoGetStatusResult).parse(statusJson);
+const status = statusSerializer.parse(statusJson);
+const infoGetStatusSerialized = statusSerializer.toPlainJson(status);
+
+if ('available_block_range' in infoGetStatusSerialized) {
+  throw new Error(
+    'expected 5.1.0 to drop available_block_range — the recording is no longer describing the bug it exists to pin'
+  );
+}
 
 const infoGetStatusParsed = {
   apiVersion: status.apiVersion,
@@ -603,7 +613,8 @@ const golden = {
   prefixNames,
   keypair,
   derVectors,
-  infoGetStatusParsed
+  infoGetStatusParsed,
+  infoGetStatusSerialized
 };
 
 fs.writeFileSync(outFile, JSON.stringify(golden, null, 2) + '\n');

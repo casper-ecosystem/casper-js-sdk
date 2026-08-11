@@ -194,24 +194,62 @@ describe('compatibility with casper-js-sdk@5.1.0', () => {
     });
   });
 
-  // `InfoGetStatusResult` is the one class in the corpus that cannot be
-  // round-tripped, in either version. Its `available_block_range` member is
-  // declared (`src/rpc/response.ts`) with a `constructor:` thunk that returns an
-  // object of `jsonMember` decorators rather than a class, which typedjson has
-  // no way to use. That declaration predates 5.1.0 and this branch does not
-  // touch it, so it is not a regression — but the two runtimes fail differently:
-  // under the `target: es5` output that both versions publish, typedjson logs
-  // the field and emits everything else (verified equal between 5.1.0's dist and
-  // this branch's dist), while under the native-class transform this suite uses
-  // it abandons the whole document.
+  // `InfoGetStatusResult` is the one class whose output is deliberately not
+  // identical to 5.1.0's, so it is held out of the digest corpus above.
   //
-  // What an RPC consumer actually depends on is the parse side, and there the
-  // two versions agree exactly. That is what is asserted here.
+  // Its `available_block_range` member used to be declared
+  // (`src/rpc/response.ts`) with a `constructor:` thunk that returned an object
+  // of `jsonMember` decorators rather than a class — not something typedjson can
+  // use. 5.1.0 therefore dropped the field from everything it serialized, and
+  // under native ES classes typedjson gave up on the whole document and returned
+  // `undefined`. It is now a real `@jsonObject` class.
+  //
+  // So the compatibility claim here is a superset, not an equality: the parse
+  // side is unchanged, every field 5.1.0 emitted is emitted identically, and
+  // `available_block_range` is added back.
   describe('InfoGetStatusResult', () => {
-    const status = new TypedJSON(InfoGetStatusResult).parse(
-      getStatusJson.result
-    )!;
+    const serializer = new TypedJSON(InfoGetStatusResult);
+    const status = serializer.parse(getStatusJson.result)!;
     const expected = golden.infoGetStatusParsed;
+
+    it('serializes at all — 5.1.0 emitted a document, so must this', () => {
+      // Guards the native-class failure specifically: with the broken
+      // declaration `toPlainJson` resolves to `undefined` here, which no
+      // assertion about individual fields would ever reach.
+      const serialized = serializer.toPlainJson(status);
+
+      expect(serialized).to.be.an('object');
+      expect(Object.keys(serialized!)).to.include.members(
+        Object.keys(golden.infoGetStatusSerialized)
+      );
+    });
+
+    it('emits every field 5.1.0 emitted, byte for byte', () => {
+      const serialized = {
+        ...(serializer.toPlainJson(status) as Record<string, unknown>)
+      };
+
+      // The single intended addition; everything else must match exactly.
+      delete serialized.available_block_range;
+
+      expect(serialized).to.deep.equal(golden.infoGetStatusSerialized);
+    });
+
+    it('restores the available_block_range that 5.1.0 dropped', () => {
+      const serialized = serializer.toPlainJson(status) as Record<
+        string,
+        unknown
+      >;
+
+      expect(golden.infoGetStatusSerialized).to.not.have.property(
+        'available_block_range'
+      );
+      // Round-trips to the value that was in the response to begin with, which
+      // is what makes the added field safe for 5.1.0 to read back.
+      expect(serialized.available_block_range).to.deep.equal(
+        getStatusJson.result.available_block_range
+      );
+    });
 
     it('parses a 5.1.0-era status response to the same values', () => {
       expect(status.apiVersion).to.equal(expected.apiVersion);

@@ -687,6 +687,18 @@ export class BlockSyncStatus {
   acquisitionState?: string;
 }
 
+/**
+ * The range of blocks the node currently holds, as reported by `info_get_status`.
+ */
+@jsonObject
+export class AvailableBlockRange {
+  @jsonMember({ name: 'low', constructor: Number })
+  low: number;
+
+  @jsonMember({ name: 'high', constructor: Number })
+  high: number;
+}
+
 @jsonObject
 export class BlockSynchronizerStatus {
   @jsonMember({ name: 'historical', constructor: BlockSyncStatus })
@@ -762,14 +774,17 @@ export class InfoGetStatusResult {
   })
   latestSwitchBlockHash: Hash;
 
+  // Declared as a class rather than the inline `constructor: () => ({...})`
+  // thunk it used to carry. That thunk returned an object of `jsonMember`
+  // decorators, which is not a constructor, so typedjson could not use it: it
+  // rejected the member on serialization. Under `target: es5` it logged the
+  // failure and emitted the rest of the document; under native ES classes it
+  // abandoned the whole document and returned `undefined`.
   @jsonMember({
     name: 'available_block_range',
-    constructor: () => ({
-      low: jsonMember({ name: 'low', constructor: Number }),
-      high: jsonMember({ name: 'high', constructor: Number })
-    })
+    constructor: AvailableBlockRange
   })
-  availableBlockRange: { low: number; high: number };
+  availableBlockRange: AvailableBlockRange;
 
   @jsonMember({
     name: 'block_sync',
