@@ -1,0 +1,35 @@
+rules:
+  - id: no-weak-randomness-in-key-material
+    languages: [typescript]
+    severity: ERROR
+    message: >-
+      Key material must come from a CSPRNG (@noble randomBytes / crypto.getRandomValues),
+      never Math.random().
+    pattern: Math.random()
+    paths:
+      include:
+        - 'src/types/keypair/**'
+
+  - id: no-dynamic-code-eval
+    languages: [typescript]
+    severity: ERROR
+    message: No dynamic code evaluation in a signing SDK.
+    pattern-either:
+      - pattern: eval(...)
+      - pattern: new Function(...)
+    paths:
+      include:
+        - 'src/**'
+
+  - id: private-key-tostring-audit
+    languages: [typescript]
+    severity: WARNING
+    message: Review — potential secret material flowing into logs/serialization.
+    patterns:
+      - pattern: console.log(..., $KEY, ...)
+      - metavariable-regex:
+          metavariable: $KEY
+          regex: '.*([Pp]rivate|[Ss]ecret).*'
+    paths:
+      include:
+        - 'src/**'
