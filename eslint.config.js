@@ -70,5 +70,46 @@ module.exports = defineConfig([
       ]
     }
   },
+  {
+    // PHASE-3.5 Task 1 — correctness tripwires. Every rule here reports zero on
+    // this tree; they exist to stop regressions, not to fix debt. The one
+    // exception was `no-promise-executor-return`, whose single hit was fixed
+    // alongside this block rather than deferred.
+    linterOptions: { reportUnusedDisableDirectives: 'error' },
+    rules: {
+      // --- async correctness: the highest-value group for an SDK ---
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/no-misused-promises': 'error',
+      'require-atomic-updates': 'error',
+      'no-promise-executor-return': 'error',
+
+      // --- control flow ---
+      'no-fallthrough': 'error',
+      'default-case-last': 'error',
+      'array-callback-return': 'error',
+      'no-constructor-return': 'error',
+
+      // --- numeric & byte correctness ---
+      'no-loss-of-precision': 'error',
+      'no-self-compare': 'error',
+      'no-unmodified-loop-condition': 'error',
+      '@typescript-eslint/no-mixed-enums': 'error',
+      '@typescript-eslint/prefer-literal-enum-member': 'error',
+      '@typescript-eslint/no-unnecessary-boolean-literal-compare': 'error',
+
+      // --- error handling ---
+      'no-useless-catch': 'error',
+
+      // --- injection sinks: an SDK must never reach these ---
+      'no-eval': 'error',
+      'no-implied-eval': 'error',
+      'no-new-func': 'error',
+      'no-script-url': 'error',
+
+      // --- misc correctness ---
+      'no-prototype-builtins': 'error',
+      'no-template-curly-in-string': 'error'
+    }
+  },
   prettier // MUST stay last so it disables conflicting stylistic rules
 ]);
