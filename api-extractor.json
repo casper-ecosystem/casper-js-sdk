@@ -1,0 +1,58 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+
+  /**
+   * The tripwire behind the plan's "no unplanned breaking changes on 5.x" promise: the emitted
+   * public surface is rolled up into `etc/casper-js-sdk.api.md`, and CI re-runs this against the
+   * committed report. Any surface change therefore has to arrive as a reviewable diff of that
+   * file in the same PR — a break can be deliberate, but it cannot be silent.
+   *
+   * Reads the built declarations, not `src`, so it sees exactly what a consumer's compiler sees.
+   * Run `npm run build` first.
+   */
+  "mainEntryPointFilePath": "<projectFolder>/dist/index.d.ts",
+
+  "compiler": {
+    "tsconfigFilePath": "<projectFolder>/tsconfig.json"
+  },
+
+  "apiReport": {
+    "enabled": true,
+    "reportFolder": "<projectFolder>/etc/"
+  },
+
+  /**
+   * Only the report is wanted. The doc model feeds api-documenter (typedoc already covers docs),
+   * and the .d.ts rollup would replace the published declarations — a packaging change that is
+   * not this tripwire's business.
+   */
+  "docModel": { "enabled": false },
+  "dtsRollup": { "enabled": false },
+  "tsdocMetadata": { "enabled": false },
+
+  "messages": {
+    "compilerMessageReporting": {
+      "default": { "logLevel": "warning" }
+    },
+
+    "extractorMessageReporting": {
+      "default": { "logLevel": "warning" },
+
+      /**
+       * Fails the run rather than warning: an exported type that references a non-exported one is
+       * a hole in the published surface (PHASE-5 P5-2 documents the `BigNumber` case). Downgraded
+       * to `none` here only because the existing surface already has such leaks; the report itself
+       * enumerates them, which is what PHASE-5 needs.
+       */
+      "ae-forgotten-export": { "logLevel": "none" },
+
+      /** Release tags are a docs convention this repo does not use; every export is public. */
+      "ae-missing-release-tag": { "logLevel": "none" },
+      "ae-undocumented": { "logLevel": "none" }
+    },
+
+    "tsdocMessageReporting": {
+      "default": { "logLevel": "none" }
+    }
+  }
+}

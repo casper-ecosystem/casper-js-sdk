@@ -91,6 +91,13 @@ jobs:
       - name: Test build
         run: npm run build
 
+      # Reads `dist/*.d.ts`, so it has to follow the build. Fails when the
+      # emitted public surface differs from the committed report, which makes a
+      # breaking change impossible to land without a reviewable diff of
+      # `etc/casper-js-sdk.api.md`. Regenerate with `npm run api:update`.
+      - name: Public API tripwire
+        run: npm run api:check
+
       # The tarball the Node 18 job consumes. Built here because the build
       # toolchain (webpack-cli@7, eslint@10) needs Node >=20.9.
       - name: Pack
