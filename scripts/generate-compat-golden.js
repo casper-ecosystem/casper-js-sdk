@@ -60,6 +60,7 @@ const sdk = require(sdkDir);
 const dataDir = path.join(repoRoot, 'src/tests/data');
 
 const readFixture = rel =>
+  // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal -- `rel` is a literal from this script's own fixture list
   JSON.parse(fs.readFileSync(path.join(dataDir, rel), 'utf8'));
 
 /** Stable stringification: object keys sorted, so ordering never affects the digest. */
@@ -280,18 +281,22 @@ const collectStrings = (node, out) => {
 // `compat/` holds this script's own output. Walking it would feed the previous
 // golden's recorded values back in as inputs, making the sample depend on the
 // last run rather than on the corpus.
+//
+// The `nosemgrep` markers below are scoped to the path-traversal rule alone:
+// `dir` starts at `dataDir` and every segment after it comes from `readdirSync`,
+// so nothing steers it.
 const walk = dir =>
-  fs
-    .readdirSync(dir, { withFileTypes: true })
-    .flatMap(e =>
-      e.isDirectory()
-        ? e.name === 'compat'
-          ? []
-          : walk(path.join(dir, e.name))
-        : e.name.endsWith('.json')
-          ? [path.join(dir, e.name)]
-          : []
-    );
+  fs.readdirSync(dir, { withFileTypes: true }).flatMap(e =>
+    e.isDirectory()
+      ? e.name === 'compat'
+        ? []
+        : // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
+          walk(path.join(dir, e.name))
+      : e.name.endsWith('.json')
+        ? // nosemgrep: javascript.lang.security.audit.path-traversal.path-join-resolve-traversal.path-join-resolve-traversal
+          [path.join(dir, e.name)]
+        : []
+  );
 
 const allStrings = new Set();
 for (const file of walk(dataDir)) {

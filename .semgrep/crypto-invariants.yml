@@ -7,8 +7,10 @@ rules:
       never Math.random().
     pattern: Math.random()
     paths:
+      # Leading slash anchors to the repo root, which is the intent here and also
+      # what Semgrepignore v2 will make these patterns mean regardless.
       include:
-        - 'src/types/keypair/**'
+        - '/src/types/keypair/**'
 
   - id: no-dynamic-code-eval
     languages: [typescript]
@@ -19,7 +21,7 @@ rules:
       - pattern: new Function(...)
     paths:
       include:
-        - 'src/**'
+        - '/src/**'
 
   - id: private-key-tostring-audit
     languages: [typescript]
@@ -32,4 +34,4 @@ rules:
           regex: '.*([Pp]rivate|[Ss]ecret).*'
     paths:
       include:
-        - 'src/**'
+        - '/src/**'
