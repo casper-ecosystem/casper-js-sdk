@@ -171,8 +171,12 @@ jobs:
       - name: Publish to npm
         run: npm publish --access public --tag latest --provenance
 
+      # The tag name reaches the shell through `env:`, not `${{ }}` interpolation:
+      # GitHub does not sanitise ref names, and this job holds `id-token: write`.
       - name: Rename package
-        run: cp dist/lib.node.js casper-js-sdk.v${{ github.ref_name }}.js
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: cp dist/lib.node.js "casper-js-sdk.v${REF_NAME}.js"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 #v2.6.2
