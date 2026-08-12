@@ -21,6 +21,9 @@ on:
     paths-ignore:
       - '**.md'
 
+permissions:
+  contents: read
+
 # Branch protection on `dev` requires exactly one status check — `mergefreeze`.
 # None of the jobs below is required, so the guards in here fail loudly but do
 # not block a merge on their own; a human reading the run decides what that
@@ -60,6 +63,13 @@ jobs:
 
       - name: Install
         run: npm install
+
+      # `.npmrc` sets ignore-scripts=true, so the install above runs no
+      # dependency lifecycle script at all — the npm attack that needs no
+      # cooperation from this repo's code. This then runs the ones the
+      # `lavamoat.allowScripts` allowlist permits, which is currently none.
+      - name: Run allowed dependency scripts
+        run: npx allow-scripts
 
       - name: Audits
         run: npm audit --omit=dev
