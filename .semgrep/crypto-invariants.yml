@@ -9,8 +9,11 @@ rules:
     paths:
       # Leading slash anchors to the repo root, which is the intent here and also
       # what Semgrepignore v2 will make these patterns mean regardless.
+      #
+      # Scoped to all of src rather than keypair alone: nonces, request ids and
+      # salts are generated outside that directory and are no safer for it.
       include:
-        - '/src/types/keypair/**'
+        - '/src/**'
 
   - id: no-dynamic-code-eval
     languages: [typescript]
@@ -28,10 +31,67 @@ rules:
     severity: WARNING
     message: Review — potential secret material flowing into logs/serialization.
     patterns:
-      - pattern: console.log(..., $KEY, ...)
+      - pattern-either:
+          - pattern: console.$METHOD(..., $KEY, ...)
+          - pattern: JSON.stringify(..., $KEY, ...)
+          - pattern: String($KEY)
+          # A key interpolated into an error message ends up wherever the
+          # caller's error reporting sends it.
+          - pattern: new Error(`...${$KEY}...`, ...)
+          - pattern: throw new $ERR(`...${$KEY}...`, ...)
       - metavariable-regex:
           metavariable: $KEY
-          regex: '.*([Pp]rivate|[Ss]ecret).*'
+          # Deliberately excludes "seed": `seedUref` and `accumulatedSeed` are
+          # public chain data that is legitimate to log.
+          regex: '.*([Pp]rivate|[Ss]ecret|[Mm]nemonic).*'
+    paths:
+      include:
+        - '/src/**'
+      exclude:
+        - '/src/tests/**'
+
+  - id: no-signature-malleability-guard-disabled
+    languages: [typescript]
+    severity: ERROR
+    message: >-
+      Signature malleability guard disabled. @noble rejects high-S secp256k1
+      signatures by default; turning that off lets a third party mint a second
+      valid signature over the same message.
+    pattern-either:
+      - pattern: '{..., lowS: false, ...}'
+      - pattern: '{..., strict: false, ...}'
+    paths:
+      include:
+        - '/src/**'
+
+  - id: crypto-must-come-from-noble
+    languages: [typescript]
+    severity: ERROR
+    message: >-
+      Signing and hashing come from @noble/* only. These libraries carry their
+      own history of nonce-reuse and curve-validation bugs, and adding one puts
+      a second, unaudited implementation on the signing path.
+    pattern-either:
+      - pattern: import 'elliptic'
+      - pattern: import 'tweetnacl'
+      - pattern: import 'crypto-js'
+      - pattern: import 'node-forge'
+      - pattern: import 'secure-random'
+      - pattern: import 'ethereumjs-util'
+      - pattern: import 'bitcoinjs-lib'
+    paths:
+      include:
+        - '/src/**'
+
+  - id: no-broken-hash-function
+    languages: [typescript]
+    severity: ERROR
+    message: MD5 and SHA-1 are collision-broken and must not appear in an SDK that signs.
+    pattern-either:
+      - pattern: $CRYPTO.createHash('md5')
+      - pattern: $CRYPTO.createHash('sha1')
+      - pattern: md5(...)
+      - pattern: sha1(...)
     paths:
       include:
         - '/src/**'
