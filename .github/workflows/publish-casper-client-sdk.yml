@@ -54,7 +54,7 @@ jobs:
             || { echo "::error::tag $GITHUB_REF_NAME != package.json version $pkg"; exit 1; }
 
           # 2. fail fast if the version is already on npm, instead of burning a full
-          #    build + prepublishOnly test run only to hit EPUBLISHCONFLICT (403) at the end.
+          #    build and test run only to hit EPUBLISHCONFLICT (403) at the end.
           #    `npm view pkg@version` exits 0 when it exists and exits 1 (E404) when it does not,
           #    so it MUST be wrapped in `if`, or GitHub's `bash -e` kills the step on the healthy path.
           if npm view "casper-js-sdk@$GITHUB_REF_NAME" version >/dev/null 2>&1; then
@@ -64,11 +64,8 @@ jobs:
       - name: Build
         run: npm run build
 
-      # These three used to ride along on `prepublishOnly`. They cannot any
-      # more: ignore-scripts=true means npm skips that hook, so the release
-      # would otherwise publish whatever `dist/` happened to contain. Running
-      # them here also fails the tag before anything is uploaded, rather than
-      # halfway through the publish step.
+      # Here rather than on an npm lifecycle hook: `.npmrc` sets
+      # ignore-scripts=true, which skips those hooks entirely.
       - name: Unit tests
         run: npm run test:node:unit
 

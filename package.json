@@ -51,8 +51,7 @@
     "test": "npm run test:unit && npm run test:e2e",
     "docs:build": "cd site && npm ci && npm run build && cd .. && typedoc --out docs/api",
     "docs:dev": "cd site && npm install && npm run dev",
-    "docs:preview": "cd site && npm run preview",
-    "prepublishOnly": "npm run build && npm run test:node:unit && npm run check:package"
+    "docs:preview": "cd site && npm run preview"
   },
   "engines": {
     "node": ">=18"
