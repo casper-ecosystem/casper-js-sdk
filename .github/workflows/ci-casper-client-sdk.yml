@@ -100,7 +100,11 @@ jobs:
       # toolchain (webpack-cli@7, eslint@10) needs Node >=20.9.
       - name: Pack
         if: matrix.node-version == '22.x'
-        run: npm pack --pack-destination ./pack
+        # npm 10, the version Node 22 bundles, does not create
+        # `--pack-destination` itself and fails with ENOENT on the tarball.
+        run: |
+          mkdir -p ./pack
+          npm pack --pack-destination ./pack
 
       - name: Upload tarball
         if: matrix.node-version == '22.x'
