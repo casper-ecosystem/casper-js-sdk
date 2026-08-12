@@ -81,6 +81,15 @@ jobs:
       - name: Bundle budgets
         run: npm run size:check
 
+      # What is inside the release, next to the provenance attestation that says
+      # who built it. `--omit dev` narrows it to the 48 packages a consumer
+      # actually resolves. The reason to publish it is a repeat of `inflight`:
+      # that advisory carried no GHSA, so `npm audit` reported zero while the
+      # package shipped to everyone, and answering "which releases contained
+      # it?" meant reconstructing old dependency trees by hand.
+      - name: Generate SBOM
+        run: npm sbom --sbom-format cyclonedx --omit dev > casper-js-sdk.sbom.json
+
       - name: Extract release notes from CHANGELOG
         env:
           GH_TOKEN: ${{ github.token }} # for the `gh api` contributor lookup below
@@ -116,6 +125,7 @@ jobs:
           path: |
             dist/
             RELEASE_NOTES.md
+            casper-js-sdk.sbom.json
           retention-days: 1
 
   publish:
@@ -171,3 +181,4 @@ jobs:
           body_path: RELEASE_NOTES.md
           files: |
             casper-js-sdk.v${{ github.ref_name }}.js
+            casper-js-sdk.sbom.json
