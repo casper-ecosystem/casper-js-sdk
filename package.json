@@ -36,6 +36,7 @@
     "api:check": "api-extractor run",
     "api:update": "api-extractor run --local",
     "check:package": "publint && attw --pack . --ignore-rules named-exports && tsc -p tsconfig.dts-consumer.json",
+    "size:check": "node scripts/assert-bundle-size.js",
     "setup": "npm install && allow-scripts && npm run prepare",
     "build": "npm run clean && npm run lint && webpack --config webpack.config.js",
     "clean": "rm -rf ./dist",

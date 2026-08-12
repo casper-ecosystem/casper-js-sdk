@@ -114,6 +114,13 @@ jobs:
       - name: Public API tripwire
         run: npm run api:check
 
+      # webpack's own size warning has never failed a build. This does, which
+      # matters most for `lib.web.js`: it ships to browser wallets, and the
+      # dependency swaps v6 is built around are exactly where a stray import
+      # can pull a whole library into it without breaking a single test.
+      - name: Bundle budgets
+        run: npm run size:check
+
       # This is a dual Node/browser CJS package that already had to revert one
       # ESM attempt, so the packaging is checked rather than assumed: publint on
       # the manifest, attw on whether the declarations resolve the same way the

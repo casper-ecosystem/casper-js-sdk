@@ -78,6 +78,9 @@ jobs:
       - name: Public API tripwire
         run: npm run api:check
 
+      - name: Bundle budgets
+        run: npm run size:check
+
       - name: Extract release notes from CHANGELOG
         env:
           GH_TOKEN: ${{ github.token }} # for the `gh api` contributor lookup below
