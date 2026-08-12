@@ -24,15 +24,13 @@ on:
 permissions:
   contents: read
 
-# Branch protection on `dev` requires exactly one status check — `mergefreeze`.
-# None of the jobs below is required, so the guards in here fail loudly but do
-# not block a merge on their own; a human reading the run decides what that
-# means. To make them required, the check names are `build (22.x, ubuntu-22.04)`,
-# `build (24.x, ubuntu-22.04)`, `node18-consumer` and `node18-typings`.
+# Branch protection on `dev` requires only `mergefreeze`, so none of the guards
+# below blocks a merge on its own. To make them required, the check names are
+# `build (22.x, ubuntu-22.04)`, `build (24.x, ubuntu-22.04)`, `node18-consumer`
+# and `node18-typings`.
 jobs:
-  # The maintained legs: they run the whole dev toolchain. Node 18 cannot run
-  # that suite at all (vitest@4 engines: ^20 || ^22 || >=24) and is covered by
-  # `node18-consumer` below.
+  # Node 18 is handled by `node18-consumer`: vitest@4 (engines ^20 || ^22 ||
+  # >=24) cannot run the dev suite there at all.
   build:
     strategy:
       fail-fast: false
@@ -65,32 +63,35 @@ jobs:
         run: npm install
 
       # `.npmrc` sets ignore-scripts=true, so the install above runs no
-      # dependency lifecycle script at all — the npm attack that needs no
-      # cooperation from this repo's code. This then runs the ones the
-      # `lavamoat.allowScripts` allowlist permits, which is currently none.
+      # dependency lifecycle script; this runs the ones `lavamoat.allowScripts`
+      # permits, which is currently none.
       - name: Run allowed dependency scripts
         run: npx allow-scripts
 
       - name: Audits
         run: npm audit --omit=dev
 
-      # Advisories are only half of it: this checks that every package in the
-      # installed tree carries a valid registry signature, which is what catches
-      # a tarball swapped out from under a version that already resolved.
+      # Catches a tarball swapped out from under a version that already resolved.
       - name: Registry signatures and provenance attestations
         run: npm audit signatures
 
       - name: Lints
         run: npm run lint:ci
 
-      - name: Knip (dead & phantom dependencies)
+      # Full scope, not just the dependency findings: dead code fails here
+      # rather than waiting for someone to run the report by hand.
+      - name: Knip (dead code, dead & phantom dependencies)
         run: npm run knip
+
+      # Test files are entry points, so the run above cannot tell source that
+      # ships from source only the tests keep alive.
+      - name: Knip (production graph)
+        run: npm run knip:production
 
       - name: Unit Test (node)
         run: npm run test:node:unit -- --reporter=default --reporter=json --outputFile.json=reports/node-unit.json
 
-      # A green exit code only says nothing failed, not that everything ran.
-      # See scripts/assert-test-count.js for why that distinction has teeth here.
+      # A green exit code says nothing failed, not that anything ran.
       - name: Assert the node suite ran the whole file set
         run: node scripts/assert-test-count.js reports/node-unit.json "node unit"
 
@@ -107,36 +108,26 @@ jobs:
       - name: Test build
         run: npm run build
 
-      # Reads `dist/*.d.ts`, so it has to follow the build. Fails when the
-      # emitted public surface differs from the committed report, which makes a
-      # breaking change impossible to land without a reviewable diff of
-      # `etc/casper-js-sdk.api.md`. Regenerate with `npm run api:update`.
+      # Reads `dist/*.d.ts`, so it has to follow the build. Regenerate the
+      # committed report with `npm run api:update`.
       - name: Public API tripwire
         run: npm run api:check
 
       # webpack's own size warning has never failed a build. This does, which
-      # matters most for `lib.web.js`: it ships to browser wallets, and the
-      # dependency swaps v6 is built around are exactly where a stray import
-      # can pull a whole library into it without breaking a single test.
+      # matters most for `lib.web.js`: it ships to browser wallets.
       - name: Bundle budgets
         run: npm run size:check
 
-      # This is a dual Node/browser CJS package that already had to revert one
-      # ESM attempt, so the packaging is checked rather than assumed: publint on
-      # the manifest, attw on whether the declarations resolve the same way the
-      # runtime entries do, and a consumer-shaped type-check with no @types/node.
-      #
-      # attw's `named-exports` rule is ignored, and that ignore is a finding, not
-      # a shrug: none of the 440 named exports is statically detectable in the
-      # webpack bundle, so `import { PublicKey } from 'casper-js-sdk'` under Node
-      # ESM resolves the types and then crashes at runtime. Fixing it is the
-      # whole point of the ESM packaging phase; until then the rule would mask
-      # every other regression this step exists to catch. Drop the ignore there.
+      # attw's `named-exports` rule is ignored, and that ignore is a finding:
+      # none of the 440 named exports is statically detectable in the webpack
+      # bundle, so `import { PublicKey } from 'casper-js-sdk'` under Node ESM
+      # resolves the types and then crashes at runtime. Until the ESM packaging
+      # phase fixes that, the rule would mask every other regression here.
       - name: Package shape
         run: npm run check:package
 
-      # The tarball the Node 18 job consumes. Built here because the build
-      # toolchain (webpack-cli@7, eslint@10) needs Node >=20.9.
+      # The tarball the Node 18 job consumes, built here because the build
+      # toolchain needs Node >=20.9.
       - name: Pack
         if: matrix.node-version == '22.x'
         # npm 10, the version Node 22 bundles, does not create
@@ -153,10 +144,9 @@ jobs:
           path: ./pack/*.tgz
           retention-days: 1
 
-  # The consumer-compatibility leg for the published `engines.node ">=18"`.
-  # The dev suite runs TypeScript sources and never touches `dist/`, so this job
-  # is the only thing proving the published tarball installs and runs under a
-  # plain Node 18.
+  # The consumer leg for the published `engines.node ">=18"`: it runs the built
+  # tarball under plain `node`, which the dev suite never does — that one runs
+  # TypeScript sources and never touches `dist/`.
   node18-consumer:
     needs: build
     runs-on: ubuntu-22.04
@@ -182,19 +172,18 @@ jobs:
           cp scripts/smoke.js "$RUNNER_TEMP/consumer/"
           cd "$RUNNER_TEMP/consumer"
           npm init -y >/dev/null
-          # --engine-strict, or this job cannot fail on what it exists to prove:
-          # npm defaults to engine-strict=false, so a dependency whose
-          # engines.node excludes 18 only warns EBADENGINE and installs anyway.
+          # --engine-strict, or this job cannot fail on the thing it exists to
+          # prove: npm defaults to false, so a dependency whose engines.node
+          # excludes 18 only warns EBADENGINE and installs anyway.
           npm install --engine-strict ./*.tgz
 
       - name: Smoke test the published artifact
         run: node "$RUNNER_TEMP/consumer/smoke.js"
         working-directory: ${{ runner.temp }}/consumer
 
-  # `@types/node` is on ^22 for vitest@4, so the build no longer proves `src`
-  # stays inside the API surface Node 18 actually has; this job puts the 18.x
-  # typings back in front of the compiler. They go into a throwaway directory —
-  # installing them into the project tree would break vitest's peer range.
+  # `@types/node` had to move to ^22 for vitest@4, so the build no longer proves
+  # that `src` stays inside the API surface Node 18 has. The typings go into a
+  # throwaway directory to keep vitest's peer range satisfied.
   node18-typings:
     runs-on: ubuntu-22.04
     steps:

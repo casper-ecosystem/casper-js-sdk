@@ -1,24 +1,40 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  // `e2e/` has no `*.test.ts` files today, so `e2e/config.ts` is the entry that
-  // keeps it and the wasm fixtures reachable.
-  // `src/index.ts` is deliberately absent — knip detects the library entry on its
-  // own and reports listing it again as a redundant pattern.
-  "entry": ["src/**/*.test.ts", "e2e/config.ts"],
-  "project": ["src/**/*.ts", "e2e/**/*.ts"],
+  // `src/index.ts!` is the published surface: knip cannot see consumer usage,
+  // so nothing reachable from it is ever dead code. `e2e/` has no test files
+  // today, so `e2e/config.ts` keeps it and the wasm fixtures reachable.
+  "entry": [
+    "src/index.ts!",
+    "src/**/*.test.ts",
+    "e2e/config.ts",
+    // CI runs a copy of this from $RUNNER_TEMP, not the file itself.
+    "scripts/smoke.js",
+    // Run by hand to regenerate the compat golden fixtures.
+    "scripts/generate-compat-golden.js"
+  ],
+  // The `!` markers split production from dev, which is what makes
+  // `knip:production` a second lens: source kept alive by tests alone.
+  "project": [
+    "src/**/*.ts!",
+    "src/tests/**/*.ts",
+    "e2e/**/*.ts",
+    "scripts/*.js",
+    "*.{js,cjs,mjs,mts}"
+  ],
+  "ignoreBinaries": [
+    // Installed out of band — pipx/brew locally, a container in CI.
+    "semgrep"
+  ],
   // RULE: every entry below must name the mechanism by which the dependency is
   // genuinely used and knip cannot see it. "knip is wrong" is not a reason.
   // If no such mechanism exists, the dependency is dead — remove it instead.
   "ignoreDependencies": [
-    // `buffer` is reached only through a plugin string —
-    // `new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })` — which knip
-    // cannot see. `process` it resolves on its own from its own ProvidePlugin.
+    // Reached only through a plugin string:
+    // `new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })`. `process`
+    // knip resolves on its own from its ProvidePlugin.
     "buffer",
-    // Nothing imports `@lavamoat/preinstall-always-fail` and nothing ever
-    // should: it is a tripwire. Its own `preinstall` script fails the install,
-    // so the only way it stays quiet is `ignore-scripts=true` in `.npmrc`. If
-    // that protection is ever removed, this dependency makes the next install
-    // fail loudly instead of silently running every dependency's scripts.
+    // A tripwire, imported by nothing on purpose: its own `preinstall` fails
+    // the install if `ignore-scripts=true` is ever dropped from `.npmrc`.
     "@lavamoat/preinstall-always-fail"
   ]
 }
