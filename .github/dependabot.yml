@@ -1,0 +1,67 @@
+version: 2
+updates:
+  # npm dependencies — grouped to reduce PR noise
+  - package-ecosystem: npm
+    directory: '/'
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Etc/UTC
+    open-pull-requests-limit: 10
+    # This package is published, so the caret ranges in package.json are a
+    # contract with consumers: only widen them when the new version genuinely
+    # falls outside. Everything else stays a lockfile-only bump.
+    versioning-strategy: increase-if-necessary
+    labels:
+      - dependencies
+    commit-message:
+      prefix: chore(deps)
+      prefix-development: chore(deps-dev)
+    groups:
+      minor-and-patch:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
+        # Keep major bumps separate so they get individual review, and keep the
+        # signing-path packages out of the group entirely — a @noble or ASN.1
+        # change reaches key material, so it is reviewed on its own PR.
+        exclude-patterns:
+          - '@noble/*'
+          - '@peculiar/*'
+    # PHASE-5 owns these upgrades: the @noble v2 consolidation that drops
+    # @noble/ed25519 + @noble/secp256k1, the native-bigint move off
+    # @ethersproject/*, and eventsource 4. Automation must not reopen the
+    # breaking set that phase exists to land deliberately.
+    ignore:
+      - dependency-name: '@noble/*'
+        update-types:
+          - version-update:semver-major
+      - dependency-name: '@ethersproject/*'
+        update-types:
+          - version-update:semver-major
+      - dependency-name: 'eventsource'
+        update-types:
+          - version-update:semver-major
+
+  # GitHub Actions used by workflows
+  - package-ecosystem: github-actions
+    directory: '/'
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Etc/UTC
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: chore(ci)
+    groups:
+      actions:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
