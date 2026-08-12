@@ -15,6 +15,23 @@ rules:
       include:
         - '/.github/workflows/**'
 
+  - id: require-explicit-permissions
+    languages: [yaml]
+    severity: ERROR
+    message: >-
+      Workflow declares no top-level `permissions:`, so its jobs fall back to
+      the repository default token, which can be write on every scope. Set
+      `permissions: contents: read` at the top and widen it per job.
+    patterns:
+      # The match has to span the whole file: pattern-not-regex only discards a
+      # result when its regex hits inside the matched range, and the key we are
+      # asserting the absence of can sit anywhere in the document.
+      - pattern-regex: '(?s)\A.+\z'
+      - pattern-not-regex: '(?m)^permissions:'
+    paths:
+      include:
+        - '/.github/workflows/**'
+
   - id: no-untrusted-interpolation-in-run
     languages: [yaml]
     severity: ERROR

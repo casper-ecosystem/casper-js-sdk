@@ -7,6 +7,11 @@ on:
   schedule:
     - cron: '0 5 * * 1' # weekly
 
+# `analyze` overrides this with the scopes it needs; this is the floor any job
+# added later inherits instead of the repository default token.
+permissions:
+  contents: read
+
 jobs:
   analyze:
     runs-on: ubuntu-latest
