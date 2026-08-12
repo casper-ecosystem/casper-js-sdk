@@ -1,0 +1,104 @@
+# Conventions from CLAUDE.md that no other gate enforces. Each rule reports zero
+# on this tree; they exist to stop a regression, not to fix debt.
+rules:
+  - id: no-reflect-metadata
+    languages: [typescript]
+    severity: ERROR
+    message: >-
+      reflect-metadata was dropped in 5.1.0. typedjson guards every
+      Reflect.getMetadata call behind isReflectMetadataSupported, so importing
+      the polyfill silently switches serialization onto the reflection path —
+      where the decorators in src, which all declare their types explicitly,
+      have never been exercised.
+    pattern-either:
+      - pattern: import 'reflect-metadata'
+      - pattern: require('reflect-metadata')
+      - pattern: Reflect.getMetadata(...)
+      - pattern: Reflect.metadata(...)
+    paths:
+      # Leading slash anchors to the repo root, matching crypto-invariants.yml.
+      include:
+        - '/src/**'
+
+  - id: jsonmember-needs-explicit-type
+    languages: [typescript]
+    severity: ERROR
+    message: >-
+      Every @jsonMember / @jsonArrayMember must declare its type explicitly — a
+      positional constructor, `constructor:`, or a serializer/deserializer pair.
+      A decorator without one only resolves its type through reflect-metadata,
+      which this package does not ship.
+    # Semgrep's structural decorator patterns (`@jsonMember({...})`) match
+    # nothing in TypeScript, so both halves of this are regex.
+    pattern-either:
+      # `@jsonMember` with no arguments at all.
+      - pattern-regex: '@json(Array)?Member\s*$'
+      # An options object carrying neither `constructor` nor a (de)serializer.
+      - patterns:
+          - pattern-regex: '@jsonMember\(\{(?:[^{}]|\{[^{}]*\})*\}\)'
+          - pattern-not-regex: '@jsonMember\(\{(?:[^{}]|\{[^{}]*\})*(?:constructor|serializer|deserializer)(?:[^{}]|\{[^{}]*\})*\}\)'
+    paths:
+      include:
+        - '/src/**'
+
+  - id: no-conditional-super
+    languages: [typescript]
+    severity: ERROR
+    message: >-
+      super() must be called unconditionally. This pattern survives only because
+      `target: es5` downlevels classes; under native ES classes — the Vitest
+      transform, and `target: es2020` in v6 — it throws at construction.
+    pattern-either:
+      - pattern: if (...) { ... super(...); ... }
+      - pattern: if (...) { ... } else { ... super(...); ... }
+      - pattern: if (...) super(...);
+    paths:
+      include:
+        - '/src/**'
+
+  - id: no-node-builtin-in-shared-code
+    languages: [typescript]
+    severity: ERROR
+    message: >-
+      Node-only builtin in shared code. The web build carries no
+      resolve.fallback block — only the Buffer and process ProvidePlugins — so
+      this fails the webpack build rather than silently bundling a polyfill.
+    pattern-either:
+      - pattern: import 'crypto'
+      - pattern: import 'node:crypto'
+      - pattern: import 'stream'
+      - pattern: import 'node:stream'
+      - pattern: import 'zlib'
+      - pattern: import 'node:zlib'
+      - pattern: import 'http'
+      - pattern: import 'node:http'
+      - pattern: import 'https'
+      - pattern: import 'node:https'
+      - pattern: import 'fs'
+      - pattern: import 'node:fs'
+      - pattern: import 'path'
+      - pattern: import 'node:path'
+      - pattern: import 'os'
+      - pattern: import 'node:os'
+      - pattern: import 'net'
+      - pattern: import 'tls'
+      - pattern: import 'child_process'
+      - pattern: import 'node:child_process'
+    paths:
+      include:
+        - '/src/**'
+      exclude:
+        - '/src/tests/**'
+
+  - id: no-process-env-in-library
+    languages: [typescript]
+    severity: WARNING
+    message: >-
+      A library must not read process.env — behaviour has to come from the
+      caller's arguments, and `process` is a ProvidePlugin shim on the web.
+    pattern: process.env
+    paths:
+      include:
+        - '/src/**'
+      exclude:
+        - '/src/tests/**'

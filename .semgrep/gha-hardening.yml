@@ -1,0 +1,28 @@
+# Workflow-level supply-chain invariants. Every workflow already satisfies these;
+# the rules keep them true as workflows are edited.
+rules:
+  - id: require-sha-pinned-actions
+    languages: [yaml]
+    severity: ERROR
+    message: >-
+      Pin actions to a full 40-character commit SHA (with the version as a
+      trailing comment). A tag is mutable — whoever controls the action's repo
+      can move it onto code that reads this workflow's secrets.
+    patterns:
+      - pattern-regex: 'uses:\s*[A-Za-z0-9_.-]+/[^\s@]+@\S+'
+      - pattern-not-regex: 'uses:\s*[A-Za-z0-9_.-]+/[^\s@]+@[0-9a-f]{40}'
+    paths:
+      include:
+        - '/.github/workflows/**'
+
+  - id: no-untrusted-interpolation-in-run
+    languages: [yaml]
+    severity: ERROR
+    message: >-
+      Attacker-controlled github.event data interpolated into a shell command —
+      a PR title or branch name becomes code running in the job. Pass it through
+      an `env:` binding and reference "$VAR" instead.
+    pattern-regex: 'run:[^\n]*\$\{\{\s*github\.(event|head_ref)'
+    paths:
+      include:
+        - '/.github/**'
