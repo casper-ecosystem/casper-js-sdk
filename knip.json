@@ -13,6 +13,12 @@
     // `buffer` is reached only through a plugin string —
     // `new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })` — which knip
     // cannot see. `process` it resolves on its own from its own ProvidePlugin.
-    "buffer"
+    "buffer",
+    // Nothing imports `@lavamoat/preinstall-always-fail` and nothing ever
+    // should: it is a tripwire. Its own `preinstall` script fails the install,
+    // so the only way it stays quiet is `ignore-scripts=true` in `.npmrc`. If
+    // that protection is ever removed, this dependency makes the next install
+    // fail loudly instead of silently running every dependency's scripts.
+    "@lavamoat/preinstall-always-fail"
   ]
 }

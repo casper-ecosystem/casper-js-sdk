@@ -21,6 +21,12 @@ jobs:
       - name: Install and Build 🔧
         run: |
           npm ci
+          # The root .npmrc sets ignore-scripts=true; this runs the allowlisted
+          # ones. It does not reach into site/, which npm treats as its own
+          # project and which therefore still runs its own dependencies'
+          # install scripts — the vocs/vite tree needs its own allow-scripts
+          # setup before that hole is closed.
+          npx allow-scripts
           npm run docs:build
 
       - name: Deploy 🚀
