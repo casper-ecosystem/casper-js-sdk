@@ -5,9 +5,9 @@ const prettier = require('eslint-config-prettier/flat');
 const globals = require('globals');
 
 // Flat config (ESLint 10). Layers eslint core's `recommended` set underneath
-// `typescript-eslint`'s `recommended`, plus the project-specific rule blocks
-// added across PHASE-3.5, then `prettier` last to disable anything stylistic
-// those sets turned on.
+// `typescript-eslint`'s `recommended`, then the project-specific rule blocks
+// below, then `prettier` last to disable anything stylistic those sets turned
+// on.
 //
 // `lint`/`lint:ci` only ever point eslint at `src/`, but the ignores below keep
 // the config correct if that scope ever widens.
@@ -68,10 +68,8 @@ module.exports = defineConfig([
     }
   },
   {
-    // PHASE-3.5 Task 1 — correctness tripwires. Every rule here reports zero on
-    // this tree; they exist to stop regressions, not to fix debt. The one
-    // exception was `no-promise-executor-return`, whose single hit was fixed
-    // alongside this block rather than deferred.
+    // Correctness tripwires. Every rule here reports zero on this tree; they
+    // exist to stop regressions, not to fix debt.
     linterOptions: { reportUnusedDisableDirectives: 'error' },
     rules: {
       // --- async correctness: the highest-value group for an SDK ---
@@ -107,7 +105,7 @@ module.exports = defineConfig([
       'no-prototype-builtins': 'error',
       'no-template-curly-in-string': 'error',
 
-      // --- PHASE-3.5 Task 3: exhaustiveness and the byte→enum boundary ---
+      // --- exhaustiveness and the byte→enum boundary ---
       '@typescript-eslint/switch-exhaustiveness-check': [
         'error',
         {
@@ -117,21 +115,21 @@ module.exports = defineConfig([
       ],
       '@typescript-eslint/no-unsafe-enum-comparison': 'error',
 
-      // --- PHASE-3.5 Task 4: async and error-handling discipline ---
+      // --- async and error-handling discipline ---
       '@typescript-eslint/return-await': ['error', 'always'],
       '@typescript-eslint/await-thenable': 'error',
       '@typescript-eslint/only-throw-error': 'error',
       '@typescript-eslint/prefer-promise-reject-errors': 'error',
       'preserve-caught-error': 'error',
 
-      // --- PHASE-3.5 Task 5: ESLint core `recommended` and scoping rules ---
+      // --- scoping and comparison rules ---
       '@typescript-eslint/no-shadow': 'error',
       'no-param-reassign': 'error',
       eqeqeq: ['error', 'always', { null: 'ignore' }],
       'guard-for-in': 'error',
       '@typescript-eslint/no-unused-vars': 'error',
 
-      // --- PHASE-3.5 Task 6: deprecated-API sweep in crypto and byte paths ---
+      // --- deprecated and unsafely-stringified APIs ---
       '@typescript-eslint/no-deprecated': 'error',
       '@typescript-eslint/unbound-method': 'error',
       '@typescript-eslint/no-base-to-string': 'error',
@@ -140,13 +138,12 @@ module.exports = defineConfig([
   },
   {
     // `KeyTypeID`/`KeyTypeName` and `TransactionVersion` have members named
-    // after domain classes these files also import — `Hash`, `URef`, `BidAddr`,
-    // `ByteCode`, `Era`, `Deploy`. A TS enum body is its own scope, so each
-    // member declaration trips `no-shadow` against the outer import. Renaming
-    // the member would break a published enum; aliasing the import would rename
-    // a class throughout the file to satisfy a declaration that shadows
-    // nothing at any use site. Scoped to these two files so the rule keeps its
-    // full strength everywhere else.
+    // after domain classes these files also import, and a TS enum body is its
+    // own scope, so each member trips `no-shadow` against the outer import.
+    //
+    // Neither fix is acceptable: renaming a member breaks a published enum,
+    // and aliasing the import renames a class file-wide to satisfy a
+    // declaration that shadows nothing at any use site.
     files: ['src/types/key/Key.ts', 'src/types/Transaction.ts'],
     rules: {
       '@typescript-eslint/no-shadow': [

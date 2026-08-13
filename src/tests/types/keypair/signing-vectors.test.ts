@@ -2,9 +2,9 @@ import { expect } from 'vitest';
 
 import { KeyAlgorithm, PrivateKey } from '../../../types';
 
-// Fixed vectors, so PHASE-3.5 Task 6's noble import-specifier move and
-// slice/subarray sweep fail loudly if either changes a signed byte, rather
-// than silently producing a valid signature over different bytes.
+// Fixed vectors, so that a change to the noble import specifiers or to the
+// slice/subarray handling fails loudly here rather than silently producing a
+// valid signature over different bytes.
 describe('signing vectors (characterization)', () => {
   const message = new Uint8Array([1, 2, 3, 4, 5]);
 
@@ -21,10 +21,10 @@ describe('signing vectors (characterization)', () => {
     );
   });
 
-  // secp256k1's `signSync` here defaults `extraEntropy` to `undefined`
-  // (`@noble/secp256k1` initSigArgs), which takes the deterministic RFC6979
-  // path — no randomness is mixed in — so a fixed byte string is a valid
-  // assertion here too, not just a verification check.
+  // `signSync` leaves `extraEntropy` undefined (`@noble/secp256k1`
+  // initSigArgs), so signing takes the deterministic RFC6979 path with no
+  // randomness mixed in — which is what makes a fixed signature a valid
+  // assertion here, not just a verify-round-trip check.
   it('secp256k1 produces a stable signature for a fixed key', () => {
     const pk = PrivateKey.fromHex(SECP_FIXTURE_HEX, KeyAlgorithm.SECP256K1);
     const sig = pk.sign(message);

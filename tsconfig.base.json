@@ -28,10 +28,9 @@
     "resolveJsonModule": true,
     "module": "commonjs",
     "target": "es5",
-    // es2022 for `Error.cause` (used by preserve-caught-error). This changes
-    // type-checking only — `target` stays es5, so emit is unaffected. On a
-    // pre-ES2022 runtime the options argument is ignored and `cause` is simply
-    // absent; that is additive and acceptable.
+    // es2022 for `Error.cause` (used by preserve-caught-error). Type-checking
+    // only — `target` stays es5, so emit is unaffected. On a pre-ES2022 runtime
+    // the options argument is ignored and `cause` is simply absent, which is additive.
     "lib": ["es2022", "dom"],
     "skipLibCheck": true,
     "typeRoots": ["./src/@types", "./node_modules/@types"]

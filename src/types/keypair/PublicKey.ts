@@ -29,10 +29,9 @@ enum KeyAlgorithm {
 }
 
 /**
- * Narrows a raw algorithm byte to the enum, or returns undefined when the
- * byte is not a known variant. Keeping this in one place is what stops a
- * renumbered enum from silently re-routing which key implementation decodes
- * the following bytes.
+ * Narrows a raw algorithm byte to the enum, undefined when it is not a known
+ * variant. One chokepoint for that check is what stops a renumbered enum from
+ * silently re-routing which key implementation decodes the following bytes.
  */
 function toKeyAlgorithm(tag: number): KeyAlgorithm | undefined {
   return (Object.values(KeyAlgorithm) as unknown[]).includes(tag)

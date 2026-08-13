@@ -30,10 +30,9 @@ import { IResultWithBytes } from '../CLValue';
 import { CLValueUInt32 } from '../Numeric';
 
 /**
- * Narrows a raw tag byte to the enum, or returns undefined when the byte is
- * not a known variant. Keeping this in one place is what makes the switch
- * below exhaustive-checkable, and what stops a renumbered enum from silently
- * re-routing a decode.
+ * Narrows a raw tag byte to the enum, undefined when it is not a known variant.
+ * That is what makes the switch below exhaustive-checkable, and what stops a
+ * renumbered enum from silently re-routing a decode.
  */
 function toCLTypeTag(tag: number): TypeID | undefined {
   return (Object.values(TypeID) as unknown[]).includes(tag)
