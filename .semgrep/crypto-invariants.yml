@@ -7,11 +7,9 @@ rules:
       never Math.random().
     pattern: Math.random()
     paths:
-      # Leading slash anchors to the repo root, which is the intent here and also
-      # what Semgrepignore v2 will make these patterns mean regardless.
-      #
-      # Scoped to all of src rather than keypair alone: nonces, request ids and
-      # salts are generated outside that directory and are no safer for it.
+      # Leading slash anchors to the repo root — what Semgrepignore v2 will make
+      # these patterns mean regardless. All of src, not keypair alone: nonces,
+      # request ids and salts are generated elsewhere and are no safer for it.
       include:
         - '/src/**'
 

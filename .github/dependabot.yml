@@ -1,6 +1,6 @@
 version: 2
 updates:
-  # npm dependencies — grouped to reduce PR noise
+  # Grouped so the weekly minor/patch churn arrives as one PR.
   - package-ecosystem: npm
     directory: '/'
     schedule:
@@ -30,10 +30,10 @@ updates:
         exclude-patterns:
           - '@noble/*'
           - '@peculiar/*'
-    # PHASE-5 owns these upgrades: the @noble v2 consolidation that drops
-    # @noble/ed25519 + @noble/secp256k1, the native-bigint move off
-    # @ethersproject/*, and eventsource 4. Automation must not reopen the
-    # breaking set that phase exists to land deliberately.
+    # These majors are held back deliberately: the @noble v2 consolidation that
+    # drops @noble/ed25519 + @noble/secp256k1, the native-bigint move off
+    # @ethersproject/*, and eventsource 4 are one coordinated breaking change,
+    # not three automated bumps.
     ignore:
       - dependency-name: '@noble/*'
         update-types:
@@ -45,7 +45,6 @@ updates:
         update-types:
           - version-update:semver-major
 
-  # GitHub Actions used by workflows
   - package-ecosystem: github-actions
     directory: '/'
     schedule:

@@ -1,5 +1,5 @@
-# Conventions from CLAUDE.md that no other gate enforces. Each rule reports zero
-# on this tree; they exist to stop a regression, not to fix debt.
+# Conventions from CLAUDE.md that no other gate enforces. These stop a
+# regression; they are not a backlog of existing debt to fix.
 rules:
   - id: no-reflect-metadata
     languages: [typescript]

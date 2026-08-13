@@ -1,5 +1,5 @@
-# Workflow-level supply-chain invariants. Every workflow already satisfies these;
-# the rules keep them true as workflows are edited.
+# Workflow-level supply-chain invariants: regression guards that keep the
+# hardening in place as workflows are edited.
 rules:
   - id: require-sha-pinned-actions
     languages: [yaml]

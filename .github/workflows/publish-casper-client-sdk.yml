@@ -78,12 +78,10 @@ jobs:
       - name: Bundle budgets
         run: npm run size:check
 
-      # What is inside the release, next to the provenance attestation that says
-      # who built it. `--omit dev` narrows it to the 48 packages a consumer
-      # actually resolves. The reason to publish it is a repeat of `inflight`:
-      # that advisory carried no GHSA, so `npm audit` reported zero while the
-      # package shipped to everyone, and answering "which releases contained
-      # it?" meant reconstructing old dependency trees by hand.
+      # Provenance says who built the release; the SBOM says what is inside it,
+      # `--omit dev` narrowing that to what a consumer actually resolves.
+      # `inflight` is why it is worth publishing: no GHSA, so `npm audit`
+      # reported zero the whole time it shipped.
       - name: Generate SBOM
         run: npm sbom --sbom-format cyclonedx --omit dev > casper-js-sdk.sbom.json
 
@@ -162,9 +160,8 @@ jobs:
           name: publish-artifacts
 
       # --provenance signs the tarball with the job's OIDC identity (hence
-      # `id-token: write` above), so npmjs.com can attest which repo, workflow
-      # and commit produced it. A stolen publish token no longer buys a
-      # convincing release.
+      # `id-token: write` above), so npmjs.com can attest which repo, workflow and
+      # commit produced it — a stolen publish token no longer buys a convincing release.
       - name: Publish to npm
         run: npm publish --access public --tag latest --provenance
 
