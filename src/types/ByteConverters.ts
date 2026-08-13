@@ -4,14 +4,12 @@ import { arrayify, concat } from '@ethersproject/bytes';
 import { blake2b } from '@noble/hashes/blake2';
 
 /**
- * Renders a `BigNumberish` for the out-of-bounds error message below. `Bytes`
- * (`ArrayLike<number>`) has no `toString` in its type, so the type checker
- * cannot prove `+ value` or `String(value)` avoids `Object`'s default
- * `[object Object]` stringification — even though every value reaching this
- * point is actually a primitive, a `BigNumber`, or a real array/typed array.
- * Handling each case explicitly proves it, and reproduces exactly what the
- * implicit coercion produced before: primitives and `BigNumber` via their own
- * `toString`, a byte array comma-joined like `Array.prototype.toString` does.
+ * Stringifies a `BigNumberish` for the out-of-bounds errors below. `Bytes`
+ * (`ArrayLike<number>`) declares no `toString`, so the type checker cannot rule
+ * out `Object`'s `[object Object]` even though every value arriving here is a
+ * primitive, a `BigNumber`, or a real array/typed array. The branches spell out
+ * what implicit coercion did, keeping the message text identical: byte arrays
+ * comma-joined, everything else via its own `toString`.
  */
 const describeValue = (value: BigNumberish): string => {
   if (

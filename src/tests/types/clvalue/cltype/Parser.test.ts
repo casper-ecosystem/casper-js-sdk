@@ -23,8 +23,9 @@ describe('CLType Parser', () => {
   });
 
   it('selects the same branch for every currently-supported tag', () => {
-    // Lock in today's behavior BEFORE touching the comparisons, so the refactor
-    // is provably behavior-preserving rather than assumed to be.
+    // Sweeps every supported tag and records what each one produces, a parsed
+    // type or a throw. Nothing is compared against a baseline, so this catches
+    // only a tag that stops being handled at all.
     for (let tag = 0; tag <= 0x15; tag++) {
       const bytes = Uint8Array.from([tag]);
       let before: string;

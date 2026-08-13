@@ -7,10 +7,9 @@ import {
   PutTransactionResult,
   RpcClient
 } from '../rpc';
-// Imported from the file directly, not the `../rpc` barrel: pulling `HttpError`
-// in as a runtime value through the barrel closes an import cycle back through
-// `rpc_client.ts` -> `../utils`, which throws a TDZ error under the
-// native-class test transform (see CLAUDE.md on import cycles).
+// Direct import, not the `../rpc` barrel: pulling `HttpError` in as a runtime
+// value through the barrel closes a cycle back through `rpc_client.ts` ->
+// `../utils`, a TDZ error under the native-class test transform (CLAUDE.md).
 import { HttpError } from '../rpc/error';
 import {
   Args,
@@ -315,8 +314,6 @@ export class CasperNetwork {
       return await this.rpcClient.putDeploy(deploy);
     }
 
-    // Was `Promise.reject(<string>)`, which handed callers a bare string to
-    // catch. The text is unchanged; it is now the message of an Error.
     throw new Error(
       'Legacy deploy transaction is required when submitting to Casper Network 1.5'
     );
@@ -356,9 +353,8 @@ export class CasperNetwork {
     try {
       return await this.rpcClient.getTransactionByTransactionHash(hash.toHex());
     } catch (error) {
-      // The structural guard, not `instanceof`: it reproduces the optional-chain
-      // check this replaced, and survives a bundle that ends up with two copies
-      // of the class.
+      // Structural guard rather than `instanceof`: it still matches when a
+      // bundle ends up with two copies of the class.
       if (
         HttpError.isHttpError(error) &&
         toRpcErrorCode(error.statusCode) === ErrorCode.NoSuchTransaction

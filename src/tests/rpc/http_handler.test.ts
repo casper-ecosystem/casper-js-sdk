@@ -205,11 +205,10 @@ describe('HttpHandler', () => {
         await handler.processCall(mockRequest);
         expect.fail('expected the call to reject');
       } catch (err) {
-        // The message contract is unchanged — consumers match on it.
+        // Consumers match on this message, so wrapping must not replace it.
         expect((err as Error).message).to.include(
           ErrProcessHttpRequest.message
         );
-        // ...and the original is now recoverable.
         expect((err as Error).cause).to.equal(underlying);
       }
     });
