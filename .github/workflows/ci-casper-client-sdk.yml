@@ -118,11 +118,10 @@ jobs:
       - name: Bundle budgets
         run: npm run size:check
 
-      # attw's `named-exports` rule is ignored, and that ignore is a finding:
-      # none of the 440 named exports is statically detectable in the webpack
-      # bundle, so `import { PublicKey } from 'casper-js-sdk'` under Node ESM
-      # resolves the types and then crashes at runtime. Until the ESM packaging
-      # phase fixes that, the rule would mask every other regression here.
+      # attw's `named-exports` rule is ignored: no named export is statically
+      # detectable in the webpack bundle, so under Node ESM the types resolve
+      # and the import then crashes at runtime. Ignoring it until the ESM
+      # packaging is fixed keeps the remaining rules able to fail.
       - name: Package shape
         run: npm run check:package
 

@@ -4,24 +4,11 @@
  * Fails the build when a bundle outgrows its committed budget.
  *
  * webpack already warns that `lib.cjs.js` is over its recommended size, and a
- * warning has never failed anything here. The failure this guards is not slow
- * growth, though — it is the single import that drags a whole library in. The
- * `v6` work replaces `@ethersproject/*` with native `bigint` and consolidates
- * `@noble`, which is exactly the moment a stray `import { … } from 'ethers'`
- * can double the browser bundle without breaking a single test.
- *
- * The web bundle is the one with a user-facing cost: it ships to browser
- * wallets, where every byte is on someone's connection. The Node bundles are
- * budgeted too, because the same accidental dependency shows up in all three
- * and a diff across them says more than any one of them alone.
- *
- * Budgets are raw bytes, not gzipped — raw is what the build emits
- * deterministically, so this can only move when the code moves. Gzipped size is
- * printed alongside because it is what a consumer actually downloads.
- *
- * Raise a budget when the growth is real and intended; that edit is the review
- * prompt. Do not raise one to make a red build green without reading what
- * arrived in the bundle first — `npx webpack-bundle-analyzer` is installed.
+ * warning has never failed anything here. What this catches is not slow growth
+ * but the single import that drags a whole library in — a stray
+ * `import { … } from 'ethers'` can double the browser bundle without breaking
+ * a test, and the dependency swaps ahead (`@ethersproject/*` out for native
+ * `bigint`, `@noble` consolidated) are exactly when that happens.
  *
  * Usage: node scripts/assert-bundle-size.js
  */
@@ -31,8 +18,16 @@ const path = require('path');
 const zlib = require('zlib');
 
 /**
- * Budgets carry roughly 5% headroom over the measured size at the time they
- * were set, so ordinary changes do not trip them and a new dependency does.
+ * Raw bytes, not gzipped: raw is what the build emits deterministically, so a
+ * budget moves only when the code moves. Each carries roughly 5% headroom over
+ * its measured size, so ordinary changes pass and a new dependency does not.
+ *
+ * Raise one when the growth is real and intended — that edit is the review
+ * prompt, not a way to turn a red build green before reading what arrived in
+ * the bundle (`npx webpack-bundle-analyzer`).
+ *
+ * The web bundle is the one with a user-facing cost; the Node bundles are
+ * budgeted so a stray dependency shows up as a diff across all three.
  */
 const BUDGETS = [
   // 939_357 bytes measured 2026-08-12. Carries the Buffer shim the Node
@@ -52,15 +47,17 @@ const rows = [];
 for (const { file, maxBytes } of BUDGETS) {
   const absolute = path.resolve(process.cwd(), file);
 
-  // A missing bundle is a failure, not a skip: a gate that passes because it
-  // measured nothing is the exact shape of the empty test suite that ran green
-  // here for eighteen months.
+  // A missing bundle fails rather than skips: a gate that passes because it
+  // measured nothing is how the empty test suite here ran green for eighteen
+  // months.
   if (!fs.existsSync(absolute)) {
     problems.push(`${file} does not exist — run \`npm run build\` first`);
     continue;
   }
 
   const contents = fs.readFileSync(absolute);
+  // Gzip is reported, never gated: it is what a consumer downloads, but it
+  // varies with the compressor rather than with the code.
   const gzipped = zlib.gzipSync(contents, { level: 9 }).length;
   const percent = ((contents.length / maxBytes) * 100).toFixed(0);
 
