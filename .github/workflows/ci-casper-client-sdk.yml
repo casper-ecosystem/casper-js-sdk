@@ -72,8 +72,12 @@ jobs:
         run: npm audit --omit=dev
 
       # Catches a tarball swapped out from under a version that already resolved.
+      # `--min-release-age=0` overrides `.npmrc`: this command re-resolves every
+      # package against the registry, and under a freshness filter it would
+      # verify a different version set than the lockfile installed — or, as
+      # happens whenever a bump is under a week old, fail to resolve at all.
       - name: Registry signatures and provenance attestations
-        run: npm audit signatures
+        run: npm audit signatures --min-release-age=0
 
       - name: Lints
         run: npm run lint:ci
