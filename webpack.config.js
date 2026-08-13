@@ -58,13 +58,11 @@ const serverConfig = {
 const clientConfig = {
   ...common,
   target: 'web',
-  // No `resolve.fallback` here on purpose. It used to shim nine Node builtins;
-  // none of them is reachable from `src` (the SDK's crypto is `@noble/*`, and
-  // axios resolves to its browser build), and `dist/lib.web.js` was verified
-  // byte-identical with the block present and absent. Carrying it pulled the
-  // `elliptic`/`browserify-sign`/`create-ecdh` advisory chain into the tree for
-  // nothing. `Buffer` and `process` are the two globals that *are* used, and
-  // they come from the ProvidePlugins below.
+  // No `resolve.fallback` here on purpose: no Node builtin is reachable from
+  // `src` (crypto is `@noble/*`, axios resolves to its browser build), and
+  // shimming them drags the `elliptic`/`browserify-sign`/`create-ecdh` advisory
+  // chain in for nothing. `Buffer` and `process` are the only globals actually
+  // used, and the ProvidePlugins below supply them.
   resolve: common.resolve,
   plugins: [
     new webpack.ProvidePlugin({

@@ -1,8 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
-  // TS 6 requires `rootDir` to be explicit whenever declarations are emitted
-  // (TS5011). "./src" is the directory 4.9 inferred, so the `dist/` layout is
-  // unchanged.
+  // TS 6 requires an explicit `rootDir` whenever declarations are emitted
+  // (TS5011); "./src" is the value that keeps the existing `dist/` layout.
   "compilerOptions": {
     "rootDir": "./src"
   },

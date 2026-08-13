@@ -99,10 +99,10 @@ export class Hash {
   /**
    * Creates a Hash instance from a byte array.
    *
-   * Declared as `Uint8Array` rather than `Buffer` so the published `.d.ts` does
-   * not require `@types/node`: TypeScript 6 stopped emitting the
-   * `/// <reference types="node" />` directive that used to pull it in. A
-   * `Buffer` is a `Uint8Array`, so every existing call site still type-checks.
+   * Typed `Uint8Array`, not `Buffer`, so the published `.d.ts` needs no
+   * `@types/node`: TypeScript 6 no longer emits the `/// <reference
+   * types="node" />` directive that used to pull it in. A `Buffer` is a
+   * `Uint8Array`, so call sites are unaffected.
    *
    * @param buffer - The bytes containing the hash.
    * @returns A new Hash instance.
@@ -143,11 +143,9 @@ export class Hash {
    * @returns True if the hashes are equal, false otherwise.
    */
   equals(other: Hash): boolean {
-    // Read both sides through `toBytes()` rather than the private `hashBytes`.
-    // Private access is class-scoped, not instance-scoped, so reaching into
-    // `other.hashBytes` bypassed any subclass override — `TransactionHash`
-    // keeps its real bytes behind one, which made `a.equals(b)` and
-    // `b.equals(a)` disagree for the same pair.
+    // Both sides go through `toBytes()`: `private` is class-scoped, so reading
+    // `other.hashBytes` directly skips subclass overrides — `TransactionHash`
+    // has one — and makes `a.equals(b)` and `b.equals(a)` disagree.
     const ours = this.toBytes();
     const theirs = other.toBytes();
 

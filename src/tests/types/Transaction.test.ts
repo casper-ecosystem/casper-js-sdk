@@ -202,9 +202,9 @@ describe('Test Transaction', () => {
       '076e77de17de7f262c5531017c214afd664d9702d4b5b771996ae4dcaf9c01f9'
     );
     expect(tx.hash.equals(deployHash)).to.equal(true);
-    // Both directions must agree. `Hash#equals` used to read the private
-    // `hashBytes` off its argument, which bypassed `TransactionHash`'s override
-    // and made this comparison answer false while the one above answered true.
+    // The reverse direction is the fragile one: reading the argument's private
+    // `hashBytes` instead of `getHash()` bypasses `TransactionHash`'s override
+    // and answers false here while the comparison above still answers true.
     expect(deployHash.equals(tx.hash)).to.equal(true);
 
     const txBytes = tx.toBytes();
@@ -212,9 +212,9 @@ describe('Test Transaction', () => {
   });
 });
 
-// `TransactionHash` is deserialized by typedjson at Transfer.ts:115/:217,
-// rpc/response.ts and sse/event.ts — always through the argument-less
-// constructor, with the members assigned afterwards. Nothing covered that path.
+// typedjson deserializes `TransactionHash` in Transfer, rpc/response and
+// sse/event — always through the argument-less constructor, with the members
+// assigned afterwards, so that path needs coverage of its own.
 describe('TransactionHash', () => {
   const hex =
     '076e77de17de7f262c5531017c214afd664d9702d4b5b771996ae4dcaf9c01f9';

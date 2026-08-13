@@ -17,17 +17,14 @@ import { secp256k1 } from '@noble/curves/secp256k1';
 //     pub       BIT STRING
 //   }
 //
-// The DER itself is handled by `@peculiar/asn1-*`, which replaced `asn1.js`:
-// that package's last release was 5.4.1 in 2020, it was written against
-// `bn.js@4` and only worked here because the repo force-fed it `bn.js@5` via an
-// override. Parsing key material is the wrong place to carry a hand-written
-// parser, so the structural work is delegated and this file keeps only the
-// SEC1/SPKI *semantics*.
+// The DER structure is delegated to `@peculiar/asn1-*`; this file keeps only
+// the SEC1/SPKI semantics. Do not go back to `asn1.js`: unmaintained since
+// 5.4.1 (2020), written against `bn.js@4`, and usable here only via a
+// `bn.js@5` override.
 //
 // The emitted bytes are pinned by the characterization vectors in
-// `src/tests/data/keypair/secp256k1_der_vectors.json`, captured from the
-// asn1.js implementation — existing PEM/DER key files must keep parsing and
-// newly written ones must stay indistinguishable.
+// `src/tests/data/keypair/secp256k1_der_vectors.json` — existing PEM/DER key
+// files must keep parsing, and newly written ones must stay byte-identical.
 
 type KeyFormat = 'raw' | 'pem' | 'der';
 
@@ -47,10 +44,9 @@ const PRIVATE_KEY_BYTE_LENGTH = 32;
 /** Uncompressed points are `04 || X || Y`; compressed are `02|03 || X`. */
 const PUBLIC_KEY_BYTE_LENGTHS = [33, 65];
 
-// Copies out of the pooled allocator Buffer.from uses, so the ASN.1 layer never
-// sees bytes beyond this key. `Buffer#buffer` is typed `ArrayBufferLike`, but a
-// Buffer is never backed by a SharedArrayBuffer here — the cast narrows what
-// `slice` returns rather than changing it.
+// `Buffer.from` allocates out of a shared pool, so copy the range out: the
+// ASN.1 layer must never see bytes beyond this key. The cast only narrows
+// `ArrayBufferLike` — no Buffer here is backed by a SharedArrayBuffer.
 const toArrayBuffer = (bytes: Buffer): ArrayBuffer =>
   bytes.buffer.slice(
     bytes.byteOffset,
@@ -61,11 +57,10 @@ const toBuffer = (bytes: ArrayBuffer): Buffer => Buffer.from(bytes);
 
 /** PEM body wrapped at the conventional 64 characters, with no trailing newline. */
 const toPem = (der: ArrayBuffer, label: string): string => {
-  // Chunk with `match`, not `replace(/(.{64})/g, '$1\n')`: the replace form
-  // also appends a newline after the *final* chunk when the body length is an
-  // exact multiple of 64, leaving a blank line before the footer that OpenSSL
-  // and Node's `crypto.createPrivateKey` both reject as
-  // `DECODER routines::unsupported`.
+  // Chunk with `match`: `replace(/(.{64})/g, '$1\n')` also appends a newline
+  // after the final chunk when the body is an exact multiple of 64, and the
+  // resulting blank line before the footer makes OpenSSL and Node's
+  // `crypto.createPrivateKey` reject it as `DECODER routines::unsupported`.
   const body = (
     toBuffer(der)
       .toString('base64')
@@ -90,9 +85,8 @@ const fromPem = (pem: string, label: string): Buffer => {
 /**
  * Rejects a structurally valid key that is not the one this module handles.
  *
- * Neither this SDK nor the asn1.js implementation before it checked any of
- * this, so a P-256 or P-384 private key — or a truncated one — was silently
- * accepted and then used as if it were secp256k1.
+ * Without these checks a P-256 or P-384 private key — or a truncated one —
+ * parses cleanly and is then used as if it were secp256k1.
  */
 const assertSecp256k1PrivateKey = (key: ECPrivateKey): void => {
   if (key.version !== EC_PRIVATE_KEY_VERSION) {
@@ -188,7 +182,7 @@ const decodePublicKey = (der: Uint8Array): SubjectPublicKeyInfo => {
 // `Uint8Array` rather than `Buffer` in the signature: TypeScript 6 no longer
 // emits the `/// <reference types="node" />` directive into declaration output,
 // so naming `Buffer` here would make the published `.d.ts` require
-// `@types/node`. A `Buffer` is a `Uint8Array`, so callers are unaffected.
+// `@types/node`.
 export function encodePrivate(
   privateKey: string | Uint8Array,
   originalFormat: KeyFormat,

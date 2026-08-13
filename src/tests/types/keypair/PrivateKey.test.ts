@@ -8,8 +8,8 @@ import {
   PublicKey
 } from '../../../types';
 
-// `window` exists only in the `--browser` run; the node run has
-// `environment: 'node'`, so this is false there.
+// The node run sets `environment: 'node'`, so `window` exists only under
+// `--browser`.
 const isBrowser = typeof window !== 'undefined';
 
 describe('PrivateKey', () => {
@@ -71,9 +71,8 @@ cs0BmUY0rz+KBwlNMWYL9fR/hoFl8Q==
     );
   });
 
-  // Cross-checks the SDK's PEM/DER output against Node's own crypto
-  // implementation. It is a Node-only assertion by construction, so it is
-  // skipped in the browser run rather than being allowed to fail there.
+  // Cross-checks the SDK's PEM/DER output against Node's own crypto. Node-only
+  // by construction, so it is skipped rather than failed in the browser run.
   it.skipIf(isBrowser)(
     'should produce Ed25519 PEM that Node crypto reads back identically',
     () => {

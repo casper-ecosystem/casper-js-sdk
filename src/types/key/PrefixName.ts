@@ -1,10 +1,9 @@
-// Kept in its own leaf module on purpose. `PrefixName` is needed by eight of
-// the key types that `Key.ts` itself imports, so declaring it there made
-// `Key.ts` the hub of an import cycle. Under webpack and under the CJS test
-// path that cycle resolved by luck; in a real browser (native ESM) it threw
-// `Cannot access 'AccountHash' before initialization`, because typedjson
-// eagerly calls the `() => AccountHash` type thunk while `Account.ts` is
-// still mid-evaluation. Nothing may be imported into this file.
+// A leaf module on purpose, and nothing may be imported into it. `PrefixName`
+// is needed by eight of the key types `Key.ts` imports, so declaring it there
+// makes `Key.ts` the hub of an import cycle — harmless under webpack and CJS,
+// but under native ESM typedjson calls the `() => AccountHash` type thunk while
+// `Account.ts` is still evaluating, throwing `Cannot access 'AccountHash'
+// before initialization`.
 
 /**
  * Enum that defines prefixes used to identify different types of blockchain entities and objects.

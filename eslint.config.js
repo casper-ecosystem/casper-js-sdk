@@ -41,13 +41,11 @@ module.exports = defineConfig([
   },
   {
     // `vitest-globals.d.ts` is in tsconfig.json's `include`, and an ambient
-    // declaration applies to the whole program — it cannot be scoped to the test
-    // directory by moving the file. So `describe`/`it`/`expect`/`vi` resolve
-    // inside `src/` too, and a stray one left in shipped code type-checks in the
-    // editor and passes `lint:ci`, failing only later at `npm run build`, which
-    // uses tsconfig.build.json and excludes the globals.
-    //
-    // This closes that gap at the lint stage, where the feedback is immediate.
+    // declaration applies to the whole program — moving the file cannot scope it
+    // to the test directory. So `describe`/`it`/`expect`/`vi` resolve inside
+    // `src/` too, and a stray one in shipped code type-checks and passes
+    // `lint:ci`, failing only at `npm run build`, which uses tsconfig.build.json
+    // and excludes the globals. Caught here instead, while feedback is immediate.
     files: ['src/**/*.ts'],
     ignores: ['src/tests/**/*.ts'],
     rules: {

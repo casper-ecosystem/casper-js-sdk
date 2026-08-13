@@ -5,22 +5,22 @@
  * *published* casper-js-sdk@5.1.0 over this repository's own fixture corpus.
  *
  * The golden records what the previous release produced: JSON round-trip
- * digests, serialized transaction and deploy bytes, key/URef string forms, and
+ * digests, serialized transaction and deploy bytes, key/URef string forms and
  * PEM/DER key material. `src/tests/compat/v5_1_0.test.ts` replays every case
  * against the working tree and asserts the results are identical — that is what
  * proves a 5.1.0 key file, RPC payload or signed transaction still round-trips.
  *
  * It deliberately does NOT run from this repo's node_modules: 5.1.0 has to come
- * from the registry, or the comparison is against the working tree twice.
+ * from the registry, or the comparison is the working tree against itself.
  *
  *   mkdir -p /tmp/casper-v510 && cd /tmp/casper-v510
  *   npm init -y && npm install casper-js-sdk@5.1.0 typedjson@^1.8.0
  *   node <repo>/scripts/generate-compat-golden.js \
  *     <repo> <repo>/src/tests/data/compat/v5_1_0_golden.json
  *
- * Regenerating is only correct when the golden itself is wrong (a case was
- * added, a fixture changed). A test failure against an unchanged golden is a
- * compatibility break, not a stale file — fix the code, not the recording.
+ * Regenerate only when the golden itself is wrong (a case was added, a fixture
+ * changed). A failure against an unchanged golden is a compatibility break, not
+ * a stale file — fix the code, not the recording.
  */
 
 const fs = require('fs');
@@ -35,11 +35,10 @@ if (!repoRoot || !outFile) {
   process.exit(1);
 }
 
-// Resolved from the *current working directory*, never by bare specifier. This
+// Resolved from the *current working directory*, never by bare specifier: this
 // file lives inside the casper-js-sdk package, so `require('casper-js-sdk')`
-// here self-references the repository's own `dist/` — which would silently
-// compare the working tree against itself and record a golden that can never
-// fail.
+// would self-reference the repository's own `dist/` and record a golden that
+// can never fail.
 const EXPECTED_VERSION = '5.1.0';
 const sdkDir = path.join(process.cwd(), 'node_modules/casper-js-sdk');
 const sdkVersion = JSON.parse(
@@ -133,12 +132,12 @@ const CORPUS = [
     null,
     'Transform'
   ],
-  // `InfoGetStatusResult` is deliberately absent. Its `available_block_range`
-  // member is declared with a `constructor:` thunk that returns an object of
-  // decorators instead of a class, which typedjson cannot use — so the class
-  // does not serialize cleanly in *either* version and there is no meaningful
-  // digest to record. `src/tests/compat/v5_1_0.test.ts` covers it on the parse
-  // side instead, where the two versions do agree.
+  // `InfoGetStatusResult` is deliberately absent: its `available_block_range`
+  // member is declared with a `constructor:` thunk returning an object of
+  // decorators instead of a class, which typedjson cannot use, so the class
+  // serializes cleanly in neither version and has no meaningful digest.
+  // `src/tests/compat/v5_1_0.test.ts` covers it on the parse side, where the
+  // two versions do agree.
   [
     'rpc/chainGetBlock',
     'rpc_response/get_block_by_hash.json',
@@ -278,9 +277,9 @@ const collectStrings = (node, out) => {
   return out;
 };
 
-// `compat/` holds the output of this script. Walking it would feed the previous
-// golden's own recorded values back in as inputs, so which strings get sampled
-// would depend on the last run rather than on the corpus.
+// `compat/` holds this script's own output. Walking it would feed the previous
+// golden's recorded values back in as inputs, making the sample depend on the
+// last run rather than on the corpus.
 const walk = dir =>
   fs
     .readdirSync(dir, { withFileTypes: true })
@@ -411,8 +410,8 @@ transferHash.push({
   json: transferHashSerializer.toPlainJson(fromBytesSource)
 });
 
-// `Hash#equals` was asymmetric across the Hash/TransactionHash boundary. Record
-// what 5.1.0 answered — including the cases where it threw — so the branch's
+// `Hash#equals` is asymmetric across the Hash/TransactionHash boundary in
+// 5.1.0. Record what it answered — including where it threw — so the current
 // behaviour can be compared against it rather than assumed.
 const evaluate = fn => {
   try {
@@ -522,16 +521,14 @@ for (const algorithm of [
 }
 
 // ---------------------------------------------------------------------------
-// 7. The committed secp256k1 DER vectors, pushed back through 5.1.0's asn1.js
-//    codec. `encodePrivate`/`encodePublic` are not on the public API, so this
-//    reaches them the way the SDK does — through PrivateKey/PublicKey PEM.
+// 7. `InfoGetStatusResult`, the one class whose output is deliberately *not*
+//    identical across the versions
 // ---------------------------------------------------------------------------
 
-// `InfoGetStatusResult` gets its own record rather than a corpus digest,
-// because it is the one class whose output is deliberately *not* identical:
-// 5.1.0 could not serialize `available_block_range` at all and silently dropped
-// it. Both the parsed values and the exact document 5.1.0 emitted are recorded,
-// so the test can assert that the only difference is the restored field.
+// It gets its own record rather than a corpus digest because 5.1.0 could not
+// serialize `available_block_range` at all and silently dropped it. Recording
+// both the parsed values and the exact document 5.1.0 emitted lets the test
+// assert that the restored field is the only difference.
 const statusSerializer = new TypedJSON(sdk.InfoGetStatusResult);
 const statusJson = readFixture('rpc_response/get_status.json').result;
 const status = statusSerializer.parse(statusJson);
@@ -576,6 +573,12 @@ const infoGetStatusParsed = {
     forwardAcquisitionState: status.blockSync.forward.acquisitionState
   }
 };
+
+// ---------------------------------------------------------------------------
+// 8. The committed secp256k1 DER vectors, pushed back through 5.1.0's asn1.js
+//    codec. `encodePrivate`/`encodePublic` are not on the public API, so this
+//    reaches them the way the SDK does — through PrivateKey/PublicKey PEM.
+// ---------------------------------------------------------------------------
 
 const derVectors = readFixture('keypair/secp256k1_der_vectors.json').map(
   vector => {

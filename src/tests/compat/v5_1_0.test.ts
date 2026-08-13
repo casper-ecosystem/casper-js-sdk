@@ -54,18 +54,12 @@ import {
   writeContractV2Json
 } from '../data';
 
-// Everything in this file compares the working tree against a recording of
-// casper-js-sdk@5.1.0 taken from the registry (see
-// `scripts/generate-compat-golden.js`). The contract being tested is bidirectional:
-//
-//   - anything 5.1.0 wrote — a PEM key file, an RPC payload, a signed
-//     transaction — must still parse here, and
-//   - anything written here must still be readable by 5.1.0.
-//
-// Byte-for-byte equality of the *output* is what buys the second direction: if
-// this branch emits exactly what 5.1.0 emitted, then 5.1.0 can necessarily read
-// it back. So the assertions below are equality against the recording, not
-// merely "it parses".
+// Everything here compares the working tree against a recording of the
+// published casper-js-sdk@5.1.0 (`scripts/generate-compat-golden.js`). The
+// contract is bidirectional: anything 5.1.0 wrote — key files, RPC payloads,
+// signed transactions — must still parse here, and anything written here must
+// still be readable by 5.1.0. Byte-for-byte equality with the recording is
+// what buys the second direction, so the assertions are equality, not "parses".
 
 const golden = v5_1_0Golden;
 
@@ -194,19 +188,13 @@ describe('compatibility with casper-js-sdk@5.1.0', () => {
     });
   });
 
-  // `InfoGetStatusResult` is the one class whose output is deliberately not
-  // identical to 5.1.0's, so it is held out of the digest corpus above.
-  //
-  // Its `available_block_range` member used to be declared
-  // (`src/rpc/response.ts`) with a `constructor:` thunk that returned an object
-  // of `jsonMember` decorators rather than a class — not something typedjson can
-  // use. 5.1.0 therefore dropped the field from everything it serialized, and
-  // under native ES classes typedjson gave up on the whole document and returned
-  // `undefined`. It is now a real `@jsonObject` class.
-  //
-  // So the compatibility claim here is a superset, not an equality: the parse
-  // side is unchanged, every field 5.1.0 emitted is emitted identically, and
-  // `available_block_range` is added back.
+  // The one class whose output is deliberately not identical to 5.1.0's, so it
+  // is held out of the digest corpus above. Its `available_block_range` member
+  // was declared (`src/rpc/response.ts`) with a `constructor:` thunk returning
+  // a bag of `jsonMember` decorators rather than a class, so 5.1.0 dropped the
+  // field from everything it serialized. It is a real `@jsonObject` class now,
+  // making the claim here a superset: parsing unchanged, every field 5.1.0
+  // emitted still emitted identically, plus `available_block_range`.
   describe('InfoGetStatusResult', () => {
     const serializer = new TypedJSON(InfoGetStatusResult);
     const status = serializer.parse(getStatusJson.result)!;
@@ -549,12 +537,11 @@ describe('compatibility with casper-js-sdk@5.1.0', () => {
       });
     });
 
-    // The one deliberate divergence. `equals` used to read the private
-    // `hashBytes` field off its argument, and private access in TypeScript is
-    // class-scoped rather than instance-scoped, so it bypassed
-    // `TransactionHash`'s override. On a typedjson-built `TransactionHash` —
-    // the shape every RPC and SSE response produces — that field is the
-    // zero-filled placeholder, so 5.1.0 threw a TypeError here instead of
+    // The one deliberate divergence. `equals` read the private `hashBytes`
+    // field off its argument, and private access in TypeScript is class-scoped,
+    // so it bypassed `TransactionHash`'s override; on a typedjson-built
+    // `TransactionHash` — what every RPC and SSE response produces — that field
+    // is a zero-filled placeholder, so 5.1.0 threw a TypeError instead of
     // answering. Reading through `toBytes()` makes the comparison symmetric.
     it('now answers, rather than throwing, where 5.1.0 threw', () => {
       expect(

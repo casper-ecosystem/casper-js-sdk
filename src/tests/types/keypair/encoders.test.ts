@@ -56,12 +56,12 @@ describe('secp256k1 encoders (noble)', () => {
   });
 
   it('should not emit a blank line when the base64 body lands on a 64-char boundary', () => {
-    // A SEC1 ECPrivateKey carrying the curve parameters but no optional public
+    // 48 DER bytes encode to exactly 64 base64 characters. Wrapping at 64 chars
+    // must not append a trailing newline: the blank line it leaves before the
+    // footer makes OpenSSL and Node's `crypto.createPrivateKey` reject the PEM.
+
+    // SEC1 ECPrivateKey carrying the curve parameters but no optional public
     // key: SEQUENCE(46) { INTEGER 1, OCTET STRING(32), [0] OID secp256k1 }.
-    // 48 DER bytes encode to exactly 64 base64 characters, and wrapping with
-    // `replace(/(.{64})/g, '$1\n')` appended a newline after that final chunk —
-    // leaving a blank line before the footer, which OpenSSL and Node's
-    // `crypto.createPrivateKey` both reject with `DECODER routines::unsupported`.
     const der =
       '302e' + '020101' + '0420' + '01'.repeat(32) + 'a00706052b8104000a';
 
@@ -74,11 +74,9 @@ describe('secp256k1 encoders (noble)', () => {
     expect(encodePrivate(pem, 'pem', 'der')).to.equal(der);
   });
 
-  // Both of these are structurally valid EC keys that are simply not
-  // secp256k1. Neither asn1.js nor the codec that replaced it looked at the
-  // curve, the version or the key length, so a P-256 or P-384 file was
-  // silently accepted and then used as a secp256k1 key. Fixtures generated
-  // with Node's own crypto.
+  // Structurally valid EC keys that are not secp256k1. Without an explicit
+  // check of the curve, the version and the key length, a P-256 or P-384 file
+  // is accepted and then used as a secp256k1 key. Fixtures from Node's crypto.
   describe('rejects keys that are structurally valid but not secp256k1', () => {
     const P256_SEC1 =
       '3077020101042007d2e51bbc238b40a3f4faf1b62a8031626764acce697d7160bb9c7ab2aeba97a00a06082a8648ce3d030107a1440342000470bd656de49cc2ab79dadbcb65d30305cd493592a7b3d50587117ea80970ae296881b8987aef7ef028f575ee126a28e6d8d64e83186e437073c2caa721f88a66';
@@ -215,10 +213,9 @@ describe('secp256k1 encoders (noble)', () => {
     });
   });
 
-  // Byte-level characterization. The vectors were produced by the asn1.js-based
-  // implementation, so any drift in the emitted DER/PEM — a different integer
-  // encoding, a missing optional field, a changed PEM line width or trailer —
-  // fails here rather than in a user's key file.
+  // The vectors come from the asn1.js-based implementation, so any drift in
+  // the emitted DER/PEM — integer encoding, a missing optional field, PEM line
+  // width or trailer — fails here rather than in a user's key file.
   describe('byte-for-byte compatibility with the asn1.js output', () => {
     secp256k1DerVectors.forEach(vector => {
       describe(`private key ${vector.privateKeyHex.slice(0, 8)}…`, () => {

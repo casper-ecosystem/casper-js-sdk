@@ -22,9 +22,8 @@ describe('CLUref', () => {
   it('Should be valid by construction', () => {
     const badFn1 = () =>
       new URef(Conversions.decodeBase16('3a3a3a'), UrefAccess.ReadAddWrite);
-    // Deliberately out of range: the point of the case is the runtime guard.
-    // TypeScript 6 rejects the bare literal, so the cast is what keeps the
-    // negative test compilable.
+    // Deliberately out of range to exercise the runtime guard; the cast is
+    // what keeps the negative case compilable.
     const badFn2 = () =>
       new URef(Conversions.decodeBase16(urefAddr), 10 as UrefAccess);
 
