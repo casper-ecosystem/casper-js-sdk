@@ -109,19 +109,13 @@ export class TransactionHash extends Hash {
    * @param transactionV1 The hash of the version 1 transaction, if applicable.
    */
   private constructor(deploy?: Hash, transactionV1?: Hash) {
-    // `super` must be called unconditionally and first. The previous form put
-    // it inside two `if` branches, so constructing with neither argument — which
-    // is exactly what typedjson does before populating the members — produced no
-    // `super` call at all. That is a `ReferenceError` under native ES classes and
-    // only went unnoticed because `target: es5` downlevels classes to functions.
+    // `super` must run unconditionally and first: typedjson constructs with
+    // neither argument before populating the members, and a skipped `super`
+    // is a `ReferenceError` under native ES classes — `target: es5` hides it.
     //
-    // Pass the real bytes where there are any. The overrides below (`toBytes`,
-    // `toHex`, `toJSON`, `equals`) all read `getHash()`, so the inherited
-    // `hashBytes` is invisible through this class — but not through `Hash`
-    // itself, whose own methods still read the field. A zero-filled placeholder
-    // therefore made `Hash.prototype.toHex.call(hash)` return 64 zeros. The
-    // fallback covers only the zero-argument path typedjson uses before it
-    // populates the members.
+    // Pass the real bytes when there are any. The overrides below all read
+    // `getHash()`, but `Hash`'s own methods still read the inherited
+    // `hashBytes`, so a placeholder makes `Hash.prototype.toHex.call` lie.
     super(
       deploy?.toBytes() ??
         transactionV1?.toBytes() ??

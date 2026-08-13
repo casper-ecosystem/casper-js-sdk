@@ -3,21 +3,18 @@
 /**
  * Fails the build when the unit suite ran fewer tests than it should have.
  *
- * A green exit code says "nothing that ran failed". It does not say "everything
- * that should run, ran" — and the two were indistinguishable here for about
- * eighteen months: the karma setup this suite replaced preprocessed globs that
- * no test file had matched since 2025-01, so it reported
- * `Executed 0 of 0 SUCCESS` and exited 0 on every run, while CI never invoked
- * it at all.
+ * A green exit code says "nothing that ran failed", not "everything that should
+ * run, ran". This repo went about eighteen months on a suite whose globs
+ * matched no file: it reported `Executed 0 of 0 SUCCESS` and exited 0 on every
+ * run.
  *
  * Vitest closes the total-zero case on its own — it errors when no test file
  * matches, and `--passWithNoTests` is deliberately absent from the unit config.
  * What it cannot notice is a *partial* loss: a file renamed out of
  * `src/**\/*.test.ts`, moved to another directory, or quietly turned into
- * `describe.skip`. Thirty files pass exactly as green as thirty-one.
- *
- * So the floors below are asserted explicitly. Raise them when the suite grows;
- * a deliberate removal is a deliberate edit here, which is the point.
+ * `describe.skip`. Thirty files pass exactly as green as thirty-one — hence the
+ * explicit floors below. Raise them as the suite grows; removing a case then
+ * takes a deliberate edit here, which is the point.
  *
  * Usage: node scripts/assert-test-count.js <vitest-json-report> [label]
  */
@@ -29,9 +26,9 @@ const MIN_TEST_FILES = 32;
 /** Total assertions-bearing cases across those files. */
 const MIN_TESTS = 363;
 /**
- * The browser leg skips one Node-`crypto` cross-check
- * (`PrivateKey.test.ts`, guarded by `it.skipIf(isBrowser)`). Anything beyond
- * that is a skip somebody added, which is exactly what this guards.
+ * The browser leg skips one Node-`crypto` cross-check (`PrivateKey.test.ts`,
+ * guarded by `it.skipIf(isBrowser)`); anything beyond that is a skip somebody
+ * added.
  */
 const MAX_SKIPPED = 1;
 

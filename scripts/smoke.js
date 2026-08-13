@@ -3,20 +3,18 @@
 /**
  * Node-18 consumer smoke test.
  *
- * This runs against an INSTALLED tarball (`npm pack` -> `npm i ./casper-js-sdk-*.tgz`),
- * with a plain CommonJS `require`, on the oldest Node the published
- * `engines.node` promises. It is the only thing that exercises
- * `dist/lib.node.js` plus the externalized runtime dependencies the way a
- * consumer does — the dev test suite runs TypeScript sources through Vitest and
- * never touches the built artifact at all.
+ * Runs against an INSTALLED tarball (`npm pack` -> `npm i ./casper-js-sdk-*.tgz`)
+ * through a plain CommonJS `require`, on the oldest Node `engines.node`
+ * promises. It is the only thing that exercises `dist/lib.node.js` plus the
+ * externalized runtime dependencies the way a consumer does — the dev suite
+ * runs TypeScript sources through Vitest and never touches the built artifact.
  *
- * From PHASE-3 the 18.x CI leg runs this instead of the unit suite: Vitest 4
- * declares `engines.node ^20 || ^22 || >=24` and cannot execute there. Without
- * this job that leg would go green while testing nothing.
+ * The 18.x CI leg runs this instead of the unit suite because Vitest 4 declares
+ * `engines.node ^20 || ^22 || >=24` and cannot execute there. Without this job
+ * that leg would go green while testing nothing.
  *
- * Everything asserted below is an exact value, not a shape. A "did not throw"
- * smoke test would pass against a bundle that silently produced wrong bytes,
- * which for a transaction-signing SDK is the failure that matters.
+ * Everything asserted below is an exact value, not a shape: a "did not throw"
+ * smoke test would pass against a bundle that silently produced wrong bytes.
  */
 
 const assert = require('assert');
@@ -46,10 +44,9 @@ const ED25519_SECRET =
 const SECP256K1_SECRET =
   '7c1a0c9f7f2d3e4b5a69788796a5b4c3d2e1f00918273645546372819a0b1c2d';
 
-// Every field the builder would otherwise default from the clock is pinned, so
-// the payload — and therefore the hash and the signature over it — is fixed.
-// Without this the transaction differs on every run and nothing about its bytes
-// can be asserted.
+// Every field the builder would otherwise default from the clock is pinned:
+// without that the payload — and so the hash and signature over it — differs on
+// every run and nothing about its bytes can be asserted.
 const buildFixedTransfer = key =>
   new NativeTransferBuilder()
     .from(key.publicKey)
@@ -62,11 +59,10 @@ const buildFixedTransfer = key =>
     .ttl(1800000)
     .build();
 
-// Captured from this SDK, so they are a characterization of the current
-// serialization rather than an independent oracle — the point is to fail when
-// the bytes move, which is the regression that would otherwise reach consumers
-// silently. The public keys above ARE checked against an independent oracle,
-// so the key material underneath these is anchored separately.
+// Captured from this SDK: a characterization of the current serialization, not
+// an independent oracle. They exist to fail when the bytes move, the regression
+// that would otherwise reach consumers silently. The key material underneath is
+// anchored separately: the public keys below are checked against Node crypto.
 const EXPECTED = {
   ed25519: {
     hash: 'c95021dcc6b2d82b50155580fee35d3b249afa32d094a1949dac30097cc8c7eb',
@@ -106,15 +102,11 @@ check('derives the documented public keys from fixed secrets', () => {
   const ed = PrivateKey.fromHex(ED25519_SECRET, KeyAlgorithm.ED25519);
   const secp = PrivateKey.fromHex(SECP256K1_SECRET, KeyAlgorithm.SECP256K1);
 
-  // Both expected values were derived with Node's own crypto, not with this
-  // SDK, so the assertion is an independent oracle rather than a snapshot of
-  // whatever the bundle happens to output:
-  //
+  // Derived with Node's own crypto, not with this SDK, so these are an
+  // independent oracle rather than a snapshot of what the bundle outputs:
   //   ed25519    crypto.createPublicKey(<seed wrapped in the PKCS#8 prefix>)
   //   secp256k1  crypto.createECDH('secp256k1').getPublicKey(null, 'compressed')
-  //
-  // The leading byte in each is the SDK's algorithm tag (01 = ed25519,
-  // 02 = secp256k1); the rest is the raw key.
+  // The leading byte is the SDK's algorithm tag (01 = ed25519, 02 = secp256k1).
   assert.strictEqual(
     ed.publicKey.toHex(),
     '01' + '81c43bb4baca355050a431bce794075a7805be2b2ee2e4f2d63614f5030d1f3d'
@@ -152,9 +144,9 @@ for (const [algorithm, secret, keyAlgorithm] of [
         key.publicKey.toHex()
       );
       // Both algorithms sign deterministically — ed25519 by RFC 8032, secp256k1
-      // by RFC 6979 — so an exact signature is assertable rather than merely
-      // verifiable. `verifySignature` alone would pass against any payload,
-      // because it checks the signature against the hash it was just made over.
+      // by RFC 6979 — so the exact signature is assertable. `verifySignature`
+      // alone would pass against any payload: it checks the signature against
+      // the hash it was just made over.
       assert.strictEqual(
         transaction.approvals[0].signature.toHex(),
         expected.signature,
@@ -243,9 +235,8 @@ check('parses a public key from hex and back', () => {
 
 check('constructs the network clients without opening a connection', () => {
   assert.ok(new SseClient('http://localhost:9999/events'));
-  // Actually instantiate rather than assert the constructor is truthy: the
-  // point is that the class graph loads and wires up on Node 18, which a
-  // truthiness check on the exported symbol never established.
+  // Instantiated rather than checked for truthiness: the point is that the
+  // class graph loads and wires up on Node 18.
   const rpc = new RpcClient(new HttpHandler('http://localhost:9999/rpc'));
   assert.ok(rpc);
   assert.strictEqual(typeof rpc.getLatestBlock, 'function');

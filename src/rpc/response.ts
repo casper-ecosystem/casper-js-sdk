@@ -774,12 +774,11 @@ export class InfoGetStatusResult {
   })
   latestSwitchBlockHash: Hash;
 
-  // Declared as a class rather than the inline `constructor: () => ({...})`
-  // thunk it used to carry. That thunk returned an object of `jsonMember`
-  // decorators, which is not a constructor, so typedjson could not use it: it
-  // rejected the member on serialization. Under `target: es5` it logged the
-  // failure and emitted the rest of the document; under native ES classes it
-  // abandoned the whole document and returned `undefined`.
+  // `constructor` must name a real class here. A thunk returning an object of
+  // `jsonMember` decorators is not a constructor, so typedjson rejects the
+  // member on serialization: under `target: es5` it logs and emits the rest of
+  // the document, under native ES classes it abandons the whole document and
+  // returns `undefined`.
   @jsonMember({
     name: 'available_block_range',
     constructor: AvailableBlockRange

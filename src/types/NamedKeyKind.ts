@@ -3,11 +3,10 @@ import { jsonMember, jsonObject } from 'typedjson';
 import { Args } from './Args';
 import { deserializeArgs, serializeArgs } from './SerializationUtils';
 
-// Lives outside Transform.ts because TransformRaw.ts needs it and Transform.ts
-// imports ~20 symbols back from TransformRaw.ts. With the class declared in
-// Transform.ts that cycle threw `Cannot access 'NamedKeyKind' before
-// initialization` under native ESM, since typedjson evaluates the
-// `() => NamedKeyKind` type thunk eagerly at decoration time.
+// Must stay out of Transform.ts: TransformRaw.ts needs it and Transform.ts
+// imports back from TransformRaw.ts, and typedjson evaluates the
+// `() => NamedKeyKind` thunk eagerly while decorating — so under native ESM
+// that cycle throws `Cannot access 'NamedKeyKind' before initialization`.
 /**
  * Represents a named key transformation in a transaction.
  */

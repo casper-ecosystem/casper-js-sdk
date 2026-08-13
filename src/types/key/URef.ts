@@ -85,10 +85,9 @@ export class URef {
   toString(): string {
     return [
       Conversions.encodeBase16(this.data),
-      // `(3 || 2)` was dead — the left operand is a non-zero literal, so the
-      // right one was never reachable, and TypeScript 6 reports it (TS2872).
-      // The expression is left otherwise untouched so the rendered string is
-      // byte-for-byte what it has always been.
+      // This padding expression is a convoluted constant `'00'` in front of the
+      // octal access digit, but that `'00'` is part of the rendered format —
+      // do not simplify it away.
       new Array(3).join('0').slice(-3) + this.access.toString(8)
     ].join('-');
   }

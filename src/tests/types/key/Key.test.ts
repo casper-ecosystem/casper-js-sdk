@@ -51,10 +51,9 @@ describe('TransferHash', () => {
   const hashHex =
     '0e5a1a2c8b19b9c0f4d2e6f1a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1d3e5f7a9b1';
 
-  // Regression guard for the conditional `super(...)` these constructors used to
-  // have: it produced no super call on some paths, which is a ReferenceError
-  // under native ES classes and silently half-built the object under `target:
-  // es5`. Both source shapes must build a usable hash.
+  // Every accepted source shape is covered because the constructor must call
+  // `super(...)` unconditionally: a conditional call half-builds the object
+  // under `target: es5` and is a ReferenceError under native ES classes.
   it('should build from a prefixed hex string and keep the transfer prefix', () => {
     const hash = new TransferHash(`transfer-${hashHex}`);
 

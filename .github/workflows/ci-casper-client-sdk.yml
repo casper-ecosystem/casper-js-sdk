@@ -22,17 +22,14 @@ on:
       - '**.md'
 
 # Branch protection on `dev` requires exactly one status check — `mergefreeze`.
-# None of the jobs below is required, so a red CI run does not by itself block a
-# merge. Worth knowing when reading the guards in here: they fail loudly, but
-# only a human reading the run decides what that means. If these are ever made
-# required, the names to add are `build (22.x, ubuntu-22.04)`,
-# `build (24.x, ubuntu-22.04)`, `node18-consumer` and `node18-typings` — and note
-# that `build (18.x, ubuntu-22.04)` no longer exists, since the 18.x leg became
-# the separate `node18-consumer` job.
+# None of the jobs below is required, so the guards in here fail loudly but do
+# not block a merge on their own; a human reading the run decides what that
+# means. To make them required, the check names are `build (22.x, ubuntu-22.04)`,
+# `build (24.x, ubuntu-22.04)`, `node18-consumer` and `node18-typings`.
 jobs:
-  # The maintained legs: they run the whole dev toolchain. Node 18 is handled by
-  # `node18-consumer` below — from PHASE-3 it can no longer run the dev suite at
-  # all (vitest@4 engines: ^20 || ^22 || >=24).
+  # The maintained legs: they run the whole dev toolchain. Node 18 cannot run
+  # that suite at all (vitest@4 engines: ^20 || ^22 || >=24) and is covered by
+  # `node18-consumer` below.
   build:
     strategy:
       fail-fast: false
@@ -81,9 +78,7 @@ jobs:
       - name: Assert the node suite ran the whole file set
         run: node scripts/assert-test-count.js reports/node-unit.json "node unit"
 
-      # Browser mode drives a real Chromium. This is the first CI run of the
-      # browser suite: the karma setup it replaces preprocessed globs that no
-      # test file had matched since 2025-01, and the workflow never invoked it.
+      # Vitest browser mode drives a real Chromium, so the binary must be here.
       - name: Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
@@ -115,10 +110,9 @@ jobs:
           retention-days: 1
 
   # The consumer-compatibility leg for the published `engines.node ">=18"`.
-  # It installs the built tarball into a clean project and runs it with plain
-  # `node`, which is what a Node 18 consumer actually does — and what the dev
-  # suite never covered, since that suite runs TypeScript sources and never
-  # touches `dist/`.
+  # The dev suite runs TypeScript sources and never touches `dist/`, so this job
+  # is the only thing proving the published tarball installs and runs under a
+  # plain Node 18.
   node18-consumer:
     needs: build
     runs-on: ubuntu-22.04
@@ -144,21 +138,19 @@ jobs:
           cp scripts/smoke.js "$RUNNER_TEMP/consumer/"
           cd "$RUNNER_TEMP/consumer"
           npm init -y >/dev/null
-          # --engine-strict, or this job cannot fail on the thing it exists to
-          # prove: npm defaults to engine-strict=false, so a dependency whose
-          # engines.node excludes 18 only warns EBADENGINE, installs anyway and
-          # exits 0.
+          # --engine-strict, or this job cannot fail on what it exists to prove:
+          # npm defaults to engine-strict=false, so a dependency whose
+          # engines.node excludes 18 only warns EBADENGINE and installs anyway.
           npm install --engine-strict ./*.tgz
 
       - name: Smoke test the published artifact
         run: node "$RUNNER_TEMP/consumer/smoke.js"
         working-directory: ${{ runner.temp }}/consumer
 
-  # `@types/node` had to move to ^22 for vitest@4, so the build no longer proves
-  # that `src` stays inside the API surface Node 18 actually has. This job puts
-  # the 18.x typings back in front of the compiler. It installs them into a
-  # throwaway directory rather than the project's own tree, which keeps vitest's
-  # peer range satisfied and leaves node_modules alone.
+  # `@types/node` is on ^22 for vitest@4, so the build no longer proves `src`
+  # stays inside the API surface Node 18 actually has; this job puts the 18.x
+  # typings back in front of the compiler. They go into a throwaway directory —
+  # installing them into the project tree would break vitest's peer range.
   node18-typings:
     runs-on: ubuntu-22.04
     steps:

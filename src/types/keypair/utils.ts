@@ -38,10 +38,9 @@ export function readBase64WithPEM(content: string): Uint8Array {
  * @returns The parsed key
  * @throws `Error` if the key is of an unexpected length
  */
-// The return type is declared rather than inferred: the branches yield a mix
-// of `Uint8Array` and `Buffer`, and letting TypeScript print that union into
-// the emitted `.d.ts` puts `Buffer` — and with it a hard `@types/node`
-// requirement — into the published surface.
+// The return type is declared, not inferred: the branches mix `Uint8Array` and
+// `Buffer`, and an inferred union prints `Buffer` into the emitted `.d.ts` —
+// making the published types require `@types/node`.
 export const parseKey = (
   bytes: Uint8Array,
   from: number,

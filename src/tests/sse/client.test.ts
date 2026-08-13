@@ -3,9 +3,8 @@ import { expect, vi } from 'vitest';
 import { EventName, SseClient, SseError } from '../../sse';
 
 // eventsource is mocked so these tests exercise SseClient's own wiring rather
-// than a socket; PHASE-4.5's e2e suite covers the real stream. The stand-in is
-// declared inside the factory because `vi.mock` is hoisted above every
-// top-level binding in the file.
+// than a socket. The stand-in is declared inside the factory because `vi.mock`
+// is hoisted above every top-level binding in the file.
 vi.mock('eventsource', () => {
   class FakeEventSource {
     static lastInstance?: FakeEventSource;
@@ -79,10 +78,10 @@ describe('SseClient', () => {
     (await lastStream()).onerror?.({ message: 'Unauthorized', code: 401 });
 
     expect(errors).to.have.lengthOf(1);
-    // `SseError.isSseError`, not `instanceof`: under `target: es5` the emitted
+    // `isSseError`, not `instanceof`: under `target: es5` the emitted
     // `_super.call(this, …) || this` returns a plain Error, so `instanceof` is
-    // false in the shipped bundle even though it passes under the test
-    // transform's native classes. The guard holds in both.
+    // false in the shipped bundle even though it holds under the test
+    // transform's native classes.
     expect(SseError.isSseError(errors[0])).to.be.true;
     expect(errors[0].code).to.equal(401);
     expect(errors[0].message).to.equal('Unauthorized');
@@ -107,10 +106,9 @@ describe('SseClient', () => {
       .mockImplementation(() => undefined);
 
     try {
-      // eventsource invokes onerror from inside its own fetch promise chain, so
-      // a throw here is either swallowed whole or escapes as an unhandled
-      // rejection that kills the host process — and in the latter case it
-      // pre-empts the reconnect the library was about to schedule.
+      // eventsource invokes onerror inside its own fetch promise chain, so a
+      // throw here is either swallowed whole or escapes as an unhandled
+      // rejection that kills the host process and pre-empts the reconnect.
       expect(() => stream.onerror?.({ code: 403 })).to.not.throw();
       expect(logged).toHaveBeenCalledTimes(1);
       expect(String(logged.mock.calls[0][0])).to.include('403');
