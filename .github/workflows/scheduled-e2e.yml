@@ -1,0 +1,116 @@
+name: scheduled-e2e
+
+# Weekly, not nightly: the matrix pins image tags, so on a quiet repo a nightly
+# run replays the last PR run verbatim and produces a green wall nobody reads.
+# Per-change signal is the smoke job in `ci-casper-client-sdk.yml`; a newly
+# shipped node version is `node-version-drift.yml`.
+#
+# GitHub disables cron after 60 days of repo inactivity. Do not add a
+# keepalive-commit hack — a repo that quiet has nothing to regress.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * 1' # Mondays 03:00 UTC
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    runs-on: ubuntu-22.04
+    # The e2e vitest config sets an 83-minute per-test timeout, so a test that
+    # hangs against the node would otherwise burn the 6h job default.
+    timeout-minutes: 45
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22.x, 24.x]
+        # ≈ current mainnet + latest. Keep in step with `e2e/supported-tags.json`,
+        # which also records the build_version each tag actually serves.
+        casper-image-tag: [v210, v212]
+    services:
+      casper-nctl:
+        image: makesoftware/casper-nctl:${{ matrix.casper-image-tag }}
+        # Named so the faucet-key step below can `docker exec` into it.
+        options: --name casper-nctl
+        env:
+          PREDEFINED_ACCOUNTS: 'true'
+          DEPLOY_DELAY: '5sec'
+        ports:
+          - 11101:11101 # JSON-RPC (/rpc)
+          - 18101:18101 # SSE (/events)
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 #v6.1.0
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+
+      - name: Install
+        run: npm install
+
+      - name: Run allowed dependency scripts
+        run: npx allow-scripts
+
+      # The image ships a HEALTHCHECK and the runner waits on it, but "healthy"
+      # is not "answering JSON-RPC" — ask the endpoint the suite will use.
+      - name: Wait for the node to serve JSON-RPC
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf -m 5 -X POST http://127.0.0.1:11101/rpc \
+              -H 'Content-Type: application/json' \
+              -d '{"jsonrpc":"2.0","id":"1","method":"info_get_status"}' \
+              | grep -q build_version; then
+              echo "node is up after ~$((i * 5))s"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "node did not answer info_get_status within 300s"
+          docker logs casper-nctl | tail -50
+          exit 1
+
+      # Path is per the 2.x image layout, verified by `docker exec` against
+      # v210 and v212. It is NOT the 1.x `casper-node/utils/nctl/assets` path.
+      - name: Extract faucet key
+        run: |
+          docker exec casper-nctl \
+            cat /home/casper/casper-nctl/assets/net-1/faucet/secret_key.pem \
+            > e2e/faucet_secret_key.pem
+          test -s e2e/faucet_secret_key.pem
+
+      - name: E2E
+        run: npm run test:e2e
+
+      - name: Node logs
+        if: failure()
+        run: docker logs casper-nctl | tail -200
+
+  # One job, not one per matrix leg: four red legs are one problem. A scheduled
+  # failure that lands nowhere visible is the same as no test at all.
+  notify:
+    needs: e2e
+    if: failure()
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Open or update the failure issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+          TITLE: 'scheduled-e2e is failing'
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          body="The weekly e2e matrix failed: $RUN_URL"
+          existing="$(gh issue list --state open --search "\"$TITLE\" in:title" \
+            --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -1)"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "$TITLE" --body "$body"
+          fi
