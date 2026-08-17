@@ -29,7 +29,7 @@ export class PrivateKey implements PrivateKeyInternal {
 
   /**
    * Generates a new random Ed25519 private key.
-   * @returns A promise that resolves to a new PrivateKey instance.
+   * @returns A new PrivateKey instance.
    */
   static generate(): PrivateKey {
     const keyPair = ed25519.utils.randomPrivateKey();
@@ -38,7 +38,7 @@ export class PrivateKey implements PrivateKeyInternal {
 
   /**
    * Retrieves the byte array of the associated public key.
-   * @returns A promise that resolves to the public key bytes.
+   * @returns The public key bytes.
    */
   publicKeyBytes(): Uint8Array {
     return ed25519.sync.getPublicKey(this.key);
@@ -51,7 +51,7 @@ export class PrivateKey implements PrivateKeyInternal {
   /**
    * Signs a message using the private key.
    * @param message - The message to sign.
-   * @returns A promise that resolves to the signature bytes.
+   * @returns The signature bytes.
    */
   sign(message: Uint8Array): Uint8Array {
     return ed25519.sync.sign(message, this.key);
@@ -94,22 +94,7 @@ export class PrivateKey implements PrivateKeyInternal {
    */
   toPem(): string {
     const derPrefix = Buffer.from([
-      48,
-      46,
-      2,
-      1,
-      0,
-      48,
-      5,
-      6,
-      3,
-      43,
-      101,
-      112,
-      4,
-      34,
-      4,
-      32
+      48, 46, 2, 1, 0, 48, 5, 6, 3, 43, 101, 112, 4, 34, 4, 32
     ]);
     const encoded = Conversions.encodeBase64(
       Buffer.concat([derPrefix, Buffer.from(this.key)])

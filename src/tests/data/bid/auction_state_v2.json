@@ -1,0 +1,45 @@
+{
+  "bids": [
+    {
+      "public_key": "01197f6b23e16c8532c6abc838facd5ea789be0c76b2920334039bfa8b3d368d61",
+      "bid": {
+        "Validator": {
+          "validator_public_key": "01197f6b23e16c8532c6abc838facd5ea789be0c76b2920334039bfa8b3d368d61",
+          "bonding_purse": "uref-b3c03358245a0d9514064b6d0c3dd90023d29a0fe137507d430a26990f5ce8e3-007",
+          "delegation_rate": 10,
+          "inactive": false,
+          "staked_amount": "900000000000",
+          "minimum_delegation_amount": "500000000000",
+          "maximum_delegation_amount": "1000000000000000",
+          "reserved_slots": 0
+        }
+      }
+    },
+    {
+      "public_key": "01d829cbfb66b2b11ef8d8feb6d3f2155789fc22f407bb57f89b05f6ba4b9ae070",
+      "bid": {
+        "Delegator": {
+          "bonding_purse": "uref-41059a3aa5c5759c7f5e3c826cb47e0b21257ac57ee63a4c00dc305133e55d64-007",
+          "staked_amount": "555000000000",
+          "delegator_kind": {
+            "PublicKey": "01d829cbfb66b2b11ef8d8feb6d3f2155789fc22f407bb57f89b05f6ba4b9ae070"
+          },
+          "validator_public_key": "01197f6b23e16c8532c6abc838facd5ea789be0c76b2920334039bfa8b3d368d61"
+        }
+      }
+    }
+  ],
+  "block_height": 500000,
+  "era_validators": [
+    {
+      "era_id": 1200,
+      "validator_weights": [
+        {
+          "public_key": "01197f6b23e16c8532c6abc838facd5ea789be0c76b2920334039bfa8b3d368d61",
+          "weight": "1000000000000"
+        }
+      ]
+    }
+  ],
+  "state_root_hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a"
+}

@@ -1,0 +1,23 @@
+{
+  "TransactionProcessed": {
+    "block_hash": "b51e5d16944c63eab276e6c5494fd39a454418e3a3f6aa519797882b6c3c0d4b",
+    "transaction_hash": {
+      "Version1": "55c7d843757785776324f1878292f2ebf6f570082c6fc16d9e1ed3191ede2c82"
+    },
+    "initiator_addr": {
+      "PublicKey": "017856b1162fea18c7b2704a5d8ca19b1d15f09088e53883874993e9af2a8297e7"
+    },
+    "timestamp": "2026-08-12T22:18:48.704Z",
+    "ttl": "30m",
+    "execution_result": {
+      "Version1": {
+        "Success": {
+          "cost": "100000000",
+          "effect": { "operations": [], "transforms": [] },
+          "transfers": []
+        }
+      }
+    },
+    "messages": []
+  }
+}
