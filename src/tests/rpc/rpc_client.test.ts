@@ -32,10 +32,11 @@ describe('RPC Client', () => {
     const result = serializer.parse(infoGetTransactionResultV1Json.result)!;
     result.rawJSON = infoGetTransactionResultV1Json.result;
 
-    const txResult = InfoGetTransactionResultV1Compatible.newInfoGetTransactionResultFromV1Compatible(
-      result,
-      result.rawJSON
-    );
+    const txResult =
+      InfoGetTransactionResultV1Compatible.newInfoGetTransactionResultFromV1Compatible(
+        result,
+        result.rawJSON
+      );
 
     expect(txResult).to.be.not.undefined;
     expect(txResult).to.be.not.empty;
@@ -59,10 +60,11 @@ describe('RPC Client', () => {
       ser.toPlainJson(result.blockWithSignatures!.block.blockV2!.body)
     );
 
-    const blockResult = ChainGetBlockResult.newChainGetBlockResultFromV1Compatible(
-      result,
-      result.rawJSON
-    );
+    const blockResult =
+      ChainGetBlockResult.newChainGetBlockResultFromV1Compatible(
+        result,
+        result.rawJSON
+      );
     blockResult.rawJSON = getBlockByHashJson.result;
 
     expect(blockResult).to.be.not.undefined;
@@ -266,7 +268,7 @@ describe('RPC Client', () => {
     );
   });
 
-  it('should correctly parse transaction with args keys', () => {
+  it('should correctly parse a Deploy transaction with a List<U8> arg', () => {
     const tx = InfoGetTransactionResult.fromJSON(transactionWithListU8);
 
     expect(tx).to.be.not.undefined;
@@ -283,6 +285,8 @@ describe('RPC Client', () => {
     expect(tx).to.be.not.undefined;
     expect(tx).to.be.not.empty;
 
-    expect(tx?.transaction?.hash.toHex()).to.deep.equal(getTransactionBidAddr.transaction.Version1.hash);
+    expect(tx?.transaction?.hash.toHex()).to.deep.equal(
+      getTransactionBidAddr.transaction.Version1.hash
+    );
   });
 });

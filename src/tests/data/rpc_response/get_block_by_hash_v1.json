@@ -1,0 +1,55 @@
+{
+  "jsonrpc": "2.0",
+  "id": "1",
+  "result": {
+    "api_version": "1.5.8",
+    "block_with_signatures": {
+      "block": {
+        "Version1": {
+          "hash": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+          "header": {
+            "parent_hash": "fbab6b8ac6befe3d2f2f4c0cc6497796a2a661d77dbf19e2cfe789e3c08b86d9",
+            "state_root_hash": "e8637cdc918e901c6e10a050cc7d3be949b892dc8842580088f5aa592a342d39",
+            "body_hash": "ce3738f729668c34f5e97bc77dbb163b214adcfc9f1e2486c0338209688eb5fb",
+            "random_bit": true,
+            "accumulated_seed": "fbab6b8ac6befe3d2f2f4c0cc6497796a2a661d77dbf19e2cfe789e3c08b86d9",
+            "era_end": null,
+            "timestamp": "2022-11-14T12:52:34.000Z",
+            "era_id": 1200,
+            "height": 500000,
+            "protocol_version": "1.5.8"
+          },
+          "body": {
+            "deploy_hashes": [
+              "e8637cdc918e901c6e10a050cc7d3be949b892dc8842580088f5aa592a342d39"
+            ],
+            "transfer_hashes": [
+              "ce3738f729668c34f5e97bc77dbb163b214adcfc9f1e2486c0338209688eb5fb"
+            ],
+            "proposer": "0158c0a4d6206b775bcbe2bc6d59f0b2d8cc7887c63a0ddfb0c3f7f3892ef53f68"
+          },
+          "proofs": [
+            {
+              "public_key": "0158c0a4d6206b775bcbe2bc6d59f0b2d8cc7887c63a0ddfb0c3f7f3892ef53f68",
+              "signature": "01e907676ffffe21df09755bb796012df34f633aa25a97c8506d2ad88cb75ba19b39f28d49d2612413c8373ce68ee033d8c0881e871026aaf02208b08db7372206"
+            },
+            {
+              "public_key": "018ecb1f643285bc195eeae802d68afdcf0f07b25d72c29158ab6be5574a582153",
+              "signature": "01e907676ffffe21df09755bb796012df34f633aa25a97c8506d2ad88cb75ba19b39f28d49d2612413c8373ce68ee033d8c0881e871026aaf02208b08db7372206"
+            }
+          ]
+        }
+      },
+      "proofs": [
+        {
+          "public_key": "0158c0a4d6206b775bcbe2bc6d59f0b2d8cc7887c63a0ddfb0c3f7f3892ef53f68",
+          "signature": "01e907676ffffe21df09755bb796012df34f633aa25a97c8506d2ad88cb75ba19b39f28d49d2612413c8373ce68ee033d8c0881e871026aaf02208b08db7372206"
+        },
+        {
+          "public_key": "018ecb1f643285bc195eeae802d68afdcf0f07b25d72c29158ab6be5574a582153",
+          "signature": "01e907676ffffe21df09755bb796012df34f633aa25a97c8506d2ad88cb75ba19b39f28d49d2612413c8373ce68ee033d8c0881e871026aaf02208b08db7372206"
+        }
+      ]
+    }
+  }
+}
