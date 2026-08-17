@@ -1,0 +1,73 @@
+name: node-version-drift
+
+# The cheap half of the e2e schedule: pinned image tags cannot drift, so the one
+# thing a cron catches that a PR run cannot is the live *networks* moving past
+# what we test against. Two HTTP calls, not a node container — hence its own job.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 5 * * 1' # Mondays 05:00 UTC, after scheduled-e2e
+
+permissions:
+  contents: read
+
+jobs:
+  drift:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 #v6.1.0
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
+        with:
+          node-version: 22.x
+
+      # No `npm install`: the script uses only Node builtins and global fetch,
+      # so the check cannot be broken by a dependency resolution failure.
+      - name: Compare live networks against the pinned e2e matrix
+        id: drift
+        run: |
+          set +e
+          node scripts/check-node-version-drift.js > "$RUNNER_TEMP/drift.md"
+          status=$?
+          set -e
+          cat "$RUNNER_TEMP/drift.md"
+          echo "status=$status" >> "$GITHUB_OUTPUT"
+          # 2 = could not tell (network unreachable, unusable pin file) — a
+          # failure of the check itself, not a clean "no drift".
+          if [ "$status" = "2" ]; then exit 1; fi
+
+      # Keyed by a fixed title so a still-unfixed drift updates one issue every
+      # week instead of opening 52 of them.
+      - name: Open or update the drift issue
+        if: steps.drift.outputs.status == '1'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TITLE: 'e2e: pinned casper-nctl images are behind the live networks'
+        run: |
+          body="$(cat "$RUNNER_TEMP/drift.md")"
+          existing="$(gh issue list --state open --search "\"$TITLE\" in:title" \
+            --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -1)"
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body "$body"
+          else
+            gh issue create --title "$TITLE" --body "$body"
+          fi
+
+      # "No drift" must not look the same as "never ran".
+      - name: Close the drift issue once the matrix catches up
+        if: steps.drift.outputs.status == '0'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TITLE: 'e2e: pinned casper-nctl images are behind the live networks'
+        run: |
+          existing="$(gh issue list --state open --search "\"$TITLE\" in:title" \
+            --json number,title --jq ".[] | select(.title == \"$TITLE\") | .number" | head -1)"
+          if [ -n "$existing" ]; then
+            gh issue close "$existing" \
+              --comment "$(cat "$RUNNER_TEMP/drift.md")"
+          fi
