@@ -470,7 +470,9 @@ export class Key {
       }
       case KeyTypeID.Transfer: {
         const transferHash = Hash.fromBytes(contentBytes);
-        result.transfer = new TransferHash(transferHash?.result.toHex());
+        // Bytes, not hex: the string overload only keeps `transfer-` when the
+        // input already carries it, so a bare hex string dropped the prefix.
+        result.transfer = new TransferHash(transferHash?.result.toBytes());
         return { result, bytes: transferHash?.bytes };
       }
       case KeyTypeID.DeployInfo: {

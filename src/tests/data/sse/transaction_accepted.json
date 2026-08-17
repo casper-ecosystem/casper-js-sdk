@@ -1,0 +1,58 @@
+{
+  "TransactionAccepted": {
+    "Version1": {
+      "hash": "55c7d843757785776324f1878292f2ebf6f570082c6fc16d9e1ed3191ede2c82",
+      "payload": {
+        "initiator_addr": {
+          "PublicKey": "017856b1162fea18c7b2704a5d8ca19b1d15f09088e53883874993e9af2a8297e7"
+        },
+        "timestamp": "2026-08-12T22:18:48.704Z",
+        "ttl": "30m",
+        "pricing_mode": {
+          "PaymentLimited": {
+            "gas_price_tolerance": 1,
+            "payment_amount": 100000000,
+            "standard_payment": true
+          }
+        },
+        "chain_name": "casper-net-1",
+        "fields": {
+          "args": {
+            "Named": [
+              [
+                "target",
+                {
+                  "bytes": "0202f5a92ab6da536e7b1a351406f3744224bec85d7acbab1497b65de48a1a707b64",
+                  "cl_type": "PublicKey"
+                }
+              ],
+              [
+                "amount",
+                {
+                  "bytes": "0400f90295",
+                  "cl_type": "U512"
+                }
+              ],
+              [
+                "id",
+                {
+                  "bytes": "012a00000000000000",
+                  "cl_type": { "Option": "U64" }
+                }
+              ]
+            ]
+          },
+          "target": "Native",
+          "entry_point": "Transfer",
+          "scheduling": "Standard"
+        }
+      },
+      "approvals": [
+        {
+          "signer": "017856b1162fea18c7b2704a5d8ca19b1d15f09088e53883874993e9af2a8297e7",
+          "signature": "01753bfeef08823dab433eda35fe102c40d0ecaa8b86533ced37ab58340f6c6b8b0efec90e35008c41db1a5ea73aaf152d3f99c50dd576ff7ba85597b75289100b"
+        }
+      ]
+    }
+  }
+}

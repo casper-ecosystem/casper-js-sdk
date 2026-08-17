@@ -70,9 +70,15 @@ export class BlockGlobalAddr {
    * @throws Error if the format does not match known block global address types.
    */
   static fromString(source: string): BlockGlobalAddr {
-    if (source.startsWith(BlockTimePrefix)) {
+    // `toPrefixedString` emits the `block-global-` prefix, so accept it here or
+    // the two are not inverses and a round-trip through JSON throws.
+    const body = source.startsWith(PrefixNameBlockGlobal)
+      ? source.substring(PrefixNameBlockGlobal.length)
+      : source;
+
+    if (body.startsWith(BlockTimePrefix)) {
       return new BlockGlobalAddr({}, undefined);
-    } else if (source.startsWith(MessageCountPrefix)) {
+    } else if (body.startsWith(MessageCountPrefix)) {
       return new BlockGlobalAddr(undefined, {});
     }
     throw new Error('Invalid BlockGlobalAddr format');

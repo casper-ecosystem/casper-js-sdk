@@ -156,18 +156,22 @@ export class BalanceHoldAddr {
     const balanceHoldAddrTag = getBalanceHoldAddrTag(tag);
 
     const purseAddr = bytes.slice(1, ByteHashLen + 1);
+    // Via `Key.fromBytes` the input is a subarray of a larger buffer, so a
+    // DataView on the raw `.buffer` without `byteOffset` reads the wrong bytes.
     const blockTimeMillis = new DataView(
       bytes.buffer,
-      ByteHashLen + 1
+      bytes.byteOffset + ByteHashLen + 1,
+      BlockTypeBytesLen
     ).getBigUint64(0, true);
     const blockTime = new Date(Number(blockTimeMillis));
 
     const hold = new Hold(purseAddr, blockTime);
+    const remainder = bytes.subarray(ByteHashLen + BlockTypeBytesLen + 1);
 
     if (balanceHoldAddrTag === BalanceHoldAddrTag.Gas) {
-      return { result: new BalanceHoldAddr(hold, undefined), bytes: purseAddr };
+      return { result: new BalanceHoldAddr(hold, undefined), bytes: remainder };
     } else if (balanceHoldAddrTag === BalanceHoldAddrTag.Processing) {
-      return { result: new BalanceHoldAddr(undefined, hold), bytes: purseAddr };
+      return { result: new BalanceHoldAddr(undefined, hold), bytes: remainder };
     }
 
     throw new BalanceHoldAddrTagError('Unexpected BalanceHoldAddr type');
@@ -179,7 +183,13 @@ export class BalanceHoldAddr {
    * @returns A new BalanceHoldAddr instance.
    */
   public static fromJSON(json: string): BalanceHoldAddr {
-    return this.fromString(json);
+    // `toJSON` emits the `balance-hold-` prefix and `fromString` hex-decodes
+    // whatever it is given, so the prefix has to come off first.
+    return this.fromString(
+      json.startsWith(PrefixName.BalanceHold)
+        ? json.substring(PrefixName.BalanceHold.length)
+        : json
+    );
   }
 
   /**

@@ -17,7 +17,7 @@ export interface PrivateKeyInternal {
   /**
    * Signs a message using the private key.
    * @param message - The message to sign.
-   * @returns A promise resolving to the signature bytes.
+   * @returns The signature bytes.
    */
   sign(message: Uint8Array): Uint8Array;
 
@@ -74,7 +74,7 @@ export class PrivateKey {
   /**
    * Signs a message using the private key.
    * @param msg - The message to sign.
-   * @returns A promise resolving to the signature bytes.
+   * @returns The signature bytes.
    */
   public sign(msg: Uint8Array): Uint8Array {
     return this.priv.sign(msg);
@@ -83,7 +83,7 @@ export class PrivateKey {
   /**
    * Signs a message using the private key and includes the algorithm byte in the signature.
    * @param msg - The message to sign.
-   * @returns A promise resolving to the signature bytes with the algorithm byte.
+   * @returns The signature bytes with the algorithm byte.
    */
   public signAndAddAlgorithmBytes(msg: Uint8Array): Uint8Array {
     const signature = this.priv.sign(msg);
@@ -103,7 +103,7 @@ export class PrivateKey {
   /**
    * Generates a new private key with the specified algorithm.
    * @param algorithm - The cryptographic algorithm to use.
-   * @returns A promise resolving to a new PrivateKey instance.
+   * @returns A new PrivateKey instance.
    */
   public static generate(algorithm: KeyAlgorithm): PrivateKey {
     const priv = PrivateKeyFactory.createPrivateKey(algorithm);
@@ -117,16 +117,10 @@ export class PrivateKey {
    * Creates a private key from a PEM-encoded string.
    * @param content - The PEM-encoded string.
    * @param algorithm - The cryptographic algorithm to use.
-   * @returns A promise resolving to a PrivateKey instance.
+   * @returns A PrivateKey instance.
    */
-  public static fromPem(
-    content: string,
-    algorithm: KeyAlgorithm
-  ): PrivateKey {
-    const priv = PrivateKeyFactory.createPrivateKeyFromPem(
-      content,
-      algorithm
-    );
+  public static fromPem(content: string, algorithm: KeyAlgorithm): PrivateKey {
+    const priv = PrivateKeyFactory.createPrivateKeyFromPem(content, algorithm);
     const pubBytes = priv.publicKeyBytes();
     const algBytes = Uint8Array.of(algorithm);
     const pub = PublicKey.fromBuffer(concat([algBytes, pubBytes]));
@@ -137,16 +131,10 @@ export class PrivateKey {
    * Creates a private key from a hexadecimal string.
    * @param key - The hexadecimal string of the private key.
    * @param algorithm - The cryptographic algorithm to use.
-   * @returns A promise resolving to a PrivateKey instance.
+   * @returns A PrivateKey instance.
    */
-  public static fromHex(
-    key: string,
-    algorithm: KeyAlgorithm
-  ): PrivateKey {
-    const priv = PrivateKeyFactory.createPrivateKeyFromHex(
-      key,
-      algorithm
-    );
+  public static fromHex(key: string, algorithm: KeyAlgorithm): PrivateKey {
+    const priv = PrivateKeyFactory.createPrivateKeyFromHex(key, algorithm);
     const pubBytes = priv.publicKeyBytes();
     const algBytes = Uint8Array.of(algorithm);
     const pub = PublicKey.fromBuffer(concat([algBytes, pubBytes]));
@@ -162,12 +150,10 @@ class PrivateKeyFactory {
   /**
    * Creates a new private key using the specified algorithm.
    * @param algorithm - The cryptographic algorithm to use.
-   * @returns A promise resolving to a PrivateKeyInternal instance.
+   * @returns A PrivateKeyInternal instance.
    * @throws Error if the algorithm is unsupported.
    */
-  public static createPrivateKey(
-    algorithm: KeyAlgorithm
-  ): PrivateKeyInternal {
+  public static createPrivateKey(algorithm: KeyAlgorithm): PrivateKeyInternal {
     switch (algorithm) {
       case KeyAlgorithm.ED25519:
         return Ed25519PrivateKey.generate();
@@ -182,7 +168,7 @@ class PrivateKeyFactory {
    * Creates a PrivateKeyInternal instance from a PEM-encoded string.
    * @param content - The PEM-encoded string.
    * @param algorithm - The cryptographic algorithm to use.
-   * @returns A promise resolving to a PrivateKeyInternal instance.
+   * @returns A PrivateKeyInternal instance.
    * @throws Error if the algorithm is unsupported.
    */
   public static createPrivateKeyFromPem(
@@ -203,7 +189,7 @@ class PrivateKeyFactory {
    * Creates a PrivateKeyInternal instance from a hexadecimal string.
    * @param key - The hexadecimal string of the private key.
    * @param algorithm - The cryptographic algorithm to use.
-   * @returns A promise resolving to a PrivateKeyInternal instance.
+   * @returns A PrivateKeyInternal instance.
    * @throws Error if the algorithm is unsupported.
    */
   public static createPrivateKeyFromHex(

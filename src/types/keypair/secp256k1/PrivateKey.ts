@@ -27,7 +27,7 @@ export class PrivateKey implements PrivateKeyInternal {
 
   /**
    * Generates a new random secp256k1 private key.
-   * @returns A promise that resolves to a new PrivateKey instance.
+   * @returns A new PrivateKey instance.
    */
   static generate(): PrivateKey {
     const privateKey = secp256k1.utils.randomPrivateKey();
@@ -36,7 +36,7 @@ export class PrivateKey implements PrivateKeyInternal {
 
   /**
    * Retrieves the byte array of the public key in compressed format.
-   * @returns A promise that resolves to the compressed public key bytes.
+   * @returns The compressed public key bytes.
    */
   publicKeyBytes(): Uint8Array {
     return secp256k1.getPublicKey(this.key, true);
@@ -58,7 +58,7 @@ export class PrivateKey implements PrivateKeyInternal {
    * Signs a message using the private key.
    * The message is first hashed with SHA-256 before signing.
    * @param message - The message to sign.
-   * @returns A promise that resolves to the signature bytes in compact format.
+   * @returns The signature bytes in compact format.
    */
   sign(message: Uint8Array): Uint8Array {
     const hash = sha256(message);

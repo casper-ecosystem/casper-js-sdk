@@ -2,7 +2,7 @@ import * as secp256k1 from '@noble/secp256k1';
 import { sha256 } from '@noble/hashes/sha2';
 import { Conversions } from '../../Conversions';
 import { readBase64WithPEM } from '../utils';
-import { encodePublic } from "./encoders";
+import { encodePublic } from './encoders';
 
 /** The expected size of a secp256k1 public key in bytes. */
 const PublicKeySize = 33;
@@ -36,11 +36,7 @@ export class PublicKey {
    * @returns A PEM compliant string containing this instance's public key
    */
   public toPem(): string {
-    return encodePublic(
-      Conversions.encodeBase16(this.key),
-      'raw',
-      'pem'
-    );
+    return encodePublic(Conversions.encodeBase16(this.key), 'raw', 'pem');
   }
 
   /**
@@ -49,7 +45,7 @@ export class PublicKey {
    * the public key for the given message.
    * @param message - The original message that was signed.
    * @param signature - The signature to verify. Supports both raw (64-byte R || S) and DER formats.
-   * @returns A promise that resolves to `true` if the signature is valid, or `false` otherwise.
+   * @returns `true` if the signature is valid, or `false` otherwise.
    */
   verifySignature(message: Uint8Array, signature: Uint8Array): boolean {
     let compactSignature: Uint8Array;
@@ -81,11 +77,7 @@ export class PublicKey {
   static fromPem(content: string): PublicKey {
     const publicKeyBytes = readBase64WithPEM(content);
 
-    const rawKeyHex = encodePublic(
-      Buffer.from(publicKeyBytes),
-      'der',
-      'raw'
-    );
+    const rawKeyHex = encodePublic(Buffer.from(publicKeyBytes), 'der', 'raw');
 
     return new PublicKey(new Uint8Array(Buffer.from(rawKeyHex, 'hex')));
   }

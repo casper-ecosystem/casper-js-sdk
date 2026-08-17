@@ -1,5 +1,5 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
-import { MaxUint256, NegativeOne, One, Zero } from '@ethersproject/constants';
+import { NegativeOne, One, Zero } from '@ethersproject/constants';
 import { arrayify, concat } from '@ethersproject/bytes';
 import { blake2b } from '@noble/hashes/blake2';
 
@@ -31,47 +31,47 @@ const describeValue = (value: BigNumberish): string => {
  * @param signed - `true` if the integer is signed; `false` otherwise.
  * @returns A function that converts a BigNumberish value into a `Uint8Array` byte representation.
  */
-export const toBytesNumber = (bitSize: number, signed: boolean) => (
-  value: BigNumberish
-): Uint8Array => {
-  const val = BigNumber.from(value);
+export const toBytesNumber =
+  (bitSize: number, signed: boolean) =>
+  (value: BigNumberish): Uint8Array => {
+    const val = BigNumber.from(value);
 
-  // Calculate the maximum allowed unsigned value for the given bit size
-  const maxUintValue = MaxUint256.mask(bitSize);
+    // Shifted, not masked off `MaxUint256`: a mask cannot widen a 256-bit value,
+    // so `MaxUint256.mask(512)` is 2^256-1 and rejects every legal larger U512.
+    const maxUintValue = One.shl(bitSize).sub(One);
 
-  if (signed) {
-    // Calculate signed bounds for the given bit size
-    const bounds = maxUintValue.mask(bitSize - 1);
-    if (val.gt(bounds) || val.lt(bounds.add(One).mul(NegativeOne))) {
+    if (signed) {
+      const bounds = One.shl(bitSize - 1).sub(One);
+      if (val.gt(bounds) || val.lt(bounds.add(One).mul(NegativeOne))) {
+        throw new Error('value out-of-bounds, value: ' + describeValue(value));
+      }
+    } else if (val.lt(Zero) || val.gt(maxUintValue)) {
       throw new Error('value out-of-bounds, value: ' + describeValue(value));
     }
-  } else if (val.lt(Zero) || val.gt(maxUintValue.mask(bitSize))) {
-    throw new Error('value out-of-bounds, value: ' + describeValue(value));
-  }
 
-  const valTwos = val.toTwos(bitSize).mask(bitSize);
+    const valTwos = val.toTwos(bitSize).mask(bitSize);
 
-  const bytes = arrayify(valTwos);
+    const bytes = arrayify(valTwos);
 
-  if (valTwos.gte(0)) {
-    if (bitSize > 64) {
-      if (valTwos.eq(0)) {
-        return bytes;
+    if (valTwos.gte(0)) {
+      if (bitSize > 64) {
+        if (valTwos.eq(0)) {
+          return bytes;
+        }
+        return concat([bytes, Uint8Array.from([bytes.length])])
+          .slice()
+          .reverse();
+      } else {
+        const byteLength = bitSize / 8;
+        return concat([
+          bytes.slice().reverse(),
+          new Uint8Array(byteLength - bytes.length)
+        ]);
       }
-      return concat([bytes, Uint8Array.from([bytes.length])])
-        .slice()
-        .reverse();
     } else {
-      const byteLength = bitSize / 8;
-      return concat([
-        bytes.slice().reverse(),
-        new Uint8Array(byteLength - bytes.length)
-      ]);
+      return bytes.reverse();
     }
-  } else {
-    return bytes.reverse();
-  }
-};
+  };
 
 /**
  * Converts an 8-bit unsigned integer (`u8`) to little-endian byte format.
@@ -177,7 +177,11 @@ export function parseU32(bytes: Uint8Array): number {
     throw new Error('Invalid byte array for u32 parsing');
   }
 
-  return bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24);
+  // `>>> 0` because `<< 24` produces a *signed* int32: without it every u32
+  // with the high bit set comes back negative (0xFFFFFFFF parsed as -1).
+  return (
+    (bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24)) >>> 0
+  );
 }
 
 /**

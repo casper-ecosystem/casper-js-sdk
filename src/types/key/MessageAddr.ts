@@ -1,4 +1,3 @@
-import { concat } from '@ethersproject/bytes';
 import { jsonMember, jsonObject } from 'typedjson';
 
 import { Hash } from './Hash';
@@ -149,13 +148,20 @@ export class MessageAddr {
    * @returns A new `MessageAddr` instance wrapped in an `IResultWithBytes`.
    */
   static fromBytes(bytes: Uint8Array): IResultWithBytes<MessageAddr> {
+    // Each reader consumes from the previous one's remainder; handed the
+    // original buffer, the topic hash would re-read the entity's own bytes.
     const entityAddr = EntityAddr.fromBytes(bytes);
-    const topicNameHash = Hash.fromBytes(bytes);
+    const topicNameHash = Hash.fromBytes(entityAddr.bytes);
+    let remainder = topicNameHash.bytes;
 
     let messageIndex: number | undefined;
-    if (bytes.length > 0) {
-      const messageIndexArray = bytes.slice(bytes.length - 4);
-      messageIndex = new DataView(messageIndexArray.buffer).getUint32(0, true);
+    if (remainder.length >= 4) {
+      messageIndex = new DataView(
+        remainder.buffer,
+        remainder.byteOffset,
+        4
+      ).getUint32(0, true);
+      remainder = remainder.subarray(4);
     }
 
     return {
@@ -164,7 +170,7 @@ export class MessageAddr {
         topicNameHash?.result,
         messageIndex
       ),
-      bytes: concat([entityAddr.bytes, topicNameHash.bytes])
+      bytes: remainder
     };
   }
 
