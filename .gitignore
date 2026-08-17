@@ -12,8 +12,12 @@ node_modules
 
 .eslintcache
 .nyc_output
+/coverage/
 
 .DS_Store
 
 .env
 .idea
+
+# Extracted from the nctl container by e2e/run.sh — a private key, never committable.
+e2e/faucet_secret_key.pem
