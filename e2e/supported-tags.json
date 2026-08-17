@@ -1,0 +1,17 @@
+{
+  "$comment": [
+    "The makesoftware/casper-nctl image tags the e2e matrix is pinned to, and the",
+    "build_version each one actually serves. The two do not agree: every v2xx tag",
+    "so far reports one patch below its own name (v212 -> 2.1.1). buildVersion is",
+    "therefore recorded by booting the image and reading info_get_status, never",
+    "derived from the tag string — scripts/check-node-version-drift.js compares",
+    "live mainnet/testnet against these numbers, and a tag-derived guess would",
+    "overstate coverage by a patch.",
+    "Keep this list in step with the matrix in .github/workflows/scheduled-e2e.yml."
+  ],
+  "image": "makesoftware/casper-nctl",
+  "tags": [
+    { "tag": "v210", "buildVersion": "2.1.0-2fa467e5c" },
+    { "tag": "v212", "buildVersion": "2.1.1-4bb15d5e0" }
+  ]
+}
