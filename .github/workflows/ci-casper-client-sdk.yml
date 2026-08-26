@@ -159,8 +159,8 @@ jobs:
     services:
       casper-nctl:
         # Newest pinned tag; `e2e/supported-tags.json` records the build_version
-        # it actually serves (which is one patch below the tag name).
-        image: makesoftware/casper-nctl:v212
+        # it actually serves, which the tag name does not reliably encode.
+        image: makesoftware/casper-nctl:v222
         # Named so the faucet-key step below can `docker exec` into it.
         options: --name casper-nctl
         env:

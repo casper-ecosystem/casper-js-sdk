@@ -7,7 +7,8 @@
  * The comparison is against the `buildVersion` each pinned image *reports*, not
  * against its tag: `makesoftware/casper-nctl:v212` serves `build_version`
  * `2.1.1-4bb15d5e0`, so reading 2.1.2 off the tag would overstate coverage by a
- * patch and hide exactly the drift this exists to find.
+ * patch and hide exactly the drift this exists to find. The offset is not even
+ * constant: `v222` serves 2.2.2.
  *
  * Usage: node scripts/check-node-version-drift.js
  * Prints a markdown report to stdout. Exit 0 = no drift, 1 = drift found,
@@ -97,7 +98,8 @@ async function main() {
     try {
       const buildVersion = await fetchBuildVersion(url);
       const version = parseVersion(buildVersion);
-      if (!version) throw new Error(`unparseable build_version ${buildVersion}`);
+      if (!version)
+        throw new Error(`unparseable build_version ${buildVersion}`);
       live.push({ name, buildVersion, version });
     } catch (error) {
       console.error(`${name}: ${error.message}`);
@@ -131,7 +133,9 @@ async function main() {
   console.log(
     `${ahead
       .map(n => `**${n.name}** is running \`${n.buildVersion}\``)
-      .join(' and ')}, past the newest node image the e2e matrix is pinned to ` +
+      .join(
+        ' and '
+      )}, past the newest node image the e2e matrix is pinned to ` +
       `(\`${highest.tag}\`, build ${formatVersion(highest.version)}).\n\n` +
       `Pick up a newer \`makesoftware/casper-nctl\` tag in ` +
       `\`e2e/supported-tags.json\` and in the \`scheduled-e2e\` matrix, boot it ` +

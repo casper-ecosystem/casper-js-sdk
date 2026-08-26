@@ -27,7 +27,7 @@ jobs:
         node-version: [22.x, 24.x]
         # ≈ current mainnet + latest. Keep in step with `e2e/supported-tags.json`,
         # which also records the build_version each tag actually serves.
-        casper-image-tag: [v210, v212]
+        casper-image-tag: [v212, v222]
     services:
       casper-nctl:
         image: makesoftware/casper-nctl:${{ matrix.casper-image-tag }}

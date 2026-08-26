@@ -1,6 +1,6 @@
 services:
   casper-nctl:
-    image: makesoftware/casper-nctl:${CASPER_IMAGE_TAG:-v212}
+    image: makesoftware/casper-nctl:${CASPER_IMAGE_TAG:-v222}
     container_name: casper-nctl
     environment:
       PREDEFINED_ACCOUNTS: 'true'
