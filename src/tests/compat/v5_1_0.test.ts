@@ -404,8 +404,15 @@ describe('compatibility with casper-js-sdk@5.1.0', () => {
   // them.
   // ------------------------------------------------------------------------
   describe('key prefixes', () => {
+    // A superset, not an equality: a prefix 5.1.0 never knew cannot break a
+    // 5.1.0 reader, but a member that vanished or changed value would.
     it('keeps every PrefixName member and value', () => {
-      expect({ ...PrefixName }).to.deep.equal(golden.prefixNames);
+      const current = { ...PrefixName } as Record<string, string>;
+      const golden5_1_0 = golden.prefixNames as Record<string, string>;
+
+      Object.entries(golden5_1_0).forEach(([member, prefix]) => {
+        expect(current[member], `PrefixName.${member}`).to.equal(prefix);
+      });
     });
 
     it('still exports PrefixName from its original module path', async () => {

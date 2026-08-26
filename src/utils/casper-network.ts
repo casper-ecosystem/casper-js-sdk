@@ -38,6 +38,11 @@ function toRpcErrorCode(code: number): ErrorCode | undefined {
     : undefined;
 }
 
+/**
+ * The optional `gasPriceTolerance` on the builder methods below is forwarded
+ * verbatim to `TransactionBuilder.payment()` — see there for the chainspec
+ * window it has to fall in. Omitting it keeps the default of 1.
+ */
 export class CasperNetwork {
   private rpcClient: RpcClient;
   private apiVersion: number;

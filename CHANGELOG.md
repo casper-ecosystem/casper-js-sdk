@@ -15,10 +15,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### [5.2.0] - 2026-08-10
 
-`engines.node` stays `">=18"`, and nothing was removed or renamed. Three behaviours change how existing code runs — the SSE error path, the SSE event parsers and `waitForTransaction()` — and are marked in **Changed**. The rest are serialization fixes; several corrected values the SDK previously got wrong on the wire, so recorded output may differ.
+`engines.node` stays `">=18"`, and nothing was removed or renamed. Four behaviours change how existing code runs — the SSE error path, the SSE event parsers, `waitForTransaction()` and the spelling of the system registry key — and are marked in **Changed**. The rest are serialization fixes; several corrected values the SDK previously got wrong on the wire, so recorded output may differ.
+
+### Added
+
+- `Key` reads and writes the two variants a 2.x node emits that the SDK did not know: `Key::State` (`state-…`, `KeyTypeID.State = 24`) and `Key::RewardsHandling` (`rewards-handling-…`, `KeyTypeID.RewardsHandling = 25`, introduced by node 2.2.0). `Key.newKey()` throws on a prefix it does not recognise, so one such key anywhere in a response took the whole payload down with it. `PrefixName` gains `State`, `RewardsHandling` and `SystemEntityRegistry`, and `Key` gains a `state` member
+- `Key.newKey()` accepts the `system-entity-registry-…` spelling a 2.x node emits for the system registry key, alongside the 1.x `system-contract-registry-…` form
 
 ### Changed
 
+- **`Key.toPrefixedString()` writes the system registry key as `system-entity-registry-…`**, the only spelling a 2.x node accepts back; it wrote the 1.x `system-contract-registry-…` form, which a node rejects. Both still parse, so keys recorded by earlier versions keep loading — but code comparing key strings against a recorded value will see the new one
 - `eventsource` 2 → 3. Stream errors arrive as an exported `SseError` carrying the HTTP status code (`401`, `403`, …) instead of a raw event object with no message or stack, and `SseClient.start()` accepts an optional error callback
 - **`SseClient.start()` no longer throws when no error callback is supplied** — it logs and lets the stream reconnect. The old `throw` either died silently or terminated the host process, cancelling the reconnect it was about to schedule. Pass the callback if you relied on it
 - **`TransactionAcceptedEvent`, `TransactionExpiredEvent`, `TransactionProcessedEvent` and `FinalitySignatureEvent` throw from `fromJSON()` instead of returning an `Error`**, narrowing the return type from `X | Error` to `X`. The old branch was never usable: `parseAs*Event()` handed the returned `Error` back as the parsed event. Replace `instanceof Error` checks with `try`/`catch`; the thrown error carries the original as `cause`

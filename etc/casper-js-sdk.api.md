@@ -586,7 +586,7 @@ export function byteHash(x: Uint8Array): Uint8Array;
 // @public
 export const ByteHashLen = 32;
 
-// @public (undocumented)
+// @public
 export class CasperNetwork {
     constructor(rpcClient: RpcClient, apiVersion: number);
     // (undocumented)
@@ -2737,6 +2737,8 @@ export class Key {
     package?: Hash;
     static parseTypeByString(source: string): Key;
     // (undocumented)
+    state?: EntityAddr;
+    // (undocumented)
     systemContactRegistry?: Hash;
     toJSON(): string;
     toPrefixedString(): string;
@@ -2818,6 +2820,10 @@ export enum KeyTypeID {
     NamedKey = 20,
     // (undocumented)
     Package = 16,
+    // (undocumented)
+    RewardsHandling = 25,
+    // (undocumented)
+    State = 24,
     // (undocumented)
     SystemContractRegistry = 10,
     // (undocumented)
@@ -3390,7 +3396,13 @@ export enum PrefixName {
     // (undocumented)
     Package = "package-",
     // (undocumented)
+    RewardsHandling = "rewards-handling-",
+    // (undocumented)
+    State = "state-",
+    // (undocumented)
     SystemContractRegistry = "system-contract-registry-",
+    // (undocumented)
+    SystemEntityRegistry = "system-entity-registry-",
     // (undocumented)
     Transfer = "transfer-",
     // (undocumented)
