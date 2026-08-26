@@ -63,7 +63,7 @@ abstract class TransactionBuilder<T extends TransactionBuilder<T>> {
    */
   public from(publicKey: PublicKey): T {
     this._initiatorAddr = new InitiatorAddr(publicKey);
-    return (this as unknown) as T;
+    return this as unknown as T;
   }
 
   /**
@@ -74,7 +74,7 @@ abstract class TransactionBuilder<T extends TransactionBuilder<T>> {
    */
   public fromAccountHash(accountHashKey: AccountHash): T {
     this._initiatorAddr = new InitiatorAddr(undefined, accountHashKey);
-    return (this as unknown) as T;
+    return this as unknown as T;
   }
 
   /**
@@ -85,7 +85,7 @@ abstract class TransactionBuilder<T extends TransactionBuilder<T>> {
    */
   public chainName(chainName: string): T {
     this._chainName = chainName;
-    return (this as unknown) as T;
+    return this as unknown as T;
   }
 
   /**
@@ -96,7 +96,7 @@ abstract class TransactionBuilder<T extends TransactionBuilder<T>> {
    */
   public contractHash(contractHash: string): T {
     this._contractHash = contractHash;
-    return (this as unknown) as T;
+    return this as unknown as T;
   }
 
   /**
@@ -107,7 +107,7 @@ abstract class TransactionBuilder<T extends TransactionBuilder<T>> {
    */
   public timestamp(timestamp: Timestamp): T {
     this._timestamp = timestamp;
-    return (this as unknown) as T;
+    return this as unknown as T;
   }
 
   /**
@@ -118,11 +118,16 @@ abstract class TransactionBuilder<T extends TransactionBuilder<T>> {
    */
   public ttl(ttl: number): T {
     this._ttl = new Duration(ttl);
-    return (this as unknown) as T;
+    return this as unknown as T;
   }
 
   /**
    * Sets the payment amount for the transaction using a limited payment mode.
+   *
+   * `gasPriceTolerance` has to sit inside the target chain's
+   * `[min_gas_price, max_gas_price]` chainspec window — both are 1 on mainnet
+   * and testnet. Nodes from 2.2 on reject anything above the ceiling with
+   * `-32016 Invalid transaction`; earlier ones enforced only the floor.
    *
    * @param paymentAmount - The payment amount in motes
    * @param gasPriceTolerance - Gas price tolerance multiplier (default: 1)
@@ -137,7 +142,7 @@ abstract class TransactionBuilder<T extends TransactionBuilder<T>> {
 
     pricingMode.paymentLimited = paymentLimited;
     this._pricingMode = pricingMode;
-    return (this as unknown) as T;
+    return this as unknown as T;
   }
 
   /**
@@ -154,7 +159,8 @@ abstract class TransactionBuilder<T extends TransactionBuilder<T>> {
     deployHeader.ttl = this._ttl;
 
     if (this._pricingMode.paymentLimited?.gasPriceTolerance) {
-      deployHeader.gasPrice = this._pricingMode.paymentLimited?.gasPriceTolerance;
+      deployHeader.gasPrice =
+        this._pricingMode.paymentLimited?.gasPriceTolerance;
     }
 
     return deployHeader;
@@ -216,9 +222,7 @@ abstract class TransactionBuilder<T extends TransactionBuilder<T>> {
  *   .build();
  * ```
  */
-export class NativeTransferBuilder extends TransactionBuilder<
-  NativeTransferBuilder
-> {
+export class NativeTransferBuilder extends TransactionBuilder<NativeTransferBuilder> {
   private _target!: CLValue;
   private _publicKey: PublicKey;
   private _amount: CLValue = CLValue.newCLUInt512('0');
@@ -353,9 +357,7 @@ export class NativeTransferBuilder extends TransactionBuilder<
  *   .build();
  * ```
  */
-export class NativeAddBidBuilder extends TransactionBuilder<
-  NativeAddBidBuilder
-> {
+export class NativeAddBidBuilder extends TransactionBuilder<NativeAddBidBuilder> {
   private _validator!: CLValue;
   private _amount!: CLValue;
   private _delegationRate!: CLValue;
@@ -561,9 +563,7 @@ export class NativeAddBidBuilder extends TransactionBuilder<
  *   .build();
  * ```
  */
-export class NativeWithdrawBidBuilder extends TransactionBuilder<
-  NativeWithdrawBidBuilder
-> {
+export class NativeWithdrawBidBuilder extends TransactionBuilder<NativeWithdrawBidBuilder> {
   private _validator!: CLValue;
   private _amount: CLValue = CLValue.newCLUInt512('0');
 
@@ -667,9 +667,7 @@ export class NativeWithdrawBidBuilder extends TransactionBuilder<
  *   .build();
  * ```
  */
-export class NativeDelegateBuilder extends TransactionBuilder<
-  NativeDelegateBuilder
-> {
+export class NativeDelegateBuilder extends TransactionBuilder<NativeDelegateBuilder> {
   private _validator!: CLValue;
   private _amount: CLValue = CLValue.newCLUInt512('0');
 
@@ -782,9 +780,7 @@ export class NativeDelegateBuilder extends TransactionBuilder<
  *   .build();
  * ```
  */
-export class NativeUndelegateBuilder extends TransactionBuilder<
-  NativeUndelegateBuilder
-> {
+export class NativeUndelegateBuilder extends TransactionBuilder<NativeUndelegateBuilder> {
   private _validator!: CLValue;
   private _amount: CLValue = CLValue.newCLUInt512('0');
 
@@ -899,9 +895,7 @@ export class NativeUndelegateBuilder extends TransactionBuilder<
  *   .build();
  * ```
  */
-export class NativeRedelegateBuilder extends TransactionBuilder<
-  NativeRedelegateBuilder
-> {
+export class NativeRedelegateBuilder extends TransactionBuilder<NativeRedelegateBuilder> {
   private _validator!: CLValue;
   private _newValidator!: CLValue;
   private _amount: CLValue = CLValue.newCLUInt512('0');
@@ -1027,9 +1021,7 @@ export class NativeRedelegateBuilder extends TransactionBuilder<
  *   .build();
  * ```
  */
-export class NativeActivateBidBuilder extends TransactionBuilder<
-  NativeActivateBidBuilder
-> {
+export class NativeActivateBidBuilder extends TransactionBuilder<NativeActivateBidBuilder> {
   private _validator!: CLValue;
 
   constructor() {
@@ -1119,9 +1111,7 @@ export class NativeActivateBidBuilder extends TransactionBuilder<
  *   .build();
  * ```
  */
-export class NativeChangeBidPublicKeyBuilder extends TransactionBuilder<
-  NativeChangeBidPublicKeyBuilder
-> {
+export class NativeChangeBidPublicKeyBuilder extends TransactionBuilder<NativeChangeBidPublicKeyBuilder> {
   private _public_key!: CLValue;
   private _new_public_key!: CLValue;
 
@@ -1189,9 +1179,7 @@ export class NativeChangeBidPublicKeyBuilder extends TransactionBuilder<
  *   .build();
  * ```
  */
-export class ContractCallBuilder extends TransactionBuilder<
-  ContractCallBuilder
-> {
+export class ContractCallBuilder extends TransactionBuilder<ContractCallBuilder> {
   constructor() {
     super();
   }

@@ -25,6 +25,7 @@ export enum PrefixName {
   Withdraw = 'withdraw-',
   Dictionary = 'dictionary-',
   SystemContractRegistry = 'system-contract-registry-',
+  SystemEntityRegistry = 'system-entity-registry-',
   EraSummary = 'era-summary-',
   Unbond = 'unbond-',
   ChainspecRegistry = 'chainspec-registry-',
@@ -38,5 +39,7 @@ export enum PrefixName {
   NamedKey = 'named-key-',
   BlockGlobal = 'block-',
   BalanceHold = 'balance-hold-',
-  EntryPoint = 'entry-point-'
+  EntryPoint = 'entry-point-',
+  State = 'state-',
+  RewardsHandling = 'rewards-handling-'
 }
