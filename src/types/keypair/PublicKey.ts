@@ -203,9 +203,6 @@ export class PublicKey {
    * @returns A new PublicKey instance.
    * @throws Error if the public key algorithm is invalid.
    */
-  // Callers pass `Uint8Array` (`Conversions.decodeBase16`, `concat` from
-  // `@ethersproject/bytes`), and TypeScript 6 typed arrays are generic over
-  // their buffer, so they are no longer assignable to `ArrayBuffer`.
   public static fromBuffer(buffer: ArrayBuffer | Uint8Array): PublicKey {
     const byteArray = new Uint8Array(buffer);
     const alg = byteArray[0] as KeyAlgorithm;
