@@ -110,13 +110,10 @@ export class TransactionHash extends Hash {
    * @param transactionV1 The hash of the version 1 transaction, if applicable.
    */
   private constructor(deploy?: Hash, transactionV1?: Hash) {
-    // `super` must run unconditionally and first: typedjson constructs with
-    // neither argument before populating the members, and a skipped `super`
-    // is a `ReferenceError` under native ES classes — `target: es5` hides it.
-    //
-    // Pass the real bytes when there are any. The overrides below all read
-    // `getHash()`, but `Hash`'s own methods still read the inherited
-    // `hashBytes`, so a placeholder makes `Hash.prototype.toHex.call` lie.
+    // One unconditional `super` — typedjson also constructs with neither
+    // argument — carrying the real bytes when there are any: the overrides
+    // below read `getHash()`, but inherited `Hash` methods read `hashBytes`,
+    // so a placeholder would make `Hash.prototype.toHex.call` lie.
     super(
       deploy?.toBytes() ??
         transactionV1?.toBytes() ??
