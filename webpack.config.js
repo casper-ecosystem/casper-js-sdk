@@ -13,7 +13,16 @@ const common = {
     rules: [
       {
         test: /\.ts?$/,
-        use: 'ts-loader?configFile=tsconfig.build.json',
+        // ESM input (the shipped tsconfig stays commonjs): webpack can only
+        // enumerate exports statically from ESM, which the node bundle's
+        // `commonjs-static` output depends on.
+        use: {
+          loader: 'ts-loader',
+          options: {
+            configFile: 'tsconfig.build.json',
+            compilerOptions: { module: 'esnext', moduleResolution: 'node' }
+          }
+        },
         exclude: /node_modules/
       }
     ]
@@ -37,7 +46,10 @@ const serverConfig = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: 'lib.node.js',
-    libraryTarget: 'umd'
+    // Not UMD: `commonjs-static` writes exports cjs-module-lexer can parse, so
+    // Node's ESM loader can synthesize named exports for
+    // `import { RpcClient } from 'casper-js-sdk'`.
+    library: { type: 'commonjs-static' }
   },
   externals: [nodeExternals()] // in order to ignore all modules in node_modules folder
 };
@@ -62,7 +74,7 @@ const clientConfig = {
   },
   plugins: [
     new webpack.ProvidePlugin({
-      process: 'process/browser'
+      process: 'process/browser.js'
     }),
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer']

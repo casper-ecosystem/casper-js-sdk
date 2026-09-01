@@ -13,6 +13,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [5.1.1] - 2026-08-31
+
+### Fixed
+
+- Named imports now work from Node.js ESM: `import { RpcClient, Transaction } from 'casper-js-sdk'` previously threw `SyntaxError: Named export not found`, forcing ESM consumers through `createRequire` or a default-import destructure. The node bundle is now emitted as statically analyzable CommonJS (`commonjs-static` instead of UMD), so Node's loader can see every named export. `require()` consumers are unaffected — the file is still CommonJS with an identical export surface
+
 ### [5.1.0] - 2026-08-11
 
 No runtime or API change — `dist/` behaves exactly as in `5.0.13` and `engines.node` stays `">=18"`. The rest of the release is an internal toolchain update with no effect on consumers.
