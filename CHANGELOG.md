@@ -13,6 +13,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [5.1.1] - 2026-09-02
+
+### Fixed
+
+- Named imports now work from Node.js ESM: `import { RpcClient, Transaction } from 'casper-js-sdk'` previously threw `SyntaxError: Named export not found`, forcing ESM consumers through `createRequire` or a default-import destructure. The node bundle is now emitted as statically analyzable CommonJS (`commonjs-static` instead of UMD), so Node's loader can see every named export. `require()` consumers are unaffected — the file is still CommonJS with an identical export surface
+
+### Changed
+
+- **`dist/lib.node.js` is no longer a UMD bundle.** It is plain CommonJS, so `require()`, bundlers and every path through the `exports` map behave as before — but loading that file through an AMD loader such as RequireJS, or as a `<script>` tag expecting a browser global, no longer works. Browser and React Native consumers resolve to `dist/lib.web.js` through the `browser` and `exports` conditions, and that bundle is still UMD
+
 ### [5.1.0] - 2026-08-11
 
 No runtime or API change — `dist/` behaves exactly as in `5.0.13` and `engines.node` stays `">=18"`. The rest of the release is an internal toolchain update with no effect on consumers.
