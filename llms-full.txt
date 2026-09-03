@@ -6109,12 +6109,12 @@ console.log(execution?.errorMessage ? 'Failed:' : 'Success! Consumed:', executio
 
 ### Node URLs
 
-| Network | RPC URL                           |
-| ------- | --------------------------------- |
-| Mainnet | `http://65.21.235.219:7777/rpc`   |
-| Testnet | `http://195.201.174.222:7777/rpc` |
+| Network | RPC URL                                   |
+| ------- | ----------------------------------------- |
+| Mainnet | `https://node.mainnet.casper.network/rpc` |
+| Testnet | `https://node.testnet.casper.network/rpc` |
 
-The RPC port is `7777`. The SSE (event stream) port is `9999`.
+If you're running or connecting directly to your own node instead, the default RPC port is `7777` and the SSE (event stream) port is `9999`, e.g. `http://<Node Address>:7777/rpc`.
 
 ### CasperNetwork (Version-Aware)
 
@@ -7653,7 +7653,7 @@ new HttpHandler(endpoint: string, client?: 'axios' | 'fetch')
 
 * **Type:** `string`
 
-The full RPC endpoint URL including port and path. Example: `http://65.21.235.219:7777/rpc`
+The full RPC endpoint URL including path (and port, for a self-hosted node). Example: `https://node.mainnet.casper.network/rpc`
 
 ##### client
 
