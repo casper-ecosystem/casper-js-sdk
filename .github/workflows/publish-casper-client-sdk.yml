@@ -9,6 +9,9 @@ concurrency:
   group: publish-${{ github.ref_name }}
   cancel-in-progress: false # never cancel a run that may already have published
 
+permissions:
+  contents: read
+
 jobs:
   verify:
     runs-on: ubuntu-24.04
@@ -31,6 +34,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      # `.npmrc` sets ignore-scripts=true; this runs only what the
+      # `lavamoat.allowScripts` allowlist permits (currently nothing).
+      - name: Run allowed dependency scripts
+        run: npx allow-scripts
+
       - name: Verify the tag sits on dev
         run: |
           git fetch --no-tags origin dev
@@ -46,7 +54,7 @@ jobs:
             || { echo "::error::tag $GITHUB_REF_NAME != package.json version $pkg"; exit 1; }
 
           # 2. fail fast if the version is already on npm, instead of burning a full
-          #    build + prepublishOnly test run only to hit EPUBLISHCONFLICT (403) at the end.
+          #    build and test run only to hit EPUBLISHCONFLICT (403) at the end.
           #    `npm view pkg@version` exits 0 when it exists and exits 1 (E404) when it does not,
           #    so it MUST be wrapped in `if`, or GitHub's `bash -e` kills the step on the healthy path.
           if npm view "casper-js-sdk@$GITHUB_REF_NAME" version >/dev/null 2>&1; then
@@ -55,6 +63,27 @@ jobs:
 
       - name: Build
         run: npm run build
+
+      # Here rather than on an npm lifecycle hook: `.npmrc` sets
+      # ignore-scripts=true, which skips those hooks entirely.
+      - name: Unit tests
+        run: npm run test:node:unit
+
+      - name: Package shape
+        run: npm run check:package
+
+      - name: Public API tripwire
+        run: npm run api:check
+
+      - name: Bundle budgets
+        run: npm run size:check
+
+      # Provenance says who built the release; the SBOM says what is inside it,
+      # `--omit dev` narrowing that to what a consumer actually resolves.
+      # `inflight` is why it is worth publishing: no GHSA, so `npm audit`
+      # reported zero the whole time it shipped.
+      - name: Generate SBOM
+        run: npm sbom --sbom-format cyclonedx --omit dev > casper-js-sdk.sbom.json
 
       - name: Extract release notes from CHANGELOG
         env:
@@ -91,6 +120,7 @@ jobs:
           path: |
             dist/
             RELEASE_NOTES.md
+            casper-js-sdk.sbom.json
           retention-days: 1
 
   publish:
@@ -121,16 +151,26 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Run allowed dependency scripts
+        run: npx allow-scripts
+
       - name: Download build artifact
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 #v4.3.0
         with:
           name: publish-artifacts
 
+      # --provenance signs the tarball with the job's OIDC identity (hence
+      # `id-token: write` above), so npmjs.com can attest which repo, workflow and
+      # commit produced it — a stolen publish token no longer buys a convincing release.
       - name: Publish to npm
-        run: npm publish --access public --tag latest
+        run: npm publish --access public --tag latest --provenance
 
+      # The tag name reaches the shell through `env:`, not `${{ }}` interpolation:
+      # GitHub does not sanitise ref names, and this job holds `id-token: write`.
       - name: Rename package
-        run: cp dist/lib.node.js casper-js-sdk.v${{ github.ref_name }}.js
+        env:
+          REF_NAME: ${{ github.ref_name }}
+        run: cp dist/lib.node.js "casper-js-sdk.v${REF_NAME}.js"
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 #v2.6.2
@@ -139,3 +179,4 @@ jobs:
           body_path: RELEASE_NOTES.md
           files: |
             casper-js-sdk.v${{ github.ref_name }}.js
+            casper-js-sdk.sbom.json

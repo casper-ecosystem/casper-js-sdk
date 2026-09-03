@@ -31,10 +31,15 @@
     "prepare": "husky",
     "lint": "eslint src/ --fix",
     "lint:ci": "eslint src/ --max-warnings=0",
-    "knip": "knip --include dependencies,unlisted,binaries,unresolved",
-    "knip:all": "knip",
-    "prebuild": "npm run clean && npm run lint",
-    "build": "webpack --config webpack.config.js",
+    "semgrep": "semgrep scan --error --config p/default --config p/typescript --config p/nodejs --config .semgrep/ --exclude dist --exclude docs --exclude site --exclude node_modules",
+    "knip": "knip --no-config-hints",
+    "knip:production": "knip --production --no-config-hints",
+    "api:check": "api-extractor run",
+    "api:update": "api-extractor run --local",
+    "check:package": "publint && attw --pack . --ignore-rules named-exports && tsc -p tsconfig.dts-consumer.json",
+    "size:check": "node scripts/assert-bundle-size.js",
+    "setup": "npm install && allow-scripts && npm run prepare",
+    "build": "npm run clean && npm run lint && webpack --config webpack.config.js",
     "clean": "rm -rf ./dist",
     "~build": "tsc --watch",
     "test:node:unit": "vitest run",
@@ -46,8 +51,7 @@
     "test": "npm run test:unit && npm run test:e2e",
     "docs:build": "cd site && npm ci && npm run build && cd .. && typedoc --out docs/api",
     "docs:dev": "cd site && npm install && npm run dev",
-    "docs:preview": "cd site && npm run preview",
-    "prepublishOnly": "npm run build && npm run test:node:unit"
+    "docs:preview": "cd site && npm run preview"
   },
   "engines": {
     "node": ">=18"
@@ -65,7 +69,11 @@
     "*.{js,css,md}": "prettier --write"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
     "@eslint/js": "^10.0.1",
+    "@lavamoat/allow-scripts": "^5.1.0",
+    "@lavamoat/preinstall-always-fail": "^3.0.0",
+    "@microsoft/api-extractor": "^7.58.12",
     "@types/humanize-duration": "^3.27.4",
     "@types/node": "^22.20.1",
     "@types/sinon": "^21.0.1",
@@ -84,6 +92,7 @@
     "playwright": "^1.62.1",
     "prettier": "^3.9.4",
     "process": "^0.11.10",
+    "publint": "^0.3.23",
     "sinon": "^22.0.0",
     "ts-loader": "^9.6.2",
     "typedoc": "^0.28.20",
@@ -120,5 +129,10 @@
     "humanize-duration": "^3.34.0",
     "ts-results": "npm:@casperlabs/ts-results@^3.3.5",
     "typedjson": "^1.8.0"
+  },
+  "lavamoat": {
+    "allowScripts": {
+      "@lavamoat/preinstall-always-fail#3.0.0": false
+    }
   }
 }

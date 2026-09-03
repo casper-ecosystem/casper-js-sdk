@@ -71,6 +71,9 @@ const toPem = (der: ArrayBuffer, label: string): string => {
 };
 
 const fromPem = (pem: string, label: string): Buffer => {
+  // The ReDoS rule fires on any non-literal RegExp; it cannot see that both callers
+  // pass a constant from the module-private `options`, so `label` is never caller-supplied.
+  // nosemgrep: javascript.lang.security.audit.detect-non-literal-regexp.detect-non-literal-regexp
   const match = new RegExp(
     `-----BEGIN ${label}-----([\\s\\S]*?)-----END ${label}-----`
   ).exec(pem);

@@ -21,6 +21,11 @@ jobs:
       - name: Install and Build 🔧
         run: |
           npm ci
+          # The root .npmrc sets ignore-scripts=true; this runs the allowlisted ones.
+          # It does not reach into site/, which npm treats as its own project — that
+          # tree still runs its dependencies' install scripts, and closing the hole
+          # needs allow-scripts set up inside site/ as well.
+          npx allow-scripts
           npm run docs:build
 
       - name: Deploy 🚀
