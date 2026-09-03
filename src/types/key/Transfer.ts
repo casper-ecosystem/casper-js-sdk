@@ -22,16 +22,18 @@ export class TransferHash extends Hash {
    * @param source - A hex string or Uint8Array representing the hash.
    */
   constructor(source: string | Uint8Array) {
-    if (typeof source === 'string') {
-      const { hashBytes, originPrefix } = TransferHash.initializeFromSource(
-        source
-      );
-      // @ts-ignore
-      super(hashBytes);
-      this.originPrefix = originPrefix;
-    } else {
-      super(source);
-    }
+    // `super` must be called unconditionally and before anything touches
+    // `this` — one `super(...)` per branch of an `if` is not safe here. Native
+    // ES classes hoist the `originPrefix` field initializer ahead of a
+    // non-leading `super(...)` and throw; only `target: es5` downlevelling
+    // hides that.
+    const { hashBytes, originPrefix } =
+      typeof source === 'string'
+        ? TransferHash.initializeFromSource(source)
+        : { hashBytes: source, originPrefix: PrefixNameTransfer };
+
+    super(hashBytes);
+    this.originPrefix = originPrefix;
   }
 
   /**

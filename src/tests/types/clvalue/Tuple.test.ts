@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import {
   CLValueTuple2,
   CLValueParser,

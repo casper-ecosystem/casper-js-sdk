@@ -1,7 +1,7 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  // `e2e/` has no `*.test.ts` files today (PHASE-4.5 restores the suite), so
-  // `e2e/config.ts` is the entry that keeps it and the wasm fixtures reachable.
+  // `e2e/` has no `*.test.ts` files today, so `e2e/config.ts` is the entry that
+  // keeps it and the wasm fixtures reachable.
   // `src/index.ts` is deliberately absent — knip detects the library entry on its
   // own and reports listing it again as a redundant pattern.
   "entry": ["src/**/*.test.ts", "e2e/config.ts"],
@@ -10,17 +10,9 @@
   // genuinely used and knip cannot see it. "knip is wrong" is not a reason.
   // If no such mechanism exists, the dependency is dead — remove it instead.
   "ignoreDependencies": [
-    // All four are browser polyfills wired up in `webpack.config.js`, but their
-    // package names collide with Node builtins (or are reached only via a plugin
-    // string), so knip resolves the builtin instead of the package:
-    //   assert/url/util — `require.resolve('<name>')` in `resolve.fallback`
-    //   buffer          — `new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })`
-    // The unambiguous fallbacks (crypto-browserify, stream-browserify, stream-http,
-    // browserify-zlib, https-browserify, process) knip resolves on its own and are
-    // deliberately NOT listed here.
-    "assert",
-    "url",
-    "util",
+    // `buffer` is reached only through a plugin string —
+    // `new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })` — which knip
+    // cannot see. `process` it resolves on its own from its own ProvidePlugin.
     "buffer"
   ]
 }

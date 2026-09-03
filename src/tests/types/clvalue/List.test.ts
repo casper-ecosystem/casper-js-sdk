@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import { BigNumber } from '@ethersproject/bignumber';
 import { concat } from '@ethersproject/bytes';
 

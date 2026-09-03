@@ -1,6 +1,6 @@
-import { expect } from 'chai';
+import { expect } from 'vitest';
 
-import { Key, KeyTypeID, MessageAddr } from '../../../types';
+import { Key, KeyTypeID, MessageAddr, TransferHash } from '../../../types';
 
 describe('Key', () => {
   let hashAddr =
@@ -44,5 +44,36 @@ describe('Key', () => {
     expect(messageAddr.entityAddr.toPrefixedString()).to.equal(hashAddr);
     expect(messageAddr.topicNameHash.toHex()).to.equal(topicStr);
     expect(messageAddr.messageIndex).to.equal(15);
+  });
+});
+
+describe('TransferHash', () => {
+  const hashHex =
+    '0e5a1a2c8b19b9c0f4d2e6f1a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1d3e5f7a9b1';
+
+  // Every accepted source shape is covered because the constructor must call
+  // `super(...)` unconditionally: a conditional call half-builds the object
+  // under `target: es5` and is a ReferenceError under native ES classes.
+  it('should build from a prefixed hex string and keep the transfer prefix', () => {
+    const hash = new TransferHash(`transfer-${hashHex}`);
+
+    expect(hash.toHex()).to.equal(hashHex);
+    expect(hash.originPrefix).to.equal('transfer-');
+    expect(hash.toPrefixedString()).to.equal(`transfer-${hashHex}`);
+  });
+
+  it('should build from an unprefixed hex string with an empty origin prefix', () => {
+    const hash = new TransferHash(hashHex);
+
+    expect(hash.toHex()).to.equal(hashHex);
+    expect(hash.originPrefix).to.equal('');
+  });
+
+  it('should build from raw bytes', () => {
+    const bytes = Uint8Array.from(Buffer.from(hashHex, 'hex'));
+    const hash = new TransferHash(bytes);
+
+    expect(hash.toHex()).to.equal(hashHex);
+    expect(hash.toBytes()).to.deep.equal(bytes);
   });
 });

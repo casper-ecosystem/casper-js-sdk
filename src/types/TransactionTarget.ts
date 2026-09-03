@@ -342,9 +342,8 @@ export class TransactionInvocationTarget {
         if (!nameBytes) {
           throw new Error('Missing name field for ByName target');
         }
-        invocationTarget.byName = CLValueString.fromBytes(
-          nameBytes
-        ).result.toString();
+        invocationTarget.byName =
+          CLValueString.fromBytes(nameBytes).result.toString();
         return invocationTarget;
       }
 
@@ -436,7 +435,7 @@ export class StoredTarget {
   })
   runtime: TransactionRuntime;
 
-  public toBytes() {
+  public toBytes(): Uint8Array {
     const calltableSerializer = new CalltableSerialization();
     calltableSerializer.addField(0, Uint8Array.of(1));
     calltableSerializer.addField(1, this.id.toBytes());

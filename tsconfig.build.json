@@ -1,5 +1,10 @@
 {
   "extends": "./tsconfig.base.json",
+  // TS 6 requires an explicit `rootDir` whenever declarations are emitted
+  // (TS5011); "./src" is the value that keeps the existing `dist/` layout.
+  "compilerOptions": {
+    "rootDir": "./src"
+  },
   "include": ["./src/**/*.ts"],
   "exclude": ["./e2e/**/*.ts", "*/**/*.test.ts"]
 }

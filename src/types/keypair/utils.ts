@@ -38,17 +38,24 @@ export function readBase64WithPEM(content: string): Uint8Array {
  * @returns The parsed key
  * @throws `Error` if the key is of an unexpected length
  */
-export const parseKey = (bytes: Uint8Array, from: number, to: number) => {
+// The return type is declared, not inferred: the branches mix `Uint8Array` and
+// `Buffer`, and an inferred union prints `Buffer` into the emitted `.d.ts` —
+// making the published types require `@types/node`.
+export const parseKey = (
+  bytes: Uint8Array,
+  from: number,
+  to: number
+): Uint8Array => {
   const len = bytes.length;
 
   const key =
     len === 32
       ? bytes
       : len === 64
-      ? Buffer.from(bytes).slice(from, to)
-      : len > 32 && len < 64
-      ? Buffer.from(bytes).slice(len % 32)
-      : null;
+        ? Buffer.from(bytes).slice(from, to)
+        : len > 32 && len < 64
+          ? Buffer.from(bytes).slice(len % 32)
+          : null;
   if (key == null || key.length !== 32) {
     throw Error(`Unexpected key length: ${len}`);
   }

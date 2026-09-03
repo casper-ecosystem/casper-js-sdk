@@ -1,5 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
-import { assert, expect } from 'chai';
+import { TypedJSON } from 'typedjson';
+import { assert, expect } from 'vitest';
 
 import {
   Duration,
@@ -22,7 +23,8 @@ import {
   CLValue,
   TransactionV1Payload,
   NativeTransferBuilder,
-  Hash
+  Hash,
+  TransactionHash
 } from '../../types';
 
 describe('Test Transaction', () => {
@@ -126,8 +128,7 @@ describe('Test Transaction', () => {
     const json = {
       deploy: {
         approvals: [],
-        hash:
-          '076E77DE17De7F262c5531017c214afd664D9702D4b5b771996aE4dcAf9C01f9',
+        hash: '076E77DE17De7F262c5531017c214afd664D9702D4b5b771996aE4dcAf9C01f9',
         header: {
           account:
             '02024570ae3c361650d5b1Bcd1724a1aF09ffe067d7F69ebd75B567c10c8379a7719',
@@ -156,8 +157,7 @@ describe('Test Transaction', () => {
         },
         session: {
           StoredVersionedContractByHash: {
-            hash:
-              '6497c59f1bcfBBBC468Dc889dd73dCd542827fb966a24Eb33e4140Ab5BB4aE28',
+            hash: '6497c59f1bcfBBBC468Dc889dd73dCd542827fb966a24Eb33e4140Ab5BB4aE28',
             version: null,
             entry_point: 'mint',
             args: [
@@ -202,8 +202,55 @@ describe('Test Transaction', () => {
       '076e77de17de7f262c5531017c214afd664d9702d4b5b771996ae4dcaf9c01f9'
     );
     expect(tx.hash.equals(deployHash)).to.equal(true);
+    // The reverse direction is the fragile one: reading the argument's private
+    // `hashBytes` instead of `getHash()` bypasses `TransactionHash`'s override
+    // and answers false here while the comparison above still answers true.
+    expect(deployHash.equals(tx.hash)).to.equal(true);
 
     const txBytes = tx.toBytes();
     assert.deepEqual(txBytes[0], 0x00);
+  });
+});
+
+// typedjson deserializes `TransactionHash` in Transfer, rpc/response and
+// sse/event — always through the argument-less constructor, with the members
+// assigned afterwards, so that path needs coverage of its own.
+describe('TransactionHash', () => {
+  const hex =
+    '076e77de17de7f262c5531017c214afd664d9702d4b5b771996ae4dcaf9c01f9';
+
+  it('should round-trip the Deploy variant through typedjson', () => {
+    const serializer = new TypedJSON(TransactionHash);
+    const parsed = serializer.parse({ Deploy: hex })!;
+
+    expect(parsed.deploy?.toHex()).to.equal(hex);
+    expect(parsed.transactionV1).to.be.undefined;
+    expect(parsed.toHex()).to.equal(hex);
+    expect(serializer.toPlainJson(parsed)).to.deep.equal({ Deploy: hex });
+  });
+
+  it('should round-trip the Version1 variant through typedjson', () => {
+    const serializer = new TypedJSON(TransactionHash);
+    const parsed = serializer.parse({ Version1: hex })!;
+
+    expect(parsed.transactionV1?.toHex()).to.equal(hex);
+    expect(parsed.deploy).to.be.undefined;
+    expect(parsed.toHex()).to.equal(hex);
+    expect(serializer.toPlainJson(parsed)).to.deep.equal({ Version1: hex });
+  });
+
+  it('should compare equal to a plain Hash in both directions, however built', () => {
+    const hash = Hash.fromHex(hex);
+    const fromFactory = TransactionHash.fromDeployHash(hash);
+    const fromJson = new TypedJSON(TransactionHash).parse({ Deploy: hex })!;
+
+    for (const transactionHash of [fromFactory, fromJson]) {
+      expect(transactionHash.equals(hash)).to.equal(true);
+      expect(hash.equals(transactionHash)).to.equal(true);
+    }
+
+    const other = Hash.fromHex('bb'.repeat(32));
+    expect(other.equals(fromFactory)).to.equal(false);
+    expect(fromFactory.equals(other)).to.equal(false);
   });
 });
