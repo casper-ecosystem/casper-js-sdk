@@ -212,12 +212,24 @@ export class SeigniorageAllocation {
       throw new Error(`Invalid JSON for SeigniorageAllocation: ${json}`);
     }
 
+    const allocation = new SeigniorageAllocation();
+
+    // 2.x nests a `delegator_kind` object under the same `Delegator` key that
+    // 1.x used for a flat `delegator_public_key`, so the shape has to pick the
+    // reader — on the key name alone a 2.x payload parses to an undefined key.
+    if (json?.Delegator?.delegator_kind) {
+      const parsed = new TypedJSON(DelegatorAllocation).parse(json.Delegator);
+      if (!parsed) {
+        throw new Error('Failed to parse Delegator seigniorage allocation');
+      }
+      allocation.delegator = parsed;
+      return allocation;
+    }
+
     const temp = new TypedJSON(TempSeigniorageAllocation).parse(json);
     if (!temp) {
       throw new Error('Failed to parse JSON');
     }
-
-    const allocation = new SeigniorageAllocation();
 
     if (temp?.delegator) {
       const delegatorKind = new DelegationKind();

@@ -18,9 +18,7 @@ import { secp256k1 } from '@noble/curves/secp256k1';
 //   }
 //
 // The DER structure is delegated to `@peculiar/asn1-*`; this file keeps only
-// the SEC1/SPKI semantics. Do not go back to `asn1.js`: unmaintained since
-// 5.4.1 (2020), written against `bn.js@4`, and usable here only via a
-// `bn.js@5` override.
+// the SEC1/SPKI semantics.
 //
 // The emitted bytes are pinned by the characterization vectors in
 // `src/tests/data/keypair/secp256k1_der_vectors.json` — existing PEM/DER key
@@ -44,9 +42,8 @@ const PRIVATE_KEY_BYTE_LENGTH = 32;
 /** Uncompressed points are `04 || X || Y`; compressed are `02|03 || X`. */
 const PUBLIC_KEY_BYTE_LENGTHS = [33, 65];
 
-// `Buffer.from` allocates out of a shared pool, so copy the range out: the
-// ASN.1 layer must never see bytes beyond this key. The cast only narrows
-// `ArrayBufferLike` — no Buffer here is backed by a SharedArrayBuffer.
+// Copy the range out: `Buffer.from` allocates from a shared pool, and the
+// ASN.1 layer must never see bytes beyond this key.
 const toArrayBuffer = (bytes: Buffer): ArrayBuffer =>
   bytes.buffer.slice(
     bytes.byteOffset,
@@ -57,10 +54,9 @@ const toBuffer = (bytes: ArrayBuffer): Buffer => Buffer.from(bytes);
 
 /** PEM body wrapped at the conventional 64 characters, with no trailing newline. */
 const toPem = (der: ArrayBuffer, label: string): string => {
-  // Chunk with `match`: `replace(/(.{64})/g, '$1\n')` also appends a newline
-  // after the final chunk when the body is an exact multiple of 64, and the
-  // resulting blank line before the footer makes OpenSSL and Node's
-  // `crypto.createPrivateKey` reject it as `DECODER routines::unsupported`.
+  // Chunk with `match`, not `replace(/(.{64})/g, '$1\n')`: that appends a
+  // newline after the final chunk when the body is an exact multiple of 64,
+  // and the blank line before the footer makes OpenSSL and Node reject it.
   const body = (
     toBuffer(der)
       .toString('base64')
@@ -182,10 +178,6 @@ const decodePublicKey = (der: Uint8Array): SubjectPublicKeyInfo => {
   return info;
 };
 
-// `Uint8Array` rather than `Buffer` in the signature: TypeScript 6 no longer
-// emits the `/// <reference types="node" />` directive into declaration output,
-// so naming `Buffer` here would make the published `.d.ts` require
-// `@types/node`.
 export function encodePrivate(
   privateKey: string | Uint8Array,
   originalFormat: KeyFormat,

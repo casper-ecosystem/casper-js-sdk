@@ -1,0 +1,35 @@
+{
+  "BlockAdded": {
+    "block_hash": "b51e5d16944c63eab276e6c5494fd39a454418e3a3f6aa519797882b6c3c0d4b",
+    "block": {
+      "Version2": {
+        "hash": "b51e5d16944c63eab276e6c5494fd39a454418e3a3f6aa519797882b6c3c0d4b",
+        "header": {
+          "parent_hash": "11040b60955bc9921dfbeff3abf4ee3e1c702865b0183638cd5eba922cd34fe3",
+          "state_root_hash": "cf1d7c8d33ce0fbc6c5211000ade4cc88ab671cb51e8be6e458c774dd82f8ab0",
+          "body_hash": "ab363e6bf68b4190176b53196caa16954d2eb97f3f0dbe004b16f0e6951893cc",
+          "random_bit": true,
+          "accumulated_seed": "22cfe5e17ebb2f79af99556e2f134051d8a64e6ff6cb96eac5378f24b8b8a486",
+          "era_end": null,
+          "timestamp": "2025-01-27T10:51:36.846Z",
+          "era_id": 14828,
+          "height": 3444515,
+          "protocol_version": "2.0.1",
+          "proposer": "0140afe8f752e5ff100e0189c080bc207e8805b3e5e82f792ec608de2f11f39f6c",
+          "current_gas_price": 1,
+          "last_switch_block_hash": "a265470a3663bbf88ab37d276cd1786c5e0f53f3da5a8fc268dfddedaf890b93"
+        },
+        "body": {
+          "transactions": {
+            "3": [
+              {
+                "Deploy": "c102a6fed7f4b9a435ca8584b4d2f704f419d523a1c3f7199799b534df264c9a"
+              }
+            ]
+          },
+          "rewarded_signatures": [[240], [0], [0]]
+        }
+      }
+    }
+  }
+}

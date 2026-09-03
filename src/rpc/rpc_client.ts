@@ -46,6 +46,7 @@ import {
   ParamGetAccountInfoBalance,
   ParamGetStateEntity,
   ParamQueryGlobalState,
+  ParamQueryGlobalStateID,
   ParamStateRootHash,
   ParamTransactionHash,
   PurseIdentifier,
@@ -292,7 +293,11 @@ export class RpcClient implements IClient {
   ): Promise<QueryGlobalStateResult> {
     const serializer = new TypedJSON(ParamQueryGlobalState);
     const queryGlobalStateParam =
-      ParamQueryGlobalState.newQueryGlobalStateParam(key, path, { blockHash });
+      ParamQueryGlobalState.newQueryGlobalStateParam(
+        key,
+        path,
+        new ParamQueryGlobalStateID(undefined, blockHash)
+      );
 
     const resp = await this.processRequest(
       Method.QueryGlobalState,
@@ -312,9 +317,11 @@ export class RpcClient implements IClient {
   ): Promise<QueryGlobalStateResult> {
     const serializer = new TypedJSON(ParamQueryGlobalState);
     const queryGlobalStateParam =
-      ParamQueryGlobalState.newQueryGlobalStateParam(key, path, {
-        blockHeight
-      });
+      ParamQueryGlobalState.newQueryGlobalStateParam(
+        key,
+        path,
+        new ParamQueryGlobalStateID(undefined, undefined, blockHeight)
+      );
 
     const resp = await this.processRequest(
       Method.QueryGlobalState,
@@ -348,9 +355,7 @@ export class RpcClient implements IClient {
       const queryGlobalState = ParamQueryGlobalState.newQueryGlobalStateParam(
         key,
         path,
-        {
-          stateRootHash
-        }
+        new ParamQueryGlobalStateID(stateRootHash)
       );
       resp = await this.processRequest(
         Method.QueryGlobalState,
@@ -1413,9 +1418,10 @@ export class RpcClient implements IClient {
     maxRetries = 3,
     retryDelay = 500
   ): Promise<T> {
-    const timer = setTimeout(() => {
-      throw new Error('Timeout');
-    }, timeout);
+    // The loop checks the deadline itself; a `throw` from a `setTimeout`
+    // callback cannot reject this promise, it only escapes as uncaught.
+    const deadline = Date.now() + timeout;
+    const timedOut = () => Date.now() >= deadline;
 
     let attempts = 0;
 
@@ -1423,12 +1429,10 @@ export class RpcClient implements IClient {
       try {
         const info = await getInfo(hash);
         if ((info as any)?.executionInfo?.executionResult) {
-          clearTimeout(timer);
           return info;
         }
       } catch (error) {
         if (attempts >= maxRetries) {
-          clearTimeout(timer);
           throw new Error(
             `Failed after ${maxRetries} retries: ${toError(error).message}`,
             { cause: error }
@@ -1440,9 +1444,12 @@ export class RpcClient implements IClient {
             toError(error).message
           }. Retrying in ${retryDelay}ms...`
         );
+        // Timing out mid-retry carries the failure it was retrying.
+        if (timedOut()) throw new Error('Timeout', { cause: error });
         await sleep(retryDelay);
         continue;
       }
+      if (timedOut()) throw new Error('Timeout');
       await sleep(400);
     }
   }

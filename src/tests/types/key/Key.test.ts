@@ -47,6 +47,86 @@ describe('Key', () => {
   });
 });
 
+// Key variants a 2.x node formats but a 1.x-era SDK never saw. `Key.newKey`
+// throws on an unknown prefix, so one of these sinks the whole payload.
+describe('Key variants of Casper 2.x', () => {
+  const contractHex =
+    '4242424242424242424242424242424242424242424242424242424242424242';
+  const padding = '0'.repeat(64);
+
+  it('parses the rewards-handling key introduced in node 2.2.0', () => {
+    const source = `rewards-handling-${padding}`;
+
+    const key = Key.newKey(source);
+
+    expect(key.type).to.equal(KeyTypeID.RewardsHandling);
+    expect(key.toPrefixedString()).to.equal(source);
+  });
+
+  it('round-trips a rewards-handling key through bytes', () => {
+    const key = Key.newKey(`rewards-handling-${padding}`);
+
+    const bytes = key.bytes();
+
+    expect(bytes.length).to.equal(33);
+    expect(bytes[0]).to.equal(KeyTypeID.RewardsHandling);
+    expect(Key.fromBytes(bytes).result.toPrefixedString()).to.equal(
+      key.toPrefixedString()
+    );
+  });
+
+  it('rejects a rewards-handling key whose padding is not 32 bytes', () => {
+    expect(() => Key.newKey('rewards-handling-00')).to.throw(
+      'invalid RewardsHandling key'
+    );
+  });
+
+  it('parses a state key addressed by entity', () => {
+    const source = `state-entity-contract-${contractHex}`;
+
+    const key = Key.newKey(source);
+
+    expect(key.type).to.equal(KeyTypeID.State);
+    expect(key.state?.smartContract?.toHex()).to.equal(contractHex);
+    expect(key.toPrefixedString()).to.equal(source);
+  });
+
+  it('round-trips a state key through bytes', () => {
+    const key = Key.newKey(`state-entity-contract-${contractHex}`);
+
+    const bytes = key.bytes();
+
+    expect(bytes[0]).to.equal(KeyTypeID.State);
+    expect(Key.fromBytes(bytes).result.toPrefixedString()).to.equal(
+      key.toPrefixedString()
+    );
+  });
+
+  // The node has formatted this key `system-entity-registry-` since 2.0 and
+  // rejects the 1.x spelling, so these three: read both, write the node's.
+  it('parses the system-entity-registry spelling a 2.x node emits', () => {
+    const key = Key.newKey(`system-entity-registry-${padding}`);
+
+    expect(key.type).to.equal(KeyTypeID.SystemContractRegistry);
+    expect(key.systemContactRegistry?.toHex()).to.equal(padding);
+  });
+
+  it('writes the system-entity-registry spelling whichever one it parsed', () => {
+    const fromLegacy = Key.newKey(`system-contract-registry-${padding}`);
+
+    expect(fromLegacy.toPrefixedString()).to.equal(
+      `system-entity-registry-${padding}`
+    );
+  });
+
+  it('still parses the legacy system-contract-registry spelling', () => {
+    const key = Key.newKey(`system-contract-registry-${padding}`);
+
+    expect(key.type).to.equal(KeyTypeID.SystemContractRegistry);
+    expect(key.systemContactRegistry?.toHex()).to.equal(padding);
+  });
+});
+
 describe('TransferHash', () => {
   const hashHex =
     '0e5a1a2c8b19b9c0f4d2e6f1a3b5c7d9e1f3a5b7c9d1e3f5a7b9c1d3e5f7a9b1';

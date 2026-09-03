@@ -1,0 +1,15 @@
+services:
+  casper-nctl:
+    image: makesoftware/casper-nctl:${CASPER_IMAGE_TAG:-v222}
+    container_name: casper-nctl
+    environment:
+      PREDEFINED_ACCOUNTS: 'true'
+      DEPLOY_DELAY: '5sec'
+    ports:
+      - '11101:11101' # JSON-RPC
+      - '14101:14101'
+      - '18101:18101' # SSE events
+      - '25101:25101'
+      - '28101:28101'
+    # The image ships its own HEALTHCHECK (~50s from cold on v212), so
+    # `docker compose up -d --wait` blocks on it without one declared here.

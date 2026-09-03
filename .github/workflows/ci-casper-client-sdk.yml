@@ -26,8 +26,8 @@ permissions:
 
 # Branch protection on `dev` requires only `mergefreeze`, so none of the guards
 # below blocks a merge on its own. To make them required, the check names are
-# `build (22.x, ubuntu-22.04)`, `build (24.x, ubuntu-22.04)`, `node18-consumer`
-# and `node18-typings`.
+# `build (22.x, ubuntu-22.04)`, `build (24.x, ubuntu-22.04)`, `e2e-smoke`,
+# `node18-consumer` and `node18-typings`.
 jobs:
   # Node 18 is handled by `node18-consumer`: vitest@4 (engines ^20 || ^22 ||
   # >=24) cannot run the dev suite there at all.
@@ -38,16 +38,6 @@ jobs:
         node-version: [22.x, 24.x]
         os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
-    env:
-      FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIM0OhegYkU4zxgXeZggBdAR6+XkByue+3iZbznGbCUkM' #ci/test-assets/secret-key.pem
-      NODE_URL: 'http://3.20.57.210:7777/rpc'
-      HTTP_EVENT_STREAM_URL: 'http://3.20.57.210:9999/events'
-      HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
-      NETWORK_NAME: 'dev-net'
-      RUST_LOG: 'INFO'
-      VERSION_QUERY: '{"jsonrpc": "2.0", "id": "1", "method": "info_get_status"}'
-      MAINNET_NODE_URL: 'https://rpc.mainnet.casperlabs.io/rpc'
-      TESTNET_NODE_URL: 'https://rpc.testnet.casperlabs.io/rpc'
 
     steps:
       - name: Checkout
@@ -92,12 +82,23 @@ jobs:
       - name: Knip (production graph)
         run: npm run knip:production
 
+      # Coverage on one leg only — the numbers are identical across Node versions
+      # and instrumentation is not free. The thresholds in `vitest.config.mts`
+      # make this go red when a change removes coverage, not only when a test fails.
       - name: Unit Test (node)
-        run: npm run test:node:unit -- --reporter=default --reporter=json --outputFile.json=reports/node-unit.json
+        run: npm run test:node:unit -- --reporter=default --reporter=json --outputFile.json=reports/node-unit.json ${{ matrix.node-version == '22.x' && '--coverage' || '' }}
 
       # A green exit code says nothing failed, not that anything ran.
       - name: Assert the node suite ran the whole file set
         run: node scripts/assert-test-count.js reports/node-unit.json "node unit"
+
+      - name: Upload coverage
+        if: matrix.node-version == '22.x'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
+        with:
+          name: coverage-lcov
+          path: coverage/lcov.info
+          retention-days: 7
 
       # Vitest browser mode drives a real Chromium, so the binary must be here.
       - name: Install Playwright Chromium
@@ -146,6 +147,77 @@ jobs:
           name: package-tarball
           path: ./pack/*.tgz
           retention-days: 1
+
+  # The per-change e2e signal: one leg, read-path plus a single transfer, to stay
+  # inside ~5 minutes. Pinned image tags cannot drift between two PRs, so the
+  # full tag × Node matrix runs weekly in `scheduled-e2e.yml` instead.
+  e2e-smoke:
+    runs-on: ubuntu-22.04
+    # The e2e vitest config sets an 83-minute per-test timeout, so a test that
+    # hangs against the node would otherwise burn the 6h job default.
+    timeout-minutes: 15
+    services:
+      casper-nctl:
+        # Newest pinned tag; `e2e/supported-tags.json` records the build_version
+        # it actually serves, which the tag name does not reliably encode.
+        image: makesoftware/casper-nctl:v222
+        # Named so the faucet-key step below can `docker exec` into it.
+        options: --name casper-nctl
+        env:
+          PREDEFINED_ACCOUNTS: 'true'
+          DEPLOY_DELAY: '5sec'
+        ports:
+          - 11101:11101 # JSON-RPC (/rpc)
+          - 18101:18101 # SSE (/events)
+    steps:
+      - name: Checkout
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
+        with:
+          node-version: 22.x
+          cache: 'npm'
+
+      - name: Install
+        run: npm install
+
+      - name: Run allowed dependency scripts
+        run: npx allow-scripts
+
+      # The image ships a HEALTHCHECK and the runner waits on it, but "healthy"
+      # is not "answering JSON-RPC" — ask the endpoint the suite will use.
+      - name: Wait for the node to serve JSON-RPC
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf -m 5 -X POST http://127.0.0.1:11101/rpc \
+              -H 'Content-Type: application/json' \
+              -d '{"jsonrpc":"2.0","id":"1","method":"info_get_status"}' \
+              | grep -q build_version; then
+              echo "node is up after ~$((i * 5))s"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "node did not answer info_get_status within 300s"
+          docker logs casper-nctl | tail -50
+          exit 1
+
+      # Path is per the 2.x image layout, verified by `docker exec` against
+      # v210 and v212. It is NOT the 1.x `casper-node/utils/nctl/assets` path.
+      - name: Extract faucet key
+        run: |
+          docker exec casper-nctl \
+            cat /home/casper/casper-nctl/assets/net-1/faucet/secret_key.pem \
+            > e2e/faucet_secret_key.pem
+          test -s e2e/faucet_secret_key.pem
+
+      - name: E2E smoke
+        run: npm run test:e2e:smoke
+
+      - name: Node logs
+        if: failure()
+        run: docker logs casper-nctl | tail -200
 
   # The consumer leg for the published `engines.node ">=18"`: it runs the built
   # tarball under plain `node`, which the dev suite never does — that one runs

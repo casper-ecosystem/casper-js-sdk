@@ -168,22 +168,72 @@ describe('compatibility with casper-js-sdk@5.1.0', () => {
       ['rpc/stateGetAccountInfo', StateGetAccountInfo, stateGetAccountInfoJson]
     ];
 
+    // Cases whose output deliberately no longer matches 5.1.0, because what
+    // 5.1.0 emitted was not the node's wire format:
+    //
+    //   - `DelegationKind` had no serializers, so a delegator allocation
+    //     reserialized to `{"PublicKey":{"cryptoAlg":1}}`, key bytes destroyed.
+    //   - `SeigniorageAllocation.fromJSON` read a `Delegator`-keyed 2.x payload
+    //     with the flat 1.x reader, dropping the delegator key.
+    //   - `EntryPointAccess.toJSON` emitted lowercase `groups`, not `Groups`.
+    //
+    // Pinned to these digests rather than the golden's, so accidental drift
+    // still fails while the intended divergence stays declared.
+    const DIVERGES_FROM_5_1_0: Record<string, string> = {
+      'storedValue/eraInfoResult':
+        'fe7eff2b06a2f437fca3cc70820d0b5102c4b31ae5c32a9cbf2d7b94b1bd1879',
+      'storedValue/stateItemV1':
+        'b8f217234e84134a86a483f70073f5c1c8bb24c07604cd6ed8b8368b8ed2e619',
+      'storedValue/stateItemV2':
+        '64e0d36fae88faba674e5e5d1a977f43d378b4ee8436d06ce99e21fff747c1a4',
+      'bid/auctionV1':
+        '0e7b78fa9acbacdf723a9f49ec2b705fcee961eb4b2aa899e86fb51e56883202',
+      'bid/auctionV2':
+        '62817c29baca90e1833741bad2aec71e4d922a77eb077438b6236775aa22970d',
+      'eraSummary/example':
+        'cdf048fa84310f4e669fcc0c3b7a09c36e874c417ce18b2a786f2f0d27e280d0',
+      'eraSummary/v2DelegatorKind':
+        '9ad998e81dcc45d7fcc6e014da0cc1e9fcd2e1e9b93705f631ed3828f992efb9'
+    };
+
     it('covers every case the golden recorded', () => {
       expect(CORPUS.map(([name]) => name).sort()).to.deep.equal(
         Object.keys(golden.jsonRoundTrip).sort()
       );
     });
 
+    it('every declared divergence is a case the golden actually recorded', () => {
+      expect(
+        Object.keys(DIVERGES_FROM_5_1_0).every(
+          name => name in golden.jsonRoundTrip
+        )
+      ).to.be.true;
+    });
+
     CORPUS.forEach(([name, constructor, input]) => {
-      it(`serializes ${name} exactly as 5.1.0 did`, () => {
+      const diverged = DIVERGES_FROM_5_1_0[name];
+      const title = diverged
+        ? `serializes ${name} to its documented post-5.1.0 form`
+        : `serializes ${name} exactly as 5.1.0 did`;
+
+      it(title, () => {
         const serializer = new TypedJSON(constructor);
         const parsed = serializer.parse(input);
 
         expect(parsed, `${name} failed to parse`).to.not.be.undefined;
-        expect(digest(serializer.toPlainJson(parsed!))).to.equal(
-          (golden.jsonRoundTrip as Record<string, { sha256: string }>)[name]
-            .sha256
-        );
+
+        const actual = digest(serializer.toPlainJson(parsed!));
+        const recorded = (
+          golden.jsonRoundTrip as Record<string, { sha256: string }>
+        )[name].sha256;
+
+        if (diverged) {
+          expect(actual).to.equal(diverged);
+          // A match means the divergence is gone and this entry is stale.
+          expect(actual).to.not.equal(recorded);
+        } else {
+          expect(actual).to.equal(recorded);
+        }
       });
     });
   });
@@ -354,8 +404,15 @@ describe('compatibility with casper-js-sdk@5.1.0', () => {
   // them.
   // ------------------------------------------------------------------------
   describe('key prefixes', () => {
+    // A superset, not an equality: a prefix 5.1.0 never knew cannot break a
+    // 5.1.0 reader, but a member that vanished or changed value would.
     it('keeps every PrefixName member and value', () => {
-      expect({ ...PrefixName }).to.deep.equal(golden.prefixNames);
+      const current = { ...PrefixName } as Record<string, string>;
+      const golden5_1_0 = golden.prefixNames as Record<string, string>;
+
+      Object.entries(golden5_1_0).forEach(([member, prefix]) => {
+        expect(current[member], `PrefixName.${member}`).to.equal(prefix);
+      });
     });
 
     it('still exports PrefixName from its original module path', async () => {
@@ -375,6 +432,12 @@ describe('compatibility with casper-js-sdk@5.1.0', () => {
   });
 
   describe('Key string and byte forms', () => {
+    // Key types whose 5.1.0 *decode* was lossy — `transfer-` lost its prefix,
+    // `balance-hold-` mis-read the block time — so the recorded `fromBytes`
+    // cannot be matched. Both are held to the stronger claim below instead:
+    // decode reproduces the source string exactly.
+    const DECODE_WAS_LOSSY_IN_5_1_0 = ['transfer-', 'balance-hold-'];
+
     golden.keys.forEach(vector => {
       const label = `${vector.source.slice(0, vector.prefix.length + 8)}…`;
 
@@ -394,12 +457,19 @@ describe('compatibility with casper-js-sdk@5.1.0', () => {
         expect(key.toString()).to.equal(vector.toString);
         expect(key.toJSON()).to.equal(vector.toJSON);
         expect(hex(key.bytes())).to.equal(vector.bytes);
+
         // Decoding the 5.1.0 byte form has to land on the same key.
-        expect(
-          Key.fromBytes(
-            Conversions.decodeBase16(vector.bytes!)
-          ).result.toString()
-        ).to.equal(vector.fromBytes);
+        const decoded = Key.fromBytes(
+          Conversions.decodeBase16(vector.bytes!)
+        ).result.toString();
+
+        if (DECODE_WAS_LOSSY_IN_5_1_0.some(p => vector.source.startsWith(p))) {
+          expect(decoded).to.equal(vector.source);
+          // A match means the lossy decode is back.
+          expect(decoded).to.not.equal(vector.fromBytes);
+        } else {
+          expect(decoded).to.equal(vector.fromBytes);
+        }
       });
     });
   });

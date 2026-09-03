@@ -45,7 +45,9 @@ export enum KeyTypeID {
   NamedKey,
   BlockGlobal,
   BalanceHold,
-  EntryPoint
+  EntryPoint,
+  State,
+  RewardsHandling
 }
 
 /**
@@ -117,7 +119,10 @@ export const keyIDbyPrefix = new Map<PrefixName, KeyTypeID>([
   [PrefixName.NamedKey, KeyTypeID.NamedKey],
   [PrefixName.BlockGlobal, KeyTypeID.BlockGlobal],
   [PrefixName.BalanceHold, KeyTypeID.BalanceHold],
-  [PrefixName.EntryPoint, KeyTypeID.EntryPoint]
+  [PrefixName.EntryPoint, KeyTypeID.EntryPoint],
+  [PrefixName.SystemEntityRegistry, KeyTypeID.SystemContractRegistry],
+  [PrefixName.State, KeyTypeID.State],
+  [PrefixName.RewardsHandling, KeyTypeID.RewardsHandling]
 ]);
 
 /**
@@ -273,6 +278,12 @@ export class Key {
   })
   entryPoint?: EntryPointAddr;
 
+  @jsonMember({
+    name: 'State',
+    constructor: EntityAddr
+  })
+  state?: EntityAddr;
+
   /**
    * Converts the key to bytes.
    * @returns A Uint8Array representing the serialized key.
@@ -332,9 +343,23 @@ export class Key {
         return Key.concatBytes(this.balanceHold?.toBytes(), typeBytes);
       case KeyTypeID.EntryPoint:
         return Key.concatBytes(this.entryPoint?.toBytes(), typeBytes);
+      case KeyTypeID.State:
+        return Key.concatBytes(this.state?.toBytes(), typeBytes);
+      case KeyTypeID.RewardsHandling:
+        return Key.concatBytes(Key.paddingBytes(), typeBytes);
       default:
         return new Uint8Array();
     }
+  }
+
+  /** The zero padding that stands in for the address of an addressless key. */
+  private static paddingBytes(): Uint8Array {
+    return new Uint8Array(KEY_DEFAULT_BYTE_LENGTH);
+  }
+
+  /** The same padding, as the node formats it in a key string. */
+  private static paddingHex(): string {
+    return '0'.repeat(KEY_DEFAULT_BYTE_LENGTH * 2);
   }
 
   /**
@@ -393,8 +418,10 @@ export class Key {
       case KeyTypeID.Withdraw:
         return `${PrefixName.Withdraw}${this.withdraw!.toHex()}`;
       case KeyTypeID.SystemContractRegistry:
+        // The only spelling a node accepts back. `newKey` still reads the
+        // 1.x `system-contract-registry-` form, so older records keep loading.
         return `${
-          PrefixName.SystemContractRegistry
+          PrefixName.SystemEntityRegistry
         }${this.systemContactRegistry!.toHex()}`;
       case KeyTypeID.EraSummary:
         return `${PrefixName.EraSummary}${this.eraSummary!.toHex()}`;
@@ -426,6 +453,10 @@ export class Key {
         return this.balanceHold!.toPrefixedString();
       case KeyTypeID.EntryPoint:
         return this.entryPoint!.toPrefixedString();
+      case KeyTypeID.State:
+        return `${PrefixName.State}${this.state!.toPrefixedString()}`;
+      case KeyTypeID.RewardsHandling:
+        return `${PrefixName.RewardsHandling}${Key.paddingHex()}`;
       default:
         return '';
     }
@@ -470,7 +501,9 @@ export class Key {
       }
       case KeyTypeID.Transfer: {
         const transferHash = Hash.fromBytes(contentBytes);
-        result.transfer = new TransferHash(transferHash?.result.toHex());
+        // Bytes, not hex: the string overload only keeps `transfer-` when the
+        // input already carries it, so a bare hex string dropped the prefix.
+        result.transfer = new TransferHash(transferHash?.result.toBytes());
         return { result, bytes: transferHash?.bytes };
       }
       case KeyTypeID.DeployInfo: {
@@ -590,6 +623,22 @@ export class Key {
         result.entryPoint = entryPoint;
         return { result, bytes: entryPointBytes };
       }
+      case KeyTypeID.State: {
+        const { result: state, bytes: stateBytes } =
+          EntityAddr.fromBytes(contentBytes);
+        result.state = state;
+        return { result, bytes: stateBytes };
+      }
+      case KeyTypeID.RewardsHandling: {
+        // Carries no address of its own — just the padding the node writes.
+        if (contentBytes.length < KEY_DEFAULT_BYTE_LENGTH) {
+          throw new Error('Early end of stream when deserializing data.');
+        }
+        return {
+          result,
+          bytes: contentBytes.subarray(KEY_DEFAULT_BYTE_LENGTH)
+        };
+      }
       default:
         throw new Error('Missing key type');
     }
@@ -683,7 +732,9 @@ export class Key {
         break;
       case KeyTypeID.SystemContractRegistry:
         result.systemContactRegistry = Hash.fromHex(
-          source.replace(PrefixName.SystemContractRegistry, '')
+          source
+            .replace(PrefixName.SystemEntityRegistry, '')
+            .replace(PrefixName.SystemContractRegistry, '')
         );
         break;
       case KeyTypeID.EraSummary:
@@ -747,6 +798,20 @@ export class Key {
           source.replace(PrefixName.EntryPoint, '')
         );
         break;
+      case KeyTypeID.State:
+        result.state = EntityAddr.fromPrefixedString(
+          source.replace(PrefixName.State, '')
+        );
+        break;
+      case KeyTypeID.RewardsHandling: {
+        // No address to carry — but the padding is checked, so a malformed
+        // source fails here rather than parsing into a well-formed key.
+        const padding = source.replace(PrefixName.RewardsHandling, '');
+        if (padding !== Key.paddingHex()) {
+          throw new Error(`invalid RewardsHandling key -> source: ${source}`);
+        }
+        break;
+      }
       default:
         throw new Error(`type is not found -> source: ${source}`);
     }

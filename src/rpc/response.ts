@@ -163,7 +163,23 @@ export class StateGetEntityResult {
   @jsonMember({ name: 'api_version', constructor: String })
   apiVersion: string;
 
-  @jsonMember({ name: 'entity', constructor: EntityOrAccount })
+  // A 2.x node keys an account entity as `Account`, a 1.x one as
+  // `LegacyAccount`. Both spellings land on `legacyAccount`.
+  //
+  // Deliberately one-way: `EntityOrAccount` models two members and `Account` is
+  // not one of them, so re-serializing an `Account` payload emits
+  // `LegacyAccount`. The node's own bytes stay reachable through `rawJSON`.
+  @jsonMember({
+    name: 'entity',
+    constructor: EntityOrAccount,
+    deserializer: json => {
+      if (!json) return;
+      const { Account: account, ...rest } = json;
+      return new TypedJSON(EntityOrAccount).parse(
+        account ? { ...rest, LegacyAccount: account } : rest
+      );
+    }
+  })
   entity: EntityOrAccount;
 
   @jsonMember({ name: 'merkle_proof', constructor: AnyT })
@@ -774,11 +790,6 @@ export class InfoGetStatusResult {
   })
   latestSwitchBlockHash: Hash;
 
-  // `constructor` must name a real class here. A thunk returning an object of
-  // `jsonMember` decorators is not a constructor, so typedjson rejects the
-  // member on serialization: under `target: es5` it logs and emits the rest of
-  // the document, under native ES classes it abandons the whole document and
-  // returns `undefined`.
   @jsonMember({
     name: 'available_block_range',
     constructor: AvailableBlockRange

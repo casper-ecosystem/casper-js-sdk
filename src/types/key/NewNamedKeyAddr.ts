@@ -86,13 +86,16 @@ export class NamedKeyAddr {
   static fromBytes(bytes: Uint8Array): IResultWithBytes<NamedKeyAddr> {
     const baseAddr = EntityAddr.fromBytes(bytes);
 
-    if (bytes.length < 32) {
+    // The name follows the base address, so it comes out of that read's
+    // remainder — the original buffer still starts at the base address.
+    const rem = baseAddr.bytes;
+    if (rem.length < 32) {
       throw new Error('Insufficient bytes for NameBytes; expected 32 bytes.');
     }
-    const nameBytes = bytes.slice(0, 32);
+    const nameBytes = rem.subarray(0, 32);
     return {
       result: new NamedKeyAddr(baseAddr?.result, nameBytes),
-      bytes: baseAddr?.bytes
+      bytes: rem.subarray(32)
     };
   }
 
