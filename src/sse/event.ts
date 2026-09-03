@@ -72,7 +72,9 @@ export class RawEvent {
   }
 
   parseAsBlockAddedEvent(): BlockAddedEvent {
-    return this.parseEvent(BlockAddedEvent, BlockAddedEvent.fromJSON);
+    return this.parseEvent(BlockAddedEvent, data =>
+      BlockAddedEvent.fromJSON(data)
+    );
   }
 
   parseAsDeployAcceptedEvent(): DeployAcceptedEvent {
@@ -80,30 +82,26 @@ export class RawEvent {
   }
 
   parseAsFinalitySignatureEvent(): FinalitySignatureEvent {
-    return this.parseEvent(
-      FinalitySignatureEvent,
-      FinalitySignatureEvent.fromJSON
+    return this.parseEvent(FinalitySignatureEvent, data =>
+      FinalitySignatureEvent.fromJSON(data)
     );
   }
 
   parseAsTransactionExpiredEvent(): TransactionExpiredEvent {
-    return this.parseEvent(
-      TransactionExpiredEvent,
-      TransactionExpiredEvent.fromJSON
+    return this.parseEvent(TransactionExpiredEvent, data =>
+      TransactionExpiredEvent.fromJSON(data)
     );
   }
 
   parseAsTransactionProcessedEvent(): TransactionProcessedEvent {
-    return this.parseEvent(
-      TransactionProcessedEvent,
-      TransactionProcessedEvent.fromJSON
+    return this.parseEvent(TransactionProcessedEvent, data =>
+      TransactionProcessedEvent.fromJSON(data)
     );
   }
 
   parseAsTransactionAcceptedEvent(): TransactionAcceptedEvent {
-    return this.parseEvent(
-      TransactionAcceptedEvent,
-      TransactionAcceptedEvent.fromJSON
+    return this.parseEvent(TransactionAcceptedEvent, data =>
+      TransactionAcceptedEvent.fromJSON(data)
     );
   }
 

@@ -68,15 +68,15 @@ export class MessageAddr {
       );
     }
 
-    source = source.substring(PrefixNameMessage.length);
+    let remaining = source.substring(PrefixNameMessage.length);
 
     let hashAddr: string;
     let topicHash: string;
     let index: number | undefined;
 
-    if (source.startsWith(TopicPrefix)) {
-      source = source.substring(TopicPrefix.length);
-      const parts = source.split('-');
+    if (remaining.startsWith(TopicPrefix)) {
+      remaining = remaining.substring(TopicPrefix.length);
+      const parts = remaining.split('-');
 
       if (parts.length !== 4) {
         throw new Error(
@@ -87,7 +87,7 @@ export class MessageAddr {
       hashAddr = `${parts[0]}-${parts[1]}-${parts[2]}`;
       topicHash = parts[3];
     } else {
-      const parts = source.split('-');
+      const parts = remaining.split('-');
 
       if (parts.length !== 5) {
         throw new Error(

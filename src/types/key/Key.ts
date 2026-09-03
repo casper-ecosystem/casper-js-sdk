@@ -453,119 +453,143 @@ export class Key {
     result.type = keyType;
 
     switch (keyType) {
-      case KeyTypeID.Account:
+      case KeyTypeID.Account: {
         const accountHash = Hash.fromBytes(contentBytes);
         result.account = new AccountHash(accountHash?.result);
         return { result, bytes: accountHash?.bytes };
-      case KeyTypeID.Hash:
+      }
+      case KeyTypeID.Hash: {
         const hashParsed = Hash.fromBytes(contentBytes);
         result.hash = hashParsed?.result;
         return { result, bytes: hashParsed?.bytes };
-      case KeyTypeID.URef:
+      }
+      case KeyTypeID.URef: {
         const uref = URef.fromBytes(contentBytes);
         result.uRef = uref?.result;
         return { result, bytes: uref?.bytes };
-      case KeyTypeID.Transfer:
+      }
+      case KeyTypeID.Transfer: {
         const transferHash = Hash.fromBytes(contentBytes);
         result.transfer = new TransferHash(transferHash?.result.toHex());
         return { result, bytes: transferHash?.bytes };
-      case KeyTypeID.DeployInfo:
+      }
+      case KeyTypeID.DeployInfo: {
         const deploy = Hash.fromBytes(contentBytes);
         result.deploy = deploy?.result;
         return { result, bytes: deploy?.bytes };
-      case KeyTypeID.EraId:
+      }
+      case KeyTypeID.EraId: {
         const [eraBytes, eraRemainder] = splitAt(1, contentBytes);
         result.era = Era.fromBytes(eraBytes);
         return { result, bytes: eraRemainder };
-      case KeyTypeID.Balance:
+      }
+      case KeyTypeID.Balance: {
         const parsed = Hash.fromBytes(contentBytes);
         result.balance = parsed?.result;
 
         return { result, bytes: parsed?.bytes };
-      case KeyTypeID.Bid:
+      }
+      case KeyTypeID.Bid: {
         const bid = Hash.fromBytes(contentBytes);
         result.bid = new AccountHash(bid.result);
 
         return { result, bytes: bid?.bytes };
-      case KeyTypeID.Withdraw:
+      }
+      case KeyTypeID.Withdraw: {
         const withdraw = Hash.fromBytes(contentBytes);
         const withdrawHash = withdraw?.result;
         result.withdraw = new AccountHash(withdrawHash);
         return { result, bytes: withdraw?.bytes };
-      case KeyTypeID.Dictionary:
+      }
+      case KeyTypeID.Dictionary: {
         const dictionary = Hash.fromBytes(contentBytes);
         result.dictionary = dictionary?.result;
         return { result, bytes: dictionary?.bytes };
-      case KeyTypeID.SystemContractRegistry:
+      }
+      case KeyTypeID.SystemContractRegistry: {
         const systemContractRegistry = Hash.fromBytes(contentBytes);
         result.systemContactRegistry = systemContractRegistry?.result;
         return { result, bytes: systemContractRegistry?.bytes };
-      case KeyTypeID.EraSummary:
+      }
+      case KeyTypeID.EraSummary: {
         const eraSummary = Hash.fromBytes(contentBytes);
         result.eraSummary = eraSummary?.result;
         return { result, bytes: eraSummary?.bytes };
-      case KeyTypeID.Unbond:
+      }
+      case KeyTypeID.Unbond: {
         const { result: unbondHash, bytes: unbondBytes } =
           Hash.fromBytes(contentBytes);
         result.unbond = new AccountHash(unbondHash);
         return { result, bytes: unbondBytes };
-      case KeyTypeID.ChainspecRegistry:
+      }
+      case KeyTypeID.ChainspecRegistry: {
         const [chainBytes, chainspecRegistryBytes] = splitAt(
           KEY_DEFAULT_BYTE_LENGTH,
           contentBytes
         );
         result.chainspecRegistry = Hash.fromBytes(chainBytes)?.result;
         return { result, bytes: chainspecRegistryBytes };
-      case KeyTypeID.ChecksumRegistry:
+      }
+      case KeyTypeID.ChecksumRegistry: {
         const checksumRegistry = Hash.fromBytes(contentBytes);
         result.checksumRegistry = checksumRegistry?.result;
         return { result, bytes: checksumRegistry?.bytes };
-      case KeyTypeID.BidAddr:
+      }
+      case KeyTypeID.BidAddr: {
         const { result: bidAddr, bytes: bidAddrBytes } =
           BidAddr.fromBytes(contentBytes);
         result.bidAddr = bidAddr;
 
         return { result, bytes: bidAddrBytes };
-      case KeyTypeID.Package:
+      }
+      case KeyTypeID.Package: {
         const packageHash = Hash.fromBytes(contentBytes);
         result.package = packageHash?.result;
         return { result, bytes: packageHash?.bytes };
-      case KeyTypeID.AddressableEntity:
+      }
+      case KeyTypeID.AddressableEntity: {
         const { result: entityAddr, bytes: entityAddrBytes } =
           EntityAddr.fromBytes(contentBytes);
         result.addressableEntity = entityAddr;
         return { result, bytes: entityAddrBytes };
-      case KeyTypeID.ByteCode:
+      }
+      case KeyTypeID.ByteCode: {
         const { result: byteCode, bytes: byteCodeBytes } =
           ByteCode.fromBytes(contentBytes);
         result.byteCode = byteCode;
 
         return { result, bytes: byteCodeBytes };
-      case KeyTypeID.Message:
+      }
+      case KeyTypeID.Message: {
         const { result: messageAddr, bytes: messageAddrBytes } =
           MessageAddr.fromBytes(contentBytes);
         result.message = messageAddr;
         return { result, bytes: messageAddrBytes };
-      case KeyTypeID.NamedKey:
+      }
+      case KeyTypeID.NamedKey: {
         const { result: namedKey, bytes: namedKeyBytes } =
           NamedKeyAddr.fromBytes(contentBytes);
         result.namedKey = namedKey;
         return { result, bytes: namedKeyBytes };
-      case KeyTypeID.BlockGlobal:
+      }
+      case KeyTypeID.BlockGlobal: {
         const { result: blockGlobal, bytes: blockGlobalBytes } =
           BlockGlobalAddr.fromBytes(contentBytes);
         result.blockGlobal = blockGlobal;
         return { result, bytes: blockGlobalBytes };
-      case KeyTypeID.BalanceHold:
+      }
+      case KeyTypeID.BalanceHold: {
         const { result: balanceHold, bytes: balanceHoldBytes } =
           BalanceHoldAddr.fromBytes(contentBytes);
         result.balanceHold = balanceHold;
         return { result, bytes: balanceHoldBytes };
-      case KeyTypeID.EntryPoint:
+      }
+      case KeyTypeID.EntryPoint: {
         const { result: entryPoint, bytes: entryPointBytes } =
           EntryPointAddr.fromBytes(contentBytes);
         result.entryPoint = entryPoint;
         return { result, bytes: entryPointBytes };
+      }
       default:
         throw new Error('Missing key type');
     }

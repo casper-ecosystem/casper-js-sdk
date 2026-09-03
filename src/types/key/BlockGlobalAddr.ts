@@ -26,11 +26,8 @@ export class BlockGlobalAddrTagError extends Error {
  * @throws BlockGlobalAddrTagError if the tag is invalid.
  */
 export function getBlockGlobalAddrTag(tag: number): BlockGlobalAddrTag {
-  if (
-    tag === BlockGlobalAddrTag.BlockTime ||
-    tag === BlockGlobalAddrTag.MessageCount
-  ) {
-    return tag;
+  if ((Object.values(BlockGlobalAddrTag) as unknown[]).includes(tag)) {
+    return tag as BlockGlobalAddrTag;
   }
   throw new BlockGlobalAddrTagError('Invalid BlockGlobalAddrTag');
 }

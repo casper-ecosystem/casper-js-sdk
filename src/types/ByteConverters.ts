@@ -1,7 +1,29 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { MaxUint256, NegativeOne, One, Zero } from '@ethersproject/constants';
 import { arrayify, concat } from '@ethersproject/bytes';
-import { blake2b } from '@noble/hashes/blake2b';
+import { blake2b } from '@noble/hashes/blake2';
+
+/**
+ * Stringifies a `BigNumberish` for the out-of-bounds errors below. `Bytes`
+ * (`ArrayLike<number>`) declares no `toString`, so the type checker cannot rule
+ * out `Object`'s `[object Object]` even though every value arriving here is a
+ * primitive, a `BigNumber`, or a real array/typed array. The branches spell out
+ * what implicit coercion did, keeping the message text identical: byte arrays
+ * comma-joined, everything else via its own `toString`.
+ */
+const describeValue = (value: BigNumberish): string => {
+  if (
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'bigint'
+  ) {
+    return String(value);
+  }
+  if (BigNumber.isBigNumber(value)) {
+    return value.toString();
+  }
+  return Array.from(value).join(',');
+};
 
 /**
  * Converts a BigNumberish value to bytes with specified bit size and signedness.
@@ -21,10 +43,10 @@ export const toBytesNumber = (bitSize: number, signed: boolean) => (
     // Calculate signed bounds for the given bit size
     const bounds = maxUintValue.mask(bitSize - 1);
     if (val.gt(bounds) || val.lt(bounds.add(One).mul(NegativeOne))) {
-      throw new Error('value out-of-bounds, value: ' + value);
+      throw new Error('value out-of-bounds, value: ' + describeValue(value));
     }
   } else if (val.lt(Zero) || val.gt(maxUintValue.mask(bitSize))) {
-    throw new Error('value out-of-bounds, value: ' + value);
+    throw new Error('value out-of-bounds, value: ' + describeValue(value));
   }
 
   const valTwos = val.toTwos(bitSize).mask(bitSize);

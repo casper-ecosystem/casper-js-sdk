@@ -5,6 +5,7 @@ import { HttpError } from './error';
 import { RpcRequest } from './request';
 import { RpcResponse } from './response';
 import { IHandler } from './client';
+import { toError } from '../utils/errors';
 
 export const ErrParamsJsonStringifyHandler = new Error(
   "failed to stringify json rpc request's params"
@@ -49,14 +50,17 @@ export class HttpHandler implements IHandler {
       body = serializer.stringify(params);
     } catch (err) {
       throw new Error(
-        `${ErrParamsJsonStringifyHandler.message}, details: ${err.message}`
+        `${ErrParamsJsonStringifyHandler.message}, details: ${
+          toError(err).message
+        }`,
+        { cause: err }
       );
     }
 
     if (this.client === 'axios') {
-      return this.processAxiosRequest(body);
+      return await this.processAxiosRequest(body);
     } else {
-      return this.processFetchRequest(body);
+      return await this.processFetchRequest(body);
     }
   }
 
@@ -85,7 +89,8 @@ export class HttpHandler implements IHandler {
         );
       }
       throw new Error(
-        `${ErrProcessHttpRequest.message}, details: ${err.message}`
+        `${ErrProcessHttpRequest.message}, details: ${toError(err).message}`,
+        { cause: err }
       );
     }
   }
@@ -104,7 +109,8 @@ export class HttpHandler implements IHandler {
       });
     } catch (err) {
       throw new Error(
-        `${ErrProcessHttpRequest.message}, details: ${err.message}`
+        `${ErrProcessHttpRequest.message}, details: ${toError(err).message}`,
+        { cause: err }
       );
     }
 
@@ -112,6 +118,6 @@ export class HttpHandler implements IHandler {
       throw new HttpError(response.status, new Error(response.statusText));
     }
 
-    return response.json();
+    return await response.json();
   }
 }

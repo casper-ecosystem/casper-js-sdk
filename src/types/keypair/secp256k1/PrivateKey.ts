@@ -1,5 +1,5 @@
 import * as secp256k1 from '@noble/secp256k1';
-import { sha256 } from '@noble/hashes/sha256';
+import { sha256 } from '@noble/hashes/sha2';
 import { hmac } from '@noble/hashes/hmac';
 import { PrivateKeyInternal } from '../PrivateKey';
 import { Conversions } from '../../Conversions';
@@ -97,7 +97,7 @@ export class PrivateKey implements PrivateKeyInternal {
     try {
       decoded = secp256k1.utils.hexToBytes(key);
     } catch (err) {
-      throw new Error(`Failed to decode hex: ${err}`);
+      throw new Error(`Failed to decode hex: ${err}`, { cause: err });
     }
 
     return PrivateKey.fromBytes(decoded);

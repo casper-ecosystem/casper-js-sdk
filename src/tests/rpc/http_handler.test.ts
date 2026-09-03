@@ -195,6 +195,23 @@ describe('HttpHandler', () => {
         );
       }
     });
+
+    it('attaches the original failure as the error cause', async () => {
+      const underlying = new Error('socket hang up');
+      fetchStub.rejects(underlying);
+      const handler = new HttpHandler(endpoint, 'fetch');
+
+      try {
+        await handler.processCall(mockRequest);
+        expect.fail('expected the call to reject');
+      } catch (err) {
+        // Consumers match on this message, so wrapping must not replace it.
+        expect((err as Error).message).to.include(
+          ErrProcessHttpRequest.message
+        );
+        expect((err as Error).cause).to.equal(underlying);
+      }
+    });
   });
 
   describe('processCall — axios client', () => {

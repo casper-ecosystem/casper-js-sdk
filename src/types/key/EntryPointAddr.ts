@@ -31,11 +31,8 @@ export class EntryPointError extends Error {
  * @throws EntryPointError if the tag is invalid.
  */
 export function getEntryPointTag(tag: number): EntryPointTag {
-  if (
-    tag === EntryPointTag.V1EntryPoint ||
-    tag === EntryPointTag.V2EntryPoint
-  ) {
-    return tag;
+  if ((Object.values(EntryPointTag) as unknown[]).includes(tag)) {
+    return tag as EntryPointTag;
   }
   throw new EntryPointError('Invalid EntryPointTag');
 }

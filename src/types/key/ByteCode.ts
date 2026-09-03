@@ -111,7 +111,7 @@ export class ByteCode {
     switch (kind) {
       case ByteCodeKind.EmptyKind:
         return { result: new ByteCode(undefined, true), bytes };
-      case ByteCodeKind.V1CasperWasmKind:
+      case ByteCodeKind.V1CasperWasmKind: {
         const wasmHash = Hash.fromBytes(
           bytes.subarray(1, Hash.ByteHashLen + 1)
         );
@@ -119,6 +119,7 @@ export class ByteCode {
           result: new ByteCode(wasmHash?.result),
           bytes: wasmHash?.bytes
         };
+      }
       default:
         throw ByteCodeError.ErrInvalidByteCodeFormat;
     }

@@ -324,7 +324,10 @@ export class ValidatorBid {
       try {
         return BigInt(json);
       } catch (e) {
-        throw new Error(`Could not convert minimum_delegation_amount: ${json}`);
+        throw new Error(
+          `Could not convert minimum_delegation_amount: ${json}`,
+          { cause: e }
+        );
       }
     },
     serializer: value => value?.toString()
@@ -339,7 +342,10 @@ export class ValidatorBid {
       try {
         return BigInt(json);
       } catch (e) {
-        throw new Error(`Could not convert maximum_delegation_amount: ${json}`);
+        throw new Error(
+          `Could not convert maximum_delegation_amount: ${json}`,
+          { cause: e }
+        );
       }
     },
     serializer: value => value?.toString()

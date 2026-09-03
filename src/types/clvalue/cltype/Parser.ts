@@ -30,6 +30,17 @@ import { IResultWithBytes } from '../CLValue';
 import { CLValueUInt32 } from '../Numeric';
 
 /**
+ * Narrows a raw tag byte to the enum, undefined when it is not a known variant.
+ * That is what makes the switch below exhaustive-checkable, and what stops a
+ * renumbered enum from silently re-routing a decode.
+ */
+function toCLTypeTag(tag: number): TypeID | undefined {
+  return (Object.values(TypeID) as unknown[]).includes(tag)
+    ? (tag as TypeID)
+    : undefined;
+}
+
+/**
  * A utility class for parsing various CLTypes from different formats, such as JSON, strings, and bytes.
  * This class includes static methods for handling both simple and complex types, along with error handling for unsupported or unrecognized formats.
  */
@@ -126,7 +137,7 @@ export class CLTypeParser {
   static fromRawJson(source: any): CLType {
     try {
       return CLTypeParser.fromInterface(source);
-    } catch (err) {
+    } catch {
       return CLTypeParser.getSimpleTypeByName(source as TypeName);
     }
   }
@@ -138,8 +149,12 @@ export class CLTypeParser {
    * @throws BufferConstructorNotDetectedError if the type is not recognized.
    */
   static matchBytesToCLType(bytes: Uint8Array): IResultWithBytes<CLType> {
-    const tag = bytes[0];
+    const tag = toCLTypeTag(bytes[0]);
     const remainder = bytes.subarray(1);
+
+    if (tag === undefined) {
+      throw CLTypeParser.BufferConstructorNotDetectedError;
+    }
 
     switch (tag) {
       case TypeID.Bool:
@@ -161,110 +176,90 @@ export class CLTypeParser {
           result: CLTypeParser.simpleTypeByID[tag]!,
           bytes: remainder
         };
-      case TypeID.Option:
-        const {
-          result: optionInner,
-          bytes: optionBytes
-        } = CLTypeParser.matchBytesToCLType(remainder);
+      case TypeID.Option: {
+        const { result: optionInner, bytes: optionBytes } =
+          CLTypeParser.matchBytesToCLType(remainder);
         return { result: new CLTypeOption(optionInner), bytes: optionBytes };
-      case TypeID.List:
-        const {
-          result: listInner,
-          bytes: listBytes
-        } = CLTypeParser.matchBytesToCLType(remainder);
+      }
+      case TypeID.List: {
+        const { result: listInner, bytes: listBytes } =
+          CLTypeParser.matchBytesToCLType(remainder);
         return { result: new CLTypeList(listInner), bytes: listBytes };
-      case TypeID.ByteArray:
-        const {
-          result: byteArraySize,
-          bytes: byteArrayBytes
-        } = CLValueUInt32.fromBytes(remainder);
+      }
+      case TypeID.ByteArray: {
+        const { result: byteArraySize, bytes: byteArrayBytes } =
+          CLValueUInt32.fromBytes(remainder);
         return {
           result: new CLTypeByteArray(byteArraySize.toNumber()),
           bytes: byteArrayBytes
         };
-      case TypeID.Result:
-        const {
-          result: innerOk,
-          bytes: resultBytes
-        } = CLTypeParser.matchBytesToCLType(remainder);
+      }
+      case TypeID.Result: {
+        const { result: innerOk, bytes: resultBytes } =
+          CLTypeParser.matchBytesToCLType(remainder);
 
         if (!resultBytes) {
           throw new Error('Missing Error type bytes in Result');
         }
 
-        const {
-          result: innerErr,
-          bytes: errBytes
-        } = CLTypeParser.matchBytesToCLType(resultBytes);
+        const { result: innerErr, bytes: errBytes } =
+          CLTypeParser.matchBytesToCLType(resultBytes);
         return { result: new CLTypeResult(innerOk, innerErr), bytes: errBytes };
-      case TypeID.Map:
-        const {
-          result: key,
-          bytes: keyBytes
-        } = CLTypeParser.matchBytesToCLType(remainder);
+      }
+      case TypeID.Map: {
+        const { result: key, bytes: keyBytes } =
+          CLTypeParser.matchBytesToCLType(remainder);
 
         if (!keyBytes) {
           throw new Error('Missing Key type bytes in Map');
         }
 
-        const {
-          result: val,
-          bytes: valBytes
-        } = CLTypeParser.matchBytesToCLType(keyBytes);
+        const { result: val, bytes: valBytes } =
+          CLTypeParser.matchBytesToCLType(keyBytes);
         return { result: new CLTypeMap(key, val), bytes: valBytes };
-      case TypeID.Tuple1:
-        const {
-          result: innerTypeRes,
-          bytes: tuple1Bytes
-        } = CLTypeParser.matchBytesToCLType(remainder);
+      }
+      case TypeID.Tuple1: {
+        const { result: innerTypeRes, bytes: tuple1Bytes } =
+          CLTypeParser.matchBytesToCLType(remainder);
         return { result: new CLTypeTuple1(innerTypeRes), bytes: tuple1Bytes };
-      case TypeID.Tuple2:
-        const {
-          result: innerType1Res,
-          bytes: innerType1Bytes
-        } = CLTypeParser.matchBytesToCLType(remainder);
+      }
+      case TypeID.Tuple2: {
+        const { result: innerType1Res, bytes: innerType1Bytes } =
+          CLTypeParser.matchBytesToCLType(remainder);
 
         if (!innerType1Bytes) {
           throw new Error('Missing second tuple type bytes in CLTuple2Type');
         }
 
-        const {
-          result: innerType2Res,
-          bytes: innerType2Bytes
-        } = CLTypeParser.matchBytesToCLType(innerType1Bytes);
+        const { result: innerType2Res, bytes: innerType2Bytes } =
+          CLTypeParser.matchBytesToCLType(innerType1Bytes);
         return {
           result: new CLTypeTuple2(innerType1Res, innerType2Res),
           bytes: innerType2Bytes
         };
-      case TypeID.Tuple3:
-        const {
-          result: innerType1,
-          bytes: innerType1Byte
-        } = CLTypeParser.matchBytesToCLType(remainder);
+      }
+      case TypeID.Tuple3: {
+        const { result: innerType1, bytes: innerType1Byte } =
+          CLTypeParser.matchBytesToCLType(remainder);
 
         if (!innerType1Byte) {
           throw new Error('Missing second tuple type bytes in CLTuple3Type');
         }
 
-        const {
-          result: innerType2,
-          bytes: innerType2Byte
-        } = CLTypeParser.matchBytesToCLType(innerType1Byte);
+        const { result: innerType2, bytes: innerType2Byte } =
+          CLTypeParser.matchBytesToCLType(innerType1Byte);
 
         if (!innerType2Byte) {
           throw new Error('Missing third tuple type bytes in CLTuple3Type');
         }
 
-        const {
-          result: innerType3,
-          bytes: innerType3Byte
-        } = CLTypeParser.matchBytesToCLType(innerType2Byte);
+        const { result: innerType3, bytes: innerType3Byte } =
+          CLTypeParser.matchBytesToCLType(innerType2Byte);
         return {
           result: new CLTypeTuple3(innerType1, innerType2, innerType3),
           bytes: innerType3Byte
         };
-      default:
-        throw CLTypeParser.BufferConstructorNotDetectedError;
+      }
     }
   }
 
