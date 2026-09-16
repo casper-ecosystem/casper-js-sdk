@@ -878,8 +878,6 @@ export class StepPayload {
 
 @jsonObject
 export class StepEvent {
-  // Capitalised on the wire, like every sibling event and the `EventName` enum.
-  // A name that does not match parses to `undefined` without erroring.
   @jsonMember({ name: 'Step', constructor: StepPayload })
   step: StepPayload;
 }

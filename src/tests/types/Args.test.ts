@@ -57,9 +57,8 @@ describe('Args', () => {
     const original = buildArgs();
     const json = JSON.parse(serializer.stringify(original));
 
-    // Args serialize as [key, value] pairs, so this duplicates a key. `desRA`
-    // throws on it, but typedjson swallows custom-deserializer errors and
-    // yields `undefined` rather than rethrowing.
+    // Args serialize as [key, value] pairs, so this duplicates a key. typedjson
+    // swallows the deserializer's throw and yields `undefined` instead.
     json.args.push(json.args[0]);
 
     expect(serializer.parse(json)).to.be.undefined;

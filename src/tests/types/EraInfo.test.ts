@@ -40,9 +40,8 @@ describe('EraInfo', () => {
   });
 
   it('round-trips the Validator allocations through JSON: toJSON(fromJSON(x)) deep-equals the fixture', () => {
-    // Validator entries only: a `Delegator`-keyed 2.x entry keeps its key
-    // material but is written back under `DelegatorKind`, so it cannot be
-    // byte-identical.
+    // Validator entries only: a `Delegator`-keyed 2.x entry is written back
+    // under `DelegatorKind`, so it cannot be byte-identical.
     const validatorOnly = {
       seigniorage_allocations: eraInfoJson.seigniorage_allocations.filter(
         a => 'Validator' in a

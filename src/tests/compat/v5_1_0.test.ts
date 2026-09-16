@@ -169,14 +169,7 @@ describe('compatibility with casper-js-sdk@5.1.0', () => {
     ];
 
     // Cases whose output deliberately no longer matches 5.1.0, because what
-    // 5.1.0 emitted was not the node's wire format:
-    //
-    //   - `DelegationKind` had no serializers, so a delegator allocation
-    //     reserialized to `{"PublicKey":{"cryptoAlg":1}}`, key bytes destroyed.
-    //   - `SeigniorageAllocation.fromJSON` read a `Delegator`-keyed 2.x payload
-    //     with the flat 1.x reader, dropping the delegator key.
-    //   - `EntryPointAccess.toJSON` emitted lowercase `groups`, not `Groups`.
-    //
+    // 5.1.0 emitted was not the node's wire format (see CHANGELOG 5.2.0).
     // Pinned to these digests rather than the golden's, so accidental drift
     // still fails while the intended divergence stays declared.
     const DIVERGES_FROM_5_1_0: Record<string, string> = {
@@ -432,8 +425,7 @@ describe('compatibility with casper-js-sdk@5.1.0', () => {
   });
 
   describe('Key string and byte forms', () => {
-    // Key types whose 5.1.0 *decode* was lossy — `transfer-` lost its prefix,
-    // `balance-hold-` mis-read the block time — so the recorded `fromBytes`
+    // Key types whose 5.1.0 decode was lossy, so the recorded `fromBytes`
     // cannot be matched. Both are held to the stronger claim below instead:
     // decode reproduces the source string exactly.
     const DECODE_WAS_LOSSY_IN_5_1_0 = ['transfer-', 'balance-hold-'];

@@ -145,9 +145,6 @@ export class DelegationKind {
   /**
    * A delegation bid made using a public key.
    */
-  // Explicit serializers: left to typedjson the key reserializes to
-  // `{cryptoAlg: N}` with the bytes dropped, in every container without a
-  // hand-written toJSON (DelegatorAllocation, and so EraInfo/EraEnd/AuctionState).
   @jsonMember({
     name: 'PublicKey',
     constructor: PublicKey,

@@ -1418,8 +1418,6 @@ export class RpcClient implements IClient {
     maxRetries = 3,
     retryDelay = 500
   ): Promise<T> {
-    // The loop checks the deadline itself; a `throw` from a `setTimeout`
-    // callback cannot reject this promise, it only escapes as uncaught.
     const deadline = Date.now() + timeout;
     const timedOut = () => Date.now() >= deadline;
 
@@ -1444,7 +1442,6 @@ export class RpcClient implements IClient {
             toError(error).message
           }. Retrying in ${retryDelay}ms...`
         );
-        // Timing out mid-retry carries the failure it was retrying.
         if (timedOut()) throw new Error('Timeout', { cause: error });
         await sleep(retryDelay);
         continue;

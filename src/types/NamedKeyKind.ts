@@ -4,8 +4,8 @@ import { Args } from './Args';
 import { deserializeArgs, serializeArgs } from './SerializationUtils';
 
 // Must stay out of `Transform.ts`, which imports back from `TransformRaw.ts`:
-// typedjson resolves the `() => NamedKeyKind` thunk while decorating, so that
-// cycle throws `Cannot access 'NamedKeyKind' before initialization`.
+// typedjson resolves the `() => NamedKeyKind` thunk while decorating, and a
+// cycle through that thunk is a TDZ error at import.
 /**
  * Represents a named key transformation in a transaction.
  */

@@ -43,9 +43,6 @@ describe('BlockGlobalAddr', () => {
     expect(parsed.toJSON()).to.equal(addr.toJSON());
   });
 
-  // Not covered: the Key.newKey()/Key.createByType() round-trip. Key.ts strips
-  // PrefixName.BlockGlobal ('block-'), while this class's own fromString() and
-  // toPrefixedString() use a same-named local constant ('block-global-'), so
-  // 'block-global-time-<hash>' fails to re-parse through Key.newKey() with
-  // "Invalid BlockGlobalAddr format". A source defect, not a test gap.
+  // Not covered: the Key.newKey() round-trip. Key.ts strips 'block-' where this
+  // class uses 'block-global-', so it cannot re-parse — a source defect, not a gap.
 });

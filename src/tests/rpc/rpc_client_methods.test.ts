@@ -41,8 +41,7 @@ const PK_ENTITY_ADDR = new EntityAddr(undefined, PK_ACCOUNT_HASH);
 const PK_UREF = new URef(new Uint8Array(32).fill(7), UrefAccess.ReadWrite);
 
 // Built from the prefix constant, not `PK_ACCOUNT_HASH.toJSON()`: asserting a
-// param against the call that produced it passes whatever the serializer emits,
-// separator bugs included.
+// param against the call that produced it passes whatever the serializer emits.
 const PK_ACCOUNT_HASH_JSON = PrefixName.Account + PK_ACCOUNT_HASH.toHex();
 
 /** Marks a mocked RPC method as failing, so the handler returns an RPC error response instead of a result. */
@@ -277,8 +276,7 @@ const cases: MethodCase[] = [
     checkResult: result => expect(result.merkleProof).to.equal('proof')
   },
   // typedjson serializes a nested member only when it is a real instance of the
-  // declared class — a plain object literal drops the state identifier, and the
-  // node then answers about some other state.
+  // declared class; a plain object literal drops the state identifier entirely.
   {
     name: 'queryGlobalStateByBlockHash',
     invoke: c => c.queryGlobalStateByBlockHash(HASH_HEX, 'some-key', []),
@@ -1127,8 +1125,6 @@ describe('RpcClient — getStateEntity account spellings', () => {
   };
 
   // A 2.x node keys an account entity `Account`; only 1.x says `LegacyAccount`.
-  // Before the normalization the 2.x spelling matched no member and parsed to an
-  // `EntityOrAccount` with everything undefined — no error, just no account.
   it.each([['Account'], ['LegacyAccount']])(
     'resolves an entity keyed %s to legacyAccount',
     async key => {
@@ -1150,8 +1146,6 @@ describe('RpcClient — getStateEntity account spellings', () => {
     expect(result.entity).to.be.undefined;
   });
 
-  // Pins the asymmetry as intended rather than accidental, together with the
-  // escape hatch that makes it acceptable.
   it('re-serializes an Account payload as LegacyAccount, and keeps the original in rawJSON', async () => {
     const entity = { Account: stateGetAccountInfoJson.account };
     const result = await fetchEntity(entity);

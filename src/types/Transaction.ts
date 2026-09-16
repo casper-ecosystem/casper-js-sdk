@@ -110,10 +110,8 @@ export class TransactionHash extends Hash {
    * @param transactionV1 The hash of the version 1 transaction, if applicable.
    */
   private constructor(deploy?: Hash, transactionV1?: Hash) {
-    // One unconditional `super` — typedjson also constructs with neither
-    // argument — carrying the real bytes when there are any: the overrides
-    // below read `getHash()`, but inherited `Hash` methods read `hashBytes`,
-    // so a placeholder would make `Hash.prototype.toHex.call` lie.
+    // Real bytes through `super`: the overrides below read `getHash()`, but
+    // inherited `Hash` methods still read `hashBytes`.
     super(
       deploy?.toBytes() ??
         transactionV1?.toBytes() ??

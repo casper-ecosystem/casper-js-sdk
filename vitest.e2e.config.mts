@@ -4,11 +4,10 @@ import { defineConfig } from 'vitest/config';
 // see `e2e/run.sh` and `e2e/config.ts` for the env it needs.
 //
 // Do NOT add `passWithNoTests`: an empty run has to fail here exactly as it
-// does in the unit config, which is how the dead karma suite stayed invisible
-// for ~18 months.
+// does in the unit config.
 //
-// `fileParallelism: false`: every suite shares one faucet account, and
-// concurrent files racing its nonce/balance is exactly the flake this avoids.
+// `fileParallelism: false`: every suite shares one faucet account, so files
+// must not race its nonce.
 export default defineConfig({
   test: {
     globals: true,

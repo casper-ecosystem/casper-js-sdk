@@ -586,7 +586,7 @@ export function byteHash(x: Uint8Array): Uint8Array;
 // @public
 export const ByteHashLen = 32;
 
-// @public
+// @public (undocumented)
 export class CasperNetwork {
     constructor(rpcClient: RpcClient, apiVersion: number);
     // (undocumented)
@@ -4070,7 +4070,6 @@ export class StateGetDictionaryResult {
 export class StateGetEntityResult {
     // (undocumented)
     apiVersion: string;
-    // (undocumented)
     entity: EntityOrAccount;
     // (undocumented)
     merkleProof: any;

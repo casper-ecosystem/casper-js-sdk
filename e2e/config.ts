@@ -6,8 +6,7 @@ import { KeyAlgorithm, PrivateKey } from '../src';
 loadDotenv();
 
 // Of the ports `e2e/docker-compose.yml` publishes for `makesoftware/casper-nctl`,
-// only 11101 (JSON-RPC) and 18101 (SSE) serve anything — 14101/25101/28101 are
-// published but dead.
+// only 11101 (JSON-RPC) and 18101 (SSE) serve anything.
 export const NODE_URL = process.env.NODE_URL || 'http://127.0.0.1:11101/rpc';
 export const NETWORK_NAME = process.env.NETWORK_NAME || 'casper-net-1';
 export const EVENT_STREAM_URL =

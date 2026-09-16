@@ -111,8 +111,6 @@ export class EntryPointAccess {
       return 'Template';
     }
 
-    // Capitalised like the wire format and the variants above. `fromJSON`
-    // accepts either casing, which is what let a lowercase key go unnoticed.
     if (this.groups !== null) {
       return { Groups: this.groups };
     }

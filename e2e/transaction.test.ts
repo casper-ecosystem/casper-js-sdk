@@ -103,9 +103,7 @@ describe('transaction write path', () => {
   }, 30_000);
 
   // No wasm-install or CEP-18 case: both fixtures in `services/` are built
-  // against the 1.x contract ABI and cannot install on a 2.x node. Restoring
-  // them needs a contract rebuilt against casper-contract 2.x — see
-  // e2e/README.md.
+  // against the 1.x contract ABI and cannot install on a 2.x node.
 
   it('delegates then undelegates to a validator', async () => {
     const auctionInfo = await client.getLatestAuctionInfo();
@@ -169,8 +167,7 @@ describe('transaction write path', () => {
     const timeoutMs = 5_000;
     const start = Date.now();
     // An unknown hash draws an RPC error rather than a pending transaction, so
-    // it is the retry budget that ends this, not the deadline. The regression
-    // guarded here is the hang: either way the promise has to settle.
+    // it is the retry budget that ends this, not the deadline.
     await expect(client.waitForTransaction(bogus, timeoutMs)).rejects.toThrow(
       /Failed after \d+ retries|Timeout/
     );

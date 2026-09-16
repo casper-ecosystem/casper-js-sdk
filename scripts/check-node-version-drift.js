@@ -2,13 +2,8 @@
 
 /**
  * Reports when the live Casper networks have moved past the node images the
- * e2e matrix is pinned to.
- *
- * The comparison is against the `buildVersion` each pinned image *reports*, not
- * against its tag: `makesoftware/casper-nctl:v212` serves `build_version`
- * `2.1.1-4bb15d5e0`, so reading 2.1.2 off the tag would overstate coverage by a
- * patch and hide exactly the drift this exists to find. The offset is not even
- * constant: `v222` serves 2.2.2.
+ * e2e matrix is pinned to, comparing against the `build_version` each pinned
+ * image reports rather than its tag — the two differ (see `e2e/README.md`).
  *
  * Usage: node scripts/check-node-version-drift.js
  * Prints a markdown report to stdout. Exit 0 = no drift, 1 = drift found,
@@ -20,8 +15,8 @@ const path = require('path');
 
 const TAGS_FILE = path.join(__dirname, '..', 'e2e', 'supported-tags.json');
 
-// Not the `rpc.{mainnet,testnet}.casperlabs.io` pair the old e2e scripts and CI
-// env carried: those hostnames no longer resolve at all.
+// The `rpc.{mainnet,testnet}.casperlabs.io` hostnames the old scripts used no
+// longer resolve.
 const NETWORKS = {
   mainnet: 'https://node.mainnet.casper.network/rpc',
   testnet: 'https://node.testnet.casper.network/rpc'

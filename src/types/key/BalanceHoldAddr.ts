@@ -156,8 +156,6 @@ export class BalanceHoldAddr {
     const balanceHoldAddrTag = getBalanceHoldAddrTag(tag);
 
     const purseAddr = bytes.slice(1, ByteHashLen + 1);
-    // Via `Key.fromBytes` the input is a subarray of a larger buffer, so a
-    // DataView on the raw `.buffer` without `byteOffset` reads the wrong bytes.
     const blockTimeMillis = new DataView(
       bytes.buffer,
       bytes.byteOffset + ByteHashLen + 1,
@@ -183,8 +181,6 @@ export class BalanceHoldAddr {
    * @returns A new BalanceHoldAddr instance.
    */
   public static fromJSON(json: string): BalanceHoldAddr {
-    // `toJSON` emits the `balance-hold-` prefix and `fromString` hex-decodes
-    // whatever it is given, so the prefix has to come off first.
     return this.fromString(
       json.startsWith(PrefixName.BalanceHold)
         ? json.substring(PrefixName.BalanceHold.length)

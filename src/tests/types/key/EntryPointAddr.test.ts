@@ -35,8 +35,7 @@ describe('EntryPointAddr', () => {
   });
 
   // `toBytes` lays V1 out as tag(1) + entityBytes(33) + nameBytes(32), and the
-  // entity's 33 bytes are its own kind tag plus the hash. Reading the name at a
-  // hand-computed `1 + ByteHashLen` misses that kind tag and shifts by one.
+  // entity's 33 bytes are its own kind tag plus the hash.
   it('V1: round-trips the name bytes through toBytes()/fromBytes()', () => {
     const addr = EntryPointAddr.fromString(
       `v1-${entityAddr.toPrefixedString()}-${'cd'.repeat(32)}`

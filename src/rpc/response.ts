@@ -163,12 +163,11 @@ export class StateGetEntityResult {
   @jsonMember({ name: 'api_version', constructor: String })
   apiVersion: string;
 
-  // A 2.x node keys an account entity as `Account`, a 1.x one as
-  // `LegacyAccount`. Both spellings land on `legacyAccount`.
-  //
-  // Deliberately one-way: `EntityOrAccount` models two members and `Account` is
-  // not one of them, so re-serializing an `Account` payload emits
-  // `LegacyAccount`. The node's own bytes stay reachable through `rawJSON`.
+  /**
+   * A 2.x node keys an account entity as `Account`, a 1.x one as
+   * `LegacyAccount`; both parse onto `legacyAccount`, and re-serializing
+   * always writes `LegacyAccount`.
+   */
   @jsonMember({
     name: 'entity',
     constructor: EntityOrAccount,

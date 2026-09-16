@@ -18,9 +18,8 @@ export default defineConfig({
       screenshotFailures: false,
       instances: [{ browser: 'chromium' }]
     },
-    // Thresholds are the measured baseline rounded down, not an aspiration:
-    // they exist to fail the build when a change *removes* coverage. Raise them
-    // as tests land; never lower them to make a red run green.
+    // Thresholds are the measured baseline rounded down: they exist to fail the
+    // build when a change removes coverage, never to be lowered to make it green.
     coverage: {
       provider: 'v8',
       include: ['src/**'],

@@ -70,8 +70,6 @@ export class BlockGlobalAddr {
    * @throws Error if the format does not match known block global address types.
    */
   static fromString(source: string): BlockGlobalAddr {
-    // `toPrefixedString` emits the `block-global-` prefix, so accept it here or
-    // the two are not inverses and a round-trip through JSON throws.
     const body = source.startsWith(PrefixNameBlockGlobal)
       ? source.substring(PrefixNameBlockGlobal.length)
       : source;

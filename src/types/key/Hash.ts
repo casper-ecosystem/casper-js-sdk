@@ -139,8 +139,7 @@ export class Hash {
    */
   equals(other: Hash): boolean {
     // Both sides through `toBytes()`: `private` is class-scoped, so reading
-    // `other.hashBytes` would skip subclass overrides such as
-    // `TransactionHash`'s and let `a.equals(b)` and `b.equals(a)` disagree.
+    // `other.hashBytes` would skip subclass overrides such as `TransactionHash`'s.
     const ours = this.toBytes();
     const theirs = other.toBytes();
 

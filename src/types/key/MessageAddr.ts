@@ -148,8 +148,6 @@ export class MessageAddr {
    * @returns A new `MessageAddr` instance wrapped in an `IResultWithBytes`.
    */
   static fromBytes(bytes: Uint8Array): IResultWithBytes<MessageAddr> {
-    // Each reader consumes from the previous one's remainder; handed the
-    // original buffer, the topic hash would re-read the entity's own bytes.
     const entityAddr = EntityAddr.fromBytes(bytes);
     const topicNameHash = Hash.fromBytes(entityAddr.bytes);
     let remainder = topicNameHash.bytes;

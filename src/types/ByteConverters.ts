@@ -36,8 +36,6 @@ export const toBytesNumber =
   (value: BigNumberish): Uint8Array => {
     const val = BigNumber.from(value);
 
-    // Shifted, not masked off `MaxUint256`: a mask cannot widen a 256-bit value,
-    // so `MaxUint256.mask(512)` is 2^256-1 and rejects every legal larger U512.
     const maxUintValue = One.shl(bitSize).sub(One);
 
     if (signed) {
@@ -177,8 +175,6 @@ export function parseU32(bytes: Uint8Array): number {
     throw new Error('Invalid byte array for u32 parsing');
   }
 
-  // `>>> 0` because `<< 24` produces a *signed* int32: without it every u32
-  // with the high bit set comes back negative (0xFFFFFFFF parsed as -1).
   return (
     (bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24)) >>> 0
   );

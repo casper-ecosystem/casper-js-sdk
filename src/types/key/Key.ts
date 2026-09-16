@@ -352,12 +352,10 @@ export class Key {
     }
   }
 
-  /** The zero padding that stands in for the address of an addressless key. */
   private static paddingBytes(): Uint8Array {
     return new Uint8Array(KEY_DEFAULT_BYTE_LENGTH);
   }
 
-  /** The same padding, as the node formats it in a key string. */
   private static paddingHex(): string {
     return '0'.repeat(KEY_DEFAULT_BYTE_LENGTH * 2);
   }
@@ -418,8 +416,7 @@ export class Key {
       case KeyTypeID.Withdraw:
         return `${PrefixName.Withdraw}${this.withdraw!.toHex()}`;
       case KeyTypeID.SystemContractRegistry:
-        // The only spelling a node accepts back. `newKey` still reads the
-        // 1.x `system-contract-registry-` form, so older records keep loading.
+        // The only spelling a node accepts back; `newKey` still reads the 1.x one.
         return `${
           PrefixName.SystemEntityRegistry
         }${this.systemContactRegistry!.toHex()}`;
@@ -501,8 +498,8 @@ export class Key {
       }
       case KeyTypeID.Transfer: {
         const transferHash = Hash.fromBytes(contentBytes);
-        // Bytes, not hex: the string overload only keeps `transfer-` when the
-        // input already carries it, so a bare hex string dropped the prefix.
+        // Bytes, not hex: the string overload keeps `transfer-` only when the
+        // input already carries it.
         result.transfer = new TransferHash(transferHash?.result.toBytes());
         return { result, bytes: transferHash?.bytes };
       }
@@ -630,7 +627,6 @@ export class Key {
         return { result, bytes: stateBytes };
       }
       case KeyTypeID.RewardsHandling: {
-        // Carries no address of its own — just the padding the node writes.
         if (contentBytes.length < KEY_DEFAULT_BYTE_LENGTH) {
           throw new Error('Early end of stream when deserializing data.');
         }
@@ -804,8 +800,7 @@ export class Key {
         );
         break;
       case KeyTypeID.RewardsHandling: {
-        // No address to carry — but the padding is checked, so a malformed
-        // source fails here rather than parsing into a well-formed key.
+        // No address of its own — the node writes zero padding in its place.
         const padding = source.replace(PrefixName.RewardsHandling, '');
         if (padding !== Key.paddingHex()) {
           throw new Error(`invalid RewardsHandling key -> source: ${source}`);

@@ -160,8 +160,7 @@ export class SseClient {
       }
 
       // Never throw from here: this runs inside `eventsource`'s own fetch
-      // chain, where an HTTP failure swallows the throw and kills the stream
-      // silently, and a transport failure escapes as an unhandled rejection.
+      // chain, which either swallows the throw or leaks it as a rejection.
       console.error(
         `[SseClient] event stream error${
           error.code === undefined ? '' : ` (status ${error.code})`

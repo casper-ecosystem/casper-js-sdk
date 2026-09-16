@@ -1,7 +1,6 @@
 // A leaf module on purpose: nothing may be imported into it. Declaring
-// `PrefixName` back in `Key.ts` makes that file the hub of an import cycle, and
-// typedjson resolves its `() => AccountHash` thunk while `Account.ts` is still
-// evaluating — `Cannot access 'AccountHash' before initialization`.
+// `PrefixName` in `Key.ts` would make that file an import-cycle hub, and
+// typedjson resolves its type thunks while decorating — a TDZ error at import.
 
 /**
  * Enum that defines prefixes used to identify different types of blockchain entities and objects.

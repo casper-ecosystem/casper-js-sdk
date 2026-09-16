@@ -211,8 +211,6 @@ export class EntryPointAddr {
     const entryPointTag = getEntryPointTag(tag);
 
     const entityAddr = EntityAddr.fromBytes(array.slice(1));
-    // From EntityAddr's own remainder: it consumes an entity-kind tag byte on
-    // top of the hash, which a hand-computed `1 + ByteHashLen` offset misses.
     const rem = entityAddr.bytes;
 
     if (entryPointTag === EntryPointTag.V1EntryPoint) {

@@ -126,8 +126,7 @@ abstract class TransactionBuilder<T extends TransactionBuilder<T>> {
    *
    * `gasPriceTolerance` has to sit inside the target chain's
    * `[min_gas_price, max_gas_price]` chainspec window — both are 1 on mainnet
-   * and testnet. Nodes from 2.2 on reject anything above the ceiling with
-   * `-32016 Invalid transaction`; earlier ones enforced only the floor.
+   * and testnet — or the node rejects the transaction with `-32016`.
    *
    * @param paymentAmount - The payment amount in motes
    * @param gasPriceTolerance - Gas price tolerance multiplier (default: 1)
