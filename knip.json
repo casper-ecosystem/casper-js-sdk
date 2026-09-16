@@ -1,8 +1,7 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
   // `src/index.ts!` is the published surface: knip cannot see consumer usage,
-  // so nothing reachable from it is ever dead code. `e2e/` has no test files
-  // today, so `e2e/config.ts` keeps it and the wasm fixtures reachable.
+  // so nothing reachable from it is ever dead code.
   "entry": [
     "src/index.ts!",
     "src/**/*.test.ts",
@@ -26,12 +25,10 @@
     "semgrep"
   ],
   // RULE: every entry below must name the mechanism by which the dependency is
-  // genuinely used and knip cannot see it. "knip is wrong" is not a reason.
-  // If no such mechanism exists, the dependency is dead — remove it instead.
+  // used and knip cannot see it. No such mechanism means it is dead — remove it.
   "ignoreDependencies": [
     // Reached only through a plugin string:
-    // `new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })`. `process`
-    // knip resolves on its own from its ProvidePlugin.
+    // `new webpack.ProvidePlugin({ Buffer: ['buffer', 'Buffer'] })`.
     "buffer",
     // A tripwire, imported by nothing on purpose: its own `preinstall` fails
     // the install if `ignore-scripts=true` is ever dropped from `.npmrc`.

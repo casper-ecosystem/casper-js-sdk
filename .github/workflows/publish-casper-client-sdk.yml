@@ -55,8 +55,8 @@ jobs:
 
           # 2. fail fast if the version is already on npm, instead of burning a full
           #    build and test run only to hit EPUBLISHCONFLICT (403) at the end.
-          #    `npm view pkg@version` exits 0 when it exists and exits 1 (E404) when it does not,
-          #    so it MUST be wrapped in `if`, or GitHub's `bash -e` kills the step on the healthy path.
+          #    `npm view` exits 1 (E404) when the version does not exist, so it MUST
+          #    be wrapped in `if` or `bash -e` kills the step on the healthy path.
           if npm view "casper-js-sdk@$GITHUB_REF_NAME" version >/dev/null 2>&1; then
             echo "::error::casper-js-sdk@$GITHUB_REF_NAME is already published"; exit 1
           fi
@@ -80,8 +80,6 @@ jobs:
 
       # Provenance says who built the release; the SBOM says what is inside it,
       # `--omit dev` narrowing that to what a consumer actually resolves.
-      # `inflight` is why it is worth publishing: no GHSA, so `npm audit`
-      # reported zero the whole time it shipped.
       - name: Generate SBOM
         run: npm sbom --sbom-format cyclonedx --omit dev > casper-js-sdk.sbom.json
 
@@ -160,8 +158,7 @@ jobs:
           name: publish-artifacts
 
       # --provenance signs the tarball with the job's OIDC identity (hence
-      # `id-token: write` above), so npmjs.com can attest which repo, workflow and
-      # commit produced it — a stolen publish token no longer buys a convincing release.
+      # `id-token: write` above), so npmjs.com can attest what produced it.
       - name: Publish to npm
         run: npm publish --access public --tag latest --provenance
 

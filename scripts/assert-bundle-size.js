@@ -3,12 +3,9 @@
 /**
  * Fails the build when a bundle outgrows its committed budget.
  *
- * webpack already warns that `lib.cjs.js` is over its recommended size, and a
- * warning has never failed anything here. What this catches is not slow growth
- * but the single import that drags a whole library in — a stray
- * `import { … } from 'ethers'` can double the browser bundle without breaking
- * a test, and the dependency swaps ahead (`@ethersproject/*` out for native
- * `bigint`, `@noble` consolidated) are exactly when that happens.
+ * What it catches is not slow growth but the single import that drags a whole
+ * library in — a stray `import { … } from 'ethers'` can double the browser
+ * bundle without breaking a test.
  *
  * Usage: node scripts/assert-bundle-size.js
  */
@@ -19,15 +16,9 @@ const zlib = require('zlib');
 
 /**
  * Raw bytes, not gzipped: raw is what the build emits deterministically, so a
- * budget moves only when the code moves. Each carries roughly 5% headroom over
- * its measured size, so ordinary changes pass and a new dependency does not.
- *
- * Raise one when the growth is real and intended — that edit is the review
- * prompt, not a way to turn a red build green before reading what arrived in
- * the bundle (`npx webpack-bundle-analyzer`).
- *
- * The web bundle is the one with a user-facing cost; the Node bundles are
- * budgeted so a stray dependency shows up as a diff across all three.
+ * budget moves only when the code moves. Each carries roughly 5% headroom.
+ * Raise one when the growth is real and intended — after reading what arrived
+ * in the bundle (`npx webpack-bundle-analyzer`), not to turn a red build green.
  */
 const BUDGETS = [
   // 939_357 bytes measured 2026-08-12. Carries the Buffer shim the Node
@@ -48,8 +39,7 @@ for (const { file, maxBytes } of BUDGETS) {
   const absolute = path.resolve(process.cwd(), file);
 
   // A missing bundle fails rather than skips: a gate that passes because it
-  // measured nothing is how the empty test suite here ran green for eighteen
-  // months.
+  // measured nothing is not a gate.
   if (!fs.existsSync(absolute)) {
     problems.push(`${file} does not exist — run \`npm run build\` first`);
     continue;

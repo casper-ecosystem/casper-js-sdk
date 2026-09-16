@@ -283,8 +283,7 @@ const collectStrings = (node, out) => {
 // last run rather than on the corpus.
 //
 // The `nosemgrep` markers below are scoped to the path-traversal rule alone:
-// `dir` starts at `dataDir` and every segment after it comes from `readdirSync`,
-// so nothing steers it.
+// `dir` starts at `dataDir` and every segment after it comes from `readdirSync`.
 const walk = dir =>
   fs.readdirSync(dir, { withFileTypes: true }).flatMap(e =>
     e.isDirectory()

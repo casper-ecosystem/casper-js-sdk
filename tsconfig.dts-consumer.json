@@ -8,12 +8,9 @@
     "strict": true,
     // The declarations are the subject here, not a dependency being trusted.
     "skipLibCheck": false,
-    // No automatic `@types/*`, so a `Buffer` or any other Node global left in a
-    // published signature fails to resolve here — the TS2580/TS2688 pair a
-    // consumer without `@types/node` would hit.
-    // Fix by widening the signature (`Buffer` is a `Uint8Array`), never by
-    // adding `@types/node` to `dependencies`: that pushes Node typings onto
-    // every browser consumer.
+    // No automatic `@types/*`, so a `Buffer` left in a published signature fails
+    // to resolve here. Fix by widening the signature, never by adding
+    // `@types/node` to `dependencies` — that pushes Node typings onto consumers.
     "types": [],
     "target": "es2020",
     "lib": ["es2020", "dom"],

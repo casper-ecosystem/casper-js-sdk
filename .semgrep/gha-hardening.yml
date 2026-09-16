@@ -24,8 +24,7 @@ rules:
       `permissions: contents: read` at the top and widen it per job.
     patterns:
       # The match has to span the whole file: pattern-not-regex only discards a
-      # result when its regex hits inside the matched range, and the key we are
-      # asserting the absence of can sit anywhere in the document.
+      # result when its regex hits inside the matched range.
       - pattern-regex: '(?s)\A.+\z'
       - pattern-not-regex: '(?m)^permissions:'
     paths:
