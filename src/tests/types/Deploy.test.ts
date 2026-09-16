@@ -1,4 +1,4 @@
-import { expect, assert } from 'chai';
+import { assert, expect } from 'vitest';
 import { TypedJSON } from 'typedjson';
 
 import {

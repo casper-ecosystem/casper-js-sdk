@@ -1,5 +1,5 @@
 import { TypedJSON } from 'typedjson';
-import { expect } from 'chai';
+import { expect } from 'vitest';
 
 import { EraSummary } from '../../types';
 import { eraSummaryJson, eraSummaryV2DelegatorKindJson } from '../data';
@@ -99,8 +99,10 @@ const validateDelegatorAllocationTest2 = (
   ).to.deep.equal(jsonDelegator?.amount);
 };
 
-describe('EraSummary', function () {
-  this.timeout(10000);
+// The v1 fixture is an 11 MB era summary carrying 30650 seigniorage
+// allocations, each asserted field by field, so the run does not fit in the
+// 5s default on a CI runner.
+describe('EraSummary', { timeout: 10000 }, () => {
   it('should correctly parse and match the era summary json', () => {
     const serializer = new TypedJSON(EraSummary);
     const jsonRes = serializer.parse(eraSummaryJson);

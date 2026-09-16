@@ -21,15 +21,20 @@ on:
     paths-ignore:
       - '**.md'
 
+# Branch protection on `dev` requires exactly one status check — `mergefreeze`.
+# None of the jobs below is required, so the guards in here fail loudly but do
+# not block a merge on their own; a human reading the run decides what that
+# means. To make them required, the check names are `build (22.x, ubuntu-22.04)`,
+# `build (24.x, ubuntu-22.04)`, `node18-consumer` and `node18-typings`.
 jobs:
+  # The maintained legs: they run the whole dev toolchain. Node 18 cannot run
+  # that suite at all (vitest@4 engines: ^20 || ^22 || >=24) and is covered by
+  # `node18-consumer` below.
   build:
     strategy:
       fail-fast: false
       matrix:
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        # 18.x is the consumer-compatibility leg (published `engines.node` is ">=18");
-        # 22.x/24.x are the maintained legs that also run the Node->=20.9 dev toolchain.
-        node-version: [18.x, 22.x, 24.x]
+        node-version: [22.x, 24.x]
         os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
     env:
@@ -59,25 +64,114 @@ jobs:
       - name: Audits
         run: npm audit --omit=dev
 
-      # eslint@10 engines: ^20.19.0 || ^22.13.0 || >=24 — cannot execute on Node 18.
       - name: Lints
-        if: matrix.node-version != '18.x'
         run: npm run lint:ci
 
       - name: Knip (dead & phantom dependencies)
-        if: matrix.node-version != '18.x' # knip@6 engines: ^20.19.0 || >=22.12.0
         run: npm run knip
 
-      # node22 variant on 22.x and 24.x (Node >=23 enables native TS type-stripping
-      # by default, so the --no-experimental-strip-types flag applies to both);
-      # plain variant on the 18.x leg.
-      - name: Unit Test
-        run: ${{ matrix.node-version != '18.x' && 'npm run test:node:unit:node22' || 'npm run test:node:unit' }}
+      - name: Unit Test (node)
+        run: npm run test:node:unit -- --reporter=default --reporter=json --outputFile.json=reports/node-unit.json
 
-      # webpack-cli@7 / copy-webpack-plugin@14 / webpack-bundle-analyzer@5 all need
-      # Node >=20.9, and `prebuild` runs eslint@10 — so the build is 22/24 only.
-      # The published `engines.node` stays ">=18": this gates the dev toolchain, not
-      # the shipped bundles (PHASE-3 converts the 18.x leg to pack-and-smoke).
+      # A green exit code only says nothing failed, not that everything ran.
+      # See scripts/assert-test-count.js for why that distinction has teeth here.
+      - name: Assert the node suite ran the whole file set
+        run: node scripts/assert-test-count.js reports/node-unit.json "node unit"
+
+      # Vitest browser mode drives a real Chromium, so the binary must be here.
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Unit Test (browser)
+        run: npm run test:browser:unit -- --reporter=default --reporter=json --outputFile.json=reports/browser-unit.json
+
+      - name: Assert the browser suite ran the whole file set
+        run: node scripts/assert-test-count.js reports/browser-unit.json "browser unit"
+
       - name: Test build
-        if: matrix.node-version != '18.x'
         run: npm run build
+
+      # The tarball the Node 18 job consumes. Built here because the build
+      # toolchain (webpack-cli@7, eslint@10) needs Node >=20.9.
+      - name: Pack
+        if: matrix.node-version == '22.x'
+        # npm 10, the version Node 22 bundles, does not create
+        # `--pack-destination` itself and fails with ENOENT on the tarball.
+        run: |
+          mkdir -p ./pack
+          npm pack --pack-destination ./pack
+
+      - name: Upload tarball
+        if: matrix.node-version == '22.x'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
+        with:
+          name: package-tarball
+          path: ./pack/*.tgz
+          retention-days: 1
+
+  # The consumer-compatibility leg for the published `engines.node ">=18"`.
+  # The dev suite runs TypeScript sources and never touches `dist/`, so this job
+  # is the only thing proving the published tarball installs and runs under a
+  # plain Node 18.
+  node18-consumer:
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
+        with:
+          node-version: 18.x
+
+      - name: Download tarball
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 #v4.3.0
+        with:
+          name: package-tarball
+          path: ./pack
+
+      - name: Install the tarball into a clean project
+        run: |
+          mkdir -p "$RUNNER_TEMP/consumer"
+          cp ./pack/*.tgz "$RUNNER_TEMP/consumer/"
+          cp scripts/smoke.js "$RUNNER_TEMP/consumer/"
+          cd "$RUNNER_TEMP/consumer"
+          npm init -y >/dev/null
+          # --engine-strict, or this job cannot fail on what it exists to prove:
+          # npm defaults to engine-strict=false, so a dependency whose
+          # engines.node excludes 18 only warns EBADENGINE and installs anyway.
+          npm install --engine-strict ./*.tgz
+
+      - name: Smoke test the published artifact
+        run: node "$RUNNER_TEMP/consumer/smoke.js"
+        working-directory: ${{ runner.temp }}/consumer
+
+  # `@types/node` is on ^22 for vitest@4, so the build no longer proves `src`
+  # stays inside the API surface Node 18 actually has; this job puts the 18.x
+  # typings back in front of the compiler. They go into a throwaway directory —
+  # installing them into the project tree would break vitest's peer range.
+  node18-typings:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
+        with:
+          node-version: 22.x
+          cache: 'npm'
+
+      - name: Install
+        run: npm install
+
+      - name: Fetch the Node 18 typings floor
+        run: |
+          mkdir -p "$RUNNER_TEMP/node18-types"
+          cd "$RUNNER_TEMP/node18-types"
+          npm init -y >/dev/null
+          npm install --no-audit --no-fund '@types/node@^18'
+
+      - name: Type-check src against @types/node@18
+        run: npx tsc -p tsconfig.node18.json --typeRoots "$RUNNER_TEMP/node18-types/node_modules/@types"

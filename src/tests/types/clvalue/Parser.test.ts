@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from 'vitest';
 
 import { CLValueParser, CLValue, CLTypeMap, Conversions, CLValueList, TypeID, CLTypeDynamic, CLTypeString, CLTypeList, CLTypeTuple2, CLType } from '../../../types';
 

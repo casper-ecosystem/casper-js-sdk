@@ -1,7 +1,7 @@
 import { jsonMember, jsonObject } from 'typedjson';
 import { Conversions } from '../Conversions';
 import { IResultWithBytes } from '../clvalue';
-import { PrefixName } from './Key';
+import { PrefixName } from './PrefixName';
 
 /**
  * Enum representing the types of balance hold addresses.

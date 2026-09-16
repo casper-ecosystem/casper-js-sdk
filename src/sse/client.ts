@@ -1,4 +1,4 @@
-import EventSource from 'eventsource';
+import { ErrorEvent, EventSource } from 'eventsource';
 import { Result, Ok, Err } from 'ts-results';
 
 import { EventName, RawEvent } from './event';
@@ -10,6 +10,45 @@ import { EventParser } from './event_parser';
  * @param result - A RawEvent instance representing the event.
  */
 export type EventHandlerFn = (result: RawEvent) => void;
+
+/**
+ * Error raised when the event stream itself fails.
+ */
+export class SseError extends Error {
+  /**
+   * HTTP status code, when the failure came from an HTTP response (e.g. 401 or
+   * 403). Undefined for transport-level failures.
+   */
+  public readonly code?: number;
+
+  constructor(message?: string, code?: number) {
+    super(
+      message ??
+        (code
+          ? `Event stream failed with status ${code}`
+          : 'Event stream failed')
+    );
+    this.name = 'SseError';
+    this.code = code;
+
+    // `target: es5` downlevels `extends Error` to `_super.call(this, …) || this`;
+    // `Error.call` returns a fresh Error, so the instance lands on
+    // `Error.prototype` and `instanceof SseError` is false in the shipped bundle
+    // (it holds under the test transform, which emits native classes).
+    Object.setPrototypeOf(this, SseError.prototype);
+  }
+
+  /**
+   * Type guard for `SseError`, safe across build targets.
+   *
+   * Prefer this to `instanceof` when the value may have crossed a bundle
+   * boundary: two copies of the SDK in one dependency tree have two distinct
+   * `SseError` constructors, and `instanceof` fails between them.
+   */
+  static isSseError(error: unknown): error is SseError {
+    return error instanceof Error && error.name === 'SseError';
+  }
+}
 
 /**
  * Interface representing an event subscription.
@@ -98,8 +137,13 @@ export class SseClient {
    * Starts the SSE connection.
    *
    * @param eventId - (Optional) The event ID to start streaming from.
+   * @param onError - (Optional) Invoked when the stream reports an error, with
+   *   the HTTP status attached when the failure was an HTTP one. When omitted,
+   *   the error is logged and the underlying stream is left to reconnect on its
+   *   own. The callback runs inside the stream's own dispatch, so throwing from
+   *   it never reaches the caller of `start`.
    */
-  public start(eventId?: number): void {
+  public start(eventId?: number, onError?: (error: SseError) => void): void {
     const separator = this.eventStreamUrl.includes('?') ? '&' : '?';
     let requestUrl = `${this.eventStreamUrl}${separator}`;
     if (eventId !== undefined) {
@@ -108,8 +152,27 @@ export class SseClient {
     this.eventSource = new EventSource(requestUrl);
 
     this.eventSource.onmessage = e => this.runEventsLoop(e);
-    this.eventSource.onerror = err => {
-      throw err;
+    this.eventSource.onerror = (event: ErrorEvent) => {
+      // eventsource v3 hands the callback an `ErrorEvent`, not an `Error`: no
+      // stack, no readable message, and the HTTP status that explains the
+      // failure sitting on `.code`.
+      const error = new SseError(event.message, event.code);
+
+      if (onError) {
+        onError(error);
+        return;
+      }
+
+      // Do not throw from here: `eventsource` calls this inside its own fetch
+      // promise chain. On an HTTP failure the throw is swallowed by the
+      // library's `.catch` and the stream dies silently; on a transport failure
+      // it escapes as an unhandled rejection that kills the host process and
+      // pre-empts the reconnect the library was about to schedule.
+      console.error(
+        `[SseClient] event stream error${
+          error.code === undefined ? '' : ` (status ${error.code})`
+        }: ${error.message}`
+      );
     };
   }
 

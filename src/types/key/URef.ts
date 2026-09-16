@@ -85,7 +85,10 @@ export class URef {
   toString(): string {
     return [
       Conversions.encodeBase16(this.data),
-      new Array(3).join('0').slice((3 || 2) * -1) + this.access.toString(8)
+      // This padding expression is a convoluted constant `'00'` in front of the
+      // octal access digit, but that `'00'` is part of the rendered format —
+      // do not simplify it away.
+      new Array(3).join('0').slice(-3) + this.access.toString(8)
     ].join('-');
   }
 

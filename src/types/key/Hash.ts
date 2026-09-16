@@ -97,12 +97,18 @@ export class Hash {
   }
 
   /**
-   * Creates a Hash instance from a Buffer.
-   * @param buffer - The Buffer containing the hash bytes.
+   * Creates a Hash instance from a byte array.
+   *
+   * Typed `Uint8Array`, not `Buffer`, so the published `.d.ts` needs no
+   * `@types/node`: TypeScript 6 no longer emits the `/// <reference
+   * types="node" />` directive that used to pull it in. A `Buffer` is a
+   * `Uint8Array`, so call sites are unaffected.
+   *
+   * @param buffer - The bytes containing the hash.
    * @returns A new Hash instance.
    * @throws Error if the buffer length is less than the required hash length.
    */
-  static fromBuffer(buffer: Buffer): Hash {
+  static fromBuffer(buffer: Uint8Array): Hash {
     if (buffer.length < Hash.ByteHashLen) {
       throw new Error('Key length is not equal to 32 bytes.');
     }
@@ -137,9 +143,14 @@ export class Hash {
    * @returns True if the hashes are equal, false otherwise.
    */
   equals(other: Hash): boolean {
-    if (this.hashBytes.length !== other.hashBytes.length) return false;
-    return this.hashBytes.every(
-      (byte, index) => byte === other.hashBytes[index]
-    );
+    // Both sides go through `toBytes()`: `private` is class-scoped, so reading
+    // `other.hashBytes` directly skips subclass overrides — `TransactionHash`
+    // has one — and makes `a.equals(b)` and `b.equals(a)` disagree.
+    const ours = this.toBytes();
+    const theirs = other.toBytes();
+
+    if (ours.length !== theirs.length) return false;
+
+    return ours.every((byte, index) => byte === theirs[index]);
   }
 }

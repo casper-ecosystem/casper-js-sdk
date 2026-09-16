@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from 'vitest';
 
 import {
   URef,
@@ -22,7 +22,10 @@ describe('CLUref', () => {
   it('Should be valid by construction', () => {
     const badFn1 = () =>
       new URef(Conversions.decodeBase16('3a3a3a'), UrefAccess.ReadAddWrite);
-    const badFn2 = () => new URef(Conversions.decodeBase16(urefAddr), 10);
+    // Deliberately out of range to exercise the runtime guard; the cast is
+    // what keeps the negative case compilable.
+    const badFn2 = () =>
+      new URef(Conversions.decodeBase16(urefAddr), 10 as UrefAccess);
 
     expect(RWExampleURef).to.be.an.instanceof(URef);
     expect(badFn1).to.throw('Invalid URef data length; expected 32');

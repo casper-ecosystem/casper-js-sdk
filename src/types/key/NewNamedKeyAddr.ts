@@ -1,6 +1,6 @@
 import { jsonMember, jsonObject } from 'typedjson';
 import { EntityAddr } from './EntityAddr';
-import { PrefixName } from './Key';
+import { PrefixName } from './PrefixName';
 import { IResultWithBytes } from '../clvalue';
 
 /**

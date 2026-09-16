@@ -1,5 +1,5 @@
 import { TypedJSON } from 'typedjson';
-import { expect } from 'chai';
+import { expect } from 'vitest';
 
 import {
   StoredValue,
@@ -61,7 +61,7 @@ describe('Test StoredValue', () => {
       let storedValue: StoredValue;
       let jsonEntryPoint: any;
 
-      before(() => {
+      beforeAll(() => {
         storedValue = new TypedJSON(StoredValue).parse(
           stateItemResultV1Json.stored_value
         ) as StoredValue;
@@ -111,7 +111,7 @@ describe('Test StoredValue', () => {
       let storedValue: StoredValue;
       let jsonEntryPoint: any;
 
-      before(() => {
+      beforeAll(() => {
         storedValue = new TypedJSON(StoredValue).parse(
           stateItemResultV2Json.stored_value
         ) as StoredValue;

@@ -1,4 +1,5 @@
 import { jsonObject, jsonMember } from 'typedjson';
+import { PrefixName } from './PrefixName';
 import { AccountHash } from './Account';
 import { Hash } from './Hash';
 import { TransferHash } from './Transfer';
@@ -14,41 +15,8 @@ import { EntryPointAddr } from './EntryPointAddr';
 import { URef } from './URef';
 import { IResultWithBytes } from '../clvalue';
 
-/**
- * Enum that defines prefixes used to identify different types of blockchain entities and objects.
- */
-export enum PrefixName {
-  Account = 'account-hash-',
-  AddressableEntity = 'addressable-entity-',
-  Hash = 'hash-',
-  ContractPackageWasm = 'contract-package-wasm',
-  ContractPackage = 'contract-package-',
-  ContractWasm = 'contract-wasm-',
-  Contract = 'contract-',
-  URef = 'uref-',
-  Transfer = 'transfer-',
-  DeployInfo = 'deploy-',
-  EraId = 'era-',
-  Bid = 'bid-',
-  Balance = 'balance-',
-  Withdraw = 'withdraw-',
-  Dictionary = 'dictionary-',
-  SystemContractRegistry = 'system-contract-registry-',
-  EraSummary = 'era-summary-',
-  Unbond = 'unbond-',
-  ChainspecRegistry = 'chainspec-registry-',
-  EntityContract = 'entity-contract-',
-  ChecksumRegistry = 'checksum-registry-',
-  BidAddr = 'bid-addr-',
-  Package = 'package-',
-  Entity = 'entity-',
-  ByteCode = 'byte-code-',
-  Message = 'message-',
-  NamedKey = 'named-key-',
-  BlockGlobal = 'block-',
-  BalanceHold = 'balance-hold-',
-  EntryPoint = 'entry-point-'
-}
+// Re-exported so `PrefixName` keeps its published import path.
+export { PrefixName };
 
 /**
  * Enum representing different types of blockchain key types used in the system.
@@ -537,9 +505,8 @@ export class Key {
         result.eraSummary = eraSummary?.result;
         return { result, bytes: eraSummary?.bytes };
       case KeyTypeID.Unbond:
-        const { result: unbondHash, bytes: unbondBytes } = Hash.fromBytes(
-          contentBytes
-        );
+        const { result: unbondHash, bytes: unbondBytes } =
+          Hash.fromBytes(contentBytes);
         result.unbond = new AccountHash(unbondHash);
         return { result, bytes: unbondBytes };
       case KeyTypeID.ChainspecRegistry:
@@ -554,9 +521,8 @@ export class Key {
         result.checksumRegistry = checksumRegistry?.result;
         return { result, bytes: checksumRegistry?.bytes };
       case KeyTypeID.BidAddr:
-        const { result: bidAddr, bytes: bidAddrBytes } = BidAddr.fromBytes(
-          contentBytes
-        );
+        const { result: bidAddr, bytes: bidAddrBytes } =
+          BidAddr.fromBytes(contentBytes);
         result.bidAddr = bidAddr;
 
         return { result, bytes: bidAddrBytes };
@@ -565,52 +531,39 @@ export class Key {
         result.package = packageHash?.result;
         return { result, bytes: packageHash?.bytes };
       case KeyTypeID.AddressableEntity:
-        const {
-          result: entityAddr,
-          bytes: entityAddrBytes
-        } = EntityAddr.fromBytes(contentBytes);
+        const { result: entityAddr, bytes: entityAddrBytes } =
+          EntityAddr.fromBytes(contentBytes);
         result.addressableEntity = entityAddr;
         return { result, bytes: entityAddrBytes };
       case KeyTypeID.ByteCode:
-        const { result: byteCode, bytes: byteCodeBytes } = ByteCode.fromBytes(
-          contentBytes
-        );
+        const { result: byteCode, bytes: byteCodeBytes } =
+          ByteCode.fromBytes(contentBytes);
         result.byteCode = byteCode;
 
         return { result, bytes: byteCodeBytes };
       case KeyTypeID.Message:
-        const {
-          result: messageAddr,
-          bytes: messageAddrBytes
-        } = MessageAddr.fromBytes(contentBytes);
+        const { result: messageAddr, bytes: messageAddrBytes } =
+          MessageAddr.fromBytes(contentBytes);
         result.message = messageAddr;
         return { result, bytes: messageAddrBytes };
       case KeyTypeID.NamedKey:
-        const {
-          result: namedKey,
-          bytes: namedKeyBytes
-        } = NamedKeyAddr.fromBytes(contentBytes);
+        const { result: namedKey, bytes: namedKeyBytes } =
+          NamedKeyAddr.fromBytes(contentBytes);
         result.namedKey = namedKey;
         return { result, bytes: namedKeyBytes };
       case KeyTypeID.BlockGlobal:
-        const {
-          result: blockGlobal,
-          bytes: blockGlobalBytes
-        } = BlockGlobalAddr.fromBytes(contentBytes);
+        const { result: blockGlobal, bytes: blockGlobalBytes } =
+          BlockGlobalAddr.fromBytes(contentBytes);
         result.blockGlobal = blockGlobal;
         return { result, bytes: blockGlobalBytes };
       case KeyTypeID.BalanceHold:
-        const {
-          result: balanceHold,
-          bytes: balanceHoldBytes
-        } = BalanceHoldAddr.fromBytes(contentBytes);
+        const { result: balanceHold, bytes: balanceHoldBytes } =
+          BalanceHoldAddr.fromBytes(contentBytes);
         result.balanceHold = balanceHold;
         return { result, bytes: balanceHoldBytes };
       case KeyTypeID.EntryPoint:
-        const {
-          result: entryPoint,
-          bytes: entryPointBytes
-        } = EntryPointAddr.fromBytes(contentBytes);
+        const { result: entryPoint, bytes: entryPointBytes } =
+          EntryPointAddr.fromBytes(contentBytes);
         result.entryPoint = entryPoint;
         return { result, bytes: entryPointBytes };
       default:
@@ -835,10 +788,13 @@ export class Key {
  * Splits the array at a given index.
  * @param i - The index to split the array.
  * @param arr - The Uint8Array to split.
- * @returns A new Uint8Array from the start to index i.
+ * @returns The bytes before index i, and the bytes from index i onwards.
  * @throws Error if the index is out of bounds.
  */
-export const splitAt = (i: number, arr: Uint8Array) => {
+export const splitAt = (
+  i: number,
+  arr: Uint8Array
+): [Uint8Array, Uint8Array] => {
   if (i > arr.length - 1) {
     throw new Error('Early end of stream when deserializing data.');
   }

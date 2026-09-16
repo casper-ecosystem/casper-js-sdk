@@ -1,5 +1,16 @@
 {
   "compilerOptions": {
+    // TS 6 defaults this to true, and `strictPropertyInitialization` would
+    // reject the ~58 typedjson `@jsonObject` classes: none initialize their
+    // fields, because typedjson populates them after construction.
+    "strict": false,
+    // TS 6 defaults `types` to [], dropping the ambient Node globals that the
+    // build needs for `Buffer`. This fixes the internal build only —
+    // `@types/node` must stay out of `dependencies`.
+    "types": ["node"],
+    // `target: es5` and `moduleResolution: node10` are deprecated in 6.0 but
+    // stay for the whole 5.x line.
+    "ignoreDeprecations": "6.0",
     "outDir": "./dist/",
     "alwaysStrict": true,
     "declaration": true,

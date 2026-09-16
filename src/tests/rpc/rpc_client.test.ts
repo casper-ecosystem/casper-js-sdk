@@ -1,5 +1,5 @@
 import { TypedJSON } from 'typedjson';
-import { expect } from 'chai';
+import { expect } from 'vitest';
 
 import {
   ChainGetBlockResult,
