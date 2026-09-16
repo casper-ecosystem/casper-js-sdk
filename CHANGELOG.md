@@ -15,30 +15,53 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### [5.2.0] - 2026-08-10
 
-Mostly an internal toolchain and dependency update, and `engines.node` stays `">=18"`. Three things do reach consumers and are worth reading before upgrading: the SSE client no longer throws from its default error path, `SseError` is new, and several published type signatures widened so the emitted `.d.ts` no longer requires `@types/node`. Nothing was removed or renamed.
+`engines.node` stays `">=18"`, and nothing was removed or renamed. Four behaviours change how existing code runs — the SSE error path, the SSE event parsers, `waitForTransaction()` and the spelling of the system registry key — and are marked in **Changed**. The rest are serialization fixes; several corrected values the SDK previously got wrong on the wire, so recorded output may differ.
+
+### Added
+
+- `Key` reads and writes the two variants a 2.x node emits that the SDK did not know: `Key::State` (`state-…`, `KeyTypeID.State = 24`) and `Key::RewardsHandling` (`rewards-handling-…`, `KeyTypeID.RewardsHandling = 25`, introduced by node 2.2.0). `Key.newKey()` throws on a prefix it does not recognise, so one such key anywhere in a response took the whole payload down with it. `PrefixName` gains `State`, `RewardsHandling` and `SystemEntityRegistry`, and `Key` gains a `state` member
+- `Key.newKey()` accepts the `system-entity-registry-…` spelling a 2.x node emits for the system registry key, alongside the 1.x `system-contract-registry-…` form
 
 ### Changed
 
-- `eventsource` 2 → 3. Errors reported by the event stream now arrive as an exported `SseError` carrying the HTTP status code (`401`, `403`, …) instead of a raw event object with no message or stack, and `SseClient.start()` accepts an optional error callback
-- **`SseClient.start()` no longer throws when no error callback is supplied.** It logs through `console.error` and lets the stream reconnect. The previous `throw` ran inside `eventsource`'s own fetch promise chain, where an HTTP failure was swallowed whole — the stream died silently — and a transport failure escaped as an unhandled rejection that terminated the host process, cancelling the reconnect it was about to schedule. If you relied on the throw, pass the callback
-- `PublicKey.fromBuffer()` accepts a `Uint8Array` in addition to an `ArrayBuffer`, which is what every call site inside the SDK already passed
-- `Hash.fromBuffer()` and the secp256k1 `encodePrivate()` / `encodePublic()` helpers now declare `Uint8Array` where they declared `Buffer`. A `Buffer` is a `Uint8Array`, so every existing call still type-checks; the point is that the published `.d.ts` no longer requires `@types/node`
-- `encodePrivate()` declares its return as `string` rather than `any`. It always returned a string; the `any` came from the untyped `asn1.js`. Only deep importers of `casper-js-sdk/dist/types/keypair/secp256k1/encoders` see this, and only if they assigned the result to a non-`string`
-- secp256k1 key import now rejects keys that are structurally valid but not secp256k1. Previously a P-256 or P-384 PEM, a private key of the wrong length, or an unexpected `ECPrivateKey` version was accepted silently and then used as a secp256k1 key. Such files now throw instead of being imported
+- **`Key.toPrefixedString()` writes the system registry key as `system-entity-registry-…`**, the only spelling a 2.x node accepts back; it wrote the 1.x `system-contract-registry-…` form, which a node rejects. Both still parse, so keys recorded by earlier versions keep loading — but code comparing key strings against a recorded value will see the new one
+- `eventsource` 2 → 3. Stream errors arrive as an exported `SseError` carrying the HTTP status code (`401`, `403`, …) instead of a raw event object with no message or stack, and `SseClient.start()` accepts an optional error callback
+- **`SseClient.start()` no longer throws when no error callback is supplied** — it logs and lets the stream reconnect. The old `throw` either died silently or terminated the host process, cancelling the reconnect it was about to schedule. Pass the callback if you relied on it
+- **`TransactionAcceptedEvent`, `TransactionExpiredEvent`, `TransactionProcessedEvent` and `FinalitySignatureEvent` throw from `fromJSON()` instead of returning an `Error`**, narrowing the return type from `X | Error` to `X`. The old branch was never usable: `parseAs*Event()` handed the returned `Error` back as the parsed event. Replace `instanceof Error` checks with `try`/`catch`; the thrown error carries the original as `cause`
+- **`RpcClient.waitForTransaction()` rejects with a `Timeout` error once its deadline passes.** The timeout previously threw from a `setTimeout` callback, where it could not reject the promise: it escaped as an uncaught exception while the promise stayed pending and polling continued indefinitely. A timeout during a retry carries the retried error as `cause`
+- `CLValueMap.fromBytes()` throws on an entry it cannot parse instead of skipping it. It previously returned a map silently missing entries, and a read offset that misaligned everything decoded after it. Malformed input only
+- `CasperNetwork.putTransaction()` rejects with an `Error` rather than a bare string for a non-legacy transaction on a 1.5 network. Same text, now reachable as `err.message`
+- Rethrown errors carry the original as `cause`, so a network or parse failure is no longer reduced to its wrapper message
+- secp256k1 key import rejects keys that are structurally valid but not secp256k1 — a P-256 or P-384 PEM, a private key of the wrong length, an unexpected `ECPrivateKey` version. These were previously imported silently and used as secp256k1 keys
+- `PublicKey.fromBuffer()` accepts a `Uint8Array` as well as an `ArrayBuffer`
+- `Hash.fromBuffer()` and the secp256k1 `encodePrivate()` / `encodePublic()` helpers declare `Uint8Array` where they declared `Buffer`, so the published `.d.ts` no longer requires `@types/node`. Every existing call still type-checks
+- `encodePrivate()` returns `string` rather than `any`. Visible only to deep importers of `casper-js-sdk/dist/types/keypair/secp256k1/encoders`
 
 ### Fixed
 
-- `TransferHash` and `TransactionHash` called their base constructor conditionally, leaving the object half-built on some paths. Harmless while the bundles target ES5, but a hard failure for anyone consuming the sources directly or bundling them to modern output
-- Two import cycles (`Key` ↔ `Account`, `Transform` ↔ `TransformRaw`) that threw at import time under native ES modules. `PrefixName` and `NamedKeyKind` now live in their own modules and are re-exported from their previous homes, so every import path still resolves
-- `Hash.equals()` compared against the other object's raw field, bypassing subclass overrides, so `deployHash.equals(transaction.hash)` returned `false` while `transaction.hash.equals(deployHash)` returned `true` for the same pair. Both directions now agree
-- `SseError` lost its prototype chain in the ES5 bundle, making `error instanceof SseError` false for a genuine `SseError`. The chain is restored, and a `SseError.isSseError()` guard is available for code that may see instances from a second copy of the SDK
-- The PEM writer emitted a blank line before the footer when the base64 body length was an exact multiple of 64, producing a file OpenSSL and Node's `crypto.createPrivateKey` both reject
-- Three exported members had no declared return type, so TypeScript 6 printed its own inference into the emitted declarations — `StoredTarget.toBytes()`, `splitAt()` and `parseKey()` gained the generic `Uint8Array<ArrayBufferLike>` form, which does not compile on TypeScript below 5.7 with `skipLibCheck: false`. All three are annotated, and `splitAt()` now declares the two-element tuple it always returned
+- **`queryGlobalStateByBlockHash()`, `queryGlobalStateByBlockHeight()` and `queryGlobalStateByStateHash()` sent no `state_identifier`**, so all three queried the node's latest state and silently ignored the block or state root passed in
+- `PublicKey.accountHash().toJSON()` emitted `account-hash<hex>` without the separator, so an `EntityIdentifier` or `AccountIdentifier` built from it sent a malformed account hash to the node. `toPrefixedString()` was always correct
+- `StateGetEntityResult` ignored the `Account` key a 2.x node uses for an account entity, yielding an entity with nothing set and no error. Both `Account` and the 1.x `LegacyAccount` now resolve to `entity.legacyAccount`; the node's own payload stays on `rawJSON`
+- `SeigniorageAllocation.fromJSON()` read 2.x era data with the 1.x reader and dropped the delegator key — both shapes nest under `Delegator`, but 2.x carries a `delegator_kind` object where 1.x carries a flat public key. Both now parse
+- `DelegationKind` serialized a delegator's `PublicKey` as `{"cryptoAlg":1}` and a `Purse` as `{"data":[…],"access":4}` instead of their string forms, so any `EraInfo`, `EraEnd` or `AuctionState` document the SDK wrote identified no delegator
+- `EntryPointAccess.toJSON()` emitted a lowercase `groups` key where the node writes `Groups`
+- `parseAsStepEvent().step` was always `undefined` — the payload member was declared `step` where the node writes `Step`
+- `InfoGetStatusResult` emitted no `available_block_range`. Parsing it was never affected
+- `BalanceHoldAddr.fromJSON()` and `BlockGlobalAddr.fromString()` threw on the prefixed form their own `toJSON()` / `toPrefixedString()` emits, decoding `balance-hold-` and `block-global-` as part of the address
+- Five byte decoders returned wrong values, and a wrong remainder to whatever decoded next: `BalanceHoldAddr` read its `blockTime` from unrelated bytes when reached through `Key.fromBytes()`, `EntryPointAddr` read its name one byte early, `MessageAddr` and `NamedKeyAddr` re-read the entity address in place of their topic hash and name, and `Key.fromBytes()` dropped the `transfer-` prefix from a `TransferHash`
+- `toBytesU512()` threw `value out-of-bounds` for every value above `2^256 - 1` — the entire upper half of the legal U512 range. `2^512` and above still throws
+- `parseU32()` returned a negative number for any value with the high bit set: `0xFFFFFFFF` parsed as `-1`
+- `Hash.equals()` bypassed subclass overrides, so `deployHash.equals(transaction.hash)` and the reverse disagreed for the same pair
+- `error instanceof SseError` was false for a genuine `SseError` in the ES5 bundle. A `SseError.isSseError()` guard is also available, for instances originating in a second copy of the SDK
+- The PEM writer emitted a blank line before the footer when the base64 body was an exact multiple of 64 characters, producing a file OpenSSL and Node's `crypto.createPrivateKey` both reject
+- `TransferHash` and `TransactionHash` left the object half-built on some construction paths — harmless in the ES5 bundle, a hard failure when consuming the sources directly or bundling to modern output
+- Two import cycles (`Key` ↔ `Account`, `Transform` ↔ `TransformRaw`) that threw at import time under native ES modules. Every existing import path still resolves
+- `StoredTarget.toBytes()`, `splitAt()` and `parseKey()` had no declared return type, so TypeScript 6 inferred `Uint8Array<ArrayBufferLike>` into the emitted declarations, which does not compile on TypeScript below 5.7 with `skipLibCheck: false`
 
 ### Removed
 
-- `asn1.js` and `bn.js`, replaced by `@peculiar/asn1-ecc`. The emitted DER and PEM are byte-identical, so existing key files keep parsing unchanged. `asn1.js` had been unmaintained since 2020 and only worked here because the package forced `bn.js@5` on it through an override
-- The `/// <reference types="node" />` directives that used to head three of the emitted `.d.ts` files. TypeScript 6 no longer emits them, so the declarations no longer name `Buffer` at all — see the signature widenings above. The published types now compile with `compilerOptions.types` set to `[]` and `skipLibCheck: false`, which they did not in `5.1.0`
+- `asn1.js` and `bn.js`, replaced by `@peculiar/asn1-ecc`. The emitted DER and PEM are byte-identical, so existing key files keep parsing unchanged
+- The `/// <reference types="node" />` directives from the emitted `.d.ts` files. The published types now compile with `compilerOptions.types` set to `[]` and `skipLibCheck: false`, which they did not in `5.1.0`
 
 ### [5.1.1] - 2026-09-02
 

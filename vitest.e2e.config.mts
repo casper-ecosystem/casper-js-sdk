@@ -1,12 +1,13 @@
 import { defineConfig } from 'vitest/config';
 
 // The e2e suite talks to a live Casper node and is NOT part of the dev loop —
-// see `run_e2e_locally.sh` and `e2e/config.ts` for the env it needs.
+// see `e2e/run.sh` and `e2e/config.ts` for the env it needs.
 //
-// `e2e/` holds only `config.ts` and the wasm fixtures today, so
-// `passWithNoTests` is deliberate — here and here only. The unit config must
-// keep failing on an empty run; skipping that is how the dead karma suite
-// stayed invisible for ~18 months.
+// Do NOT add `passWithNoTests`: an empty run has to fail here exactly as it
+// does in the unit config.
+//
+// `fileParallelism: false`: every suite shares one faucet account, so files
+// must not race its nonce.
 export default defineConfig({
   test: {
     globals: true,
@@ -14,6 +15,11 @@ export default defineConfig({
     environment: 'node',
     testTimeout: 5_000_000,
     hookTimeout: 5_000_000,
-    passWithNoTests: true
+    fileParallelism: false
+  },
+  // Same TDZ trap `vitest.config.mts` works around — see CLAUDE.md's
+  // `emitDecoratorMetadata` note.
+  oxc: {
+    decorator: { legacy: true, emitDecoratorMetadata: false }
   }
 });

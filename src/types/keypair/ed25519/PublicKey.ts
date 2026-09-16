@@ -36,18 +36,7 @@ export class PublicKey {
    */
   public toPem(): string {
     const derPrefix = Buffer.from([
-      48,
-      42,
-      48,
-      5,
-      6,
-      3,
-      43,
-      101,
-      112,
-      3,
-      33,
-      0
+      48, 42, 48, 5, 6, 3, 43, 101, 112, 3, 33, 0
     ]);
     const encoded = Conversions.encodeBase64(
       Buffer.concat([derPrefix, Buffer.from(this.key)])
@@ -80,7 +69,7 @@ export class PublicKey {
    * for the given message and public key.
    * @param message - The original message that was signed.
    * @param signature - The signature to verify.
-   * @returns A promise that resolves to `true` if the signature is valid, or `false` otherwise.
+   * @returns `true` if the signature is valid, or `false` otherwise.
    */
   verifySignature(message: Uint8Array, signature: Uint8Array): boolean {
     return ed25519.sync.verify(signature, message, this.key);

@@ -17,6 +17,20 @@ export default defineConfig({
       headless: true,
       screenshotFailures: false,
       instances: [{ browser: 'chromium' }]
+    },
+    // Thresholds are the measured baseline rounded down: they exist to fail the
+    // build when a change removes coverage, never to be lowered to make it green.
+    coverage: {
+      provider: 'v8',
+      include: ['src/**'],
+      exclude: ['src/tests/**', 'src/@types/**'],
+      reporter: ['text', 'lcov'],
+      thresholds: {
+        statements: 78,
+        branches: 59,
+        functions: 75,
+        lines: 80
+      }
     }
   },
   // Browser-mode tests run under Vite, which has no equivalent of webpack's

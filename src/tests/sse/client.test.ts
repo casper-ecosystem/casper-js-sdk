@@ -124,4 +124,99 @@ describe('SseClient', () => {
 
     expect((await lastStream()).closed).to.be.true;
   });
+
+  it('routes an incoming message only to the subscriber for its event type', async () => {
+    const client = new SseClient('http://localhost:9999/events');
+    const blockAdded: string[] = [];
+    const apiVersion: string[] = [];
+
+    client.subscribe(EventName.BlockAddedEventType, e =>
+      blockAdded.push(e.data)
+    );
+    client.subscribe(EventName.APIVersionEventType, e =>
+      apiVersion.push(e.data)
+    );
+    client.start();
+
+    const payload = JSON.stringify({ BlockAdded: { block_hash: 'x' } });
+    (await lastStream()).onmessage?.({
+      data: payload,
+      lastEventId: '5',
+      type: 'message'
+    } as MessageEvent<string>);
+
+    expect(blockAdded).to.deep.equal([payload]);
+    expect(apiVersion).to.have.lengthOf(0);
+  });
+
+  it('hands the subscriber a RawEvent carrying the message data and last-event-id', async () => {
+    const client = new SseClient('http://localhost:9999/events');
+    const received: { data: string; lastEventId: string }[] = [];
+
+    client.subscribe(EventName.FaultEventType, e =>
+      received.push({ data: e.data, lastEventId: e.lastEventId })
+    );
+    client.start();
+
+    const payload = JSON.stringify({ Fault: {} });
+    (await lastStream()).onmessage?.({
+      data: payload,
+      lastEventId: '99',
+      type: 'message'
+    } as MessageEvent<string>);
+
+    expect(received).to.deep.equal([{ data: payload, lastEventId: '99' }]);
+  });
+
+  it('stops delivering to a handler once unsubscribed', async () => {
+    const client = new SseClient('http://localhost:9999/events');
+    const received: string[] = [];
+
+    client.subscribe(EventName.FaultEventType, e => received.push(e.data));
+    client.start();
+    const stream = await lastStream();
+
+    const message = {
+      data: JSON.stringify({ Fault: {} }),
+      lastEventId: '1',
+      type: 'message'
+    } as MessageEvent<string>;
+
+    stream.onmessage?.(message);
+    expect(received).to.have.lengthOf(1);
+
+    client.unsubscribe(EventName.FaultEventType);
+    stream.onmessage?.(message);
+    expect(received).to.have.lengthOf(1);
+  });
+
+  it('keeps subscriptions across a manual reconnect, since they live on the client rather than the stream', async () => {
+    // SseClient does not retry the connection itself (see `start`'s onerror
+    // doc); a caller reconnects by calling `start()` again.
+    const client = new SseClient('http://localhost:9999/events');
+    const received: string[] = [];
+
+    client.subscribe(EventName.StepEventType, e =>
+      received.push(e.lastEventId)
+    );
+    client.start();
+    const firstStream = await lastStream();
+
+    const message = (id: string) =>
+      ({
+        data: JSON.stringify({ Step: {} }),
+        lastEventId: id,
+        type: 'message'
+      }) as MessageEvent<string>;
+
+    firstStream.onmessage?.(message('1'));
+    expect(received).to.deep.equal(['1']);
+
+    client.start();
+    const secondStream = await lastStream();
+    expect(secondStream).to.not.equal(firstStream);
+
+    secondStream.onmessage?.(message('2'));
+    expect(received).to.deep.equal(['1', '2']);
+  });
 });

@@ -3,7 +3,7 @@ import { concat } from '@ethersproject/bytes';
 
 import { PublicKey as Ed25519PublicKey } from './ed25519/PublicKey';
 import { PublicKey as Secp256k1PublicKey } from './secp256k1/PublicKey';
-import { Hash, AccountHash } from '../key';
+import { Hash, AccountHash, PrefixName } from '../key';
 import { Conversions } from '../Conversions';
 import { IResultWithBytes } from '../clvalue';
 import { byteHash } from '../ByteConverters';
@@ -59,7 +59,7 @@ interface PublicKeyInternal {
    * Verifies a signature for a given message.
    * @param message - The message to verify.
    * @param sig - The signature to verify.
-   * @returns A promise that resolves to a boolean indicating the validity of the signature.
+   * @returns `true` if the signature is valid for the message, otherwise `false`.
    */
   verifySignature(message: Uint8Array, sig: Uint8Array): boolean;
 
@@ -203,9 +203,6 @@ export class PublicKey {
    * @returns A new PublicKey instance.
    * @throws Error if the public key algorithm is invalid.
    */
-  // Callers pass `Uint8Array` (`Conversions.decodeBase16`, `concat` from
-  // `@ethersproject/bytes`), and TypeScript 6 typed arrays are generic over
-  // their buffer, so they are no longer assignable to `ArrayBuffer`.
   public static fromBuffer(buffer: ArrayBuffer | Uint8Array): PublicKey {
     const byteArray = new Uint8Array(buffer);
     const alg = byteArray[0] as KeyAlgorithm;
@@ -244,14 +241,14 @@ export class PublicKey {
 
     const blakeHash = byteHash(bytesToHash);
     const hash = Hash.fromBuffer(Buffer.from(blakeHash));
-    return new AccountHash(hash, 'account-hash');
+    return new AccountHash(hash, PrefixName.Account);
   }
 
   /**
    * Verifies a signature for a given message.
    * @param message - The message to verify.
    * @param sig - The signature to verify.
-   * @returns A promise that resolves to a boolean indicating the validity of the signature.
+   * @returns `true` if the signature is valid for the message, otherwise `false`.
    * @throws Error if the signature or public key is empty, or if the signature is invalid.
    */
   verifySignature(message: Uint8Array, sig: Uint8Array): boolean {

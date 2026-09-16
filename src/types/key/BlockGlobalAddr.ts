@@ -70,9 +70,13 @@ export class BlockGlobalAddr {
    * @throws Error if the format does not match known block global address types.
    */
   static fromString(source: string): BlockGlobalAddr {
-    if (source.startsWith(BlockTimePrefix)) {
+    const body = source.startsWith(PrefixNameBlockGlobal)
+      ? source.substring(PrefixNameBlockGlobal.length)
+      : source;
+
+    if (body.startsWith(BlockTimePrefix)) {
       return new BlockGlobalAddr({}, undefined);
-    } else if (source.startsWith(MessageCountPrefix)) {
+    } else if (body.startsWith(MessageCountPrefix)) {
       return new BlockGlobalAddr(undefined, {});
     }
     throw new Error('Invalid BlockGlobalAddr format');

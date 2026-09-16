@@ -158,16 +158,18 @@ export class BalanceHoldAddr {
     const purseAddr = bytes.slice(1, ByteHashLen + 1);
     const blockTimeMillis = new DataView(
       bytes.buffer,
-      ByteHashLen + 1
+      bytes.byteOffset + ByteHashLen + 1,
+      BlockTypeBytesLen
     ).getBigUint64(0, true);
     const blockTime = new Date(Number(blockTimeMillis));
 
     const hold = new Hold(purseAddr, blockTime);
+    const remainder = bytes.subarray(ByteHashLen + BlockTypeBytesLen + 1);
 
     if (balanceHoldAddrTag === BalanceHoldAddrTag.Gas) {
-      return { result: new BalanceHoldAddr(hold, undefined), bytes: purseAddr };
+      return { result: new BalanceHoldAddr(hold, undefined), bytes: remainder };
     } else if (balanceHoldAddrTag === BalanceHoldAddrTag.Processing) {
-      return { result: new BalanceHoldAddr(undefined, hold), bytes: purseAddr };
+      return { result: new BalanceHoldAddr(undefined, hold), bytes: remainder };
     }
 
     throw new BalanceHoldAddrTagError('Unexpected BalanceHoldAddr type');
@@ -179,7 +181,11 @@ export class BalanceHoldAddr {
    * @returns A new BalanceHoldAddr instance.
    */
   public static fromJSON(json: string): BalanceHoldAddr {
-    return this.fromString(json);
+    return this.fromString(
+      json.startsWith(PrefixName.BalanceHold)
+        ? json.substring(PrefixName.BalanceHold.length)
+        : json
+    );
   }
 
   /**

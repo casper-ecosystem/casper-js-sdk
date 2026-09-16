@@ -112,7 +112,7 @@ export class EntryPointAccess {
     }
 
     if (this.groups !== null) {
-      return { groups: this.groups };
+      return { Groups: this.groups };
     }
 
     return 'Public'; // Default to Public if nothing is set
