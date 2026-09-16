@@ -214,7 +214,12 @@ export class CLValueMap {
         remainder = valVal?.bytes ?? [];
 
         mapResult.append(keyVal?.result, valVal?.result);
-      } catch {}
+      } catch (e) {
+        // Continuing would leave `remainder` advanced past a key whose value
+        // failed to parse: the caller gets a map missing entries and a byte
+        // offset mid-entry, misaligning everything decoded after it.
+        throw new Error(`Failed to parse map entry ${i}`, { cause: e });
+      }
     }
 
     return { result: mapResult, bytes: remainder };

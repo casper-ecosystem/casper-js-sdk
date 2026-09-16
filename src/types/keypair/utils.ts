@@ -52,9 +52,9 @@ export const parseKey = (
     len === 32
       ? bytes
       : len === 64
-        ? Buffer.from(bytes).slice(from, to)
+        ? Buffer.from(bytes).subarray(from, to)
         : len > 32 && len < 64
-          ? Buffer.from(bytes).slice(len % 32)
+          ? Buffer.from(bytes).subarray(len % 32)
           : null;
   if (key == null || key.length !== 32) {
     throw Error(`Unexpected key length: ${len}`);

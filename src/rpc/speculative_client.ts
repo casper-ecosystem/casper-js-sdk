@@ -78,8 +78,8 @@ export class SpeculativeClient {
     }
 
     try {
-      const serializer = new TypedJSON(RpcResponse);
-      const data = serializer.parse(resp);
+      const responseSerializer = new TypedJSON(RpcResponse);
+      const data = responseSerializer.parse(resp);
 
       if (!data) {
         throw new Error(`Error parsing JSON`);
@@ -87,7 +87,9 @@ export class SpeculativeClient {
 
       return SpeculativeExecResult.fromJSON(data);
     } catch (error) {
-      throw new Error(`Error parsing JSON, details: ${error}`);
+      throw new Error(`Error parsing JSON, details: ${error}`, {
+        cause: error
+      });
     }
   }
 }

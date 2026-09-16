@@ -1,6 +1,7 @@
 import { jsonObject, jsonMember, jsonArrayMember, TypedJSON } from 'typedjson';
 import { concat } from '@ethersproject/bytes';
 
+import { toError } from '../utils/errors';
 import { Hash } from './key';
 import { Deploy } from './Deploy';
 import { Duration, Timestamp } from './Time';
@@ -425,7 +426,9 @@ export class TransactionV1 {
         throw ErrTransactionV1FromJson;
       }
     } catch (e) {
-      throw new Error(`Serialization error: ${e.message}`);
+      throw new Error(`Serialization error: ${toError(e).message}`, {
+        cause: e
+      });
     }
 
     tx.validate();
@@ -723,13 +726,17 @@ export class Transaction {
       const txV1 = TransactionV1.fromJSON(json);
 
       return Transaction.fromTransactionV1(txV1);
-    } catch (e) {}
+    } catch {
+      // Not a TransactionV1 — fall through and try the legacy Deploy format.
+    }
 
     try {
       const deploy = Deploy.fromJSON(json);
 
       return Transaction.fromDeploy(deploy);
-    } catch (e) {}
+    } catch {
+      // Not a Deploy either — the throw below reports the overall failure.
+    }
 
     throw new Error("The JSON can't be parsed as a Transaction.");
   }

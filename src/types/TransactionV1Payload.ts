@@ -308,7 +308,6 @@ export class TransactionV1Payload {
           runtimeArgsBuffer,
           offset + argBytes.length
         );
-        runtimeArgsView = new DataView(runtimeArgsBuffer);
       }
       new Uint8Array(runtimeArgsBuffer, offset).set(argBytes);
       offset += argBytes.length;

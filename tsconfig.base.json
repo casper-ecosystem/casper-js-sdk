@@ -1,26 +1,26 @@
 {
   "compilerOptions": {
-    // TS 6 defaults this to true, and `strictPropertyInitialization` would
-    // reject the ~58 typedjson `@jsonObject` classes: none initialize their
-    // fields, because typedjson populates them after construction.
-    "strict": false,
-    // TS 6 defaults `types` to [], dropping the ambient Node globals that the
-    // build needs for `Buffer`. This fixes the internal build only —
-    // `@types/node` must stay out of `dependencies`.
+    // TS 6 flipped three defaults. `types` and the `target`/`moduleResolution`
+    // deprecations below are pinned back to what 4.9 did; `strict` itself is
+    // deliberately on, with one flag of the family pinned off next.
+    "strict": true,
+    // typedjson populates `@jsonObject` fields after construction, so none of
+    // those classes initialize them: 389 TS2564 errors. Everything else in the
+    // strict family stays on.
+    "strictPropertyInitialization": false,
+    // `types` now defaults to [], dropping the ambient Node globals the build
+    // needs for `Buffer`. This fixes the internal build only — the shipped
+    // .d.ts still requires @types/node, which must stay out of `dependencies`.
     "types": ["node"],
     // `target: es5` and `moduleResolution: node10` are deprecated in 6.0 but
     // stay for the whole 5.x line.
     "ignoreDeprecations": "6.0",
     "outDir": "./dist/",
-    "alwaysStrict": true,
     "declaration": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "sourceMap": true,
-    "noImplicitAny": true,
-    "strictNullChecks": true,
     "noImplicitReturns": true,
-    "noImplicitThis": true,
     "noUnusedParameters": true,
     "noUnusedLocals": true,
     "noFallthroughCasesInSwitch": true,
@@ -28,7 +28,10 @@
     "resolveJsonModule": true,
     "module": "commonjs",
     "target": "es5",
-    "lib": ["es2015", "dom"],
+    // es2022 for `Error.cause` (used by preserve-caught-error). Type-checking
+    // only — `target` stays es5, so emit is unaffected. On a pre-ES2022 runtime
+    // the options argument is ignored and `cause` is simply absent, which is additive.
+    "lib": ["es2022", "dom"],
     "skipLibCheck": true,
     "typeRoots": ["./src/@types", "./node_modules/@types"]
   }

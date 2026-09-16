@@ -28,6 +28,17 @@ enum KeyAlgorithm {
   SECP256K1 = 2
 }
 
+/**
+ * Narrows a raw algorithm byte to the enum, undefined when it is not a known
+ * variant. One chokepoint for that check is what stops a renumbered enum from
+ * silently re-routing which key implementation decodes the following bytes.
+ */
+function toKeyAlgorithm(tag: number): KeyAlgorithm | undefined {
+  return (Object.values(KeyAlgorithm) as unknown[]).includes(tag)
+    ? (tag as KeyAlgorithm)
+    : undefined;
+}
+
 const SMALL_BYTES_COUNT = 75;
 // prettier-ignore
 const HEX_CHARS = [
@@ -267,7 +278,7 @@ export class PublicKey {
    * @throws Error if the content cannot be properly parsed.
    */
   public static fromPem(content: string, algorithm: KeyAlgorithm) {
-    let key: PublicKeyInternal | null = null;
+    let key: PublicKeyInternal;
 
     switch (algorithm) {
       case KeyAlgorithm.ED25519:
@@ -309,7 +320,10 @@ export class PublicKey {
    * @throws Error if the public key algorithm is invalid.
    */
   static fromBytes(source: Uint8Array): IResultWithBytes<PublicKey> {
-    const alg = source[0];
+    const alg = toKeyAlgorithm(source[0]);
+    if (alg === undefined) {
+      throw ErrInvalidPublicKeyAlgo;
+    }
     let key: PublicKeyInternal | null = null;
     let expectedPublicKeySize;
 
@@ -326,8 +340,6 @@ export class PublicKey {
           source.subarray(1, expectedPublicKeySize + 1)
         );
         break;
-      default:
-        throw ErrInvalidPublicKeyAlgo;
     }
 
     return {
@@ -424,7 +436,7 @@ export function isValidPublicKey(key: string) {
 }
 
 function bytesToNibbles(bytes: Uint8Array): Uint8Array {
-  const outputNibbles = bytes.reduce((accum, byte) => {
+  const outputNibbles = bytes.reduce<Uint8Array>((accum, byte) => {
     return concat([accum, Uint8Array.of(byte >>> 4, byte & 0x0f)]);
   }, new Uint8Array());
 

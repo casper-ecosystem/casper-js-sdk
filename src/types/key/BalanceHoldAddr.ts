@@ -28,8 +28,8 @@ export class BalanceHoldAddrTagError extends Error {
  * @throws BalanceHoldAddrTagError if the tag is invalid.
  */
 export function getBalanceHoldAddrTag(tag: number): BalanceHoldAddrTag {
-  if (tag === BalanceHoldAddrTag.Gas || tag === BalanceHoldAddrTag.Processing) {
-    return tag;
+  if ((Object.values(BalanceHoldAddrTag) as unknown[]).includes(tag)) {
+    return tag as BalanceHoldAddrTag;
   }
   throw new BalanceHoldAddrTagError('Invalid BalanceHoldAddrTag');
 }

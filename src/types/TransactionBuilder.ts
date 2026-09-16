@@ -33,6 +33,7 @@ import {
 } from './ExecutableDeployItem';
 import { Deploy, DeployHeader } from './Deploy';
 import { AuctionManagerContractHashMap } from '../utils';
+import { toError } from '../utils/errors';
 import { AuctionManagerEntryPoint, CasperNetworkName } from '../@types';
 
 /**
@@ -319,7 +320,7 @@ export class NativeTransferBuilder extends TransactionBuilder<
     try {
       payment = this._getStandardPayment();
     } catch (error) {
-      if (error.message === 'PaymentAmount is not specified') {
+      if (toError(error).message === 'PaymentAmount is not specified') {
         payment = ExecutableDeployItem.standardPayment('100000000'); // Assign default payment value
       } else {
         throw error;

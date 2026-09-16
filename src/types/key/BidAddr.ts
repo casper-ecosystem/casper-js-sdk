@@ -118,9 +118,9 @@ export class BidAddr {
           );
         }
         if (bidAddrTag === BidAddrTag.UnifiedTag) {
-          bidAddr.unified = Hash.fromBytes(hexBytes.slice(1, 33))?.result;
+          bidAddr.unified = Hash.fromBytes(hexBytes.subarray(1, 33))?.result;
         } else {
-          bidAddr.validator = Hash.fromBytes(hexBytes.slice(1, 33))?.result;
+          bidAddr.validator = Hash.fromBytes(hexBytes.subarray(1, 33))?.result;
         }
         break;
 
@@ -132,8 +132,10 @@ export class BidAddr {
             `Wrong key length for ${BidAddrTag[bidAddrTag]} BidAddr. Expected 65 bytes.`
           );
         }
-        bidAddr.validator = Hash.fromBytes(hexBytes.slice(1, 33))?.result;
-        bidAddr.delegatorAccount = Hash.fromBytes(hexBytes.slice(33))?.result;
+        bidAddr.validator = Hash.fromBytes(hexBytes.subarray(1, 33))?.result;
+        bidAddr.delegatorAccount = Hash.fromBytes(
+          hexBytes.subarray(33)
+        )?.result;
         break;
 
       case BidAddrTag.DelegatedPurseTag:
@@ -145,9 +147,9 @@ export class BidAddr {
           );
         }
 
-        bidAddr.validator = Hash.fromBytes(hexBytes.slice(1, 33))?.result;
+        bidAddr.validator = Hash.fromBytes(hexBytes.subarray(1, 33))?.result;
         bidAddr.delegatorPurseAddress = new HexBytes(
-          hexBytes.slice(33)
+          hexBytes.subarray(33)
         ).toHex();
         break;
 
@@ -157,7 +159,7 @@ export class BidAddr {
             'Wrong key length for Credit BidAddr. Expected 41 bytes.'
           );
         }
-        bidAddr.validator = Hash.fromBytes(hexBytes.slice(1, 33))?.result;
+        bidAddr.validator = Hash.fromBytes(hexBytes.subarray(1, 33))?.result;
         bidAddr.eraId = hexBytes.readUInt32LE(33);
         break;
 
@@ -187,8 +189,10 @@ export class BidAddr {
       input: Uint8Array
     ): { validator: Hash; delegator: Hash; bytes: Uint8Array } => {
       const { result: validator, bytes: nextBytes } = Hash.fromBytes(input);
-      const { result: delegator, bytes } = Hash.fromBytes(nextBytes!);
-      return { validator, delegator, bytes };
+      const { result: delegator, bytes: remainderBytes } = Hash.fromBytes(
+        nextBytes!
+      );
+      return { validator, delegator, bytes: remainderBytes };
     };
 
     const parseHexBytesPair = (
@@ -201,20 +205,26 @@ export class BidAddr {
 
     switch (bidAddrTag) {
       case BidAddrTag.UnifiedTag: {
-        const { result: unifiedHash, bytes } = Hash.fromBytes(rem);
+        const { result: unifiedHash, bytes: remainderBytes } =
+          Hash.fromBytes(rem);
         bidAddr.unified = unifiedHash;
-        return { result: bidAddr, bytes };
+        return { result: bidAddr, bytes: remainderBytes };
       }
       case BidAddrTag.ValidatorTag: {
-        const { result: validatorHash, bytes } = Hash.fromBytes(rem);
+        const { result: validatorHash, bytes: remainderBytes } =
+          Hash.fromBytes(rem);
         bidAddr.validator = validatorHash;
-        return { result: bidAddr, bytes };
+        return { result: bidAddr, bytes: remainderBytes };
       }
       case BidAddrTag.DelegatedAccountTag: {
-        const { validator, delegator, bytes } = parseHashPair(rem);
+        const {
+          validator,
+          delegator,
+          bytes: remainderBytes
+        } = parseHashPair(rem);
         bidAddr.delegatorAccount = delegator;
         bidAddr.validator = validator;
-        return { result: bidAddr, bytes };
+        return { result: bidAddr, bytes: remainderBytes };
       }
       case BidAddrTag.CreditTag: {
         const { result: validator, bytes: nextBytes } = Hash.fromBytes(rem);
@@ -224,39 +234,60 @@ export class BidAddr {
         return { result: bidAddr, bytes: nextBytes };
       }
       case BidAddrTag.DelegatedPurseTag: {
-        const { validator, delegator, bytes } = parseHexBytesPair(rem);
+        const {
+          validator,
+          delegator,
+          bytes: remainderBytes
+        } = parseHexBytesPair(rem);
         bidAddr.validator = validator;
         bidAddr.delegatorPurseAddress = delegator;
-        return { result: bidAddr, bytes };
+        return { result: bidAddr, bytes: remainderBytes };
       }
       case BidAddrTag.ReservedDelegationAccountTag: {
-        const { validator, delegator, bytes } = parseHashPair(rem);
+        const {
+          validator,
+          delegator,
+          bytes: remainderBytes
+        } = parseHashPair(rem);
         bidAddr.validator = validator;
         bidAddr.delegatorAccount = delegator;
-        return { result: bidAddr, bytes };
+        return { result: bidAddr, bytes: remainderBytes };
       }
       case BidAddrTag.ReservedDelegationPurseTag: {
-        const { validator, delegator, bytes } = parseHexBytesPair(rem);
+        const {
+          validator,
+          delegator,
+          bytes: remainderBytes
+        } = parseHexBytesPair(rem);
         bidAddr.validator = validator;
         bidAddr.delegatorPurseAddress = delegator;
-        return { result: bidAddr, bytes };
+        return { result: bidAddr, bytes: remainderBytes };
       }
       case BidAddrTag.UnbondAccountTag: {
-        const { validator, delegator, bytes } = parseHashPair(rem);
+        const {
+          validator,
+          delegator,
+          bytes: remainderBytes
+        } = parseHashPair(rem);
         bidAddr.validator = validator;
         bidAddr.delegatorAccount = delegator;
-        return { result: bidAddr, bytes };
+        return { result: bidAddr, bytes: remainderBytes };
       }
       case BidAddrTag.UnbondPurseTag: {
-        const { validator, delegator, bytes } = parseHexBytesPair(rem);
+        const {
+          validator,
+          delegator,
+          bytes: remainderBytes
+        } = parseHexBytesPair(rem);
         bidAddr.validator = validator;
         bidAddr.delegatorPurseAddress = delegator;
-        return { result: bidAddr, bytes };
+        return { result: bidAddr, bytes: remainderBytes };
       }
       case BidAddrTag.ValidatorRevTag: {
-        const { result: validatorRevHash, bytes } = Hash.fromBytes(rem);
+        const { result: validatorRevHash, bytes: remainderBytes } =
+          Hash.fromBytes(rem);
         bidAddr.validator = validatorRevHash;
-        return { result: bidAddr, bytes };
+        return { result: bidAddr, bytes: remainderBytes };
       }
       default:
         throw ErrInvalidBidAddrFormat;
@@ -310,7 +341,7 @@ export class BidAddr {
         return `${tagHex}${this.validator.toHex()}${
           this.delegatorPurseAddress
         }`;
-      case BidAddrTag.CreditTag:
+      case BidAddrTag.CreditTag: {
         if (!this.validator || this.eraId === undefined) {
           throw new Error(
             `Missing 'validator' or 'eraId' field for tag ${BidAddrTag.CreditTag}`
@@ -319,6 +350,7 @@ export class BidAddr {
         const eraIdHex = Buffer.alloc(8);
         eraIdHex.writeUInt32LE(this.eraId, 0);
         return `${tagHex}${this.validator.toHex()}${eraIdHex.toString('hex')}`;
+      }
       case BidAddrTag.ReservedDelegationAccountTag:
         if (!this.validator || !this.delegatorAccount) {
           throw new Error(
@@ -374,7 +406,10 @@ export class BidAddr {
     const concatBuffers = (buffers: Buffer[]): Buffer => Buffer.concat(buffers);
 
     const createBuffer = (tag: number, ...parts: Uint8Array[]): Buffer => {
-      return concatBuffers([Buffer.from([tag]), ...parts.map(Buffer.from)]);
+      return concatBuffers([
+        Buffer.from([tag]),
+        ...parts.map(part => Buffer.from(part))
+      ]);
     };
 
     switch (typeByte) {
