@@ -13,31 +13,63 @@ export function newRpcClient(): RpcClient {
   return new RpcClient(new HttpHandler(NODE_URL));
 }
 
-/**
- * Polls `getLatestBlock` until the chain has produced at least `minHeight`
- * blocks — height/era/auction queries return nothing meaningful until a
- * freshly booted nctl network is a few blocks in.
- */
-export async function waitForBlockHeight(
+async function waitForLatestBlock(
   client: RpcClient,
-  minHeight: number,
-  timeoutMs = 120_000
+  reached: (block: { height: number; eraID: number }) => boolean,
+  target: string,
+  timeoutMs: number
 ): Promise<void> {
   const start = Date.now();
 
   while (true) {
-    const latest = await client.getLatestBlock();
-    if (latest.block.height >= minHeight) return;
+    const { block } = await client.getLatestBlock();
+    if (reached(block)) return;
 
     if (Date.now() - start > timeoutMs) {
       throw new Error(
-        `Timed out waiting for block height >= ${minHeight} ` +
-          `(last seen: ${latest.block.height})`
+        `Timed out waiting for ${target} ` +
+          `(last seen: height ${block.height}, era ${block.eraID})`
       );
     }
 
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise(resolve => {
+      setTimeout(resolve, 1000);
+    });
   }
+}
+
+/**
+ * Polls `getLatestBlock` until the chain has produced at least `minHeight`
+ * blocks — block and auction queries return nothing meaningful until a
+ * freshly booted nctl network is a few blocks in.
+ */
+export function waitForBlockHeight(
+  client: RpcClient,
+  minHeight: number,
+  timeoutMs = 120_000
+): Promise<void> {
+  return waitForLatestBlock(
+    client,
+    block => block.height >= minHeight,
+    `block height >= ${minHeight}`,
+    timeoutMs
+  );
+}
+
+/**
+ * Polls `getLatestBlock` until the chain is in era `minEra` or later.
+ */
+export function waitForEra(
+  client: RpcClient,
+  minEra: number,
+  timeoutMs = 180_000
+): Promise<void> {
+  return waitForLatestBlock(
+    client,
+    block => block.eraID >= minEra,
+    `era >= ${minEra}`,
+    timeoutMs
+  );
 }
 
 /** Shape shared by `InfoGetTransactionResult` and `InfoGetDeployResult`. */
