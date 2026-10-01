@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### [5.2.0] - 2026-10-05
 
-`engines.node` stays `">=18"`. One public field was renamed, `Message.hashAddr` → `Message.entityAddr`, and four behaviours change how existing code runs — the SSE error path, the SSE event parsers, `waitForTransaction()` and the spelling of the system registry key. All are marked in **Changed**. The rest are serialization fixes; several corrected values the SDK previously got wrong on the wire, so recorded output may differ.
+`engines.node` stays `">=18"`. Four behaviours change how existing code runs — the SSE error path, the SSE event parsers, `waitForTransaction()` and the spelling of the system registry key — and are marked in **Changed**. One fix renames a public field, `Message.hashAddr` → `Message.entityAddr`; see **Fixed**. The rest are serialization fixes; several corrected values the SDK previously got wrong on the wire, so recorded output may differ.
 
 ### Added
 
@@ -29,7 +29,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - **`SseClient.start()` no longer throws when no error callback is supplied** — it logs and lets the stream reconnect. The old `throw` either died silently or terminated the host process, cancelling the reconnect it was about to schedule. Pass the callback if you relied on it
 - **`TransactionAcceptedEvent`, `TransactionExpiredEvent`, `TransactionProcessedEvent` and `FinalitySignatureEvent` throw from `fromJSON()` instead of returning an `Error`**, narrowing the return type from `X | Error` to `X`. The old branch was never usable: `parseAs*Event()` handed the returned `Error` back as the parsed event. Replace `instanceof Error` checks with `try`/`catch`; the thrown error carries the original as `cause`
 - **`RpcClient.waitForTransaction()` rejects with a `Timeout` error once its deadline passes.** The timeout previously threw from a `setTimeout` callback, where it could not reject the promise: it escaped as an uncaught exception while the promise stayed pending and polling continued indefinitely. A timeout during a retry carries the retried error as `cause`
-- **`Message.hashAddr: Hash` is replaced by `Message.entityAddr: EntityAddr`**, read from the `entity_addr` field 2.x nodes emit. `hashAddr` was never populated by a 2.x node. Messages in speculative execution results and `TransactionProcessed` events now parse instead of coming back `undefined`
 - `CLValueMap.fromBytes()` throws on an entry it cannot parse instead of skipping it. It previously returned a map silently missing entries, and a read offset that misaligned everything decoded after it. Malformed input only
 - `CasperNetwork.putTransaction()` rejects with an `Error` rather than a bare string for a non-legacy transaction on a 1.5 network. Same text, now reachable as `err.message`
 - Rethrown errors carry the original as `cause`, so a network or parse failure is no longer reduced to its wrapper message
@@ -43,6 +42,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - **`queryGlobalStateByBlockHash()`, `queryGlobalStateByBlockHeight()` and `queryGlobalStateByStateHash()` sent no `state_identifier`**, so all three queried the node's latest state and silently ignored the block or state root passed in
 - `PublicKey.accountHash().toJSON()` emitted `account-hash<hex>` without the separator, so an `EntityIdentifier` or `AccountIdentifier` built from it sent a malformed account hash to the node. `toPrefixedString()` was always correct
 - `StateGetEntityResult` ignored the `Account` key a 2.x node uses for an account entity, yielding an entity with nothing set and no error. Both `Account` and the 1.x `LegacyAccount` now resolve to `entity.legacyAccount`; the node's own payload stays on `rawJSON`
+- **Messages in speculative execution results and `TransactionProcessed` events came back `undefined`** from a 2.x node, which emits `entity_addr` where the SDK read `hash_addr`. The field is now `Message.entityAddr: EntityAddr`, replacing `Message.hashAddr: Hash`, which no 2.x node ever populated
 - `SpeculativeExecResult.apiVersion` held the JSON-RPC protocol version (`"2.0"`) instead of the node's `api_version`
 - `SpeculativeExecResult.blockHash` was `undefined` for a 1.5 node response, which carries the block hash beside `execution_result` rather than inside it
 - `SeigniorageAllocation.fromJSON()` read 2.x era data with the 1.x reader and dropped the delegator key — both shapes nest under `Delegator`, but 2.x carries a `delegator_kind` object where 1.x carries a flat public key. Both now parse
