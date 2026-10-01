@@ -3,7 +3,7 @@ import { concat } from '@ethersproject/bytes';
 
 import { Hash } from './Hash';
 import { IResultWithBytes } from '../clvalue';
-import { PrefixName } from './Key';
+import { PrefixName } from './PrefixName';
 
 /**
  * Enum representing the types of entities within the system.
@@ -74,16 +74,16 @@ export class EntityAddr {
    * @throws {ErrInvalidEntityAddrFormat} If the format is invalid.
    */
   static fromPrefixedString(source: string): EntityAddr {
-    source = source.replace(PrefixName.Entity, '');
+    const remaining = source.replace(PrefixName.Entity, '');
 
-    if (source.startsWith('system-')) {
-      const hash = Hash.fromHex(source.replace('system-', ''));
+    if (remaining.startsWith('system-')) {
+      const hash = Hash.fromHex(remaining.replace('system-', ''));
       return new EntityAddr(hash, undefined, undefined);
-    } else if (source.startsWith('account-')) {
-      const hash = Hash.fromHex(source.replace('account-', ''));
+    } else if (remaining.startsWith('account-')) {
+      const hash = Hash.fromHex(remaining.replace('account-', ''));
       return new EntityAddr(undefined, hash, undefined);
-    } else if (source.startsWith('contract-')) {
-      const hash = Hash.fromHex(source.replace('contract-', ''));
+    } else if (remaining.startsWith('contract-')) {
+      const hash = Hash.fromHex(remaining.replace('contract-', ''));
       return new EntityAddr(undefined, undefined, hash);
     }
     throw ErrInvalidEntityAddrFormat;

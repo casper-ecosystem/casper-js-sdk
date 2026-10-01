@@ -1,4 +1,5 @@
 import { jsonObject, jsonMember } from 'typedjson';
+import { PrefixName } from './PrefixName';
 import { AccountHash } from './Account';
 import { Hash } from './Hash';
 import { TransferHash } from './Transfer';
@@ -14,41 +15,8 @@ import { EntryPointAddr } from './EntryPointAddr';
 import { URef } from './URef';
 import { IResultWithBytes } from '../clvalue';
 
-/**
- * Enum that defines prefixes used to identify different types of blockchain entities and objects.
- */
-export enum PrefixName {
-  Account = 'account-hash-',
-  AddressableEntity = 'addressable-entity-',
-  Hash = 'hash-',
-  ContractPackageWasm = 'contract-package-wasm',
-  ContractPackage = 'contract-package-',
-  ContractWasm = 'contract-wasm-',
-  Contract = 'contract-',
-  URef = 'uref-',
-  Transfer = 'transfer-',
-  DeployInfo = 'deploy-',
-  EraId = 'era-',
-  Bid = 'bid-',
-  Balance = 'balance-',
-  Withdraw = 'withdraw-',
-  Dictionary = 'dictionary-',
-  SystemContractRegistry = 'system-contract-registry-',
-  EraSummary = 'era-summary-',
-  Unbond = 'unbond-',
-  ChainspecRegistry = 'chainspec-registry-',
-  EntityContract = 'entity-contract-',
-  ChecksumRegistry = 'checksum-registry-',
-  BidAddr = 'bid-addr-',
-  Package = 'package-',
-  Entity = 'entity-',
-  ByteCode = 'byte-code-',
-  Message = 'message-',
-  NamedKey = 'named-key-',
-  BlockGlobal = 'block-',
-  BalanceHold = 'balance-hold-',
-  EntryPoint = 'entry-point-'
-}
+// Re-exported so `PrefixName` keeps its published import path.
+export { PrefixName };
 
 /**
  * Enum representing different types of blockchain key types used in the system.
@@ -77,7 +45,9 @@ export enum KeyTypeID {
   NamedKey,
   BlockGlobal,
   BalanceHold,
-  EntryPoint
+  EntryPoint,
+  State,
+  RewardsHandling
 }
 
 /**
@@ -149,7 +119,10 @@ export const keyIDbyPrefix = new Map<PrefixName, KeyTypeID>([
   [PrefixName.NamedKey, KeyTypeID.NamedKey],
   [PrefixName.BlockGlobal, KeyTypeID.BlockGlobal],
   [PrefixName.BalanceHold, KeyTypeID.BalanceHold],
-  [PrefixName.EntryPoint, KeyTypeID.EntryPoint]
+  [PrefixName.EntryPoint, KeyTypeID.EntryPoint],
+  [PrefixName.SystemEntityRegistry, KeyTypeID.SystemContractRegistry],
+  [PrefixName.State, KeyTypeID.State],
+  [PrefixName.RewardsHandling, KeyTypeID.RewardsHandling]
 ]);
 
 /**
@@ -305,6 +278,12 @@ export class Key {
   })
   entryPoint?: EntryPointAddr;
 
+  @jsonMember({
+    name: 'State',
+    constructor: EntityAddr
+  })
+  state?: EntityAddr;
+
   /**
    * Converts the key to bytes.
    * @returns A Uint8Array representing the serialized key.
@@ -364,9 +343,21 @@ export class Key {
         return Key.concatBytes(this.balanceHold?.toBytes(), typeBytes);
       case KeyTypeID.EntryPoint:
         return Key.concatBytes(this.entryPoint?.toBytes(), typeBytes);
+      case KeyTypeID.State:
+        return Key.concatBytes(this.state?.toBytes(), typeBytes);
+      case KeyTypeID.RewardsHandling:
+        return Key.concatBytes(Key.paddingBytes(), typeBytes);
       default:
         return new Uint8Array();
     }
+  }
+
+  private static paddingBytes(): Uint8Array {
+    return new Uint8Array(KEY_DEFAULT_BYTE_LENGTH);
+  }
+
+  private static paddingHex(): string {
+    return '0'.repeat(KEY_DEFAULT_BYTE_LENGTH * 2);
   }
 
   /**
@@ -425,8 +416,9 @@ export class Key {
       case KeyTypeID.Withdraw:
         return `${PrefixName.Withdraw}${this.withdraw!.toHex()}`;
       case KeyTypeID.SystemContractRegistry:
+        // The only spelling a node accepts back; `newKey` still reads the 1.x one.
         return `${
-          PrefixName.SystemContractRegistry
+          PrefixName.SystemEntityRegistry
         }${this.systemContactRegistry!.toHex()}`;
       case KeyTypeID.EraSummary:
         return `${PrefixName.EraSummary}${this.eraSummary!.toHex()}`;
@@ -458,6 +450,10 @@ export class Key {
         return this.balanceHold!.toPrefixedString();
       case KeyTypeID.EntryPoint:
         return this.entryPoint!.toPrefixedString();
+      case KeyTypeID.State:
+        return `${PrefixName.State}${this.state!.toPrefixedString()}`;
+      case KeyTypeID.RewardsHandling:
+        return `${PrefixName.RewardsHandling}${Key.paddingHex()}`;
       default:
         return '';
     }
@@ -485,134 +481,160 @@ export class Key {
     result.type = keyType;
 
     switch (keyType) {
-      case KeyTypeID.Account:
+      case KeyTypeID.Account: {
         const accountHash = Hash.fromBytes(contentBytes);
         result.account = new AccountHash(accountHash?.result);
         return { result, bytes: accountHash?.bytes };
-      case KeyTypeID.Hash:
+      }
+      case KeyTypeID.Hash: {
         const hashParsed = Hash.fromBytes(contentBytes);
         result.hash = hashParsed?.result;
         return { result, bytes: hashParsed?.bytes };
-      case KeyTypeID.URef:
+      }
+      case KeyTypeID.URef: {
         const uref = URef.fromBytes(contentBytes);
         result.uRef = uref?.result;
         return { result, bytes: uref?.bytes };
-      case KeyTypeID.Transfer:
+      }
+      case KeyTypeID.Transfer: {
         const transferHash = Hash.fromBytes(contentBytes);
-        result.transfer = new TransferHash(transferHash?.result.toHex());
+        // Bytes, not hex: the string overload keeps `transfer-` only when the
+        // input already carries it.
+        result.transfer = new TransferHash(transferHash?.result.toBytes());
         return { result, bytes: transferHash?.bytes };
-      case KeyTypeID.DeployInfo:
+      }
+      case KeyTypeID.DeployInfo: {
         const deploy = Hash.fromBytes(contentBytes);
         result.deploy = deploy?.result;
         return { result, bytes: deploy?.bytes };
-      case KeyTypeID.EraId:
+      }
+      case KeyTypeID.EraId: {
         const [eraBytes, eraRemainder] = splitAt(1, contentBytes);
         result.era = Era.fromBytes(eraBytes);
         return { result, bytes: eraRemainder };
-      case KeyTypeID.Balance:
+      }
+      case KeyTypeID.Balance: {
         const parsed = Hash.fromBytes(contentBytes);
         result.balance = parsed?.result;
 
         return { result, bytes: parsed?.bytes };
-      case KeyTypeID.Bid:
+      }
+      case KeyTypeID.Bid: {
         const bid = Hash.fromBytes(contentBytes);
         result.bid = new AccountHash(bid.result);
 
         return { result, bytes: bid?.bytes };
-      case KeyTypeID.Withdraw:
+      }
+      case KeyTypeID.Withdraw: {
         const withdraw = Hash.fromBytes(contentBytes);
         const withdrawHash = withdraw?.result;
         result.withdraw = new AccountHash(withdrawHash);
         return { result, bytes: withdraw?.bytes };
-      case KeyTypeID.Dictionary:
+      }
+      case KeyTypeID.Dictionary: {
         const dictionary = Hash.fromBytes(contentBytes);
         result.dictionary = dictionary?.result;
         return { result, bytes: dictionary?.bytes };
-      case KeyTypeID.SystemContractRegistry:
+      }
+      case KeyTypeID.SystemContractRegistry: {
         const systemContractRegistry = Hash.fromBytes(contentBytes);
         result.systemContactRegistry = systemContractRegistry?.result;
         return { result, bytes: systemContractRegistry?.bytes };
-      case KeyTypeID.EraSummary:
+      }
+      case KeyTypeID.EraSummary: {
         const eraSummary = Hash.fromBytes(contentBytes);
         result.eraSummary = eraSummary?.result;
         return { result, bytes: eraSummary?.bytes };
-      case KeyTypeID.Unbond:
-        const { result: unbondHash, bytes: unbondBytes } = Hash.fromBytes(
-          contentBytes
-        );
+      }
+      case KeyTypeID.Unbond: {
+        const { result: unbondHash, bytes: unbondBytes } =
+          Hash.fromBytes(contentBytes);
         result.unbond = new AccountHash(unbondHash);
         return { result, bytes: unbondBytes };
-      case KeyTypeID.ChainspecRegistry:
+      }
+      case KeyTypeID.ChainspecRegistry: {
         const [chainBytes, chainspecRegistryBytes] = splitAt(
           KEY_DEFAULT_BYTE_LENGTH,
           contentBytes
         );
         result.chainspecRegistry = Hash.fromBytes(chainBytes)?.result;
         return { result, bytes: chainspecRegistryBytes };
-      case KeyTypeID.ChecksumRegistry:
+      }
+      case KeyTypeID.ChecksumRegistry: {
         const checksumRegistry = Hash.fromBytes(contentBytes);
         result.checksumRegistry = checksumRegistry?.result;
         return { result, bytes: checksumRegistry?.bytes };
-      case KeyTypeID.BidAddr:
-        const { result: bidAddr, bytes: bidAddrBytes } = BidAddr.fromBytes(
-          contentBytes
-        );
+      }
+      case KeyTypeID.BidAddr: {
+        const { result: bidAddr, bytes: bidAddrBytes } =
+          BidAddr.fromBytes(contentBytes);
         result.bidAddr = bidAddr;
 
         return { result, bytes: bidAddrBytes };
-      case KeyTypeID.Package:
+      }
+      case KeyTypeID.Package: {
         const packageHash = Hash.fromBytes(contentBytes);
         result.package = packageHash?.result;
         return { result, bytes: packageHash?.bytes };
-      case KeyTypeID.AddressableEntity:
-        const {
-          result: entityAddr,
-          bytes: entityAddrBytes
-        } = EntityAddr.fromBytes(contentBytes);
+      }
+      case KeyTypeID.AddressableEntity: {
+        const { result: entityAddr, bytes: entityAddrBytes } =
+          EntityAddr.fromBytes(contentBytes);
         result.addressableEntity = entityAddr;
         return { result, bytes: entityAddrBytes };
-      case KeyTypeID.ByteCode:
-        const { result: byteCode, bytes: byteCodeBytes } = ByteCode.fromBytes(
-          contentBytes
-        );
+      }
+      case KeyTypeID.ByteCode: {
+        const { result: byteCode, bytes: byteCodeBytes } =
+          ByteCode.fromBytes(contentBytes);
         result.byteCode = byteCode;
 
         return { result, bytes: byteCodeBytes };
-      case KeyTypeID.Message:
-        const {
-          result: messageAddr,
-          bytes: messageAddrBytes
-        } = MessageAddr.fromBytes(contentBytes);
+      }
+      case KeyTypeID.Message: {
+        const { result: messageAddr, bytes: messageAddrBytes } =
+          MessageAddr.fromBytes(contentBytes);
         result.message = messageAddr;
         return { result, bytes: messageAddrBytes };
-      case KeyTypeID.NamedKey:
-        const {
-          result: namedKey,
-          bytes: namedKeyBytes
-        } = NamedKeyAddr.fromBytes(contentBytes);
+      }
+      case KeyTypeID.NamedKey: {
+        const { result: namedKey, bytes: namedKeyBytes } =
+          NamedKeyAddr.fromBytes(contentBytes);
         result.namedKey = namedKey;
         return { result, bytes: namedKeyBytes };
-      case KeyTypeID.BlockGlobal:
-        const {
-          result: blockGlobal,
-          bytes: blockGlobalBytes
-        } = BlockGlobalAddr.fromBytes(contentBytes);
+      }
+      case KeyTypeID.BlockGlobal: {
+        const { result: blockGlobal, bytes: blockGlobalBytes } =
+          BlockGlobalAddr.fromBytes(contentBytes);
         result.blockGlobal = blockGlobal;
         return { result, bytes: blockGlobalBytes };
-      case KeyTypeID.BalanceHold:
-        const {
-          result: balanceHold,
-          bytes: balanceHoldBytes
-        } = BalanceHoldAddr.fromBytes(contentBytes);
+      }
+      case KeyTypeID.BalanceHold: {
+        const { result: balanceHold, bytes: balanceHoldBytes } =
+          BalanceHoldAddr.fromBytes(contentBytes);
         result.balanceHold = balanceHold;
         return { result, bytes: balanceHoldBytes };
-      case KeyTypeID.EntryPoint:
-        const {
-          result: entryPoint,
-          bytes: entryPointBytes
-        } = EntryPointAddr.fromBytes(contentBytes);
+      }
+      case KeyTypeID.EntryPoint: {
+        const { result: entryPoint, bytes: entryPointBytes } =
+          EntryPointAddr.fromBytes(contentBytes);
         result.entryPoint = entryPoint;
         return { result, bytes: entryPointBytes };
+      }
+      case KeyTypeID.State: {
+        const { result: state, bytes: stateBytes } =
+          EntityAddr.fromBytes(contentBytes);
+        result.state = state;
+        return { result, bytes: stateBytes };
+      }
+      case KeyTypeID.RewardsHandling: {
+        if (contentBytes.length < KEY_DEFAULT_BYTE_LENGTH) {
+          throw new Error('Early end of stream when deserializing data.');
+        }
+        return {
+          result,
+          bytes: contentBytes.subarray(KEY_DEFAULT_BYTE_LENGTH)
+        };
+      }
       default:
         throw new Error('Missing key type');
     }
@@ -706,7 +728,9 @@ export class Key {
         break;
       case KeyTypeID.SystemContractRegistry:
         result.systemContactRegistry = Hash.fromHex(
-          source.replace(PrefixName.SystemContractRegistry, '')
+          source
+            .replace(PrefixName.SystemEntityRegistry, '')
+            .replace(PrefixName.SystemContractRegistry, '')
         );
         break;
       case KeyTypeID.EraSummary:
@@ -770,6 +794,19 @@ export class Key {
           source.replace(PrefixName.EntryPoint, '')
         );
         break;
+      case KeyTypeID.State:
+        result.state = EntityAddr.fromPrefixedString(
+          source.replace(PrefixName.State, '')
+        );
+        break;
+      case KeyTypeID.RewardsHandling: {
+        // No address of its own — the node writes zero padding in its place.
+        const padding = source.replace(PrefixName.RewardsHandling, '');
+        if (padding !== Key.paddingHex()) {
+          throw new Error(`invalid RewardsHandling key -> source: ${source}`);
+        }
+        break;
+      }
       default:
         throw new Error(`type is not found -> source: ${source}`);
     }
@@ -835,10 +872,13 @@ export class Key {
  * Splits the array at a given index.
  * @param i - The index to split the array.
  * @param arr - The Uint8Array to split.
- * @returns A new Uint8Array from the start to index i.
+ * @returns The bytes before index i, and the bytes from index i onwards.
  * @throws Error if the index is out of bounds.
  */
-export const splitAt = (i: number, arr: Uint8Array) => {
+export const splitAt = (
+  i: number,
+  arr: Uint8Array
+): [Uint8Array, Uint8Array] => {
   if (i > arr.length - 1) {
     throw new Error('Early end of stream when deserializing data.');
   }

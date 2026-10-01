@@ -1,0 +1,15 @@
+// Type-checks `src` against the oldest Node typings the package supports.
+// `engines.node` promises ">=18", but `@types/node` sits at ^22 — vitest@4
+// peer-requires `^20 || ^22 || >=24`, and `overrides` cannot resolve that
+// because npm enforces peerOptional ranges against the root's own dependency —
+// so a Node 20+ global or API shape in `src` would otherwise build green. The
+// `node18-typings` CI job points `--typeRoots` at a throwaway `@types/node@^18`
+// install, leaving the real tree alone. `declaration` must be off under `noEmit`.
+{
+  "extends": "./tsconfig.build.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "declaration": false,
+    "types": ["node"]
+  }
+}

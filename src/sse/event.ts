@@ -55,7 +55,7 @@ export class RawEvent {
 
   private parseEvent<T>(
     type: new (params: any) => T,
-    parser?: (data: any) => T | Error
+    parser?: (data: any) => T
   ): T {
     const serializer = new TypedJSON(type);
     const parsed = parser ? parser(this.data) : serializer.parse(this.data);
@@ -72,7 +72,9 @@ export class RawEvent {
   }
 
   parseAsBlockAddedEvent(): BlockAddedEvent {
-    return this.parseEvent(BlockAddedEvent, BlockAddedEvent.fromJSON);
+    return this.parseEvent(BlockAddedEvent, data =>
+      BlockAddedEvent.fromJSON(data)
+    );
   }
 
   parseAsDeployAcceptedEvent(): DeployAcceptedEvent {
@@ -80,30 +82,26 @@ export class RawEvent {
   }
 
   parseAsFinalitySignatureEvent(): FinalitySignatureEvent {
-    return this.parseEvent(
-      FinalitySignatureEvent,
-      FinalitySignatureEvent.fromJSON
+    return this.parseEvent(FinalitySignatureEvent, data =>
+      FinalitySignatureEvent.fromJSON(data)
     );
   }
 
   parseAsTransactionExpiredEvent(): TransactionExpiredEvent {
-    return this.parseEvent(
-      TransactionExpiredEvent,
-      TransactionExpiredEvent.fromJSON
+    return this.parseEvent(TransactionExpiredEvent, data =>
+      TransactionExpiredEvent.fromJSON(data)
     );
   }
 
   parseAsTransactionProcessedEvent(): TransactionProcessedEvent {
-    return this.parseEvent(
-      TransactionProcessedEvent,
-      TransactionProcessedEvent.fromJSON
+    return this.parseEvent(TransactionProcessedEvent, data =>
+      TransactionProcessedEvent.fromJSON(data)
     );
   }
 
   parseAsTransactionAcceptedEvent(): TransactionAcceptedEvent {
-    return this.parseEvent(
-      TransactionAcceptedEvent,
-      TransactionAcceptedEvent.fromJSON
+    return this.parseEvent(TransactionAcceptedEvent, data =>
+      TransactionAcceptedEvent.fromJSON(data)
     );
   }
 
@@ -342,7 +340,7 @@ export class TransactionAcceptedEvent {
   })
   transactionAcceptedPayload: TransactionAcceptedPayload;
 
-  public static fromJSON(data: any): TransactionAcceptedEvent | Error {
+  public static fromJSON(data: any): TransactionAcceptedEvent {
     if (!data || data.TransactionAccepted) {
       throw new Error(
         'Parse JSON on null or undefined data for TransactionAcceptedEvent'
@@ -387,8 +385,11 @@ export class TransactionAcceptedEvent {
 
       throw new Error('Failed to match any transaction structure');
     } catch (error) {
-      return new Error(
-        `Error deserializing TransactionAcceptedEvent: ${error}`
+      throw new Error(
+        `Error deserializing TransactionAcceptedEvent: ${error}`,
+        {
+          cause: error
+        }
       );
     }
   }
@@ -408,7 +409,7 @@ export class TransactionExpiredEvent {
   })
   transactionExpiredPayload: TransactionExpiredPayload;
 
-  public static fromJSON(data: any): TransactionExpiredEvent | Error {
+  public static fromJSON(data: any): TransactionExpiredEvent {
     if (!data) {
       throw new Error(
         'Parse JSON on null or undefined data for TransactionExpiredEvent'
@@ -454,7 +455,9 @@ export class TransactionExpiredEvent {
 
       throw new Error('Failed to match any transaction structure');
     } catch (error) {
-      return new Error(`Error deserializing TransactionExpiredEvent: ${error}`);
+      throw new Error(`Error deserializing TransactionExpiredEvent: ${error}`, {
+        cause: error
+      });
     }
   }
 }
@@ -522,7 +525,7 @@ export class TransactionProcessedEvent {
   })
   transactionProcessedPayload: TransactionProcessedPayload;
 
-  public static fromJSON(data: any): TransactionProcessedEvent | Error {
+  public static fromJSON(data: any): TransactionProcessedEvent {
     if (!data || data.TransactionProcessed) {
       throw new Error(
         'Parse JSON on null or undefined data for TransactionExpiredEvent'
@@ -573,8 +576,9 @@ export class TransactionProcessedEvent {
 
       throw new Error('Failed to match any transaction structure');
     } catch (error) {
-      return new Error(
-        `Error deserializing TransactionProcessedEvent: ${error}`
+      throw new Error(
+        `Error deserializing TransactionProcessedEvent: ${error}`,
+        { cause: error }
       );
     }
   }
@@ -764,7 +768,7 @@ export class FinalitySignatureEvent {
   @jsonMember({ name: 'FinalitySignature', constructor: FinalitySignature })
   finalitySignature: FinalitySignature;
 
-  public static fromJSON(data: any): FinalitySignatureEvent | Error {
+  public static fromJSON(data: any): FinalitySignatureEvent {
     if (!data || data.FinalitySignature) {
       throw new Error(
         'Parse JSON on null or undefined data for FinalitySignatureEvent'
@@ -815,7 +819,9 @@ export class FinalitySignatureEvent {
 
       return new FinalitySignatureEvent(finalitySignature);
     } catch (error) {
-      return new Error(`Error deserializing FinalitySignatureEvent: ${error}`);
+      throw new Error(`Error deserializing FinalitySignatureEvent: ${error}`, {
+        cause: error
+      });
     }
   }
 
@@ -872,6 +878,6 @@ export class StepPayload {
 
 @jsonObject
 export class StepEvent {
-  @jsonMember({ name: 'step', constructor: StepPayload })
+  @jsonMember({ name: 'Step', constructor: StepPayload })
   step: StepPayload;
 }

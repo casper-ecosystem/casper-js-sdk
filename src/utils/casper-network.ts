@@ -7,6 +7,10 @@ import {
   PutTransactionResult,
   RpcClient
 } from '../rpc';
+// Direct import, not the `../rpc` barrel: pulling `HttpError` in as a runtime
+// value through the barrel closes a cycle back through `rpc_client.ts` ->
+// `../utils`, a TDZ error under the native-class test transform (CLAUDE.md).
+import { HttpError } from '../rpc/error';
 import {
   Args,
   CLValue,
@@ -23,6 +27,17 @@ import {
 } from '../types';
 import { ErrorCode } from '../@types';
 
+/**
+ * `HttpError.statusCode` carries an HTTP status from the transport and a
+ * JSON-RPC error code from the client — two numeric namespaces in one field.
+ * Narrowing here is what keeps the comparison below meaningful.
+ */
+function toRpcErrorCode(code: number): ErrorCode | undefined {
+  return (Object.values(ErrorCode) as unknown[]).includes(code)
+    ? (code as ErrorCode)
+    : undefined;
+}
+
 export class CasperNetwork {
   private rpcClient: RpcClient;
   private apiVersion: number;
@@ -36,13 +51,14 @@ export class CasperNetwork {
     rpcClient: RpcClient,
     apiVersion?: number
   ): Promise<CasperNetwork> {
-    if (!apiVersion) {
+    let resolvedApiVersion = apiVersion;
+    if (!resolvedApiVersion) {
       const status = await rpcClient.getStatus();
 
-      apiVersion = status.apiVersion.startsWith('2.') ? 2 : 1;
+      resolvedApiVersion = status.apiVersion.startsWith('2.') ? 2 : 1;
     }
 
-    return new CasperNetwork(rpcClient, apiVersion);
+    return new CasperNetwork(rpcClient, resolvedApiVersion);
   }
 
   public createDelegateTransaction(
@@ -289,7 +305,7 @@ export class CasperNetwork {
   public async putTransaction(
     transaction: Transaction
   ): Promise<PutTransactionResult | PutDeployResult> {
-    if (this.apiVersion == 2) {
+    if (this.apiVersion === 2) {
       return await this.rpcClient.putTransaction(transaction);
     }
 
@@ -298,7 +314,7 @@ export class CasperNetwork {
       return await this.rpcClient.putDeploy(deploy);
     }
 
-    return Promise.reject(
+    throw new Error(
       'Legacy deploy transaction is required when submitting to Casper Network 1.5'
     );
   }
@@ -306,15 +322,13 @@ export class CasperNetwork {
   public async getTransaction(
     hash: TransactionHash | Hash | string
   ): Promise<InfoGetTransactionResult> {
-    if (typeof hash === 'string') {
-      hash = Hash.fromHex(hash);
-    }
+    const resolvedHash = typeof hash === 'string' ? Hash.fromHex(hash) : hash;
 
     if (this.apiVersion === 2) {
-      return await this.getTransactionOnCasper2x(hash);
+      return await this.getTransactionOnCasper2x(resolvedHash);
     }
 
-    return await this.getTransactionOnCasper1x(hash);
+    return await this.getTransactionOnCasper1x(resolvedHash);
   }
 
   private async getTransactionOnCasper2x(
@@ -339,7 +353,12 @@ export class CasperNetwork {
     try {
       return await this.rpcClient.getTransactionByTransactionHash(hash.toHex());
     } catch (error) {
-      if (error?.statusCode === ErrorCode.NoSuchTransaction) {
+      // Structural guard rather than `instanceof`: it still matches when a
+      // bundle ends up with two copies of the class.
+      if (
+        HttpError.isHttpError(error) &&
+        toRpcErrorCode(error.statusCode) === ErrorCode.NoSuchTransaction
+      ) {
         return await this.rpcClient.getTransactionByDeployHash(hash.toHex());
       }
       throw error;
@@ -355,7 +374,7 @@ export class CasperNetwork {
 
   public async queryLatestBalance(identifier: PurseIdentifier) {
     if (this.apiVersion === 2) {
-      return this.rpcClient.queryLatestBalance(identifier);
+      return await this.rpcClient.queryLatestBalance(identifier);
     }
 
     const purseUref = identifier?.purseUref;

@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import { CLValueUnit, CLValueParser, CLValue } from '../../../types';
 
 describe('Unit implementation tests', () => {

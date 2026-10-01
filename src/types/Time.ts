@@ -137,6 +137,10 @@ export class Duration {
         case 'd':
           totalMs += value * 86400000;
           break;
+        default:
+          // Unreachable: the regex above only ever yields s/m/h/d. An
+          // unrecognized unit contributes nothing.
+          break;
       }
     }
     return totalMs;

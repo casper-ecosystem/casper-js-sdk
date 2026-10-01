@@ -1,0 +1,31 @@
+name: semgrep
+
+on:
+  pull_request:
+  push:
+    branches: [dev, master]
+  schedule:
+    - cron: '0 4 * * 1' # weekly, catches new registry rules
+
+permissions:
+  contents: read
+
+jobs:
+  semgrep:
+    runs-on: ubuntu-latest
+    container: semgrep/semgrep
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 #v6.1.0
+
+      - name: Semgrep scan
+        run: >
+          semgrep scan --error
+          --config p/default
+          --config p/typescript
+          --config p/nodejs
+          --config .semgrep/
+          --exclude dist
+          --exclude docs
+          --exclude site
+          --exclude node_modules

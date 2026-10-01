@@ -85,7 +85,9 @@ export class URef {
   toString(): string {
     return [
       Conversions.encodeBase16(this.data),
-      new Array(3).join('0').slice((3 || 2) * -1) + this.access.toString(8)
+      // This expression is the constant `'00'`, and that `'00'` is part of the
+      // rendered format — not padding that can be dropped.
+      new Array(3).join('0').slice(-3) + this.access.toString(8)
     ].join('-');
   }
 

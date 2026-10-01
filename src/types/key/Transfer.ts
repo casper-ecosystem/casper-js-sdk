@@ -22,16 +22,15 @@ export class TransferHash extends Hash {
    * @param source - A hex string or Uint8Array representing the hash.
    */
   constructor(source: string | Uint8Array) {
-    if (typeof source === 'string') {
-      const { hashBytes, originPrefix } = TransferHash.initializeFromSource(
-        source
-      );
-      // @ts-ignore
-      super(hashBytes);
-      this.originPrefix = originPrefix;
-    } else {
-      super(source);
-    }
+    // Resolve first, then call `super` once. A `super(...)` per branch runs
+    // the `originPrefix` field initializer after the branch has assigned it.
+    const { hashBytes, originPrefix } =
+      typeof source === 'string'
+        ? TransferHash.initializeFromSource(source)
+        : { hashBytes: source, originPrefix: PrefixNameTransfer };
+
+    super(hashBytes);
+    this.originPrefix = originPrefix;
   }
 
   /**
@@ -39,9 +38,10 @@ export class TransferHash extends Hash {
    * @param source - The source string representing the transfer hash, optionally prefixed.
    * @returns An object containing the hash bytes and the detected origin prefix.
    */
-  private static initializeFromSource(
-    source: string
-  ): { hashBytes: Uint8Array; originPrefix: string } {
+  private static initializeFromSource(source: string): {
+    hashBytes: Uint8Array;
+    originPrefix: string;
+  } {
     const originPrefix = source.startsWith(PrefixNameTransfer)
       ? PrefixNameTransfer
       : '';

@@ -3,7 +3,7 @@ import { concat } from '@ethersproject/bytes';
 
 import { PublicKey as Ed25519PublicKey } from './ed25519/PublicKey';
 import { PublicKey as Secp256k1PublicKey } from './secp256k1/PublicKey';
-import { Hash, AccountHash } from '../key';
+import { Hash, AccountHash, PrefixName } from '../key';
 import { Conversions } from '../Conversions';
 import { IResultWithBytes } from '../clvalue';
 import { byteHash } from '../ByteConverters';
@@ -28,6 +28,17 @@ enum KeyAlgorithm {
   SECP256K1 = 2
 }
 
+/**
+ * Narrows a raw algorithm byte to the enum, undefined when it is not a known
+ * variant. One chokepoint for that check is what stops a renumbered enum from
+ * silently re-routing which key implementation decodes the following bytes.
+ */
+function toKeyAlgorithm(tag: number): KeyAlgorithm | undefined {
+  return (Object.values(KeyAlgorithm) as unknown[]).includes(tag)
+    ? (tag as KeyAlgorithm)
+    : undefined;
+}
+
 const SMALL_BYTES_COUNT = 75;
 // prettier-ignore
 const HEX_CHARS = [
@@ -48,7 +59,7 @@ interface PublicKeyInternal {
    * Verifies a signature for a given message.
    * @param message - The message to verify.
    * @param sig - The signature to verify.
-   * @returns A promise that resolves to a boolean indicating the validity of the signature.
+   * @returns `true` if the signature is valid for the message, otherwise `false`.
    */
   verifySignature(message: Uint8Array, sig: Uint8Array): boolean;
 
@@ -186,12 +197,13 @@ export class PublicKey {
   }
 
   /**
-   * Creates a PublicKey instance from an ArrayBuffer.
-   * @param buffer - The ArrayBuffer.
+   * Creates a PublicKey instance from an ArrayBuffer or a byte array.
+   * @param buffer - The ArrayBuffer or `Uint8Array` holding the algorithm byte
+   *   followed by the raw key bytes.
    * @returns A new PublicKey instance.
    * @throws Error if the public key algorithm is invalid.
    */
-  public static fromBuffer(buffer: ArrayBuffer): PublicKey {
+  public static fromBuffer(buffer: ArrayBuffer | Uint8Array): PublicKey {
     const byteArray = new Uint8Array(buffer);
     const alg = byteArray[0] as KeyAlgorithm;
     const keyData = byteArray.slice(1);
@@ -229,14 +241,14 @@ export class PublicKey {
 
     const blakeHash = byteHash(bytesToHash);
     const hash = Hash.fromBuffer(Buffer.from(blakeHash));
-    return new AccountHash(hash, 'account-hash');
+    return new AccountHash(hash, PrefixName.Account);
   }
 
   /**
    * Verifies a signature for a given message.
    * @param message - The message to verify.
    * @param sig - The signature to verify.
-   * @returns A promise that resolves to a boolean indicating the validity of the signature.
+   * @returns `true` if the signature is valid for the message, otherwise `false`.
    * @throws Error if the signature or public key is empty, or if the signature is invalid.
    */
   verifySignature(message: Uint8Array, sig: Uint8Array): boolean {
@@ -263,7 +275,7 @@ export class PublicKey {
    * @throws Error if the content cannot be properly parsed.
    */
   public static fromPem(content: string, algorithm: KeyAlgorithm) {
-    let key: PublicKeyInternal | null = null;
+    let key: PublicKeyInternal;
 
     switch (algorithm) {
       case KeyAlgorithm.ED25519:
@@ -305,7 +317,10 @@ export class PublicKey {
    * @throws Error if the public key algorithm is invalid.
    */
   static fromBytes(source: Uint8Array): IResultWithBytes<PublicKey> {
-    const alg = source[0];
+    const alg = toKeyAlgorithm(source[0]);
+    if (alg === undefined) {
+      throw ErrInvalidPublicKeyAlgo;
+    }
     let key: PublicKeyInternal | null = null;
     let expectedPublicKeySize;
 
@@ -322,8 +337,6 @@ export class PublicKey {
           source.subarray(1, expectedPublicKeySize + 1)
         );
         break;
-      default:
-        throw ErrInvalidPublicKeyAlgo;
     }
 
     return {
@@ -420,7 +433,7 @@ export function isValidPublicKey(key: string) {
 }
 
 function bytesToNibbles(bytes: Uint8Array): Uint8Array {
-  const outputNibbles = bytes.reduce((accum, byte) => {
+  const outputNibbles = bytes.reduce<Uint8Array>((accum, byte) => {
     return concat([accum, Uint8Array.of(byte >>> 4, byte & 0x0f)]);
   }, new Uint8Array());
 

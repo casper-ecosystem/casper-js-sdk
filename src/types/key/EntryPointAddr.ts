@@ -2,7 +2,6 @@ import { jsonMember, jsonObject } from 'typedjson';
 import { concat } from '@ethersproject/bytes';
 
 import { EntityAddr } from './EntityAddr';
-import { Hash } from './Hash';
 import { Conversions } from '../Conversions';
 import { IResultWithBytes } from '../clvalue';
 
@@ -31,11 +30,8 @@ export class EntryPointError extends Error {
  * @throws EntryPointError if the tag is invalid.
  */
 export function getEntryPointTag(tag: number): EntryPointTag {
-  if (
-    tag === EntryPointTag.V1EntryPoint ||
-    tag === EntryPointTag.V2EntryPoint
-  ) {
-    return tag;
+  if ((Object.values(EntryPointTag) as unknown[]).includes(tag)) {
+    return tag as EntryPointTag;
   }
   throw new EntryPointError('Invalid EntryPointTag');
 }
@@ -215,30 +211,28 @@ export class EntryPointAddr {
     const entryPointTag = getEntryPointTag(tag);
 
     const entityAddr = EntityAddr.fromBytes(array.slice(1));
+    const rem = entityAddr.bytes;
 
     if (entryPointTag === EntryPointTag.V1EntryPoint) {
-      const nameBytes = array.slice(
-        1 + Hash.ByteHashLen,
-        1 + Hash.ByteHashLen + 32
-      );
+      const nameBytes = rem.subarray(0, 32);
       return {
         result: new EntryPointAddr(
           new VmCasperV1(entityAddr?.result, nameBytes)
         ),
-        bytes: nameBytes
+        bytes: rem.subarray(32)
       };
     } else if (entryPointTag === EntryPointTag.V2EntryPoint) {
-      const selector = new DataView(
-        array.buffer,
-        1 + Hash.ByteHashLen
-      ).getUint32(0, true);
+      const selector = new DataView(rem.buffer, rem.byteOffset, 4).getUint32(
+        0,
+        true
+      );
 
       return {
         result: new EntryPointAddr(
           undefined,
           new VmCasperV2(entityAddr?.result, selector)
         ),
-        bytes: array.subarray(Hash.ByteHashLen)
+        bytes: rem.subarray(4)
       };
     } else {
       throw new EntryPointError('Unexpected EntryPointAddr type');

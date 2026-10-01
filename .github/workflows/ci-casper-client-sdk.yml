@@ -21,27 +21,23 @@ on:
     paths-ignore:
       - '**.md'
 
+permissions:
+  contents: read
+
+# Branch protection on `dev` requires only `mergefreeze`, so none of the guards
+# below blocks a merge on its own. To make them required, the check names are
+# `build (22.x, ubuntu-22.04)`, `build (24.x, ubuntu-22.04)`, `e2e-smoke`,
+# `node18-consumer` and `node18-typings`.
 jobs:
+  # Node 18 is handled by `node18-consumer`: vitest@4 (engines ^20 || ^22 ||
+  # >=24) cannot run the dev suite there at all.
   build:
     strategy:
       fail-fast: false
       matrix:
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-        # 18.x is the consumer-compatibility leg (published `engines.node` is ">=18");
-        # 22.x/24.x are the maintained legs that also run the Node->=20.9 dev toolchain.
-        node-version: [18.x, 22.x, 24.x]
+        node-version: [22.x, 24.x]
         os: [ubuntu-22.04]
     runs-on: ${{ matrix.os }}
-    env:
-      FAUCET_PRIV_KEY: 'MC4CAQAwBQYDK2VwBCIEIM0OhegYkU4zxgXeZggBdAR6+XkByue+3iZbznGbCUkM' #ci/test-assets/secret-key.pem
-      NODE_URL: 'http://3.20.57.210:7777/rpc'
-      HTTP_EVENT_STREAM_URL: 'http://3.20.57.210:9999/events'
-      HTTPS_EVENT_STREAM_URL: 'https://events.mainnet.casperlabs.io/events/main'
-      NETWORK_NAME: 'dev-net'
-      RUST_LOG: 'INFO'
-      VERSION_QUERY: '{"jsonrpc": "2.0", "id": "1", "method": "info_get_status"}'
-      MAINNET_NODE_URL: 'https://rpc.mainnet.casperlabs.io/rpc'
-      TESTNET_NODE_URL: 'https://rpc.testnet.casperlabs.io/rpc'
 
     steps:
       - name: Checkout
@@ -56,28 +52,228 @@ jobs:
       - name: Install
         run: npm install
 
+      # `.npmrc` sets ignore-scripts=true, so the install above runs no lifecycle
+      # script; this runs the ones `lavamoat.allowScripts` permits — currently none.
+      - name: Run allowed dependency scripts
+        run: npx allow-scripts
+
       - name: Audits
         run: npm audit --omit=dev
 
-      # eslint@10 engines: ^20.19.0 || ^22.13.0 || >=24 — cannot execute on Node 18.
+      # Catches a tarball swapped out from under a version that already resolved.
+      # `--min-release-age=0` overrides `.npmrc`: this re-resolves against the
+      # registry, where a freshness filter would check a different version set.
+      - name: Registry signatures and provenance attestations
+        run: npm audit signatures --min-release-age=0
+
       - name: Lints
-        if: matrix.node-version != '18.x'
         run: npm run lint:ci
 
-      - name: Knip (dead & phantom dependencies)
-        if: matrix.node-version != '18.x' # knip@6 engines: ^20.19.0 || >=22.12.0
+      # Full scope, not just the dependency findings: dead code fails here
+      # rather than waiting for someone to run the report by hand.
+      - name: Knip (dead code, dead & phantom dependencies)
         run: npm run knip
 
-      # node22 variant on 22.x and 24.x (Node >=23 enables native TS type-stripping
-      # by default, so the --no-experimental-strip-types flag applies to both);
-      # plain variant on the 18.x leg.
-      - name: Unit Test
-        run: ${{ matrix.node-version != '18.x' && 'npm run test:node:unit:node22' || 'npm run test:node:unit' }}
+      # Test files are entry points, so the run above cannot tell source that
+      # ships from source only the tests keep alive.
+      - name: Knip (production graph)
+        run: npm run knip:production
 
-      # webpack-cli@7 / copy-webpack-plugin@14 / webpack-bundle-analyzer@5 all need
-      # Node >=20.9, and `prebuild` runs eslint@10 — so the build is 22/24 only.
-      # The published `engines.node` stays ">=18": this gates the dev toolchain, not
-      # the shipped bundles (PHASE-3 converts the 18.x leg to pack-and-smoke).
+      # Coverage on one leg only — the numbers are identical across Node versions
+      # and instrumentation is not free. The thresholds in `vitest.config.mts`
+      # make this go red when a change removes coverage, not only when a test fails.
+      - name: Unit Test (node)
+        run: npm run test:node:unit -- --reporter=default --reporter=json --outputFile.json=reports/node-unit.json ${{ matrix.node-version == '22.x' && '--coverage' || '' }}
+
+      # A green exit code says nothing failed, not that anything ran.
+      - name: Assert the node suite ran the whole file set
+        run: node scripts/assert-test-count.js reports/node-unit.json "node unit"
+
+      - name: Upload coverage
+        if: matrix.node-version == '22.x'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
+        with:
+          name: coverage-lcov
+          path: coverage/lcov.info
+          retention-days: 7
+
+      # Vitest browser mode drives a real Chromium, so the binary must be here.
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Unit Test (browser)
+        run: npm run test:browser:unit -- --reporter=default --reporter=json --outputFile.json=reports/browser-unit.json
+
+      - name: Assert the browser suite ran the whole file set
+        run: node scripts/assert-test-count.js reports/browser-unit.json "browser unit"
+
       - name: Test build
-        if: matrix.node-version != '18.x'
         run: npm run build
+
+      # Reads `dist/*.d.ts`, so it has to follow the build. Regenerate the
+      # committed report with `npm run api:update`.
+      - name: Public API tripwire
+        run: npm run api:check
+
+      # webpack's own size warning has never failed a build. This does, which
+      # matters most for `lib.web.js`: it ships to browser wallets.
+      - name: Bundle budgets
+        run: npm run size:check
+
+      # attw's `named-exports` rule is ignored: no named export is statically
+      # detectable in the webpack bundle, so the types resolve and the ESM import
+      # then crashes. Ignoring it keeps the remaining rules able to fail.
+      - name: Package shape
+        run: npm run check:package
+
+      # The tarball the Node 18 job consumes, built here because the build
+      # toolchain needs Node >=20.9.
+      - name: Pack
+        if: matrix.node-version == '22.x'
+        # npm 10, the version Node 22 bundles, does not create
+        # `--pack-destination` itself and fails with ENOENT on the tarball.
+        run: |
+          mkdir -p ./pack
+          npm pack --pack-destination ./pack
+
+      - name: Upload tarball
+        if: matrix.node-version == '22.x'
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 #v4.6.2
+        with:
+          name: package-tarball
+          path: ./pack/*.tgz
+          retention-days: 1
+
+  # The per-change e2e signal: one leg, read-path plus a single transfer, to stay
+  # inside ~5 minutes. Pinned image tags cannot drift between two PRs, so the
+  # full tag × Node matrix runs weekly in `scheduled-e2e.yml` instead.
+  e2e-smoke:
+    runs-on: ubuntu-22.04
+    # The e2e vitest config sets an 83-minute per-test timeout, so a test that
+    # hangs against the node would otherwise burn the 6h job default.
+    timeout-minutes: 15
+    services:
+      casper-nctl:
+        # Newest pinned tag; `e2e/supported-tags.json` records the build_version
+        # it actually serves, which the tag name does not reliably encode.
+        image: makesoftware/casper-nctl:v222
+        # Named so the faucet-key step below can `docker exec` into it.
+        options: --name casper-nctl
+        env:
+          PREDEFINED_ACCOUNTS: 'true'
+          DEPLOY_DELAY: '5sec'
+        ports:
+          - 11101:11101 # JSON-RPC (/rpc)
+          - 18101:18101 # SSE (/events)
+    steps:
+      - name: Checkout
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
+        with:
+          node-version: 22.x
+          cache: 'npm'
+
+      - name: Install
+        run: npm install
+
+      - name: Run allowed dependency scripts
+        run: npx allow-scripts
+
+      # The image ships a HEALTHCHECK and the runner waits on it, but "healthy"
+      # is not "answering JSON-RPC" — ask the endpoint the suite will use.
+      - name: Wait for the node to serve JSON-RPC
+        run: |
+          for i in $(seq 1 60); do
+            if curl -sf -m 5 -X POST http://127.0.0.1:11101/rpc \
+              -H 'Content-Type: application/json' \
+              -d '{"jsonrpc":"2.0","id":"1","method":"info_get_status"}' \
+              | grep -q build_version; then
+              echo "node is up after ~$((i * 5))s"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "node did not answer info_get_status within 300s"
+          docker logs casper-nctl | tail -50
+          exit 1
+
+      # Path is per the 2.x image layout, verified by `docker exec` against
+      # v210 and v212. It is NOT the 1.x `casper-node/utils/nctl/assets` path.
+      - name: Extract faucet key
+        run: |
+          docker exec casper-nctl \
+            cat /home/casper/casper-nctl/assets/net-1/faucet/secret_key.pem \
+            > e2e/faucet_secret_key.pem
+          test -s e2e/faucet_secret_key.pem
+
+      - name: E2E smoke
+        run: npm run test:e2e:smoke
+
+      - name: Node logs
+        if: failure()
+        run: docker logs casper-nctl | tail -200
+
+  # The consumer leg for the published `engines.node ">=18"`: it runs the built
+  # tarball under plain `node`, which the dev suite never does.
+  node18-consumer:
+    needs: build
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
+
+      - name: Use Node.js 18.x
+        uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
+        with:
+          node-version: 18.x
+
+      - name: Download tarball
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 #v4.3.0
+        with:
+          name: package-tarball
+          path: ./pack
+
+      - name: Install the tarball into a clean project
+        run: |
+          mkdir -p "$RUNNER_TEMP/consumer"
+          cp ./pack/*.tgz "$RUNNER_TEMP/consumer/"
+          cp scripts/smoke.js "$RUNNER_TEMP/consumer/"
+          cd "$RUNNER_TEMP/consumer"
+          npm init -y >/dev/null
+          # --engine-strict, or this job cannot fail on what it exists to prove:
+          # npm otherwise just warns EBADENGINE and installs anyway.
+          npm install --engine-strict ./*.tgz
+
+      - name: Smoke test the published artifact
+        run: node "$RUNNER_TEMP/consumer/smoke.js"
+        working-directory: ${{ runner.temp }}/consumer
+
+  # `@types/node` had to move to ^22 for vitest@4, so the build no longer proves
+  # `src` stays inside the API surface Node 18 has. The 18 typings go into a
+  # throwaway directory to keep vitest's peer range satisfied.
+  node18-typings:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@2541b1294d2704b0964813337f33b291d3f8596b #v3.0.2
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@5b949b50c3461bbcd5a540b150c368278160234a #v3.4.0
+        with:
+          node-version: 22.x
+          cache: 'npm'
+
+      - name: Install
+        run: npm install
+
+      - name: Fetch the Node 18 typings floor
+        run: |
+          mkdir -p "$RUNNER_TEMP/node18-types"
+          cd "$RUNNER_TEMP/node18-types"
+          npm init -y >/dev/null
+          npm install --no-audit --no-fund '@types/node@^18'
+
+      - name: Type-check src against @types/node@18
+        run: npx tsc -p tsconfig.node18.json --typeRoots "$RUNNER_TEMP/node18-types/node_modules/@types"

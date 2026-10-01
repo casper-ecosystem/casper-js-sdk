@@ -1,4 +1,4 @@
-import { expect } from 'chai';
+import { expect } from 'vitest';
 import { CLValueString, CLValueParser, CLValue } from '../../../types';
 
 describe('CLString', () => {

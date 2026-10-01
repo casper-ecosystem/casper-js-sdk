@@ -1,0 +1,68 @@
+version: 2
+updates:
+  # Grouped so the weekly minor/patch churn arrives as one PR.
+  - package-ecosystem: npm
+    directory: '/'
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Etc/UTC
+    # The automated half of the `min-release-age=7` policy in `.npmrc`: a version
+    # nobody has run for a week is the likeliest to be yanked or malicious.
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 10
+    # This package is published, so the caret ranges in package.json are a
+    # contract with consumers: widen them only when a version falls outside.
+    versioning-strategy: increase-if-necessary
+    labels:
+      - dependencies
+    commit-message:
+      prefix: chore(deps)
+      prefix-development: chore(deps-dev)
+    groups:
+      minor-and-patch:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch
+        # Majors stay separate for individual review, and the signing-path
+        # packages leave the group entirely: they reach key material.
+        exclude-patterns:
+          - '@noble/*'
+          - '@peculiar/*'
+    # Held back deliberately: the @noble v2 consolidation, the native-bigint move
+    # off @ethersproject/*, and eventsource 4 are one coordinated change.
+    ignore:
+      - dependency-name: '@noble/*'
+        update-types:
+          - version-update:semver-major
+      - dependency-name: '@ethersproject/*'
+        update-types:
+          - version-update:semver-major
+      - dependency-name: 'eventsource'
+        update-types:
+          - version-update:semver-major
+
+  - package-ecosystem: github-actions
+    directory: '/'
+    schedule:
+      interval: weekly
+      day: monday
+      time: '06:00'
+      timezone: Etc/UTC
+    cooldown:
+      default-days: 7
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+      - github-actions
+    commit-message:
+      prefix: chore(ci)
+    groups:
+      actions:
+        applies-to: version-updates
+        update-types:
+          - minor
+          - patch

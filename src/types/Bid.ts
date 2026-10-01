@@ -147,7 +147,12 @@ export class DelegationKind {
    */
   @jsonMember({
     name: 'PublicKey',
-    constructor: PublicKey
+    constructor: PublicKey,
+    deserializer: json => {
+      if (!json) return;
+      return PublicKey.fromJSON(json);
+    },
+    serializer: (value?: PublicKey) => value?.toJSON()
   })
   publicKey?: PublicKey;
 
@@ -156,7 +161,12 @@ export class DelegationKind {
    */
   @jsonMember({
     name: 'Purse',
-    constructor: URef
+    constructor: URef,
+    deserializer: json => {
+      if (!json) return;
+      return URef.fromJSON(json);
+    },
+    serializer: (value?: URef) => value?.toJSON()
   })
   purse?: URef;
 
@@ -324,7 +334,10 @@ export class ValidatorBid {
       try {
         return BigInt(json);
       } catch (e) {
-        throw new Error(`Could not convert minimum_delegation_amount: ${json}`);
+        throw new Error(
+          `Could not convert minimum_delegation_amount: ${json}`,
+          { cause: e }
+        );
       }
     },
     serializer: value => value?.toString()
@@ -339,7 +352,10 @@ export class ValidatorBid {
       try {
         return BigInt(json);
       } catch (e) {
-        throw new Error(`Could not convert maximum_delegation_amount: ${json}`);
+        throw new Error(
+          `Could not convert maximum_delegation_amount: ${json}`,
+          { cause: e }
+        );
       }
     },
     serializer: value => value?.toString()

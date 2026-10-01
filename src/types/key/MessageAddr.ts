@@ -1,4 +1,3 @@
-import { concat } from '@ethersproject/bytes';
 import { jsonMember, jsonObject } from 'typedjson';
 
 import { Hash } from './Hash';
@@ -68,15 +67,15 @@ export class MessageAddr {
       );
     }
 
-    source = source.substring(PrefixNameMessage.length);
+    let remaining = source.substring(PrefixNameMessage.length);
 
     let hashAddr: string;
     let topicHash: string;
     let index: number | undefined;
 
-    if (source.startsWith(TopicPrefix)) {
-      source = source.substring(TopicPrefix.length);
-      const parts = source.split('-');
+    if (remaining.startsWith(TopicPrefix)) {
+      remaining = remaining.substring(TopicPrefix.length);
+      const parts = remaining.split('-');
 
       if (parts.length !== 4) {
         throw new Error(
@@ -87,7 +86,7 @@ export class MessageAddr {
       hashAddr = `${parts[0]}-${parts[1]}-${parts[2]}`;
       topicHash = parts[3];
     } else {
-      const parts = source.split('-');
+      const parts = remaining.split('-');
 
       if (parts.length !== 5) {
         throw new Error(
@@ -150,12 +149,17 @@ export class MessageAddr {
    */
   static fromBytes(bytes: Uint8Array): IResultWithBytes<MessageAddr> {
     const entityAddr = EntityAddr.fromBytes(bytes);
-    const topicNameHash = Hash.fromBytes(bytes);
+    const topicNameHash = Hash.fromBytes(entityAddr.bytes);
+    let remainder = topicNameHash.bytes;
 
     let messageIndex: number | undefined;
-    if (bytes.length > 0) {
-      const messageIndexArray = bytes.slice(bytes.length - 4);
-      messageIndex = new DataView(messageIndexArray.buffer).getUint32(0, true);
+    if (remainder.length >= 4) {
+      messageIndex = new DataView(
+        remainder.buffer,
+        remainder.byteOffset,
+        4
+      ).getUint32(0, true);
+      remainder = remainder.subarray(4);
     }
 
     return {
@@ -164,7 +168,7 @@ export class MessageAddr {
         topicNameHash?.result,
         messageIndex
       ),
-      bytes: concat([entityAddr.bytes, topicNameHash.bytes])
+      bytes: remainder
     };
   }
 

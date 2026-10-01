@@ -1,6 +1,6 @@
 import { jsonObject, jsonMember } from 'typedjson';
 import { Hash } from './Hash';
-import { PrefixName } from './Key';
+import { PrefixName } from './PrefixName';
 
 /**
  * Represents an addressable entity hash in the Casper network.

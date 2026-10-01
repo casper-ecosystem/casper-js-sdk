@@ -163,7 +163,22 @@ export class StateGetEntityResult {
   @jsonMember({ name: 'api_version', constructor: String })
   apiVersion: string;
 
-  @jsonMember({ name: 'entity', constructor: EntityOrAccount })
+  /**
+   * A 2.x node keys an account entity as `Account`, a 1.x one as
+   * `LegacyAccount`; both parse onto `legacyAccount`, and re-serializing
+   * always writes `LegacyAccount`.
+   */
+  @jsonMember({
+    name: 'entity',
+    constructor: EntityOrAccount,
+    deserializer: json => {
+      if (!json) return;
+      const { Account: account, ...rest } = json;
+      return new TypedJSON(EntityOrAccount).parse(
+        account ? { ...rest, LegacyAccount: account } : rest
+      );
+    }
+  })
   entity: EntityOrAccount;
 
   @jsonMember({ name: 'merkle_proof', constructor: AnyT })
@@ -687,6 +702,18 @@ export class BlockSyncStatus {
   acquisitionState?: string;
 }
 
+/**
+ * The range of blocks the node currently holds, as reported by `info_get_status`.
+ */
+@jsonObject
+export class AvailableBlockRange {
+  @jsonMember({ name: 'low', constructor: Number })
+  low: number;
+
+  @jsonMember({ name: 'high', constructor: Number })
+  high: number;
+}
+
 @jsonObject
 export class BlockSynchronizerStatus {
   @jsonMember({ name: 'historical', constructor: BlockSyncStatus })
@@ -764,12 +791,9 @@ export class InfoGetStatusResult {
 
   @jsonMember({
     name: 'available_block_range',
-    constructor: () => ({
-      low: jsonMember({ name: 'low', constructor: Number }),
-      high: jsonMember({ name: 'high', constructor: Number })
-    })
+    constructor: AvailableBlockRange
   })
-  availableBlockRange: { low: number; high: number };
+  availableBlockRange: AvailableBlockRange;
 
   @jsonMember({
     name: 'block_sync',

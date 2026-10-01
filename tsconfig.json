@@ -1,4 +1,9 @@
 {
   "extends": "./tsconfig.base.json",
-  "include": ["./src/**/*.ts", "./e2e/**/*.ts"]
+  "compilerOptions": {
+    // Same TS5011 requirement as tsconfig.build.json; "." because this config
+    // spans both `src/` and `e2e/`.
+    "rootDir": "."
+  },
+  "include": ["./src/**/*.ts", "./e2e/**/*.ts", "./vitest-globals.d.ts"]
 }

@@ -1,7 +1,29 @@
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
-import { MaxUint256, NegativeOne, One, Zero } from '@ethersproject/constants';
+import { NegativeOne, One, Zero } from '@ethersproject/constants';
 import { arrayify, concat } from '@ethersproject/bytes';
-import { blake2b } from '@noble/hashes/blake2b';
+import { blake2b } from '@noble/hashes/blake2';
+
+/**
+ * Stringifies a `BigNumberish` for the out-of-bounds errors below. `Bytes`
+ * (`ArrayLike<number>`) declares no `toString`, so the type checker cannot rule
+ * out `Object`'s `[object Object]` even though every value arriving here is a
+ * primitive, a `BigNumber`, or a real array/typed array. The branches spell out
+ * what implicit coercion did, keeping the message text identical: byte arrays
+ * comma-joined, everything else via its own `toString`.
+ */
+const describeValue = (value: BigNumberish): string => {
+  if (
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'bigint'
+  ) {
+    return String(value);
+  }
+  if (BigNumber.isBigNumber(value)) {
+    return value.toString();
+  }
+  return Array.from(value).join(',');
+};
 
 /**
  * Converts a BigNumberish value to bytes with specified bit size and signedness.
@@ -9,47 +31,45 @@ import { blake2b } from '@noble/hashes/blake2b';
  * @param signed - `true` if the integer is signed; `false` otherwise.
  * @returns A function that converts a BigNumberish value into a `Uint8Array` byte representation.
  */
-export const toBytesNumber = (bitSize: number, signed: boolean) => (
-  value: BigNumberish
-): Uint8Array => {
-  const val = BigNumber.from(value);
+export const toBytesNumber =
+  (bitSize: number, signed: boolean) =>
+  (value: BigNumberish): Uint8Array => {
+    const val = BigNumber.from(value);
 
-  // Calculate the maximum allowed unsigned value for the given bit size
-  const maxUintValue = MaxUint256.mask(bitSize);
+    const maxUintValue = One.shl(bitSize).sub(One);
 
-  if (signed) {
-    // Calculate signed bounds for the given bit size
-    const bounds = maxUintValue.mask(bitSize - 1);
-    if (val.gt(bounds) || val.lt(bounds.add(One).mul(NegativeOne))) {
-      throw new Error('value out-of-bounds, value: ' + value);
-    }
-  } else if (val.lt(Zero) || val.gt(maxUintValue.mask(bitSize))) {
-    throw new Error('value out-of-bounds, value: ' + value);
-  }
-
-  const valTwos = val.toTwos(bitSize).mask(bitSize);
-
-  const bytes = arrayify(valTwos);
-
-  if (valTwos.gte(0)) {
-    if (bitSize > 64) {
-      if (valTwos.eq(0)) {
-        return bytes;
+    if (signed) {
+      const bounds = One.shl(bitSize - 1).sub(One);
+      if (val.gt(bounds) || val.lt(bounds.add(One).mul(NegativeOne))) {
+        throw new Error('value out-of-bounds, value: ' + describeValue(value));
       }
-      return concat([bytes, Uint8Array.from([bytes.length])])
-        .slice()
-        .reverse();
-    } else {
-      const byteLength = bitSize / 8;
-      return concat([
-        bytes.slice().reverse(),
-        new Uint8Array(byteLength - bytes.length)
-      ]);
+    } else if (val.lt(Zero) || val.gt(maxUintValue)) {
+      throw new Error('value out-of-bounds, value: ' + describeValue(value));
     }
-  } else {
-    return bytes.reverse();
-  }
-};
+
+    const valTwos = val.toTwos(bitSize).mask(bitSize);
+
+    const bytes = arrayify(valTwos);
+
+    if (valTwos.gte(0)) {
+      if (bitSize > 64) {
+        if (valTwos.eq(0)) {
+          return bytes;
+        }
+        return concat([bytes, Uint8Array.from([bytes.length])])
+          .slice()
+          .reverse();
+      } else {
+        const byteLength = bitSize / 8;
+        return concat([
+          bytes.slice().reverse(),
+          new Uint8Array(byteLength - bytes.length)
+        ]);
+      }
+    } else {
+      return bytes.reverse();
+    }
+  };
 
 /**
  * Converts an 8-bit unsigned integer (`u8`) to little-endian byte format.
@@ -155,7 +175,9 @@ export function parseU32(bytes: Uint8Array): number {
     throw new Error('Invalid byte array for u32 parsing');
   }
 
-  return bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24);
+  return (
+    (bytes[0] | (bytes[1] << 8) | (bytes[2] << 16) | (bytes[3] << 24)) >>> 0
+  );
 }
 
 /**

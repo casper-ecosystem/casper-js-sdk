@@ -26,11 +26,8 @@ export class BlockGlobalAddrTagError extends Error {
  * @throws BlockGlobalAddrTagError if the tag is invalid.
  */
 export function getBlockGlobalAddrTag(tag: number): BlockGlobalAddrTag {
-  if (
-    tag === BlockGlobalAddrTag.BlockTime ||
-    tag === BlockGlobalAddrTag.MessageCount
-  ) {
-    return tag;
+  if ((Object.values(BlockGlobalAddrTag) as unknown[]).includes(tag)) {
+    return tag as BlockGlobalAddrTag;
   }
   throw new BlockGlobalAddrTagError('Invalid BlockGlobalAddrTag');
 }
@@ -73,9 +70,13 @@ export class BlockGlobalAddr {
    * @throws Error if the format does not match known block global address types.
    */
   static fromString(source: string): BlockGlobalAddr {
-    if (source.startsWith(BlockTimePrefix)) {
+    const body = source.startsWith(PrefixNameBlockGlobal)
+      ? source.substring(PrefixNameBlockGlobal.length)
+      : source;
+
+    if (body.startsWith(BlockTimePrefix)) {
       return new BlockGlobalAddr({}, undefined);
-    } else if (source.startsWith(MessageCountPrefix)) {
+    } else if (body.startsWith(MessageCountPrefix)) {
       return new BlockGlobalAddr(undefined, {});
     }
     throw new Error('Invalid BlockGlobalAddr format');

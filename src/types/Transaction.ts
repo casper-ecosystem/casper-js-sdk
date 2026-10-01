@@ -1,6 +1,7 @@
 import { jsonObject, jsonMember, jsonArrayMember, TypedJSON } from 'typedjson';
 import { concat } from '@ethersproject/bytes';
 
+import { toError } from '../utils/errors';
 import { Hash } from './key';
 import { Deploy } from './Deploy';
 import { Duration, Timestamp } from './Time';
@@ -109,12 +110,18 @@ export class TransactionHash extends Hash {
    * @param transactionV1 The hash of the version 1 transaction, if applicable.
    */
   private constructor(deploy?: Hash, transactionV1?: Hash) {
+    // Real bytes through `super`: the overrides below read `getHash()`, but
+    // inherited `Hash` methods still read `hashBytes`.
+    super(
+      deploy?.toBytes() ??
+        transactionV1?.toBytes() ??
+        new Uint8Array(Hash.ByteHashLen)
+    );
+
     if (deploy) {
-      super(deploy.toBytes());
       this.deploy = deploy;
     }
     if (transactionV1) {
-      super(transactionV1.toBytes());
       this.transactionV1 = transactionV1;
     }
   }
@@ -414,7 +421,9 @@ export class TransactionV1 {
         throw ErrTransactionV1FromJson;
       }
     } catch (e) {
-      throw new Error(`Serialization error: ${e.message}`);
+      throw new Error(`Serialization error: ${toError(e).message}`, {
+        cause: e
+      });
     }
 
     tx.validate();
@@ -712,13 +721,17 @@ export class Transaction {
       const txV1 = TransactionV1.fromJSON(json);
 
       return Transaction.fromTransactionV1(txV1);
-    } catch (e) {}
+    } catch {
+      // Not a TransactionV1 — fall through and try the legacy Deploy format.
+    }
 
     try {
       const deploy = Deploy.fromJSON(json);
 
       return Transaction.fromDeploy(deploy);
-    } catch (e) {}
+    } catch {
+      // Not a Deploy either — the throw below reports the overall failure.
+    }
 
     throw new Error("The JSON can't be parsed as a Transaction.");
   }

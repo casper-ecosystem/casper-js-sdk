@@ -1,0 +1,54 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+
+  /**
+   * The tripwire behind the "no unplanned breaking changes on 5.x" promise: the emitted public
+   * surface is rolled up into `etc/casper-js-sdk.api.md` and CI re-runs this against the
+   * committed report, so a surface change arrives as a reviewable diff of that file.
+   *
+   * Reads the built declarations, not `src`. Run `npm run build` first.
+   */
+  "mainEntryPointFilePath": "<projectFolder>/dist/index.d.ts",
+
+  "compiler": {
+    "tsconfigFilePath": "<projectFolder>/tsconfig.json"
+  },
+
+  "apiReport": {
+    "enabled": true,
+    "reportFolder": "<projectFolder>/etc/"
+  },
+
+  /**
+   * Only the report is wanted: typedoc already covers the docs, and the .d.ts rollup would
+   * replace the published declarations — a packaging change, not this tripwire's business.
+   */
+  "docModel": { "enabled": false },
+  "dtsRollup": { "enabled": false },
+  "tsdocMetadata": { "enabled": false },
+
+  "messages": {
+    "compilerMessageReporting": {
+      "default": { "logLevel": "warning" }
+    },
+
+    "extractorMessageReporting": {
+      "default": { "logLevel": "warning" },
+
+      /**
+       * An exported type that references a non-exported one is a hole in the published surface.
+       * Silenced because the existing surface already has such leaks and the report enumerates
+       * them: raising this back to a failure is a cleanup, not a flip of this flag.
+       */
+      "ae-forgotten-export": { "logLevel": "none" },
+
+      /** Release tags are a docs convention this repo does not use; every export is public. */
+      "ae-missing-release-tag": { "logLevel": "none" },
+      "ae-undocumented": { "logLevel": "none" }
+    },
+
+    "tsdocMessageReporting": {
+      "default": { "logLevel": "none" }
+    }
+  }
+}

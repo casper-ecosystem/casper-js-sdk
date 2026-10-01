@@ -8,8 +8,6 @@ import { BidKind } from './BidKind';
 import { MessageChecksum, MessageTopicSummary } from './MessageTopic';
 import { DeployInfo } from './DeployInfo';
 import { CLValue, CLValueUInt512 } from './clvalue';
-import { Args } from './Args';
-import { deserializeArgs, serializeArgs } from './SerializationUtils';
 import {
   BidKindRawData,
   PackageRawData,
@@ -31,6 +29,7 @@ import {
   WriteTransfer
 } from './TransformRaw';
 import { Contract } from './Contract';
+import { NamedKeyKind } from './NamedKeyKind';
 import { ContractPackage } from './ContractPackage';
 
 /**
@@ -557,12 +556,14 @@ export class TransformKind {
    */
   private containsKeyRecursive(obj: any, name: string): boolean {
     for (const key in obj) {
-      if (key.includes(name)) {
-        return true;
-      }
-      if (typeof obj[key] === 'object' && obj[key] !== null) {
-        if (this.containsKeyRecursive(obj[key], name)) {
+      if (Object.prototype.hasOwnProperty.call(obj, key)) {
+        if (key.includes(name)) {
           return true;
+        }
+        if (typeof obj[key] === 'object' && obj[key] !== null) {
+          if (this.containsKeyRecursive(obj[key], name)) {
+            return true;
+          }
         }
       }
     }
@@ -676,26 +677,5 @@ export class TransformKey {
   public transform: TransformKind;
 }
 
-/**
- * Represents a named key transformation in a transaction.
- */
-@jsonObject
-export class NamedKeyKind {
-  /**
-   * The named key transformation data represented as `Args`.
-   */
-  @jsonMember(() => Args, {
-    deserializer: deserializeArgs,
-    serializer: (args: Args) => serializeArgs(args, false)
-  })
-  public namedKey: Args;
-
-  /**
-   * The name of the key represented as `Args`.
-   */
-  @jsonMember(() => Args, {
-    deserializer: deserializeArgs,
-    serializer: (args: Args) => serializeArgs(args, false)
-  })
-  public name: Args;
-}
+// Re-exported so `NamedKeyKind` keeps its published import path.
+export { NamedKeyKind };

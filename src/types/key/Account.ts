@@ -1,6 +1,6 @@
 import { jsonObject } from 'typedjson';
 import { Hash } from './Hash';
-import { PrefixName } from './Key';
+import { PrefixName } from './PrefixName';
 
 /**
  * Represents an account hash in the Casper network.

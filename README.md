@@ -342,3 +342,15 @@ const result = await rpcClient.putDeploy(deploy);
 
 console.log(`Deploy Hash: ${result.deployHash}`);
 ```
+
+## Contributing
+
+Clone and set up with:
+
+```bash
+npm run setup
+```
+
+Not `npm install` on its own. `.npmrc` sets `ignore-scripts=true`, so npm runs no dependency lifecycle script during an install — a malicious `postinstall` in any package in the tree is the most direct supply-chain attack there is, and it needs no cooperation from this repo's code. `npm run setup` installs, then runs only the scripts allowlisted under `lavamoat.allowScripts` in `package.json` (currently none), then installs the git hooks. `@lavamoat/preinstall-always-fail` fails the install loudly if that protection is ever switched back off.
+
+The same flag means npm no longer runs `pre`/`post` scripts around a task, so package.json scripts chain their steps explicitly — `build` calls `clean` and `lint` itself rather than relying on a `prebuild` hook. Add new steps the same way; a `pre<task>` script here would silently never run.

@@ -1,7 +1,7 @@
 import { jsonMember, jsonObject } from 'typedjson';
 import { Conversions } from '../Conversions';
 import { IResultWithBytes } from '../clvalue';
-import { PrefixName } from './Key';
+import { PrefixName } from './PrefixName';
 
 /**
  * Enum representing the types of balance hold addresses.
@@ -28,8 +28,8 @@ export class BalanceHoldAddrTagError extends Error {
  * @throws BalanceHoldAddrTagError if the tag is invalid.
  */
 export function getBalanceHoldAddrTag(tag: number): BalanceHoldAddrTag {
-  if (tag === BalanceHoldAddrTag.Gas || tag === BalanceHoldAddrTag.Processing) {
-    return tag;
+  if ((Object.values(BalanceHoldAddrTag) as unknown[]).includes(tag)) {
+    return tag as BalanceHoldAddrTag;
   }
   throw new BalanceHoldAddrTagError('Invalid BalanceHoldAddrTag');
 }
@@ -158,16 +158,18 @@ export class BalanceHoldAddr {
     const purseAddr = bytes.slice(1, ByteHashLen + 1);
     const blockTimeMillis = new DataView(
       bytes.buffer,
-      ByteHashLen + 1
+      bytes.byteOffset + ByteHashLen + 1,
+      BlockTypeBytesLen
     ).getBigUint64(0, true);
     const blockTime = new Date(Number(blockTimeMillis));
 
     const hold = new Hold(purseAddr, blockTime);
+    const remainder = bytes.subarray(ByteHashLen + BlockTypeBytesLen + 1);
 
     if (balanceHoldAddrTag === BalanceHoldAddrTag.Gas) {
-      return { result: new BalanceHoldAddr(hold, undefined), bytes: purseAddr };
+      return { result: new BalanceHoldAddr(hold, undefined), bytes: remainder };
     } else if (balanceHoldAddrTag === BalanceHoldAddrTag.Processing) {
-      return { result: new BalanceHoldAddr(undefined, hold), bytes: purseAddr };
+      return { result: new BalanceHoldAddr(undefined, hold), bytes: remainder };
     }
 
     throw new BalanceHoldAddrTagError('Unexpected BalanceHoldAddr type');
@@ -179,7 +181,11 @@ export class BalanceHoldAddr {
    * @returns A new BalanceHoldAddr instance.
    */
   public static fromJSON(json: string): BalanceHoldAddr {
-    return this.fromString(json);
+    return this.fromString(
+      json.startsWith(PrefixName.BalanceHold)
+        ? json.substring(PrefixName.BalanceHold.length)
+        : json
+    );
   }
 
   /**

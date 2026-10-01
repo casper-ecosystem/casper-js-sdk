@@ -1,4 +1,4 @@
-import EventSource from 'eventsource';
+import { ErrorEvent, EventSource } from 'eventsource';
 import { Result, Ok, Err } from 'ts-results';
 
 import { EventName, RawEvent } from './event';
@@ -10,6 +10,43 @@ import { EventParser } from './event_parser';
  * @param result - A RawEvent instance representing the event.
  */
 export type EventHandlerFn = (result: RawEvent) => void;
+
+/**
+ * Error raised when the event stream itself fails.
+ */
+export class SseError extends Error {
+  /**
+   * HTTP status code, when the failure came from an HTTP response (e.g. 401 or
+   * 403). Undefined for transport-level failures.
+   */
+  public readonly code?: number;
+
+  constructor(message?: string, code?: number) {
+    super(
+      message ??
+        (code
+          ? `Event stream failed with status ${code}`
+          : 'Event stream failed')
+    );
+    this.name = 'SseError';
+    this.code = code;
+
+    // Downlevelled `extends Error` returns a fresh Error from `Error.call`,
+    // leaving this instance on `Error.prototype`.
+    Object.setPrototypeOf(this, SseError.prototype);
+  }
+
+  /**
+   * Type guard for `SseError`.
+   *
+   * Prefer it to `instanceof`: two copies of the SDK in one dependency tree
+   * have two distinct `SseError` constructors, and `instanceof` fails between
+   * them.
+   */
+  static isSseError(error: unknown): error is SseError {
+    return error instanceof Error && error.name === 'SseError';
+  }
+}
 
 /**
  * Interface representing an event subscription.
@@ -98,8 +135,12 @@ export class SseClient {
    * Starts the SSE connection.
    *
    * @param eventId - (Optional) The event ID to start streaming from.
+   * @param onError - (Optional) Invoked when the stream reports an error, with
+   *   the HTTP status attached when the failure was an HTTP one. When omitted,
+   *   the error is logged and the stream is left to reconnect. Throwing from
+   *   the callback never reaches the caller of `start`.
    */
-  public start(eventId?: number): void {
+  public start(eventId?: number, onError?: (error: SseError) => void): void {
     const separator = this.eventStreamUrl.includes('?') ? '&' : '?';
     let requestUrl = `${this.eventStreamUrl}${separator}`;
     if (eventId !== undefined) {
@@ -108,8 +149,23 @@ export class SseClient {
     this.eventSource = new EventSource(requestUrl);
 
     this.eventSource.onmessage = e => this.runEventsLoop(e);
-    this.eventSource.onerror = err => {
-      throw err;
+    this.eventSource.onerror = (event: ErrorEvent) => {
+      // The stream reports an `ErrorEvent`, not an `Error`: no stack, no
+      // readable message, and the HTTP status sitting on `.code`.
+      const error = new SseError(event.message, event.code);
+
+      if (onError) {
+        onError(error);
+        return;
+      }
+
+      // Never throw from here: this runs inside `eventsource`'s own fetch
+      // chain, which either swallows the throw or leaks it as a rejection.
+      console.error(
+        `[SseClient] event stream error${
+          error.code === undefined ? '' : ` (status ${error.code})`
+        }: ${error.message}`
+      );
     };
   }
 

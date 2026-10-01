@@ -122,7 +122,7 @@ export const dehumanizerTTL = (ttl: string): number => {
   return ttl
     .split(' ')
     .map(dehumanizeUnit)
-    .reduce((acc, val) => (acc += val));
+    .reduce((acc, val) => acc + val);
 };
 
 /**
