@@ -117,8 +117,12 @@ export class Duration {
    * @throws Error if the duration format is invalid.
    */
   static parseDurationString(durationStr: string): number {
-    const parts = durationStr.match(/(\d+)([smhd])/g);
-    if (!parts) throw new Error('Invalid duration format');
+    // The unit is optional so every digit run is consumed whole and never
+    // rescanned; requiring it makes the match quadratic on unit-less input.
+    const parts = (durationStr.match(/\d+[smhd]?/g) ?? []).filter(part =>
+      /[smhd]$/.test(part)
+    );
+    if (!parts.length) throw new Error('Invalid duration format');
 
     let totalMs = 0;
     for (const part of parts) {
