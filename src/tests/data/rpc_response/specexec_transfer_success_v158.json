@@ -1,0 +1,70 @@
+{
+  "jsonrpc": "2.0",
+  "id": "1",
+  "result": {
+    "api_version": "1.5.0",
+    "block_hash": "1dd95f1d19fb96ebcbaa377de98cad991b30fce4aa8316eb2af0d7fa1f0276a6",
+    "execution_result": {
+      "Success": {
+        "effect": {
+          "operations": [],
+          "transforms": [
+            {
+              "key": "balance-db05dbd78528ce0adfaa92eab0099a3095dee2734d27bbca8d1f0bf433af09a9",
+              "transform": "Identity"
+            },
+            {
+              "key": "balance-021bf5cfa240a4e2d88c5510974de95f9125d955b6973cec4852954d5bba7cf7",
+              "transform": {
+                "WriteCLValue": {
+                  "cl_type": "U512",
+                  "bytes": "0e001f0afa095bc138938d44c64d31",
+                  "parsed": "999999999999999999999999900000000"
+                }
+              }
+            },
+            {
+              "key": "balance-db05dbd78528ce0adfaa92eab0099a3095dee2734d27bbca8d1f0bf433af09a9",
+              "transform": {
+                "AddUInt512": "100000000"
+              }
+            },
+            {
+              "key": "transfer-1f248cfe930f5791fd3bdea144db414cf6182bbb9c8a51c2408ae926edcc6b93",
+              "transform": {
+                "WriteTransfer": {
+                  "deploy_hash": "fd970b7d424c7e1a2df9f11411e65e85ed7f5995afcbbca8c7ad2a2c90bdbfa6",
+                  "from": "account-hash-ffaa73331421de42fd71a28824e1606a1ca7fa754f91f501f0cf56015f7284cd",
+                  "to": "account-hash-56befc13a6fd62e18f361700a5e08f966901c34df8041b36ec97d54d605c23de",
+                  "source": "uref-021bf5cfa240a4e2d88c5510974de95f9125d955b6973cec4852954d5bba7cf7-007",
+                  "target": "uref-cd1186572b3abf30b00b739e7bb0ef517ee58d6f563ef8008a6d08fb078dca13-004",
+                  "amount": "2500000000",
+                  "gas": "0",
+                  "id": 1
+                }
+              }
+            },
+            {
+              "key": "deploy-fd970b7d424c7e1a2df9f11411e65e85ed7f5995afcbbca8c7ad2a2c90bdbfa6",
+              "transform": {
+                "WriteDeployInfo": {
+                  "deploy_hash": "fd970b7d424c7e1a2df9f11411e65e85ed7f5995afcbbca8c7ad2a2c90bdbfa6",
+                  "transfers": [
+                    "transfer-1f248cfe930f5791fd3bdea144db414cf6182bbb9c8a51c2408ae926edcc6b93"
+                  ],
+                  "from": "account-hash-ffaa73331421de42fd71a28824e1606a1ca7fa754f91f501f0cf56015f7284cd",
+                  "source": "uref-021bf5cfa240a4e2d88c5510974de95f9125d955b6973cec4852954d5bba7cf7-007",
+                  "gas": "100000000"
+                }
+              }
+            }
+          ]
+        },
+        "transfers": [
+          "transfer-1f248cfe930f5791fd3bdea144db414cf6182bbb9c8a51c2408ae926edcc6b93"
+        ],
+        "cost": "100000000"
+      }
+    }
+  }
+}

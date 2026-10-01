@@ -2908,7 +2908,7 @@ export const MapJsonParsingError: Error;
 // @public
 export class Message {
     blockIndex: number;
-    hashAddr: Hash;
+    entityAddr: EntityAddr;
     message: MessagePayload;
     topicIndex: number;
     topicName: string;

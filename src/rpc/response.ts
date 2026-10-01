@@ -892,13 +892,13 @@ export class SpeculativeExecResult {
   static fromJSON(json: any): SpeculativeExecResult {
     const result = new SpeculativeExecResult();
 
-    result.apiVersion = json?.version;
+    result.apiVersion = json?.result?.api_version;
     const execJson = json?.result?.execution_result;
     result.rawJSON = json;
 
-    result.blockHash = execJson?.block_hash
-      ? Hash.fromHex(execJson.block_hash)
-      : undefined;
+    // 2.x nests the block hash inside the execution result, 1.5 keeps it alongside.
+    const blockHash = execJson?.block_hash ?? json?.result?.block_hash;
+    result.blockHash = blockHash ? Hash.fromHex(blockHash) : undefined;
 
     if (
       execJson &&
