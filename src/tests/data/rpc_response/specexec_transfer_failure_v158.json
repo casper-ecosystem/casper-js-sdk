@@ -1,0 +1,36 @@
+{
+  "jsonrpc": "2.0",
+  "id": "1",
+  "result": {
+    "api_version": "1.5.0",
+    "block_hash": "eda864c7da3f5765a7027e3aa234b05c4b6c33efae51adacd224dc5f3c1c7958",
+    "execution_result": {
+      "Failure": {
+        "effect": {
+          "operations": [],
+          "transforms": [
+            {
+              "key": "balance-ea25d3f88927d4a722ff965e0d096e363d00344cc5cde7a0317338afdc1e30fd",
+              "transform": {
+                "WriteCLValue": {
+                  "cl_type": "U512",
+                  "bytes": "0400180d8f",
+                  "parsed": "2400000000"
+                }
+              }
+            },
+            {
+              "key": "balance-f6283510ff8161a95313a747f948abc388924fc13ff88343ec2c8572beecc587",
+              "transform": {
+                "AddUInt512": "100000000"
+              }
+            }
+          ]
+        },
+        "transfers": [],
+        "cost": "100000000",
+        "error_message": "Insufficient payment"
+      }
+    }
+  }
+}

@@ -13,9 +13,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
-### [5.2.0] - 2026-08-10
+### [5.2.0] - 2026-10-05
 
-`engines.node` stays `">=18"`, and nothing was removed or renamed. Four behaviours change how existing code runs — the SSE error path, the SSE event parsers, `waitForTransaction()` and the spelling of the system registry key — and are marked in **Changed**. The rest are serialization fixes; several corrected values the SDK previously got wrong on the wire, so recorded output may differ.
+`engines.node` stays `">=18"`. Four behaviours change how existing code runs — the SSE error path, the SSE event parsers, `waitForTransaction()` and the spelling of the system registry key — and are marked in **Changed**. One fix renames a public field, `Message.hashAddr` → `Message.entityAddr`; see **Fixed**. The rest are serialization fixes; several corrected values the SDK previously got wrong on the wire, so recorded output may differ.
 
 ### Added
 
@@ -42,6 +42,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - **`queryGlobalStateByBlockHash()`, `queryGlobalStateByBlockHeight()` and `queryGlobalStateByStateHash()` sent no `state_identifier`**, so all three queried the node's latest state and silently ignored the block or state root passed in
 - `PublicKey.accountHash().toJSON()` emitted `account-hash<hex>` without the separator, so an `EntityIdentifier` or `AccountIdentifier` built from it sent a malformed account hash to the node. `toPrefixedString()` was always correct
 - `StateGetEntityResult` ignored the `Account` key a 2.x node uses for an account entity, yielding an entity with nothing set and no error. Both `Account` and the 1.x `LegacyAccount` now resolve to `entity.legacyAccount`; the node's own payload stays on `rawJSON`
+- **Messages in speculative execution results and `TransactionProcessed` events came back `undefined`** from a 2.x node, which emits `entity_addr` where the SDK read `hash_addr`. The field is now `Message.entityAddr: EntityAddr`, replacing `Message.hashAddr: Hash`, which no 2.x node ever populated
+- `SpeculativeExecResult.apiVersion` held the JSON-RPC protocol version (`"2.0"`) instead of the node's `api_version`
+- `SpeculativeExecResult.blockHash` was `undefined` for a 1.5 node response, which carries the block hash beside `execution_result` rather than inside it
 - `SeigniorageAllocation.fromJSON()` read 2.x era data with the 1.x reader and dropped the delegator key — both shapes nest under `Delegator`, but 2.x carries a `delegator_kind` object where 1.x carries a flat public key. Both now parse
 - `DelegationKind` serialized a delegator's `PublicKey` as `{"cryptoAlg":1}` and a `Purse` as `{"data":[…],"access":4}` instead of their string forms, so any `EraInfo`, `EraEnd` or `AuctionState` document the SDK wrote identified no delegator
 - `EntryPointAccess.toJSON()` emitted a lowercase `groups` key where the node writes `Groups`

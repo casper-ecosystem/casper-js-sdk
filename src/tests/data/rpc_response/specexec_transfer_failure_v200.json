@@ -1,0 +1,16 @@
+{
+  "jsonrpc": "2.0",
+  "id": "1",
+  "result": {
+    "api_version": "2.0.0",
+    "execution_result": {
+      "block_hash": "f563d1435b3c707c85a2ead4a9524022f241bee8076775d8999102e5b9cf93e8",
+      "transfers": [],
+      "limit": "100000000",
+      "consumed": "100000000",
+      "effects": [],
+      "messages": [],
+      "error": "Mint(InsufficientFunds)"
+    }
+  }
+}

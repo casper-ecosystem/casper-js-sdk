@@ -1,0 +1,48 @@
+{
+  "jsonrpc": "2.0",
+  "id": "1",
+  "result": {
+    "api_version": "2.0.0",
+    "execution_result": {
+      "block_hash": "2bd86fac7be3623f5a99cb43973eee8da93530c5b14947c4416778413a80a3fa",
+      "transfers": [],
+      "limit": "2500000000",
+      "consumed": "395091618",
+      "effects": [
+        {
+          "key": "message-entity-contract-eece73f6a210f5d08f8a9da3348ab3c6f65d42eb0df9938f324940fb5422c360-5721a6d9d7a9afe5dfdb35276fb823bed0f825350e4d865a5ec0110c380de4e1-0",
+          "kind": {
+            "Write": {
+              "Message": "message-checksum-d518a59ff2625b76c2fc08a3090fc3ab8b1eadc08114d78718266cb15de52bf9"
+            }
+          }
+        },
+        {
+          "key": "message-topic-entity-contract-eece73f6a210f5d08f8a9da3348ab3c6f65d42eb0df9938f324940fb5422c360-5721a6d9d7a9afe5dfdb35276fb823bed0f825350e4d865a5ec0110c380de4e1",
+          "kind": {
+            "Write": {
+              "MessageTopic": {
+                "message_count": 1,
+                "blocktime": 1790591335485,
+                "topic_name": "events"
+              }
+            }
+          }
+        }
+      ],
+      "messages": [
+        {
+          "entity_addr": "entity-contract-eece73f6a210f5d08f8a9da3348ab3c6f65d42eb0df9938f324940fb5422c360",
+          "message": {
+            "String": "{\"sender\":\"account-hash-56befc13a6fd62e18f361700a5e08f966901c34df8041b36ec97d54d605c23de\",\"recipient\":\"entity-account-ffaa73331421de42fd71a28824e1606a1ca7fa754f91f501f0cf56015f7284cd\",\"amount\":\"1\"}"
+          },
+          "topic_name": "events",
+          "topic_name_hash": "5721a6d9d7a9afe5dfdb35276fb823bed0f825350e4d865a5ec0110c380de4e1",
+          "topic_index": 1,
+          "block_index": 2
+        }
+      ],
+      "error": null
+    }
+  }
+}

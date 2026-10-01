@@ -10,6 +10,12 @@ import {
   PrivateKey,
   PublicKey
 } from '../../types';
+import {
+  specExecCep18TransferSuccessV200Json,
+  specExecTransferFailureV158Json,
+  specExecTransferFailureV200Json,
+  specExecTransferSuccessV158Json
+} from '../data';
 
 const HASH_HEX = '11'.repeat(32);
 
@@ -192,5 +198,74 @@ describe('SpeculativeClient — response parsing', () => {
     await expect(client.speculativeExec('1', deploy)).rejects.toThrow(
       'Handler response is empty'
     );
+  });
+});
+
+describe('SpeculativeClient — node responses', () => {
+  const callWith = (fixture: unknown) => {
+    const { handler } = createHandler(() => fixture);
+    return new SpeculativeClient(handler).speculativeExec('1', buildDeploy());
+  };
+
+  it('parses a 2.0.0 response with messages', async () => {
+    const result = await callWith(specExecCep18TransferSuccessV200Json);
+
+    expect(result.isV2).to.be.true;
+    expect(result.apiVersion).to.equal('2.0.0');
+    expect(result.blockHash?.toHex()).to.equal(
+      '2bd86fac7be3623f5a99cb43973eee8da93530c5b14947c4416778413a80a3fa'
+    );
+    expect(result.executionResult?.limit).to.equal(2500000000);
+    expect(result.executionResult?.consumed).to.equal(395091618);
+    expect(result.executionResult?.effects).to.have.lengthOf(2);
+    expect(result.executionResult?.errorMessage).to.be.null;
+
+    const messages = result.executionResult!.messages;
+    expect(messages).to.have.lengthOf(1);
+    expect(messages[0].entityAddr.toPrefixedString()).to.equal(
+      'entity-contract-eece73f6a210f5d08f8a9da3348ab3c6f65d42eb0df9938f324940fb5422c360'
+    );
+    expect(messages[0].message.string).to.include('recipient');
+    expect(messages[0].topicName).to.equal('events');
+    expect(messages[0].topicIndex).to.equal(1);
+    expect(messages[0].blockIndex).to.equal(2);
+  });
+
+  it('parses a 2.0.0 response carrying an execution error', async () => {
+    const result = await callWith(specExecTransferFailureV200Json);
+
+    expect(result.isV2).to.be.true;
+    expect(result.executionResult?.errorMessage).to.equal(
+      'Mint(InsufficientFunds)'
+    );
+  });
+
+  it('parses a 1.5 success response', async () => {
+    const result = await callWith(specExecTransferSuccessV158Json);
+
+    expect(result.isV1).to.be.true;
+    expect(result.apiVersion).to.equal('1.5.0');
+    expect(result.blockHash?.toHex()).to.equal(
+      '1dd95f1d19fb96ebcbaa377de98cad991b30fce4aa8316eb2af0d7fa1f0276a6'
+    );
+    const success = result.executionResultV1!.success!;
+    expect(success.cost).to.equal(100000000);
+    expect(success.effect.transforms).to.have.lengthOf(5);
+    expect(success.transfers).to.have.lengthOf(1);
+  });
+
+  it('parses a 1.5 failure response', async () => {
+    const result = await callWith(specExecTransferFailureV158Json);
+
+    expect(result.isV1).to.be.true;
+    expect(result.apiVersion).to.equal('1.5.0');
+    expect(result.blockHash?.toHex()).to.equal(
+      'eda864c7da3f5765a7027e3aa234b05c4b6c33efae51adacd224dc5f3c1c7958'
+    );
+    const failure = result.executionResultV1!.failure!;
+    expect(failure.errorMessage).to.equal('Insufficient payment');
+    expect(failure.cost).to.equal(100000000);
+    expect(failure.effect.transforms).to.have.lengthOf(2);
+    expect(failure.transfers).to.have.lengthOf(0);
   });
 });
