@@ -209,7 +209,9 @@ describe('compatibility with casper-js-sdk@5.1.0', () => {
         ? `serializes ${name} to its documented post-5.1.0 form`
         : `serializes ${name} exactly as 5.1.0 did`;
 
-      it(title, () => {
+      // eraSummary/example is the 11 MB, 30650-allocation fixture, which does
+      // not fit in the 5s default on a CI runner.
+      it(title, { timeout: 10000 }, () => {
         const serializer = new TypedJSON(constructor);
         const parsed = serializer.parse(input);
 
