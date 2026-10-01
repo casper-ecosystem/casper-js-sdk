@@ -32,6 +32,15 @@ updates:
         exclude-patterns:
           - '@noble/*'
           - '@peculiar/*'
+      # Every @vitest/* package pins vitest to its exact version, so a major
+      # of any one of them cannot install without the rest.
+      vitest-major:
+        applies-to: version-updates
+        update-types:
+          - major
+        patterns:
+          - 'vitest'
+          - '@vitest/*'
     # Held back deliberately: the @noble v2 consolidation, the native-bigint move
     # off @ethersproject/*, and eventsource 4 are one coordinated change.
     ignore:
