@@ -1411,6 +1411,19 @@ describe('RpcClient — waitForTransaction', () => {
     await assertion;
   });
 
+  it('rejects with a timeout when an RPC call never settles', async () => {
+    vi.useFakeTimers();
+    const transaction = buildSignedTransfer();
+    const processCall = vi.fn(() => new Promise<RpcResponse>(() => {}));
+    const client = new RpcClient({ processCall });
+
+    const resultPromise = client.waitForTransaction(transaction, 1000);
+    const assertion = expect(resultPromise).rejects.toThrow('Timeout');
+    await vi.advanceTimersByTimeAsync(1000);
+    await assertion;
+    expect(processCall).toHaveBeenCalledTimes(1);
+  });
+
   it('stops polling once it has timed out', async () => {
     vi.useFakeTimers();
     const transaction = buildSignedTransfer();

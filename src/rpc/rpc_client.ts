@@ -1420,16 +1420,35 @@ export class RpcClient implements IClient {
   ): Promise<T> {
     const deadline = Date.now() + timeout;
     const timedOut = () => Date.now() >= deadline;
+    const expired = new Error('Timeout');
+
+    const beforeDeadline = async (pending: Promise<T>): Promise<T> => {
+      let timer: ReturnType<typeof setTimeout> | undefined;
+
+      const deadlinePassed = new Promise<never>((_, reject) => {
+        timer = setTimeout(
+          () => reject(expired),
+          Math.max(0, deadline - Date.now())
+        );
+      });
+
+      try {
+        return await Promise.race([pending, deadlinePassed]);
+      } finally {
+        clearTimeout(timer);
+      }
+    };
 
     let attempts = 0;
 
     while (true) {
       try {
-        const info = await getInfo(hash);
+        const info = await beforeDeadline(getInfo(hash));
         if ((info as any)?.executionInfo?.executionResult) {
           return info;
         }
       } catch (error) {
+        if (error === expired) throw error;
         if (attempts >= maxRetries) {
           throw new Error(
             `Failed after ${maxRetries} retries: ${toError(error).message}`,
