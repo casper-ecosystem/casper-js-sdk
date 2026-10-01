@@ -79,7 +79,7 @@
     "@types/node": "^22.20.1",
     "@types/sinon": "^22.0.0",
     "@vitest/browser": "^4.1.10",
-    "@vitest/browser-playwright": "^4.1.10",
+    "@vitest/browser-playwright": "^5.0.1",
     "@vitest/coverage-v8": "^4.1.10",
     "buffer": "^6.0.3",
     "copy-webpack-plugin": "^14.0.0",
