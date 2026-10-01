@@ -28,6 +28,6 @@ jobs:
           npm run docs:build
 
       - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@ba1486788b0490a235422264426c45848eac35c6 #v4.4.1
+        uses: JamesIves/github-pages-deploy-action@fa24774553152dd7873cd16ebd8d959b010c5445 #v4.9.0
         with:
           folder: docs # The folder the action should deploy.
