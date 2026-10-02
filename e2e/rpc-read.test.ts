@@ -7,7 +7,7 @@ import {
   PurseIdentifier
 } from '../src';
 import { NETWORK_NAME, loadFaucetKey } from './config';
-import { newRpcClient, waitForBlockHeight } from './helpers';
+import { newRpcClient, waitForBlockHeight, waitForEra } from './helpers';
 
 describe('RPC read surface', () => {
   const client = newRpcClient();
@@ -79,22 +79,30 @@ describe('RPC read surface', () => {
     expect(auctionInfo.auctionState.blockHeight).toBe(latest.block.height);
   });
 
-  it('getEraInfoLatest and getEraSummaryLatest agree on the era summary', async () => {
-    const eraInfo = await client.getEraInfoLatest();
-    const eraSummaryLatest = await client.getEraSummaryLatest();
+  describe('era summary', () => {
+    // Era 0 is the genesis switch block alone and stores no era info, so the
+    // first era summary exists only once era 1's switch block has been added.
+    beforeAll(async () => {
+      await waitForEra(client, 2);
+    }, 180_000);
 
-    expect(eraInfo.eraSummary.eraID).toBe(eraSummaryLatest.eraSummary.eraID);
-  });
+    it('getEraInfoLatest and getEraSummaryLatest agree on the era summary', async () => {
+      const eraInfo = await client.getEraInfoLatest();
+      const eraSummaryLatest = await client.getEraSummaryLatest();
 
-  it('getEraSummaryByHash matches getEraSummaryLatest', async () => {
-    const latest = await client.getEraSummaryLatest();
-    const byHash = await client.getEraSummaryByHash(
-      latest.eraSummary.blockHash.toHex()
-    );
+      expect(eraInfo.eraSummary.eraID).toBe(eraSummaryLatest.eraSummary.eraID);
+    });
 
-    expect(byHash.eraSummary.blockHash.toHex()).toBe(
-      latest.eraSummary.blockHash.toHex()
-    );
+    it('getEraSummaryByHash matches getEraSummaryLatest', async () => {
+      const latest = await client.getEraSummaryLatest();
+      const byHash = await client.getEraSummaryByHash(
+        latest.eraSummary.blockHash.toHex()
+      );
+
+      expect(byHash.eraSummary.blockHash.toHex()).toBe(
+        latest.eraSummary.blockHash.toHex()
+      );
+    });
   });
 
   // A 2.x node wraps a classic account as `{"Account": {…}}`, which the
