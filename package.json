@@ -76,7 +76,7 @@
     "@lavamoat/preinstall-always-fail": "^3.0.0",
     "@microsoft/api-extractor": "^7.58.12",
     "@types/humanize-duration": "^3.27.4",
-    "@types/node": "^22.20.1",
+    "@types/node": "^24.19.0",
     "@types/sinon": "^22.0.0",
     "@vitest/browser": "^5.0.1",
     "@vitest/browser-playwright": "^5.0.1",
