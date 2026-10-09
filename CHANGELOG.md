@@ -13,9 +13,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
-### [5.2.0] - 2026-10-05
+### [5.2.0] - 2026-10-09
 
-`engines.node` stays `">=18"`. Four behaviours change how existing code runs — the SSE error path, the SSE event parsers, `waitForTransaction()` and the spelling of the system registry key — and are marked in **Changed**. One fix renames a public field, `Message.hashAddr` → `Message.entityAddr`; see **Fixed**. The rest are serialization fixes; several corrected values the SDK previously got wrong on the wire, so recorded output may differ.
+Improves compatibility with Casper 2.x nodes and fixes bugs in RPC queries, SSE event handling, serialization and key handling.
 
 ### Added
 
