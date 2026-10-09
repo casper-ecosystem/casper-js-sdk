@@ -53,8 +53,8 @@ updates:
       - dependency-name: 'eventsource'
         update-types:
           - version-update:semver-major
-      # Tracks the dev runtime (Node 22), not the latest Node: newer typings let
-      # APIs the published range lacks type-check. Bump it when the runtime moves.
+      # Tracks the dev runtime (Node 22), not the latest Node; moved by hand when
+      # the runtime moves.
       - dependency-name: '@types/node'
         update-types:
           - version-update:semver-major
