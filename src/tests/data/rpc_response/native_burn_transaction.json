@@ -1,0 +1,145 @@
+{
+  "api_version": "2.0.0",
+  "transaction": {
+    "Version1": {
+      "hash": "06e0cf828f7a588efd1bbfdc31d326ef64fdcf53efd338ae38672d751139fe80",
+      "payload": {
+        "initiator_addr": {
+          "PublicKey": "0184f6d260f4ee6869ddb36affe15456de6ae045278fa2f467bb677561ce0dad55"
+        },
+        "timestamp": "2026-10-14T16:55:22.099Z",
+        "ttl": "30m",
+        "chain_name": "casper-test",
+        "pricing_mode": {
+          "PaymentLimited": {
+            "payment_amount": 2500000000,
+            "gas_price_tolerance": 1,
+            "standard_payment": true
+          }
+        },
+        "fields": {
+          "args": {
+            "Named": [
+              [
+                "amount",
+                {
+                  "cl_type": "U512",
+                  "bytes": "04005ed0b2",
+                  "parsed": "3000000000"
+                }
+              ]
+            ]
+          },
+          "entry_point": "Burn",
+          "scheduling": "Standard",
+          "target": "Native"
+        }
+      },
+      "approvals": [
+        {
+          "signer": "0184f6d260f4ee6869ddb36affe15456de6ae045278fa2f467bb677561ce0dad55",
+          "signature": "0164e74dcd32e8332a7ce3c7ad0cf77a85c64e34568e855a80ac337ad3b85b4183ad7933e784a50b9d76f5dd3e35fb4b36967a5ce73592f3818efebf0d44991b0a"
+        }
+      ]
+    }
+  },
+  "execution_info": {
+    "block_hash": "ab9eb6d0953f892b4a9a17162b85ac53d157c26b8cbd430e6d3ee25a3a01605d",
+    "block_height": 9496612,
+    "execution_result": {
+      "Version2": {
+        "initiator": {
+          "PublicKey": "0184f6d260f4ee6869ddb36affe15456de6ae045278fa2f467bb677561ce0dad55"
+        },
+        "error_message": null,
+        "current_price": 1,
+        "limit": "2500000000",
+        "consumed": "2500000000",
+        "cost": "2500000000",
+        "refund": "0",
+        "transfers": [],
+        "size_estimate": 430,
+        "effects": [
+          {
+            "key": "balance-hold-0123dcda889fb11ec282ad9b409496fef0a2a7dbf5c70e822a7da84aef87f2a590642a573ba1010000",
+            "kind": {
+              "Write": {
+                "CLValue": {
+                  "cl_type": "U512",
+                  "bytes": "0400f90295",
+                  "parsed": "2500000000"
+                }
+              }
+            }
+          },
+          {
+            "key": "balance-hold-0123dcda889fb11ec282ad9b409496fef0a2a7dbf5c70e822a7da84aef87f2a590642a573ba1010000",
+            "kind": "Identity"
+          },
+          {
+            "key": "balance-23dcda889fb11ec282ad9b409496fef0a2a7dbf5c70e822a7da84aef87f2a590",
+            "kind": {
+              "Write": {
+                "CLValue": {
+                  "cl_type": "U512",
+                  "bytes": "055dc7c71c04",
+                  "parsed": "17662723933"
+                }
+              }
+            }
+          },
+          {
+            "key": "uref-5d7b1b23197cda53dec593caf30836a5740afa2279b356fae74bf1bdc2b2e725-000",
+            "kind": "Identity"
+          },
+          {
+            "key": "uref-5d7b1b23197cda53dec593caf30836a5740afa2279b356fae74bf1bdc2b2e725-000",
+            "kind": {
+              "Write": {
+                "CLValue": {
+                  "cl_type": "U512",
+                  "bytes": "0835dd1a28775fbeba",
+                  "parsed": "13456297702008216885"
+                }
+              }
+            }
+          },
+          {
+            "key": "balance-hold-0123dcda889fb11ec282ad9b409496fef0a2a7dbf5c70e822a7da84aef87f2a590642a573ba1010000",
+            "kind": {
+              "Prune": "balance-hold-0123dcda889fb11ec282ad9b409496fef0a2a7dbf5c70e822a7da84aef87f2a590642a573ba1010000"
+            }
+          },
+          {
+            "key": "balance-23dcda889fb11ec282ad9b409496fef0a2a7dbf5c70e822a7da84aef87f2a590",
+            "kind": {
+              "Write": {
+                "CLValue": {
+                  "cl_type": "U512",
+                  "bytes": "055dcec48703",
+                  "parsed": "15162723933"
+                }
+              }
+            }
+          },
+          {
+            "key": "uref-5d7b1b23197cda53dec593caf30836a5740afa2279b356fae74bf1bdc2b2e725-000",
+            "kind": "Identity"
+          },
+          {
+            "key": "uref-5d7b1b23197cda53dec593caf30836a5740afa2279b356fae74bf1bdc2b2e725-000",
+            "kind": {
+              "Write": {
+                "CLValue": {
+                  "cl_type": "U512",
+                  "bytes": "0835e41793765fbeba",
+                  "parsed": "13456297699508216885"
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

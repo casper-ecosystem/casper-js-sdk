@@ -254,3 +254,20 @@ describe('TransactionHash', () => {
     expect(fromFactory.equals(other)).to.equal(false);
   });
 });
+
+describe('TransactionEntryPoint', () => {
+  it('should round-trip the Burn entry point through JSON and bytes', () => {
+    const entryPoint = new TransactionEntryPoint(
+      TransactionEntryPointEnum.Burn
+    );
+
+    expect(entryPoint.tag()).to.equal(12);
+    expect(entryPoint.toJSON()).to.equal('Burn');
+    expect(TransactionEntryPoint.fromJSON('Burn').type).to.equal(
+      TransactionEntryPointEnum.Burn
+    );
+    expect(TransactionEntryPoint.fromBytes(entryPoint.toBytes()).type).to.equal(
+      TransactionEntryPointEnum.Burn
+    );
+  });
+});

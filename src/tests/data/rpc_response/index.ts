@@ -4,6 +4,7 @@ import infoGetTransactionResultV1Json from './info_get_transaction_result_v1.jso
 import stateItemResultV1Json from './state_item_result_v1.json';
 import stateItemResultV2Json from './state_item_result_v2.json';
 import addReservationTransactionJson from './add_reservation_transaction.json';
+import nativeBurnTransactionJson from './native_burn_transaction.json';
 import infoGetDeployJson from './info_get_deploy.json';
 import specExecCep18TransferSuccessV200Json from './specexec_cep18transfer_success_v200.json';
 import specExecTransferFailureV200Json from './specexec_transfer_failure_v200.json';
@@ -17,6 +18,7 @@ export {
   stateItemResultV1Json,
   stateItemResultV2Json,
   addReservationTransactionJson,
+  nativeBurnTransactionJson,
   infoGetDeployJson,
   specExecCep18TransferSuccessV200Json,
   specExecTransferFailureV200Json,

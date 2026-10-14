@@ -3101,6 +3101,14 @@ export class NativeAddBidBuilder extends TransactionBuilder<NativeAddBidBuilder>
 }
 
 // @public
+export class NativeBurnBuilder extends TransactionBuilder<NativeBurnBuilder> {
+    constructor();
+    amount(amount: BigNumber | string): NativeBurnBuilder;
+    build(): Transaction;
+    source(purse: URef): NativeBurnBuilder;
+}
+
+// @public
 export class NativeChangeBidPublicKeyBuilder extends TransactionBuilder<NativeChangeBidPublicKeyBuilder> {
     constructor();
     build(): Transaction;
@@ -4312,6 +4320,8 @@ export enum TransactionEntryPointEnum {
     // (undocumented)
     AddReservations = "AddReservations",
     // (undocumented)
+    Burn = "Burn",
+    // (undocumented)
     Call = "Call",
     // (undocumented)
     CancelReservations = "CancelReservations",
@@ -4339,6 +4349,8 @@ export enum TransactionEntryPointTag {
     AddBid = 3,
     // (undocumented)
     AddReservations = 10,
+    // (undocumented)
+    Burn = 12,
     // (undocumented)
     Call = 0,
     // (undocumented)

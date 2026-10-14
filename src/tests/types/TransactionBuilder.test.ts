@@ -14,10 +14,13 @@ import {
   PrivateKey,
   KeyAlgorithm,
   ContractCallBuilder,
+  NativeBurnBuilder,
   NativeDelegateBuilder,
   NativeTransferBuilder,
   SessionBuilder,
-  TransactionV1
+  TransactionEntryPointEnum,
+  TransactionV1,
+  URef
 } from '../../types';
 import { AuctionManagerEntryPoint, CasperNetworkName } from '../../@types';
 
@@ -115,6 +118,43 @@ describe('TransactionBuilder', () => {
       const built = tx.getDeploy();
       expect(built).to.exist;
       expectBytesEqual(deploy.session.bytes(), built!.session.bytes());
+    });
+  });
+
+  describe('NativeBurnBuilder', () => {
+    const SOURCE_UREF =
+      'uref-5d7b1b23197cda53dec593caf30836a5740afa2279b356fae74bf1bdc2b2e725-000';
+
+    it('creates a native burn transaction with a source purse', () => {
+      const tx = new NativeBurnBuilder()
+        .from(PK)
+        .source(URef.fromString(SOURCE_UREF))
+        .amount('3000000000')
+        .chainName(CasperNetworkName.Testnet)
+        .payment(2_500_000_000)
+        .build();
+
+      expect(tx.entryPoint.type).to.equal(TransactionEntryPointEnum.Burn);
+      expect(tx.target.native).to.exist;
+      expect(Array.from(tx.args.args.keys())).to.deep.equal([
+        'source',
+        'amount'
+      ]);
+      expect(tx.args.getByName('source')!.uref!.toPrefixedString()).to.equal(
+        SOURCE_UREF
+      );
+      expect(tx.args.getByName('amount')!.toString()).to.equal('3000000000');
+    });
+
+    it('omits the source arg when no purse is set', () => {
+      const tx = new NativeBurnBuilder()
+        .from(PK)
+        .amount('3000000000')
+        .chainName(CasperNetworkName.Testnet)
+        .payment(2_500_000_000)
+        .build();
+
+      expect(Array.from(tx.args.args.keys())).to.deep.equal(['amount']);
     });
   });
 

@@ -10,12 +10,18 @@ import {
   InfoGetTransactionResultV1Compatible,
   StateGetAccountInfo
 } from '../../rpc';
-import { BlockBodyV2, NamedKey } from '../../types';
+import {
+  BlockBodyV2,
+  NamedKey,
+  TransactionEntryPointEnum,
+  TransactionV1
+} from '../../types';
 import {
   getBlockByHashJson,
   getStatusJson,
   infoGetTransactionResultV1Json,
   addReservationTransactionJson,
+  nativeBurnTransactionJson,
   infoGetDeployJson,
   transactionWithEraJson,
   getDeployWithNullExecutionResults,
@@ -168,6 +174,26 @@ describe('RPC Client', () => {
       addReservationTransactionJson.transaction.Version1.payload.initiator_addr
         .PublicKey
     );
+  });
+
+  it('should parse and validate a native Burn transaction', () => {
+    const tx = InfoGetTransactionResult.fromJSON(nativeBurnTransactionJson)!;
+    const v1 = nativeBurnTransactionJson.transaction.Version1;
+
+    expect(tx.transaction.entryPoint.type).to.equal(
+      TransactionEntryPointEnum.Burn
+    );
+    expect(tx.transaction.entryPoint.toJSON()).to.equal('Burn');
+    expect(tx.transaction.hash.toHex()).to.equal(v1.hash);
+    expect(tx.transaction.args.getByName('amount')!.toString()).to.equal(
+      '3000000000'
+    );
+
+    const transactionV1 = tx.transaction.getTransactionV1()!;
+    expect(transactionV1.validate()).to.equal(true);
+    expect(
+      (TransactionV1.toJSON(transactionV1) as any).payload.fields.entry_point
+    ).to.equal('Burn');
   });
 
   it('should correctly parse deploy', () => {
