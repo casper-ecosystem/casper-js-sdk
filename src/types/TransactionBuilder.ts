@@ -18,7 +18,7 @@ import {
 import { TransactionScheduling } from './TransactionScheduling';
 import { Args } from './Args';
 import { PublicKey } from './keypair';
-import { AccountHash, ContractHash, Hash } from './key';
+import { AccountHash, ContractHash, Hash, URef } from './key';
 import { Transaction, TransactionV1 } from './Transaction';
 import { TransactionV1Payload } from './TransactionV1Payload';
 import { Duration, Timestamp } from './Time';
@@ -1157,6 +1157,72 @@ export class NativeChangeBidPublicKeyBuilder extends TransactionBuilder<NativeCh
       new_public_key: this._new_public_key
     });
 
+    return super.build();
+  }
+}
+
+/**
+ * Builder for creating Native Burn transactions, which destroy motes from a purse.
+ * Without `source`, the motes are burned from the initiator's main purse.
+ *
+ * @example
+ * ```typescript
+ * const transaction = new NativeBurnBuilder()
+ *   .from(senderPublicKey)
+ *   .amount('3000000000') // 3 CSPR in motes
+ *   .chainName('casper-test')
+ *   .payment(2_500_000_000)
+ *   .build();
+ * ```
+ */
+export class NativeBurnBuilder extends TransactionBuilder<NativeBurnBuilder> {
+  private _source?: CLValue;
+  private _amount: CLValue = CLValue.newCLUInt512('0');
+
+  constructor() {
+    super();
+    this._invocationTarget = new TransactionTarget({});
+    this._entryPoint = new TransactionEntryPoint(
+      TransactionEntryPointEnum.Burn
+    );
+  }
+
+  /**
+   * Sets the purse to burn from. Defaults to the initiator's main purse.
+   *
+   * @param purse - URef of the source purse
+   * @returns The builder instance for method chaining
+   */
+  public source(purse: URef): NativeBurnBuilder {
+    this._source = CLValue.newCLUref(purse);
+    return this;
+  }
+
+  /**
+   * Sets the amount to burn in motes.
+   *
+   * @param amount - The amount to burn (1 CSPR = 1,000,000,000 motes)
+   * @returns The builder instance for method chaining
+   */
+  public amount(amount: BigNumber | string): NativeBurnBuilder {
+    this._amount = CLValue.newCLUInt512(amount);
+    return this;
+  }
+
+  /**
+   * Builds and returns the Native Burn transaction for Casper 2.0+.
+   *
+   * @returns A complete Transaction object ready to be signed and submitted
+   */
+  public build(): Transaction {
+    const runtimeArgs = Args.fromMap({});
+
+    if (this._source) {
+      runtimeArgs.insert('source', this._source);
+    }
+    runtimeArgs.insert('amount', this._amount);
+
+    this._runtimeArgs = runtimeArgs;
     return super.build();
   }
 }

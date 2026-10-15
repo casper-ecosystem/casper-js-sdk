@@ -13,6 +13,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [5.3.0] - 2026-10-16
+
+### Added
+
+- `Burn` native entry point (`TransactionEntryPointEnum.Burn`, `TransactionEntryPointTag.Burn = 12`). A transaction that uses it previously failed to parse with `Unknown entry point`
+- `NativeBurnBuilder` builds a `Burn` transaction from `amount()` and an optional `source()` purse; without `source()`, the motes are burned from the initiator's main purse
+
 ### [5.2.0] - 2026-10-09
 
 Improves compatibility with Casper 2.x nodes and fixes bugs in RPC queries, SSE event handling, serialization and key handling.

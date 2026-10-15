@@ -17,7 +17,8 @@ export enum TransactionEntryPointEnum {
   ChangeBidPublicKey = 'ChangeBidPublicKey',
   Call = 'Call',
   AddReservations = 'AddReservations',
-  CancelReservations = 'CancelReservations'
+  CancelReservations = 'CancelReservations',
+  Burn = 'Burn'
 }
 
 /**
@@ -36,7 +37,8 @@ export enum TransactionEntryPointTag {
   ActivateBid = 8,
   ChangeBidPublicKey = 9,
   AddReservations = 10,
-  CancelReservations = 11
+  CancelReservations = 11,
+  Burn = 12
 }
 
 /**
@@ -45,9 +47,7 @@ export enum TransactionEntryPointTag {
  * below exhaustive-checkable, and what stops a renumbered enum from silently
  * re-routing a decode.
  */
-function toEntryPointTag(
-  tag: number
-): TransactionEntryPointTag | undefined {
+function toEntryPointTag(tag: number): TransactionEntryPointTag | undefined {
   return (Object.values(TransactionEntryPointTag) as unknown[]).includes(tag)
     ? (tag as TransactionEntryPointTag)
     : undefined;
@@ -118,6 +118,8 @@ export class TransactionEntryPoint {
         return TransactionEntryPointTag.AddReservations;
       case TransactionEntryPointEnum.CancelReservations:
         return TransactionEntryPointTag.CancelReservations;
+      case TransactionEntryPointEnum.Burn:
+        return TransactionEntryPointTag.Burn;
       case TransactionEntryPointEnum.Custom:
         return TransactionEntryPointTag.Custom;
       default:
@@ -208,6 +210,8 @@ export class TransactionEntryPoint {
         return new TransactionEntryPoint(
           TransactionEntryPointEnum.CancelReservations
         );
+      case TransactionEntryPointEnum.Burn:
+        return new TransactionEntryPoint(TransactionEntryPointEnum.Burn);
       default:
         throw new Error('Unknown entry point');
     }
@@ -267,6 +271,8 @@ export class TransactionEntryPoint {
           return TransactionEntryPointEnum.AddReservations;
         case TransactionEntryPointTag.CancelReservations:
           return TransactionEntryPointEnum.CancelReservations;
+        case TransactionEntryPointTag.Burn:
+          return TransactionEntryPointEnum.Burn;
         case TransactionEntryPointTag.Custom:
           return TransactionEntryPointEnum.Custom;
       }
