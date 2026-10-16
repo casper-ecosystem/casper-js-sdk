@@ -11,14 +11,14 @@
 <li><a href="" aria-current="page">ClientPOS</a></li></ul>
 <h1>Interface ClientPOS</h1></div>
 <div class="tsd-signature"><span class="tsd-signature-keyword">interface</span> <span class="tsd-kind-interface">ClientPOS</span> <span class="tsd-signature-symbol">{</span><br/>    <a class="tsd-kind-call-signature" href="#getauctioninfobyhash-1">getAuctionInfoByHash</a><span class="tsd-signature-symbol">(</span><br/>        <span class="tsd-kind-parameter">blockHash</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/StateGetAuctionInfoResult.html" class="tsd-signature-type tsd-kind-class">StateGetAuctionInfoResult</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#getauctioninfobyheight-1">getAuctionInfoByHeight</a><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">height</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/StateGetAuctionInfoResult.html" class="tsd-signature-type tsd-kind-class">StateGetAuctionInfoResult</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#getauctioninfov1byhash-1">getAuctionInfoV1ByHash</a><span class="tsd-signature-symbol">(</span><br/>        <span class="tsd-kind-parameter">blockHash</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/StateGetAuctionInfoV1Result.html" class="tsd-signature-type tsd-kind-class">StateGetAuctionInfoV1Result</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#getauctioninfov1byheight-1">getAuctionInfoV1ByHeight</a><span class="tsd-signature-symbol">(</span><br/>        <span class="tsd-kind-parameter">height</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">,</span><br/>    <span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/StateGetAuctionInfoV1Result.html" class="tsd-signature-type tsd-kind-class">StateGetAuctionInfoV1Result</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#geterainfobyblockhash-1">getEraInfoByBlockHash</a><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">hash</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/ChainGetEraInfoResult.html" class="tsd-signature-type tsd-kind-class">ChainGetEraInfoResult</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#geterainfobyblockheight-1">getEraInfoByBlockHeight</a><span class="tsd-signature-symbol">(</span><span class="tsd-kind-parameter">height</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/ChainGetEraInfoResult.html" class="tsd-signature-type tsd-kind-class">ChainGetEraInfoResult</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#geterainfolatest-1">getEraInfoLatest</a><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/ChainGetEraInfoResult.html" class="tsd-signature-type tsd-kind-class">ChainGetEraInfoResult</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#getlatestauctioninfo-1">getLatestAuctionInfo</a><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/StateGetAuctionInfoResult.html" class="tsd-signature-type tsd-kind-class">StateGetAuctionInfoResult</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#getlatestauctioninfov1-1">getLatestAuctionInfoV1</a><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/StateGetAuctionInfoV1Result.html" class="tsd-signature-type tsd-kind-class">StateGetAuctionInfoV1Result</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br/>    <a class="tsd-kind-call-signature" href="#getvalidatorchangesinfo-1">getValidatorChangesInfo</a><span class="tsd-signature-symbol">()</span><span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/InfoGetValidatorChangesResult.html" class="tsd-signature-type tsd-kind-class">InfoGetValidatorChangesResult</a><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">;</span><br/><span class="tsd-signature-symbol">}</span></div>
-<section class="tsd-panel tsd-hierarchy" data-refl="4089">
+<section class="tsd-panel tsd-hierarchy" data-refl="4140">
 <h4>Hierarchy (<a href="../hierarchy.html#ClientPOS">View Summary</a>)</h4>
 <ul class="tsd-hierarchy">
 <li class="tsd-hierarchy-item"><span class="tsd-hierarchy-target">ClientPOS</span>
 <ul class="tsd-hierarchy">
 <li class="tsd-hierarchy-item"><a href="IClient.html" class="tsd-signature-type tsd-kind-interface">IClient</a></li></ul></li></ul></section><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/b22f5e715df33361ec90d364ddc098d2eaf1aa53/src/rpc/client.ts#L41">src/rpc/client.ts:41</a></li></ul></aside>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/4a4575aa94bc5333453c116c20fcc2b393c58831/src/rpc/client.ts#L41">src/rpc/client.ts:41</a></li></ul></aside>
 <section class="tsd-panel-group tsd-index-group">
 <section class="tsd-panel tsd-index-panel">
 <details class="tsd-index-content tsd-accordion" open><summary class="tsd-accordion-summary tsd-index-summary"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true"><use href="../assets/icons.svg#icon-chevronDown"></use></svg>
@@ -61,7 +61,7 @@
 <h4 class="tsd-anchor-link" id="rpc">Rpc<a href="#rpc" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>state_get_auction_info_v2 (fallback: state_get_auction_info)</p>
 </div></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/b22f5e715df33361ec90d364ddc098d2eaf1aa53/src/rpc/client.ts#L55">src/rpc/client.ts:55</a></li></ul></aside></div></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/4a4575aa94bc5333453c116c20fcc2b393c58831/src/rpc/client.ts#L55">src/rpc/client.ts:55</a></li></ul></aside></div></li></ul></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="getauctioninfobyheight"><span>get<wbr/>Auction<wbr/>Info<wbr/>By<wbr/>Height</span><a href="#getauctioninfobyheight" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -83,7 +83,7 @@
 <h4 class="tsd-anchor-link" id="rpc-1">Rpc<a href="#rpc-1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>state_get_auction_info_v2 (fallback: state_get_auction_info)</p>
 </div></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/b22f5e715df33361ec90d364ddc098d2eaf1aa53/src/rpc/client.ts#L63">src/rpc/client.ts:63</a></li></ul></aside></div></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/4a4575aa94bc5333453c116c20fcc2b393c58831/src/rpc/client.ts#L63">src/rpc/client.ts:63</a></li></ul></aside></div></li></ul></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="getauctioninfov1byhash"><span>get<wbr/>Auction<wbr/>Info<wbr/>V1<wbr/>By<wbr/>Hash</span><a href="#getauctioninfov1byhash" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -105,7 +105,7 @@
 <h4 class="tsd-anchor-link" id="rpc-2">Rpc<a href="#rpc-2" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>state_get_auction_info</p>
 </div></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/b22f5e715df33361ec90d364ddc098d2eaf1aa53/src/rpc/client.ts#L78">src/rpc/client.ts:78</a></li></ul></aside></div></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/4a4575aa94bc5333453c116c20fcc2b393c58831/src/rpc/client.ts#L78">src/rpc/client.ts:78</a></li></ul></aside></div></li></ul></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="getauctioninfov1byheight"><span>get<wbr/>Auction<wbr/>Info<wbr/>V1<wbr/>By<wbr/>Height</span><a href="#getauctioninfov1byheight" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -127,7 +127,7 @@
 <h4 class="tsd-anchor-link" id="rpc-3">Rpc<a href="#rpc-3" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>state_get_auction_info</p>
 </div></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/b22f5e715df33361ec90d364ddc098d2eaf1aa53/src/rpc/client.ts#L88">src/rpc/client.ts:88</a></li></ul></aside></div></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/4a4575aa94bc5333453c116c20fcc2b393c58831/src/rpc/client.ts#L88">src/rpc/client.ts:88</a></li></ul></aside></div></li></ul></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="geterainfobyblockhash"><span>get<wbr/>Era<wbr/>Info<wbr/>By<wbr/>Block<wbr/>Hash</span><a href="#geterainfobyblockhash" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -146,7 +146,7 @@ Only the last block in an era (switch block) contains an era summary.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/ChainGetEraInfoResult.html" class="tsd-signature-type tsd-kind-class">ChainGetEraInfoResult</a><span class="tsd-signature-symbol">&gt;</span></h4><p>A Promise resolving to the EraInfo.</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/b22f5e715df33361ec90d364ddc098d2eaf1aa53/src/rpc/client.ts#L114">src/rpc/client.ts:114</a></li></ul></aside></div></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/4a4575aa94bc5333453c116c20fcc2b393c58831/src/rpc/client.ts#L114">src/rpc/client.ts:114</a></li></ul></aside></div></li></ul></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="geterainfobyblockheight"><span>get<wbr/>Era<wbr/>Info<wbr/>By<wbr/>Block<wbr/>Height</span><a href="#geterainfobyblockheight" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -165,7 +165,7 @@ Only the last block in an era (switch block) contains an era summary.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/ChainGetEraInfoResult.html" class="tsd-signature-type tsd-kind-class">ChainGetEraInfoResult</a><span class="tsd-signature-symbol">&gt;</span></h4><p>A Promise resolving to the EraInfo.</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/b22f5e715df33361ec90d364ddc098d2eaf1aa53/src/rpc/client.ts#L106">src/rpc/client.ts:106</a></li></ul></aside></div></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/4a4575aa94bc5333453c116c20fcc2b393c58831/src/rpc/client.ts#L106">src/rpc/client.ts:106</a></li></ul></aside></div></li></ul></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="geterainfolatest"><span>get<wbr/>Era<wbr/>Info<wbr/>Latest</span><a href="#geterainfolatest" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -179,7 +179,7 @@ This method returns information about the latest block, which may not be the las
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/ChainGetEraInfoResult.html" class="tsd-signature-type tsd-kind-class">ChainGetEraInfoResult</a><span class="tsd-signature-symbol">&gt;</span></h4><p>A Promise resolving to the latest EraInfo.</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/b22f5e715df33361ec90d364ddc098d2eaf1aa53/src/rpc/client.ts#L98">src/rpc/client.ts:98</a></li></ul></aside></div></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/4a4575aa94bc5333453c116c20fcc2b393c58831/src/rpc/client.ts#L98">src/rpc/client.ts:98</a></li></ul></aside></div></li></ul></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="getlatestauctioninfo"><span>get<wbr/>Latest<wbr/>Auction<wbr/>Info</span><a href="#getlatestauctioninfo" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -195,7 +195,7 @@ This method returns information about the latest block, which may not be the las
 <h4 class="tsd-anchor-link" id="rpc-4">Rpc<a href="#rpc-4" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>state_get_auction_info_v2 (fallback: state_get_auction_info)</p>
 </div></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/b22f5e715df33361ec90d364ddc098d2eaf1aa53/src/rpc/client.ts#L47">src/rpc/client.ts:47</a></li></ul></aside></div></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/4a4575aa94bc5333453c116c20fcc2b393c58831/src/rpc/client.ts#L47">src/rpc/client.ts:47</a></li></ul></aside></div></li></ul></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="getlatestauctioninfov1"><span>get<wbr/>Latest<wbr/>Auction<wbr/>Info<wbr/>V1</span><a href="#getlatestauctioninfov1" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -211,7 +211,7 @@ This method returns information about the latest block, which may not be the las
 <h4 class="tsd-anchor-link" id="rpc-5">Rpc<a href="#rpc-5" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h4><p>state_get_auction_info</p>
 </div></div><aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/b22f5e715df33361ec90d364ddc098d2eaf1aa53/src/rpc/client.ts#L70">src/rpc/client.ts:70</a></li></ul></aside></div></li></ul></section>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/4a4575aa94bc5333453c116c20fcc2b393c58831/src/rpc/client.ts#L70">src/rpc/client.ts:70</a></li></ul></aside></div></li></ul></section>
 <section class="tsd-panel tsd-member">
 <h3 class="tsd-anchor-link" id="getvalidatorchangesinfo"><span>get<wbr/>Validator<wbr/>Changes<wbr/>Info</span><a href="#getvalidatorchangesinfo" aria-label="Permalink" class="tsd-anchor-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="../assets/icons.svg#icon-anchor"></use></svg></a></h3>
 <ul class="tsd-signatures">
@@ -225,7 +225,7 @@ A validator may show more than one change in a single era.</p>
 <h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../classes/InfoGetValidatorChangesResult.html" class="tsd-signature-type tsd-kind-class">InfoGetValidatorChangesResult</a><span class="tsd-signature-symbol">&gt;</span></h4><p>A Promise resolving to validator status changes.</p>
 <aside class="tsd-sources">
 <ul>
-<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/b22f5e715df33361ec90d364ddc098d2eaf1aa53/src/rpc/client.ts#L122">src/rpc/client.ts:122</a></li></ul></aside></div></li></ul></section></section></details></div>
+<li>Defined in <a href="https://github.com/casper-ecosystem/casper-js-sdk/blob/4a4575aa94bc5333453c116c20fcc2b393c58831/src/rpc/client.ts#L122">src/rpc/client.ts:122</a></li></ul></aside></div></li></ul></section></section></details></div>
 <div class="col-sidebar">
 <div class="page-menu">
 <div class="tsd-navigation settings">
