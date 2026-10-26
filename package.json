@@ -133,7 +133,7 @@
   },
   "lavamoat": {
     "allowScripts": {
-      "@lavamoat/preinstall-always-fail#3.0.0": false
+      "@lavamoat/preinstall-always-fail#3.0.1": false
     }
   }
 }
