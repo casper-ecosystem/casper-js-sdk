@@ -13,6 +13,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [5.3.1] - 2026-11-02
+
+### Changed
+
+- The browser build (`lib.web.js`, also used for React Native) bundles `@peculiar/asn1-ecc`, `@peculiar/asn1-schema` and `@peculiar/asn1-x509` 2.11.1, up from 2.10.0. The Node builds resolve dependencies from your own lockfile and are unchanged; run `npm update` to pick up current transitive versions there
+
 ### [5.3.0] - 2026-10-16
 
 ### Added
