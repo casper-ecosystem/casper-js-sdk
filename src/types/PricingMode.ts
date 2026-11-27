@@ -24,7 +24,16 @@ export class PaymentLimitedMode {
   /**
    * Whether the payment is a standard payment.
    */
-  @jsonMember({ name: 'standard_payment', constructor: Boolean })
+  @jsonMember({
+    name: 'standard_payment',
+    constructor: Boolean,
+    deserializer: (json: unknown) => {
+      if (typeof json !== 'boolean') {
+        throw new Error('PaymentLimited.standard_payment must be a boolean');
+      }
+      return json;
+    }
+  })
   standardPayment: boolean;
 
   public toBytes(): Uint8Array {

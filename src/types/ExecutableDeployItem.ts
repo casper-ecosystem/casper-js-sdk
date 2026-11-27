@@ -1,4 +1,4 @@
-import { jsonMember, jsonObject } from 'typedjson';
+import { jsonMember, jsonObject, TypedJSON } from 'typedjson';
 import { BigNumber, BigNumberish } from '@ethersproject/bignumber';
 import { concat } from '@ethersproject/bytes';
 
@@ -70,14 +70,7 @@ export class ModuleBytes {
     ).bytes();
     const bytesArrayBytes = CLValue.newCLByteArray(this.moduleBytes).bytes();
 
-    let result = concat([lengthBytes, bytesArrayBytes]);
-
-    if (this.args) {
-      const argBytes = this.args.toBytes();
-      result = concat([result, argBytes]);
-    }
-
-    return result;
+    return concat([lengthBytes, bytesArrayBytes, this.args.toBytes()]);
   }
 }
 
@@ -251,10 +244,12 @@ export class StoredVersionedContractByHash {
   bytes(): Uint8Array {
     const hashBytes = this.hash.hash.toBytes();
     const optionBytes = new CLValueOption(
-      this.version ? CLValue.newCLUInt32(BigNumber.from(this.version)) : null
+      this.version !== undefined
+        ? CLValue.newCLUInt32(BigNumber.from(this.version))
+        : null
     ).bytes();
     const entryPointBytes = CLValue.newCLString(this.entryPoint).bytes();
-    const argBytes = this.args?.toBytes() || new Uint8Array();
+    const argBytes = this.args.toBytes();
 
     return concat([hashBytes, optionBytes, entryPointBytes, argBytes]);
   }
@@ -313,10 +308,12 @@ export class StoredVersionedContractByName {
   bytes(): Uint8Array {
     const nameBytes = CLValue.newCLString(this.name).bytes();
     const optionBytes = new CLValueOption(
-      this.version ? CLValue.newCLUInt32(BigNumber.from(this.version)) : null
+      this.version !== undefined
+        ? CLValue.newCLUInt32(BigNumber.from(this.version))
+        : null
     ).bytes();
     const entryPointBytes = CLValue.newCLString(this.entryPoint).bytes();
-    const argBytes = this.args?.toBytes() || new Uint8Array();
+    const argBytes = this.args.toBytes();
 
     return concat([nameBytes, optionBytes, entryPointBytes, argBytes]);
   }
@@ -392,6 +389,19 @@ export class TransferDeployItem {
     return this.args.toBytes();
   }
 }
+
+const throwError = (error: Error) => {
+  throw error;
+};
+
+const VARIANT_JSON_NAMES = [
+  'ModuleBytes',
+  'StoredContractByHash',
+  'StoredContractByName',
+  'StoredVersionedContractByHash',
+  'StoredVersionedContractByName',
+  'Transfer'
+];
 
 /**
  * Represents an executable deploy item, which can be one of several types such as `ModuleBytes`, `StoredContractByHash`, etc.
@@ -471,60 +481,79 @@ export class ExecutableDeployItem {
    * @returns The arguments for the deploy item.
    */
   getArgs(): Args {
-    if (this.moduleBytes) return this.moduleBytes.args;
-    if (this.storedContractByHash) return this.storedContractByHash.args;
-    if (this.storedContractByName) return this.storedContractByName.args;
-    if (this.storedVersionedContractByHash)
-      return this.storedVersionedContractByHash.args;
-    if (this.storedVersionedContractByName)
-      return this.storedVersionedContractByName.args;
-    if (this.transfer) return this.transfer.args;
-    throw new Error('failed to serialize ExecutableDeployItemJsonWrapper');
+    return this.variant().item.args;
   }
 
   /**
    * Serializes the `ExecutableDeployItem` to a byte array.
    * @returns The serialized byte array.
+   * @throws Error unless exactly one variant is set.
    */
   bytes(): Uint8Array {
-    let bytes: Uint8Array;
+    const { tag, item } = this.variant();
+    return concat([Uint8Array.of(tag), item.bytes()]);
+  }
 
-    if (this.moduleBytes) {
-      bytes = this.moduleBytes.bytes();
-      return concat([
-        Uint8Array.of(ExecutableDeployItemType.ModuleBytes),
-        bytes
-      ]);
-    } else if (this.storedContractByHash) {
-      bytes = this.storedContractByHash.bytes();
-      return concat([
-        Uint8Array.of(ExecutableDeployItemType.StoredContractByHash),
-        bytes
-      ]);
-    } else if (this.storedContractByName) {
-      bytes = this.storedContractByName.bytes();
-      return concat([
-        Uint8Array.of(ExecutableDeployItemType.StoredContractByName),
-        bytes
-      ]);
-    } else if (this.storedVersionedContractByHash) {
-      bytes = this.storedVersionedContractByHash.bytes();
-      return concat([
-        Uint8Array.of(ExecutableDeployItemType.StoredVersionedContractByHash),
-        bytes
-      ]);
-    } else if (this.storedVersionedContractByName) {
-      bytes = this.storedVersionedContractByName.bytes();
-      return concat([
-        Uint8Array.of(ExecutableDeployItemType.StoredVersionedContractByName),
-        bytes
-      ]);
-    } else if (this.transfer) {
-      bytes = this.transfer.bytes();
-      return concat([Uint8Array.of(ExecutableDeployItemType.Transfer), bytes]);
+  /**
+   * Parses an `ExecutableDeployItem` from its JSON form.
+   * @throws Error unless the JSON holds exactly one known variant, as the node's format requires.
+   */
+  public static fromJSON(json: unknown): ExecutableDeployItem {
+    const keys =
+      json !== null && typeof json === 'object' ? Object.keys(json) : [];
+
+    if (keys.length !== 1 || !VARIANT_JSON_NAMES.includes(keys[0])) {
+      throw new Error(
+        `ExecutableDeployItem JSON must hold exactly one variant, got: ${keys.join(', ') || 'none'}`
+      );
     }
 
-    return new Uint8Array();
+    const item = new TypedJSON(ExecutableDeployItem, {
+      errorHandler: throwError
+    }).parse(json);
+
+    if (!item) {
+      throw new Error(`Invalid ExecutableDeployItem JSON: ${keys[0]}`);
+    }
+
+    // A null or malformed variant value is dropped by typedjson, leaving no variant set.
+    item.variant();
+
+    return item;
+  }
+
+  private variant(): {
+    tag: ExecutableDeployItemType;
+    item: { args: Args; bytes(): Uint8Array };
+  } {
+    const set = [
+      { tag: ExecutableDeployItemType.ModuleBytes, item: this.moduleBytes },
+      {
+        tag: ExecutableDeployItemType.StoredContractByHash,
+        item: this.storedContractByHash
+      },
+      {
+        tag: ExecutableDeployItemType.StoredContractByName,
+        item: this.storedContractByName
+      },
+      {
+        tag: ExecutableDeployItemType.StoredVersionedContractByHash,
+        item: this.storedVersionedContractByHash
+      },
+      {
+        tag: ExecutableDeployItemType.StoredVersionedContractByName,
+        item: this.storedVersionedContractByName
+      },
+      { tag: ExecutableDeployItemType.Transfer, item: this.transfer }
+    ].filter(entry => entry.item !== undefined);
+
+    if (set.length !== 1) {
+      throw new Error(
+        `ExecutableDeployItem must hold exactly one variant, got ${set.length}`
+      );
+    }
+
+    return { tag: set[0].tag, item: set[0].item! };
   }
 
   /**

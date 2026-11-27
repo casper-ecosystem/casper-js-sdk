@@ -2049,6 +2049,7 @@ export interface EventSubscription {
 export class ExecutableDeployItem {
     asModuleBytes(): ModuleBytes | undefined;
     bytes(): Uint8Array;
+    static fromJSON(json: unknown): ExecutableDeployItem;
     getArgByName(name: string): CLValue | undefined;
     getArgs(): Args;
     isModuleBytes(): boolean;
