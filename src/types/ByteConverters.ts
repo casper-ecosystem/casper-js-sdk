@@ -192,8 +192,8 @@ export const fromBytesU64 = (bytes: Uint8Array): BigNumber => {
     );
   }
 
-  // Convert the little-endian bytes into a BigNumber
-  return BigNumber.from(bytes.reverse());
+  // Not `slice()`: on a Buffer it returns a view, and the reverse would mutate the input.
+  return BigNumber.from(Uint8Array.from(bytes).reverse());
 };
 
 /**

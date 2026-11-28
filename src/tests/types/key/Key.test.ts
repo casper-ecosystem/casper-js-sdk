@@ -157,3 +157,13 @@ describe('TransferHash', () => {
     expect(hash.toBytes()).to.deep.equal(bytes);
   });
 });
+
+describe('Key.fromBytes() at the end of the input', () => {
+  it('parses a chainspec-registry key with no trailing bytes', () => {
+    const key = Key.newKey(`chainspec-registry-${'00'.repeat(32)}`);
+
+    const { result, bytes } = Key.fromBytes(key.bytes());
+    expect(result.type).to.equal(KeyTypeID.ChainspecRegistry);
+    expect(bytes.length).to.equal(0);
+  });
+});

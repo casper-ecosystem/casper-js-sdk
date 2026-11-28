@@ -1,6 +1,6 @@
 import { expect } from 'vitest';
 
-import { Key, BidAddrTag } from '../../../types';
+import { BidAddr, BidAddrTag, Key, KeyTypeID } from '../../../types';
 
 describe('BidAddr', () => {
   it('should correctly create a new key for validator BidAddr', () => {
@@ -103,5 +103,48 @@ describe('BidAddr', () => {
     expect(`account-hash-${key.bidAddr?.validator?.toHex()}`).to.equal(
       'account-hash-2f3fb80d362ad0a922f446915a259c9aaec9ba99292b3e50ff2359c458007309'
     );
+  });
+
+  describe('credit era', () => {
+    const validatorHex =
+      '520037cd249ccbcfeb0b9feae07d8d4f7d922cf88adc4f3e8691f9d34ccc8d09';
+    const creditStr = (eraHex: string) => `bid-addr-04${validatorHex}${eraHex}`;
+
+    it('round-trips an era above 2^32 through the string form', () => {
+      // 2^32 + 5 as a little-endian u64
+      const str = creditStr('0500000001000000');
+      const key = Key.newKey(str);
+
+      expect(key.bidAddr?.eraId).to.equal(2 ** 32 + 5);
+      expect(key.toPrefixedString()).to.equal(str);
+    });
+
+    it('round-trips era 0 through bytes', () => {
+      const key = Key.newKey(creditStr('0000000000000000'));
+
+      const { result } = Key.fromBytes(key.bytes());
+      expect(result.bidAddr?.eraId).to.equal(0);
+      expect(result.toPrefixedString()).to.equal(key.toPrefixedString());
+    });
+
+    it('Key.fromBytes() reads a Buffer without modifying it', () => {
+      const str = creditStr('0500000001000000');
+      const buffer = Buffer.from(Key.newKey(str).bytes());
+      const original = buffer.toString('hex');
+
+      expect(Key.fromBytes(buffer).result.toPrefixedString()).to.equal(str);
+      expect(Key.fromBytes(buffer).result.toPrefixedString()).to.equal(str);
+      expect(buffer.toString('hex')).to.equal(original);
+    });
+
+    it('BidAddr.fromBytes() consumes the 8 era bytes', () => {
+      const bytes = Key.newKey(creditStr('7f00000000000000')).bytes();
+      expect(bytes[0]).to.equal(KeyTypeID.BidAddr);
+
+      const withExtra = new Uint8Array([...bytes.subarray(1), 0xff]);
+      const { result, bytes: remainder } = BidAddr.fromBytes(withExtra);
+      expect(result.eraId).to.equal(127);
+      expect(Array.from(remainder)).to.deep.equal([0xff]);
+    });
   });
 });

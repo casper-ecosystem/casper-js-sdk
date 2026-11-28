@@ -18,7 +18,10 @@ export class NamedArg {
    * @param name - The name of the argument.
    * @param value - The `CLValue` associated with this argument.
    */
-  constructor(public name: string, public value: CLValue) {}
+  constructor(
+    public name: string,
+    public value: CLValue
+  ) {}
 
   /**
    * Converts the named argument to a byte array representation.
@@ -80,7 +83,11 @@ export class NamedArg {
   public static fromBytes(bytes: Uint8Array): NamedArg {
     let offset = 0;
 
-    const nameLength = new DataView(bytes.buffer).getUint32(offset, true);
+    const nameLength = new DataView(
+      bytes.buffer,
+      bytes.byteOffset,
+      bytes.byteLength
+    ).getUint32(offset, true);
     offset += 4;
     const nameBytes = bytes.slice(offset, offset + nameLength);
     offset += nameLength;
@@ -206,7 +213,11 @@ export class Args {
   public static fromBytes(bytes: Uint8Array): Args {
     let offset = 0;
 
-    const numArgs = new DataView(bytes.buffer).getUint32(offset, true);
+    const numArgs = new DataView(
+      bytes.buffer,
+      bytes.byteOffset,
+      bytes.byteLength
+    ).getUint32(offset, true);
     offset += 4;
 
     const args = new Map<string, CLValue>();
@@ -215,7 +226,11 @@ export class Args {
       const namedArgBytes = bytes.slice(offset);
       const namedArg = NamedArg.fromBytes(namedArgBytes);
 
-      const nameLength = new DataView(namedArgBytes.buffer).getUint32(0, true);
+      const nameLength = new DataView(
+        namedArgBytes.buffer,
+        namedArgBytes.byteOffset,
+        namedArgBytes.byteLength
+      ).getUint32(0, true);
       const valueBytes = CLValueParser.toBytesWithType(namedArg.value);
       const consumedBytes = 4 + nameLength + valueBytes.length;
 

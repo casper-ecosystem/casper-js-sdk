@@ -1,5 +1,5 @@
 import { jsonMember, jsonObject } from 'typedjson';
-import { toBytesNumber } from '../ByteConverters';
+import { fromBytesU64, toBytesNumber } from '../ByteConverters';
 
 /**
  * Represents an Era in the system.
@@ -45,17 +45,17 @@ export class Era {
 
   /**
    * Creates an Era instance from a byte array.
-   * @param bytes - The byte array representing the Era value as a 32-bit unsigned integer.
+   * @param bytes - The Era value as a little-endian `u64`, in the first 8 bytes.
    * @returns A new Era instance.
+   * @throws Error if fewer than 8 bytes are given, or the value exceeds `Number.MAX_SAFE_INTEGER`.
    */
   static fromBytes(bytes: Uint8Array): Era {
-    const value = new DataView(bytes.buffer).getUint32(0, true);
-    return new Era(value);
+    return new Era(fromBytesU64(bytes.subarray(0, 8)).toNumber());
   }
 
   /**
    * Converts the Era instance to a byte array.
-   * @returns A Uint8Array representation of the Era value as a 32-bit unsigned integer.
+   * @returns The Era value as a little-endian `u64`.
    */
   toBytes(): Uint8Array {
     return toBytesNumber(64, false)(this.value);

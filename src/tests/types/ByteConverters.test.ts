@@ -89,6 +89,14 @@ describe('ByteConverters', () => {
       expect(hex(bytes)).to.equal('ffffffffffffffff');
       expect(fromBytesU64(bytes).toString()).to.equal(maxU64.toString());
     });
+
+    it.each([
+      ['Uint8Array', Uint8Array.from([1, 2, 3, 4, 5, 6, 7, 8])],
+      ['Buffer', Buffer.from([1, 2, 3, 4, 5, 6, 7, 8])]
+    ])('leaves a %s input unchanged', (_, input) => {
+      expect(fromBytesU64(input).toHexString()).to.equal('0x0807060504030201');
+      expect(Array.from(input)).to.deep.equal([1, 2, 3, 4, 5, 6, 7, 8]);
+    });
   });
 
   describe('toBytesU128 (round-trip via fromBytesUInt128)', () => {
