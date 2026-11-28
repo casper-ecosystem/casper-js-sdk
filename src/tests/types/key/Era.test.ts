@@ -47,6 +47,14 @@ describe('Era', () => {
     expect(Era.fromBytes(padded.subarray(8)).value).to.equal(42);
   });
 
+  it('fromBytes() reads a Buffer without modifying it', () => {
+    const buffer = Buffer.from('2a00000000000000', 'hex');
+
+    expect(Era.fromBytes(buffer).value).to.equal(42);
+    expect(Era.fromBytes(buffer).value).to.equal(42);
+    expect(buffer.toString('hex')).to.equal('2a00000000000000');
+  });
+
   it('fromBytes() reads the full u64 that toBytes() writes', () => {
     const era = new Era(2 ** 32 + 5);
 

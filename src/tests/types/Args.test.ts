@@ -89,5 +89,17 @@ describe('Args', () => {
       expect([...parsed.args.keys()]).to.deep.equal(['a', 'bb']);
       expect(parsed.toBytes()).to.deep.equal(bytes);
     });
+
+    it('Args.fromBytes() reads a Buffer decoded from hex', () => {
+      const bytes = Args.fromMap({
+        a: CLValue.newCLUInt32(7),
+        bb: CLValue.newCLString('hi')
+      }).toBytes();
+
+      const parsed = Args.fromBytes(
+        Buffer.from(Buffer.from(bytes).toString('hex'), 'hex')
+      );
+      expect([...parsed.args.keys()]).to.deep.equal(['a', 'bb']);
+    });
   });
 });

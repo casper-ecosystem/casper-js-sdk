@@ -127,6 +127,16 @@ describe('BidAddr', () => {
       expect(result.toPrefixedString()).to.equal(key.toPrefixedString());
     });
 
+    it('Key.fromBytes() reads a Buffer without modifying it', () => {
+      const str = creditStr('0500000001000000');
+      const buffer = Buffer.from(Key.newKey(str).bytes());
+      const original = buffer.toString('hex');
+
+      expect(Key.fromBytes(buffer).result.toPrefixedString()).to.equal(str);
+      expect(Key.fromBytes(buffer).result.toPrefixedString()).to.equal(str);
+      expect(buffer.toString('hex')).to.equal(original);
+    });
+
     it('BidAddr.fromBytes() consumes the 8 era bytes', () => {
       const bytes = Key.newKey(creditStr('7f00000000000000')).bytes();
       expect(bytes[0]).to.equal(KeyTypeID.BidAddr);
