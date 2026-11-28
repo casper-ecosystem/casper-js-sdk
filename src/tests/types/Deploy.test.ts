@@ -14,7 +14,8 @@ import {
   dehumanizerTTL,
   humanizerTTL,
   Args,
-  CLValue
+  CLValue,
+  Transaction
 } from '../../types';
 
 describe('Deploy', () => {
@@ -256,6 +257,19 @@ describe('Deploy', () => {
       expect(tx.pricingMode.paymentLimited!.paymentAmount).to.equal(
         Number.MAX_SAFE_INTEGER
       );
+    });
+
+    it('parses deploy JSON with an amount a JS number would round through Transaction.fromJSON', () => {
+      const deploy = deployWithPaymentAmount(
+        CLValue.newCLUInt512('9007199254740993')
+      );
+
+      const tx = Transaction.fromJSON(Deploy.toJSON(deploy));
+
+      expect(tx.pricingMode.paymentLimited!.paymentAmount).to.equal(0);
+      expect(
+        tx.getDeploy()!.payment.getArgByName('amount')!.toString()
+      ).to.equal('9007199254740993');
     });
   });
 

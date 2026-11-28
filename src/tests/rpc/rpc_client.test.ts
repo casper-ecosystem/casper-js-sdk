@@ -11,10 +11,18 @@ import {
   StateGetAccountInfo
 } from '../../rpc';
 import {
+  Args,
   BlockBodyV2,
+  CLValue,
+  Deploy,
+  DeployHeader,
+  ExecutableDeployItem,
+  KeyAlgorithm,
   NamedKey,
+  PrivateKey,
   TransactionEntryPointEnum,
-  TransactionV1
+  TransactionV1,
+  TransferDeployItem
 } from '../../types';
 import {
   getBlockByHashJson,
@@ -314,5 +322,58 @@ describe('RPC Client', () => {
     expect(tx?.transaction?.hash.toHex()).to.deep.equal(
       getTransactionBidAddr.transaction.Version1.hash
     );
+  });
+
+  describe('deploy with a custom payment amount a JS number would round', () => {
+    function resultWithLargeCustomPaymentAmount() {
+      const header = new DeployHeader('test-network');
+      header.account = PrivateKey.generate(KeyAlgorithm.ED25519).publicKey;
+      const session = new ExecutableDeployItem();
+      session.transfer = TransferDeployItem.newTransfer(
+        '2500000000',
+        PrivateKey.generate(KeyAlgorithm.ED25519).publicKey,
+        null,
+        1
+      );
+      const payment = ExecutableDeployItem.newModuleBytes(
+        Uint8Array.of(0x00, 0x61, 0x73, 0x6d),
+        Args.fromMap({ amount: CLValue.newCLString('9007199254740993') })
+      );
+      const deploy = Deploy.makeDeploy(header, payment, session);
+
+      return {
+        ...getDeployWithNullExecutionResults.result,
+        deploy: Deploy.toJSON(deploy)
+      };
+    }
+
+    it('parses an info_get_deploy result', () => {
+      const result = new TypedJSON(InfoGetDeployResult).parse(
+        resultWithLargeCustomPaymentAmount()
+      )!;
+
+      const tx = result.toInfoGetTransactionResult().transaction;
+
+      expect(tx.pricingMode.paymentLimited!.paymentAmount).to.equal(0);
+      expect(tx.pricingMode.paymentLimited!.standardPayment).to.equal(false);
+    });
+
+    it('parses an info_get_transaction result', () => {
+      const json = resultWithLargeCustomPaymentAmount();
+      const result = new TypedJSON(InfoGetTransactionResultV1Compatible).parse(
+        json
+      )!;
+
+      const tx =
+        InfoGetTransactionResultV1Compatible.newInfoGetTransactionResultFromV1Compatible(
+          result,
+          json
+        ).transaction;
+
+      expect(tx.pricingMode.paymentLimited!.paymentAmount).to.equal(0);
+      expect(
+        tx.getDeploy()!.payment.getArgByName('amount')!.toString()
+      ).to.equal('9007199254740993');
+    });
   });
 });

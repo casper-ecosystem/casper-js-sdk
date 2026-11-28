@@ -17,17 +17,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Added
 
-- `ExecutableDeployItem.fromJSON()`, which throws unless the JSON holds exactly one variant
+- `ExecutableDeployItem.fromJSON()`
 
 ### Fixed
 
-- Deploy `payment` and `session` JSON with more than one variant now fails to parse, matching the node's format, and `ExecutableDeployItem.bytes()` and `getArgs()` throw unless exactly one variant is set
-- `Deploy.fromJSON()` reports the underlying parse error instead of a generic one
-- `ExecutableDeployItem.bytes()` returned empty bytes for an item with no variant (`session: {}`); `ModuleBytes`, `StoredVersionedContractByHash` and `StoredVersionedContractByName` serialized missing `args` as nothing. Both now throw
-- Contract package `version: 0` serialized as `None` instead of `Some(0)` in `StoredVersionedContractByHash` and `StoredVersionedContractByName`
-- `Deploy.newTransactionFromDeploy()` read the payment amount with `parseInt`, so a string `amount` of `"5000xyz"` became 5000 and amounts above `Number.MAX_SAFE_INTEGER` were rounded. An amount that is not plain decimal digits, or is above `Number.MAX_SAFE_INTEGER`, now gives 0
-- `Deploy.getDeploySizeInBytes()` under-counted approvals; it now returns the length of `deploy.toBytes()`
-- A `PaymentLimited` pricing mode without a boolean `standard_payment` parsed as `false`; it now fails to parse
+- Deploy `payment` and `session` with more than one variant were accepted; parsing and `ExecutableDeployItem.bytes()` / `getArgs()` now throw
+- `ExecutableDeployItem.bytes()` serialized an item with no variant, or with missing `args`, instead of throwing
+- Contract package `version: 0` serialized as `None` in `StoredVersionedContractByHash` and `StoredVersionedContractByName`
+- `Deploy.newTransactionFromDeploy()` parsed the payment amount with `parseInt`; a non-decimal or unsafe-integer `amount` now gives 0
+- `Deploy.fromJSON()` hid the underlying parse error
+- `Deploy.getDeploySizeInBytes()` under-counted approvals
+- `PaymentLimited` without a boolean `standard_payment` parsed as `false`
 
 ### [5.3.1] - 2026-11-02
 
