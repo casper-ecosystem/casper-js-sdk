@@ -416,11 +416,14 @@ export class Deploy {
       );
     }
 
-    // Custom payment may take an `amount` of any type, so anything but plain digits reads as 0.
-    // toNumber() throws past Number.MAX_SAFE_INTEGER instead of rounding.
+    // Informational only (bytes and JSON come from the origin deploy), so an `amount` that is not
+    // plain digits, or that a JS number would round, reads as 0 rather than rejecting the deploy.
     const amount = deploy.payment.getArgByName('amount')?.toString();
     if (amount !== undefined && /^\d+$/.test(amount)) {
-      paymentAmount = BigNumber.from(amount).toNumber();
+      const value = BigNumber.from(amount);
+      if (value.lte(String(Number.MAX_SAFE_INTEGER))) {
+        paymentAmount = value.toNumber();
+      }
     }
 
     const standardPayment =

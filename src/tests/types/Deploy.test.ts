@@ -234,11 +234,28 @@ describe('Deploy', () => {
       expect(tx.pricingMode.paymentLimited!.paymentAmount).to.equal(0);
     });
 
-    it('rejects an amount that a JS number would round', () => {
-      const deploy = deployWithPaymentAmount(
-        CLValue.newCLUInt512('9007199254740993')
+    it.each([
+      ['U512', CLValue.newCLUInt512('9007199254740993')],
+      ['decimal String', CLValue.newCLString('9007199254740993')]
+    ])(
+      'reads a %s amount that a JS number would round as 0',
+      (_name, amount) => {
+        const tx = Deploy.newTransactionFromDeploy(
+          deployWithPaymentAmount(amount)
+        );
+        expect(tx.pricingMode.paymentLimited!.paymentAmount).to.equal(0);
+      }
+    );
+
+    it('reads Number.MAX_SAFE_INTEGER exactly', () => {
+      const tx = Deploy.newTransactionFromDeploy(
+        deployWithPaymentAmount(
+          CLValue.newCLUInt512(String(Number.MAX_SAFE_INTEGER))
+        )
       );
-      expect(() => Deploy.newTransactionFromDeploy(deploy)).to.throw();
+      expect(tx.pricingMode.paymentLimited!.paymentAmount).to.equal(
+        Number.MAX_SAFE_INTEGER
+      );
     });
   });
 
