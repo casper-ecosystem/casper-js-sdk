@@ -77,4 +77,31 @@ describe('PricingMode', () => {
       expect(() => empty.toBytes()).to.throw('Unable to serialize PricingMode');
     });
   });
+
+  describe('PaymentLimited JSON validation', () => {
+    const strictParser = () =>
+      new TypedJSON(PricingMode, {
+        errorHandler: e => {
+          throw e;
+        }
+      });
+
+    it('rejects a PaymentLimited mode without standard_payment', () => {
+      const json = {
+        PaymentLimited: { gas_price_tolerance: 1, payment_amount: 100 }
+      };
+      expect(() => strictParser().parse(json)).to.throw();
+    });
+
+    it('rejects a non-boolean standard_payment', () => {
+      const json = {
+        PaymentLimited: {
+          gas_price_tolerance: 1,
+          payment_amount: 100,
+          standard_payment: 'true'
+        }
+      };
+      expect(() => strictParser().parse(json)).to.throw();
+    });
+  });
 });

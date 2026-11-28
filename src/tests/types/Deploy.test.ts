@@ -12,7 +12,10 @@ import {
   Timestamp,
   Hash,
   dehumanizerTTL,
-  humanizerTTL
+  humanizerTTL,
+  Args,
+  CLValue,
+  Transaction
 } from '../../types';
 
 describe('Deploy', () => {
@@ -91,7 +94,7 @@ describe('Deploy', () => {
     assert.deepEqual(deploy.approvals[1].signer, recipientKey.publicKey);
   });
 
-  it('Should convert ms to humanized string', function() {
+  it('Should convert ms to humanized string', function () {
     const strTtl30m = humanizerTTL(1800000);
     const strTtl45m = humanizerTTL(2700000);
     const strTtl1h = humanizerTTL(3600000);
@@ -107,7 +110,7 @@ describe('Deploy', () => {
     expect(strTtlCustom).to.be.eq('23h 55m 3s');
   });
 
-  it('Should convert humanized string to ms', function() {
+  it('Should convert humanized string to ms', function () {
     const msTtl30m = dehumanizerTTL('30m');
     const msTtl45m = dehumanizerTTL('45m');
     const msTtl1h = dehumanizerTTL('1h');
@@ -177,5 +180,126 @@ describe('Deploy', () => {
     );
 
     assert.deepEqual(secondDeploy.header.dependencies, [firstDeploy.hash]);
+  });
+
+  describe('newTransactionFromDeploy payment amount', () => {
+    function deployWithPaymentAmount(amount: CLValue): Deploy {
+      const key = PrivateKey.generate(KeyAlgorithm.ED25519);
+      const header = new DeployHeader('test-network');
+      header.account = key.publicKey;
+      const session = new ExecutableDeployItem();
+      session.transfer = TransferDeployItem.newTransfer(
+        '2500000000',
+        PrivateKey.generate(KeyAlgorithm.ED25519).publicKey,
+        null,
+        1
+      );
+      const payment = ExecutableDeployItem.newModuleBytes(
+        new Uint8Array(),
+        Args.fromMap({ amount })
+      );
+      return Deploy.makeDeploy(header, payment, session);
+    }
+
+    it('carries a decimal amount over exactly', () => {
+      const tx = Deploy.newTransactionFromDeploy(
+        deployWithPaymentAmount(CLValue.newCLUInt512('100000000'))
+      );
+      expect(tx.pricingMode.paymentLimited!.paymentAmount).to.equal(100000000);
+    });
+
+    it('reads a string amount as 0 instead of its numeric prefix', () => {
+      // Custom payment wasm may take an amount of any type, so reading one must not throw.
+      const tx = Deploy.newTransactionFromDeploy(
+        deployWithPaymentAmount(CLValue.newCLString('5000xyz'))
+      );
+      expect(tx.pricingMode.paymentLimited!.paymentAmount).to.equal(0);
+    });
+
+    it.each([
+      ['U8', CLValue.newCLUint8(50), 50],
+      ['U64', CLValue.newCLUint64('5000'), 5000],
+      ['U256', CLValue.newCLUInt256('5000'), 5000],
+      ['decimal String', CLValue.newCLString('5000'), 5000]
+    ])('reads a %s amount', (_name, amount, expected) => {
+      const tx = Deploy.newTransactionFromDeploy(
+        deployWithPaymentAmount(amount)
+      );
+      expect(tx.pricingMode.paymentLimited!.paymentAmount).to.equal(expected);
+    });
+
+    it('reads a negative amount as 0', () => {
+      const tx = Deploy.newTransactionFromDeploy(
+        deployWithPaymentAmount(CLValue.newCLInt64(-5000))
+      );
+      expect(tx.pricingMode.paymentLimited!.paymentAmount).to.equal(0);
+    });
+
+    it.each([
+      ['U512', CLValue.newCLUInt512('9007199254740993')],
+      ['decimal String', CLValue.newCLString('9007199254740993')]
+    ])(
+      'reads a %s amount that a JS number would round as 0',
+      (_name, amount) => {
+        const tx = Deploy.newTransactionFromDeploy(
+          deployWithPaymentAmount(amount)
+        );
+        expect(tx.pricingMode.paymentLimited!.paymentAmount).to.equal(0);
+      }
+    );
+
+    it('reads Number.MAX_SAFE_INTEGER exactly', () => {
+      const tx = Deploy.newTransactionFromDeploy(
+        deployWithPaymentAmount(
+          CLValue.newCLUInt512(String(Number.MAX_SAFE_INTEGER))
+        )
+      );
+      expect(tx.pricingMode.paymentLimited!.paymentAmount).to.equal(
+        Number.MAX_SAFE_INTEGER
+      );
+    });
+
+    it('parses deploy JSON with an amount a JS number would round through Transaction.fromJSON', () => {
+      const deploy = deployWithPaymentAmount(
+        CLValue.newCLUInt512('9007199254740993')
+      );
+
+      const tx = Transaction.fromJSON(Deploy.toJSON(deploy));
+
+      expect(tx.pricingMode.paymentLimited!.paymentAmount).to.equal(0);
+      expect(
+        tx.getDeploy()!.payment.getArgByName('amount')!.toString()
+      ).to.equal('9007199254740993');
+    });
+  });
+
+  it('getDeploySizeInBytes matches the serialized deploy', () => {
+    const key = PrivateKey.generate(KeyAlgorithm.ED25519);
+    const header = new DeployHeader('test-network');
+    header.account = key.publicKey;
+    const session = new ExecutableDeployItem();
+    session.transfer = TransferDeployItem.newTransfer(
+      '2500000000',
+      PrivateKey.generate(KeyAlgorithm.ED25519).publicKey,
+      null,
+      1
+    );
+    const deploy = Deploy.makeDeploy(
+      header,
+      ExecutableDeployItem.standardPayment('100000000'),
+      session
+    );
+    deploy.sign(key);
+
+    // u32 approval count, then per ed25519 approval: 33-byte signer + 65-byte signature.
+    const expected =
+      deploy.header.toBytes().length +
+      32 +
+      deploy.payment.bytes().length +
+      deploy.session.bytes().length +
+      4 +
+      (33 + 65);
+
+    expect(Deploy.getDeploySizeInBytes(deploy)).to.equal(expected);
   });
 });

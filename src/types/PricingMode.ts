@@ -17,6 +17,8 @@ export class PaymentLimitedMode {
 
   /**
    * The payment amount associated with classic pricing mode.
+   * On a Transaction built from a Deploy it is 0 when the payment `amount` arg is not an integer
+   * a JS number holds exactly; read that arg from `getDeploy()` for the exact value.
    */
   @jsonMember({ name: 'payment_amount', constructor: Number })
   paymentAmount: number;
@@ -24,7 +26,16 @@ export class PaymentLimitedMode {
   /**
    * Whether the payment is a standard payment.
    */
-  @jsonMember({ name: 'standard_payment', constructor: Boolean })
+  @jsonMember({
+    name: 'standard_payment',
+    constructor: Boolean,
+    deserializer: (json: unknown) => {
+      if (typeof json !== 'boolean') {
+        throw new Error('PaymentLimited.standard_payment must be a boolean');
+      }
+      return json;
+    }
+  })
   standardPayment: boolean;
 
   public toBytes(): Uint8Array {

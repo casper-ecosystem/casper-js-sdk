@@ -1,4 +1,5 @@
 import { jsonArrayMember, jsonMember, jsonObject, TypedJSON } from 'typedjson';
+import { BigNumber } from '@ethersproject/bignumber';
 import { concat } from '@ethersproject/bytes';
 
 import { toError } from '../utils/errors';
@@ -198,13 +199,19 @@ export class Deploy {
   /**
    * The executable item representing the payment logic of the deploy.
    */
-  @jsonMember({ constructor: ExecutableDeployItem })
+  @jsonMember({
+    constructor: ExecutableDeployItem,
+    deserializer: json => ExecutableDeployItem.fromJSON(json)
+  })
   public payment: ExecutableDeployItem;
 
   /**
    * The executable item representing the session logic of the deploy.
    */
-  @jsonMember({ constructor: ExecutableDeployItem })
+  @jsonMember({
+    constructor: ExecutableDeployItem,
+    deserializer: json => ExecutableDeployItem.fromJSON(json)
+  })
   public session: ExecutableDeployItem;
 
   /**
@@ -409,11 +416,13 @@ export class Deploy {
       );
     }
 
-    const amountArgument = deploy.payment.getArgs();
-    if (amountArgument) {
-      const parsed = amountArgument.args.get('amount');
-      if (parsed) {
-        paymentAmount = parseInt(parsed.toString(), 10) || 0;
+    // Informational only (bytes and JSON come from the origin deploy), so an `amount` that is not
+    // plain digits, or that a JS number would round, reads as 0 rather than rejecting the deploy.
+    const amount = deploy.payment.getArgByName('amount')?.toString();
+    if (amount !== undefined && /^\d+$/.test(amount)) {
+      const value = BigNumber.from(amount);
+      if (value.lte(String(Number.MAX_SAFE_INTEGER))) {
+        paymentAmount = value.toNumber();
       }
     }
 
@@ -464,7 +473,11 @@ export class Deploy {
         throw new Error("The JSON can't be parsed as a Deploy.");
       }
 
-      const serializer = new TypedJSON(Deploy);
+      const serializer = new TypedJSON(Deploy, {
+        errorHandler: error => {
+          throw error;
+        }
+      });
       deploy = serializer.parse(deployJson);
 
       if (!deploy) {
@@ -522,21 +535,8 @@ export class Deploy {
    * @param deploy The `Deploy` for which to calculate the size
    * @returns The size of the `Deploy` in its serialized representation
    */
-  public static getDeploySizeInBytes = (deploy: Deploy): number => {
-    const hashSize = deploy.hash.toBytes().length;
-    const bodySize = concat([deploy.payment.bytes(), deploy.session.bytes()])
-      .length;
-    const headerSize = deploy.header.toBytes().length;
-    const approvalsSize = deploy.approvals
-      .map(approval => {
-        return (
-          (approval.signature.bytes.length + approval.signer.bytes().length) / 2
-        );
-      })
-      .reduce((a, b) => a + b, 0);
-
-    return hashSize + headerSize + bodySize + approvalsSize;
-  };
+  public static getDeploySizeInBytes = (deploy: Deploy): number =>
+    deploy.toBytes().length;
 }
 
 /**

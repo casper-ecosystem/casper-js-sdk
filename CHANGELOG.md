@@ -13,6 +13,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [Unreleased]
+
+### Added
+
+- `ExecutableDeployItem.fromJSON()`
+
+### Fixed
+
+- Deploy `payment` and `session` with more than one variant were accepted; parsing and `ExecutableDeployItem.bytes()` / `getArgs()` now throw
+- `ExecutableDeployItem.bytes()` serialized an item with no variant, or with missing `args`, instead of throwing
+- Contract package `version: 0` serialized as `None` in `StoredVersionedContractByHash` and `StoredVersionedContractByName`
+- `Deploy.newTransactionFromDeploy()` parsed the payment amount with `parseInt`; a non-decimal or unsafe-integer `amount` now gives 0
+- `Deploy.fromJSON()` hid the underlying parse error
+- `Deploy.getDeploySizeInBytes()` under-counted approvals
+- `PaymentLimited` without a boolean `standard_payment` parsed as `false`
+
 ### [5.3.1] - 2026-11-02
 
 ### Changed
