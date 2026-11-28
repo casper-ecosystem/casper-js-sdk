@@ -1,9 +1,8 @@
-import { BigNumber } from '@ethersproject/bignumber';
-
 import { jsonMember, jsonObject } from 'typedjson';
 import { Hash } from './Hash';
 import { IResultWithBytes } from '../clvalue';
 import { HexBytes } from '../HexBytes';
+import { fromBytesU64, toBytesU64 } from '../ByteConverters';
 
 /**
  * Enum representing the different types of bid addresses.
@@ -160,7 +159,7 @@ export class BidAddr {
           );
         }
         bidAddr.validator = Hash.fromBytes(hexBytes.subarray(1, 33))?.result;
-        bidAddr.eraId = hexBytes.readUInt32LE(33);
+        bidAddr.eraId = fromBytesU64(hexBytes.subarray(33, 41)).toNumber();
         break;
 
       default:
@@ -228,10 +227,9 @@ export class BidAddr {
       }
       case BidAddrTag.CreditTag: {
         const { result: validator, bytes: nextBytes } = Hash.fromBytes(rem);
-        const eraIdBytes = Uint8Array.from(nextBytes!.subarray(0, 8));
-        bidAddr.eraId = BigNumber.from(eraIdBytes.slice().reverse()).toNumber();
+        bidAddr.eraId = fromBytesU64(nextBytes!.subarray(0, 8)).toNumber();
         bidAddr.validator = validator;
-        return { result: bidAddr, bytes: nextBytes };
+        return { result: bidAddr, bytes: nextBytes!.subarray(8) };
       }
       case BidAddrTag.DelegatedPurseTag: {
         const {
@@ -347,9 +345,8 @@ export class BidAddr {
             `Missing 'validator' or 'eraId' field for tag ${BidAddrTag.CreditTag}`
           );
         }
-        const eraIdHex = Buffer.alloc(8);
-        eraIdHex.writeUInt32LE(this.eraId, 0);
-        return `${tagHex}${this.validator.toHex()}${eraIdHex.toString('hex')}`;
+        const eraIdHex = Buffer.from(toBytesU64(this.eraId)).toString('hex');
+        return `${tagHex}${this.validator.toHex()}${eraIdHex}`;
       }
       case BidAddrTag.ReservedDelegationAccountTag:
         if (!this.validator || !this.delegatorAccount) {
@@ -442,14 +439,12 @@ export class BidAddr {
         }
         break;
       case BidAddrTag.CreditTag:
-        if (this.validator && this.eraId) {
-          const eraIdBuffer = Buffer.alloc(8);
-          eraIdBuffer.writeBigUInt64LE(BigInt(this.eraId), 0);
+        if (this.validator && this.eraId !== undefined) {
           return new Uint8Array(
             createBuffer(
               typeByte,
               this.validator.toBytes(),
-              new Uint8Array(eraIdBuffer)
+              toBytesU64(this.eraId)
             )
           );
         }

@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { TypedJSON } from 'typedjson';
 
-import { Args, CLValue } from '../../types';
+import { Args, CLValue, NamedArg } from '../../types';
 import { expectJsonRoundTrip } from '../roundtrip';
 
 describe('Args', () => {
@@ -62,5 +62,32 @@ describe('Args', () => {
     json.args.push(json.args[0]);
 
     expect(serializer.parse(json)).to.be.undefined;
+  });
+
+  describe('fromBytes() on a view that starts past offset 0 of its buffer', () => {
+    const atOffset = (bytes: Uint8Array): Uint8Array => {
+      const padded = new Uint8Array(bytes.length + 8).fill(0xaa);
+      padded.set(bytes, 8);
+      return padded.subarray(8);
+    };
+
+    it('NamedArg.fromBytes() reads the name and value', () => {
+      const bytes = new NamedArg('x', CLValue.newCLUInt32(7)).toBytes();
+      const parsed = NamedArg.fromBytes(atOffset(bytes));
+
+      expect(parsed.name).to.equal('x');
+      expect(parsed.value.ui32?.toNumber()).to.equal(7);
+    });
+
+    it('Args.fromBytes() reads every argument', () => {
+      const bytes = Args.fromMap({
+        a: CLValue.newCLUInt32(7),
+        bb: CLValue.newCLString('hi')
+      }).toBytes();
+
+      const parsed = Args.fromBytes(atOffset(bytes));
+      expect([...parsed.args.keys()]).to.deep.equal(['a', 'bb']);
+      expect(parsed.toBytes()).to.deep.equal(bytes);
+    });
   });
 });

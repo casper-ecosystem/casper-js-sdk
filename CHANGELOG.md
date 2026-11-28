@@ -13,6 +13,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
   ### Removed
  -->
 
+### [Unreleased]
+
+### Fixed
+
+- `Era.fromBytes()`, `NamedArg.fromBytes()` and `Args.fromBytes()` ignored the input's `byteOffset`
+- `Era.fromBytes()` read the era as `u32` instead of `u64`
+- `Key.fromBytes()` consumed 1 byte of an `EraId` key instead of 8
+- `Key.fromBytes()` rejected a `ChainspecRegistry` key at the end of the input
+- Credit `BidAddr` read and wrote the era as `u32`, did not consume it in `fromBytes()`, and threw in `toBytes()` for era 0
+- `fromBytesU64()` mutated its input
+
 ### [5.3.1] - 2026-11-02
 
 ### Changed

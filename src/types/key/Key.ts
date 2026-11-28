@@ -509,7 +509,7 @@ export class Key {
         return { result, bytes: deploy?.bytes };
       }
       case KeyTypeID.EraId: {
-        const [eraBytes, eraRemainder] = splitAt(1, contentBytes);
+        const [eraBytes, eraRemainder] = splitAt(8, contentBytes);
         result.era = Era.fromBytes(eraBytes);
         return { result, bytes: eraRemainder };
       }
@@ -879,7 +879,7 @@ export const splitAt = (
   i: number,
   arr: Uint8Array
 ): [Uint8Array, Uint8Array] => {
-  if (i > arr.length - 1) {
+  if (i > arr.length) {
     throw new Error('Early end of stream when deserializing data.');
   }
   const clonedArray = new Uint8Array(arr);

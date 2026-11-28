@@ -192,8 +192,7 @@ export const fromBytesU64 = (bytes: Uint8Array): BigNumber => {
     );
   }
 
-  // Convert the little-endian bytes into a BigNumber
-  return BigNumber.from(bytes.reverse());
+  return BigNumber.from(bytes.slice().reverse());
 };
 
 /**
